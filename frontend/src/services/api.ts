@@ -2,11 +2,12 @@ import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
 // 创建axios实例
 const apiClient = axios.create({
-  baseURL: '/api/v1',
+  baseURL: 'http://localhost:5001/api/v1',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true
 });
 
 // 请求拦截器 - 添加token
