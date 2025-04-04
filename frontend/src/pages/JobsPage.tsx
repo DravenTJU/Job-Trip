@@ -20,8 +20,9 @@ import AddIcon from '@mui/icons-material/Add';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
-import { fetchJobs } from '@/redux/slices/jobsSlice';
-import { Job } from '@/types';
+import { fetchJobs, createJob } from '@/redux/slices/jobsSlice';
+import { fetchCompanies, createCompany } from '@/redux/slices/companiesSlice';
+import { Job, CompanySize, JobType, JobStatus, JobSource, CreateCompanyData, CreateJobData } from '@/types';
 import NoDataPlaceholder from '@/components/common/NoDataPlaceholder';
 
 /**
@@ -39,13 +40,42 @@ const JobsPage: React.FC = () => {
   const [limit] = useState(10);
   
   // 加载职位列表数据
+  const loadJobs = async () => {
+    try {
+      const params = {
+        page,
+        limit,
+        search: searchTerm,
+        sort: sortOption
+      };
+      console.log('开始加载职位列表数据...');
+      console.log('请求参数:', params);
+      
+      // 先获取公司列表
+      const companiesResult = await dispatch(fetchCompanies(params));
+      console.log('公司列表:', companiesResult);
+      
+      // 获取职位列表
+      const result = await dispatch(fetchJobs(params));
+      if (fetchJobs.fulfilled.match(result)) {
+        console.log('职位列表加载成功:', result.payload);
+        if (result.payload.data.length === 0) {
+          console.log('职位列表为空，尝试不带参数重新获取...');
+          // 尝试不带任何参数重新获取
+          const retryResult = await dispatch(fetchJobs({ page: 1, limit: 10 }));
+          console.log('重试结果:', retryResult);
+        }
+      } else {
+        console.error('职位列表加载失败:', result.error);
+      }
+    } catch (error) {
+      console.error('加载数据时出错:', error);
+    }
+  };
+  
+  // 初始加载
   useEffect(() => {
-    dispatch(fetchJobs({
-      page,
-      limit,
-      search: searchTerm,
-      sort: sortOption
-    }));
+    loadJobs();
   }, [dispatch, page, limit, searchTerm, sortOption]);
   
   // 处理搜索变更
@@ -70,6 +100,70 @@ const JobsPage: React.FC = () => {
     navigate('/jobs/new');
   };
   
+  // 添加测试数据
+  const handleAddTestCompany = async () => {
+    try {
+      // 创建测试公司
+      const testCompanyData: CreateCompanyData = {
+        name: "测试公司" + Date.now(),
+        industry: "互联网",
+        description: "这是一个测试公司",
+        location: "上海",
+        website: "https://example.com",
+        size: CompanySize.MEDIUM
+      };
+
+      console.log('准备添加测试公司:', testCompanyData);
+      const companyResult = await dispatch(createCompany(testCompanyData));
+      
+      if (createCompany.fulfilled.match(companyResult)) {
+        console.log('测试公司添加成功:', companyResult.payload);
+        
+        // 获取最新的公司列表
+        const companiesResult = await dispatch(fetchCompanies({ page: 1, limit: 10 }));
+        if (fetchCompanies.fulfilled.match(companiesResult)) {
+          const firstCompany = companiesResult.payload.data[0];
+          
+          // 创建测试职位
+          const testJobData: CreateJobData = {
+            title: "测试职位",
+            company: firstCompany._id,
+            location: "上海",
+            jobType: JobType.FULL_TIME,
+            salary: {
+              min: 10000,
+              max: 20000,
+              currency: "CNY"
+            },
+            description: "这是一个测试职位描述",
+            requirements: ["熟悉React", "熟悉TypeScript"],
+            sourceUrl: "https://example.com/job",
+            sourceId: "test-job-" + Date.now(),
+            source: JobSource.MANUAL,
+            platform: "内部",
+            status: JobStatus.NEW,
+            notes: "这是一个测试职位"
+          };
+
+          console.log('准备添加测试职位:', testJobData);
+          const result = await dispatch(createJob(testJobData));
+          
+          if (createJob.fulfilled.match(result)) {
+            console.log('测试职位添加成功:', result.payload);
+            // 重新加载职位列表
+            await dispatch(fetchJobs({ page: 1, limit: 10 }));
+          } else if (createJob.rejected.match(result)) {
+            console.error('添加测试职位失败:', result.error);
+          }
+        }
+      } else {
+        console.error('添加测试公司失败:', companyResult.error);
+      }
+    } catch (error) {
+      console.error('添加测试数据时出错:', error);
+    }
+  };
+  
   return (
     <Box>
       <Grid container spacing={2} alignItems="center" sx={{ mb: 3 }}>
@@ -87,8 +181,17 @@ const JobsPage: React.FC = () => {
             color="primary"
             startIcon={<AddIcon />}
             onClick={handleAddJob}
+            sx={{ mr: 1 }}
           >
             添加职位
+          </Button>
+          {/* 临时添加的测试按钮 */}
+          <Button
+            variant="outlined"
+            onClick={handleAddTestCompany}
+            sx={{ mr: 1 }}
+          >
+            添加测试公司和职位
           </Button>
         </Grid>
       </Grid>
@@ -194,9 +297,9 @@ const JobsPage: React.FC = () => {
                                 variant="outlined" 
                               />
                             )}
-                            {job.salary && (
+                            {job.salary?.min && job.salary?.max && (
                               <Chip 
-                                label={job.salary} 
+                                label={`${job.salary.min}-${job.salary.max} ${job.salary.currency || 'NZD'}`}
                                 size="small" 
                                 variant="outlined" 
                                 color="secondary"
@@ -228,11 +331,11 @@ const JobsPage: React.FC = () => {
                             跟踪申请
                           </Button>
                           
-                          {job.link && (
+                          {job.sourceUrl && (
                             <Tooltip title="打开职位链接">
                               <IconButton 
                                 component="a" 
-                                href={job.link} 
+                                href={job.sourceUrl} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 onClick={(e: React.MouseEvent) => e.stopPropagation()}
