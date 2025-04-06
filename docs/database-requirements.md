@@ -38,11 +38,7 @@
   location: String,       // 工作地点
   description: String,    // 职位描述
   requirements: [String], // 职位要求
-  salary: {
-    min: Number,         // 最低薪资
-    max: Number,         // 最高薪资
-    currency: String     // 货币类型
-  },
+  salary: String,         // 薪资范围
   jobType: String,       // 工作类型
   status: String,        // 申请状态
   source: String,        // 数据来源

@@ -15,10 +15,15 @@ import {
   DialogActions,
   IconButton,
   Stack,
-  Link
+  Link,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
 import { useParams, useNavigate, Link as RouterLink } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
 import { fetchJob, deleteJob } from '@/redux/slices/jobsSlice';
 import { createUserJob } from '@/redux/slices/userJobsSlice';
 import { ApplicationStatus } from '@/types';
@@ -37,9 +42,9 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
  */
 const JobDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { job, isLoading, error } = useAppSelector(state => state.jobs);
+  const { job, isLoading, error } = useSelector((state: RootState) => state.jobs);
   
   // 删除确认对话框状态
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -57,46 +62,44 @@ const JobDetailPage: React.FC = () => {
   
   // 处理返回
   const handleBack = () => {
-    navigate('/jobs');
+    navigate(-1);
   };
   
   // 处理编辑
   const handleEdit = () => {
-    navigate(`/jobs/edit/${id}`);
+    navigate(`/jobs/${id}/edit`);
   };
   
-  // 打开删除对话框
+  // 处理删除
   const openDeleteDialog = () => {
     setDeleteDialogOpen(true);
   };
   
-  // 关闭删除对话框
   const closeDeleteDialog = () => {
     setDeleteDialogOpen(false);
   };
   
-  // 确认删除
   const confirmDelete = async () => {
     if (id) {
-      const resultAction = await dispatch(deleteJob(id));
-      if (deleteJob.fulfilled.match(resultAction)) {
+      try {
+        await dispatch(deleteJob(id)).unwrap();
         navigate('/jobs');
+      } catch (error) {
+        console.error('删除职位失败:', error);
       }
     }
-    setDeleteDialogOpen(false);
+    closeDeleteDialog();
   };
   
-  // 打开跟踪申请对话框
+  // 处理跟踪申请
   const openTrackDialog = () => {
     setTrackDialogOpen(true);
   };
   
-  // 关闭跟踪申请对话框
   const closeTrackDialog = () => {
     setTrackDialogOpen(false);
   };
   
-  // 选择申请状态
   const handleStatusChange = (status: ApplicationStatus) => {
     setSelectedStatus(status);
   };
@@ -104,22 +107,25 @@ const JobDetailPage: React.FC = () => {
   // 确认跟踪申请
   const confirmTrack = async () => {
     if (id) {
-      const resultAction = await dispatch(createUserJob({
-        job: id,
-        status: selectedStatus,
-        appliedDate: selectedStatus === ApplicationStatus.APPLIED ? new Date().toISOString() : undefined
-      }));
-      
-      if (createUserJob.fulfilled.match(resultAction)) {
-        navigate('/dashboard');
+      try {
+        await dispatch(createUserJob({
+          job: id,
+          status: selectedStatus,
+          appliedDate: selectedStatus === ApplicationStatus.APPLIED ? new Date().toISOString() : undefined
+        })).unwrap();
+        closeTrackDialog();
+      } catch (error) {
+        console.error('创建申请记录失败:', error);
       }
     }
-    setTrackDialogOpen(false);
   };
   
   // 处理外部链接点击
   const handleExternalLinkClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
+    e.preventDefault();
+    if (job?.sourceUrl) {
+      window.open(job.sourceUrl, '_blank');
+    }
   };
   
   // 获取公司名称

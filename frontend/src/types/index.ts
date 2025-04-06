@@ -117,16 +117,14 @@ export interface Job {
   company: string | Company;
   location: string;
   description?: string;
-  requirements?: string[];
-  salary?: Salary;
-  jobType?: JobType;
-  status?: JobStatus;
-  source: JobSource;
+  jobType?: string;
+  salary?: string;
+  link?: string;
+  source: string;
   sourceId: string;
   sourceUrl: string;
-  appliedDate?: string;
-  deadline?: string;
-  notes?: string;
+  requirements: string[];
+  status: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -138,15 +136,14 @@ export interface CreateJobData {
   company: string;
   location: string;
   description?: string;
-  requirements?: string[];
-  salary?: Salary;
-  jobType?: JobType;
-  status?: JobStatus;
-  source: JobSource;
+  jobType?: string;
+  salary?: string;
+  link?: string;
+  source: string;
   sourceId: string;
   sourceUrl: string;
-  deadline?: string;
-  notes?: string;
+  requirements: string[];
+  status: string;
 }
 
 // 用户-职位关联接口

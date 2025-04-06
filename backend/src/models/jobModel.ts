@@ -1,12 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-// 薪资接口
-export interface ISalary {
-  min?: number;
-  max?: number;
-  currency?: string;
-}
-
 // 职位接口
 export interface IJob extends Document {
   platform: string;
@@ -15,7 +8,7 @@ export interface IJob extends Document {
   location: string;
   description?: string;
   requirements?: string[];
-  salary?: ISalary;
+  salary?: string;
   jobType?: string;
   status: string;
   source: string;
@@ -77,12 +70,8 @@ const jobSchema = new Schema<IJob>(
     },
     requirements: [String],
     salary: {
-      min: Number,
-      max: Number,
-      currency: {
-        type: String,
-        default: 'NZD',
-      },
+      type: String,
+      trim: true,
     },
     jobType: {
       type: String,

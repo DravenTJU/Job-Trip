@@ -185,11 +185,7 @@ async function insertTestData(db) {
           '有响应式设计和移动端开发经验',
           '良好的英语沟通能力'
         ],
-        salary: {
-          min: 100000,
-          max: 130000,
-          currency: 'NZD'
-        },
+        salary: '100k-130k NZD',
         jobType: 'full-time',
         status: 'new',
         source: 'linkedin',
@@ -213,11 +209,7 @@ async function insertTestData(db) {
           '了解微服务架构',
           '有良好的代码质量意识'
         ],
-        salary: {
-          min: 90000,
-          max: 120000,
-          currency: 'NZD'
-        },
+        salary: '90k-120k NZD',
         jobType: 'full-time',
         status: 'new',
         source: 'seek',
@@ -241,11 +233,7 @@ async function insertTestData(db) {
           '熟悉Tableau、Power BI等数据可视化工具',
           '金融行业经验优先'
         ],
-        salary: {
-          min: 85000,
-          max: 105000,
-          currency: 'NZD'
-        },
+        salary: '85k-105k NZD',
         jobType: 'full-time',
         status: 'new',
         source: 'indeed',
@@ -269,11 +257,7 @@ async function insertTestData(db) {
           '能够理解用户需求并转化为设计',
           '有移动应用设计经验'
         ],
-        salary: {
-          min: 80000,
-          max: 100000,
-          currency: 'NZD'
-        },
+        salary: '80k-100k NZD',
         jobType: 'full-time',
         status: 'new',
         source: 'seek',
@@ -297,11 +281,7 @@ async function insertTestData(db) {
           '具有出色的沟通和领导能力',
           '有良好的风险管理和问题解决能力'
         ],
-        salary: {
-          min: 120000,
-          max: 150000,
-          currency: 'NZD'
-        },
+        salary: '120k-150k NZD',
         jobType: 'full-time',
         status: 'new',
         source: 'linkedin',

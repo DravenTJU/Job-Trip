@@ -225,21 +225,6 @@ const swaggerDefinition = {
       },
       
       // 职位相关模型
-      Salary: {
-        type: 'object',
-        properties: {
-          min: {
-            type: 'number',
-          },
-          max: {
-            type: 'number',
-          },
-          currency: {
-            type: 'string',
-            default: 'NZD',
-          },
-        },
-      },
       Job: {
         type: 'object',
         required: ['platform', 'title', 'company', 'location', 'source', 'sourceId', 'sourceUrl'],
@@ -276,7 +261,8 @@ const swaggerDefinition = {
             description: '职位要求',
           },
           salary: {
-            $ref: '#/components/schemas/Salary',
+            type: 'string',
+            description: '薪资范围',
           },
           jobType: {
             type: 'string',

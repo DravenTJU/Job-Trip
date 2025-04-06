@@ -177,10 +177,10 @@ const JobFilterPanel: React.FC<JobFilterPanelProps> = ({ onFilter }) => {
                   label="薪资范围"
                 >
                   <MenuItem value="">全部</MenuItem>
-                  <MenuItem value="低于10k">低于10k</MenuItem>
-                  <MenuItem value="10k-20k">10k-20k</MenuItem>
-                  <MenuItem value="20k-30k">20k-30k</MenuItem>
-                  <MenuItem value="30k以上">30k以上</MenuItem>
+                  <MenuItem value="低于10k NZD">低于10k NZD</MenuItem>
+                  <MenuItem value="10k-20k NZD">10k-20k NZD</MenuItem>
+                  <MenuItem value="20k-30k NZD">20k-30k NZD</MenuItem>
+                  <MenuItem value="30k以上 NZD">30k以上 NZD</MenuItem>
                 </Select>
               </FormControl>
             </Grid>

@@ -144,7 +144,8 @@ router.use(protect);
  *                   type: string
  *                 description: 职位要求
  *               salary:
- *                 $ref: '#/components/schemas/Salary'
+ *                 type: string
+ *                 description: 薪资范围，例如："100k-130k NZD"
  *               jobType:
  *                 type: string
  *                 enum: [full-time, part-time, contract, freelance, internship]
@@ -242,11 +243,8 @@ router.route('/')
  *                   - "熟悉JavaScript, HTML, CSS"
  *                   - "有React或Angular经验"
  *                   - "了解后端开发"
- *                 salary:
- *                   min: 70000
- *                   max: 90000
- *                   currency: "NZD"
- *                 jobType: "full-time"
+ *                 salary: "70k-90k NZD",
+ *                 jobType: "full-time",
  *                 status: "new"
  *                 source: "seek"
  *                 sourceId: "12345"
@@ -294,7 +292,8 @@ router.route('/')
  *                 items:
  *                   type: string
  *               salary:
- *                 $ref: '#/components/schemas/Salary'
+ *                 type: string
+ *                 description: 薪资范围，例如："100k-130k NZD"
  *               jobType:
  *                 type: string
  *                 enum: [full-time, part-time, contract, freelance, internship]
