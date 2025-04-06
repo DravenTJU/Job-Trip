@@ -21,7 +21,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { createJob, updateJob, fetchJob } from '@/redux/slices/jobsSlice';
 import { Job, CreateJobData } from '@/types';
-import { fetchCompanies } from '@/redux/slices/companiesSlice';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 /**
@@ -36,7 +35,6 @@ const JobFormPage: React.FC = () => {
   
   // Redux状态
   const { job, isLoading: isJobLoading, error: jobError } = useSelector((state: RootState) => state.jobs);
-  const { companies, isLoading: isCompaniesLoading } = useSelector((state: RootState) => state.companies);
   
   // 表单状态
   const [formData, setFormData] = useState<CreateJobData>({
@@ -57,7 +55,6 @@ const JobFormPage: React.FC = () => {
   
   // 加载数据
   useEffect(() => {
-    dispatch(fetchCompanies({}));
     if (isEdit && id) {
       dispatch(fetchJob(id));
     }
@@ -68,7 +65,7 @@ const JobFormPage: React.FC = () => {
     if (isEdit && job) {
       setFormData({
         title: job.title,
-        company: typeof job.company === 'string' ? job.company : job.company._id,
+        company: typeof job.company === 'string' ? job.company : job.company.name,
         description: job.description || '',
         jobType: job.jobType || '',
         location: job.location || '',
@@ -103,48 +100,30 @@ const JobFormPage: React.FC = () => {
   };
   
   // 处理表单提交
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // 先进行表单验证
     if (!validateForm()) {
       return;
     }
     
     try {
-      // 生成sourceId和sourceUrl
-      const sourceId = formData.sourceId || generateSourceId();
-      const sourceUrl = formData.sourceUrl || `https://jobtrip.example.com/jobs/${sourceId}`;
-      
-      // 准备提交数据
-      const submitData: CreateJobData = {
-        title: formData.title,
-        company: formData.company,
-        description: formData.description,
-        jobType: formData.jobType,
-        location: formData.location,
-        platform: formData.platform || 'manual',
-        source: formData.source || 'manual',
-        sourceId,
-        sourceUrl,
-        requirements: formData.requirements || [],
-        status: formData.status || 'new',
-        salary: formData.salary || undefined
+      const submitData = {
+        ...formData,
+        sourceId: formData.sourceId || generateSourceId()
       };
-
-      if (isEdit) {
-        const result = await dispatch(updateJob({ id, data: submitData })).unwrap();
-        navigate(`/jobs/${result._id}`);
+      
+      if (isEdit && id) {
+        await dispatch(updateJob({ id, data: submitData }));
       } else {
-        const result = await dispatch(createJob(submitData)).unwrap();
-        navigate(`/jobs/${result._id}`);
+        await dispatch(createJob(submitData));
       }
+      
+      navigate('/jobs');
     } catch (error) {
-      console.error('提交失败:', error);
-      // 显示错误信息
       setFormErrors({
         ...formErrors,
-        submit: error instanceof Error ? error.message : '提交失败，请重试'
+        submit: '保存失败，请重试'
       });
     }
   };
@@ -159,8 +138,8 @@ const JobFormPage: React.FC = () => {
     }
     
     // 验证公司
-    if (!formData.company) {
-      errors.company = '请选择公司';
+    if (!formData.company.trim()) {
+      errors.company = '请输入公司名称';
     }
 
     // 验证工作类型
@@ -223,7 +202,7 @@ const JobFormPage: React.FC = () => {
   };
   
   // 判断是否正在加载
-  const isLoading = isCompaniesLoading || (isEdit && isJobLoading);
+  const isLoading = isJobLoading;
   
   if (isLoading) {
     return (
@@ -285,24 +264,17 @@ const JobFormPage: React.FC = () => {
             
             {/* 公司 */}
             <Grid item xs={12} md={6}>
-              <FormControl fullWidth error={!!formErrors.company}>
-                <InputLabel>公司</InputLabel>
-                <Select
-                  name="company"
-                  value={formData.company}
-                  onChange={handleChange}
-                  label="公司"
-                >
-                  {companies.map(company => (
-                    <MenuItem key={company._id} value={company._id}>
-                      {company.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {formErrors.company && (
-                  <FormHelperText>{formErrors.company}</FormHelperText>
-                )}
-              </FormControl>
+              <TextField
+                name="company"
+                label="公司名称"
+                value={formData.company}
+                onChange={handleChange}
+                fullWidth
+                required
+                error={!!formErrors.company}
+                helperText={formErrors.company}
+                placeholder="请输入公司名称"
+              />
             </Grid>
             
             {/* 工作类型 */}
