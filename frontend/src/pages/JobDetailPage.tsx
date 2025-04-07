@@ -67,7 +67,7 @@ const JobDetailPage: React.FC = () => {
   
   // 处理编辑
   const handleEdit = () => {
-    navigate(`/jobs/${id}/edit`);
+    navigate(`/jobs/edit/${id}`);
   };
   
   // 处理删除
