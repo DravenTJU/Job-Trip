@@ -14,14 +14,21 @@ import {
   Alert,
   CircularProgress,
   FormHelperText,
-  SelectChangeEvent
+  SelectChangeEvent,
+  Stack,
+  IconButton,
+  Tooltip,
+  Snackbar
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { createJob, updateJob, fetchJob } from '@/redux/slices/jobsSlice';
-import { Job, CreateJobData } from '@/types';
+import { Job, CreateJobData, JobStatus, JobType, JobSource } from '@/types';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 /**
  * 职位表单页面
@@ -43,7 +50,7 @@ const JobFormPage: React.FC = () => {
     description: '',
     jobType: '',
     location: '',
-    platform: '',
+    platform: 'manual',
     source: '',
     sourceId: '',
     sourceUrl: '',
@@ -51,7 +58,14 @@ const JobFormPage: React.FC = () => {
     status: 'new',
     salary: ''
   });
+  
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error'
+  });
   
   // 加载数据
   useEffect(() => {
@@ -85,17 +99,17 @@ const JobFormPage: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>
   ) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name!]: value,
-    });
+    }));
     
     // 清除相关错误
     if (formErrors[name!]) {
-      setFormErrors({
-        ...formErrors,
+      setFormErrors(prev => ({
+        ...prev,
         [name!]: '',
-      });
+      }));
     }
   };
   
@@ -104,8 +118,15 @@ const JobFormPage: React.FC = () => {
     e.preventDefault();
     
     if (!validateForm()) {
+      setSnackbar({
+        open: true,
+        message: '请检查表单错误并重试',
+        severity: 'error'
+      });
       return;
     }
+    
+    setIsSubmitting(true);
     
     try {
       const submitData = {
@@ -114,17 +135,33 @@ const JobFormPage: React.FC = () => {
       };
       
       if (isEdit && id) {
-        await dispatch(updateJob({ id, data: submitData }));
+        await dispatch(updateJob({ id, data: submitData })).unwrap();
+        setSnackbar({
+          open: true,
+          message: '职位更新成功',
+          severity: 'success'
+        });
       } else {
-        await dispatch(createJob(submitData));
+        await dispatch(createJob(submitData)).unwrap();
+        setSnackbar({
+          open: true,
+          message: '职位创建成功',
+          severity: 'success'
+        });
       }
       
-      navigate('/jobs');
+      // 延迟导航以显示成功消息
+      setTimeout(() => {
+        navigate('/jobs');
+      }, 1500);
     } catch (error) {
-      setFormErrors({
-        ...formErrors,
-        submit: '保存失败，请重试'
+      setSnackbar({
+        open: true,
+        message: '保存失败，请重试',
+        severity: 'error'
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
   
@@ -158,7 +195,7 @@ const JobFormPage: React.FC = () => {
     }
 
     // 验证职位链接
-    if (!formData.sourceUrl) {
+    if (formData.platform !== 'manual' && !formData.sourceUrl) {
       errors.sourceUrl = '请输入职位链接';
     }
     
@@ -166,29 +203,32 @@ const JobFormPage: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
   
+  // 状态选项
+  const statusOptions = [
+    { value: JobStatus.NEW, label: '新职位' },
+    { value: JobStatus.APPLIED, label: '已申请' },
+    { value: JobStatus.INTERVIEWING, label: '面试中' },
+    { value: JobStatus.OFFER, label: '已录用' },
+    { value: JobStatus.REJECTED, label: '已拒绝' },
+    { value: JobStatus.WITHDRAWN, label: '已撤回' },
+    { value: JobStatus.CLOSED, label: '已关闭' }
+  ];
+
   // 工作类型选项
   const jobTypeOptions = [
-    { value: 'full-time', label: '全职' },
-    { value: 'part-time', label: '兼职' },
-    { value: 'contract', label: '合同工' },
-    { value: 'freelance', label: '自由职业' },
-    { value: 'internship', label: '实习' }
+    { value: JobType.FULL_TIME, label: '全职' },
+    { value: JobType.PART_TIME, label: '兼职' },
+    { value: JobType.CONTRACT, label: '合同工' },
+    { value: JobType.FREELANCE, label: '自由职业' },
+    { value: JobType.INTERNSHIP, label: '实习' }
   ];
 
   // 平台选项
   const platformOptions = [
-    { value: 'manual', label: '手动添加' },
-    { value: 'seek', label: 'Seek' },
-    { value: 'linkedin', label: 'LinkedIn' },
-    { value: 'indeed', label: 'Indeed' }
-  ];
-
-  // 状态选项
-  const statusOptions = [
-    { value: 'new', label: '新职位' },
-    { value: 'active', label: '活跃' },
-    { value: 'closed', label: '已关闭' },
-    { value: 'draft', label: '草稿' }
+    { value: JobSource.SEEK, label: 'Seek' },
+    { value: JobSource.LINKEDIN, label: 'LinkedIn' },
+    { value: JobSource.INDEED, label: 'Indeed' },
+    { value: JobSource.OTHER, label: '其他' }
   ];
 
   // 生成唯一的sourceId
@@ -200,225 +240,242 @@ const JobFormPage: React.FC = () => {
   const handleBack = () => {
     navigate(-1);
   };
+
+  // 处理Snackbar关闭
+  const handleSnackbarClose = () => {
+    setSnackbar(prev => ({
+      ...prev,
+      open: false
+    }));
+  };
   
-  // 判断是否正在加载
-  const isLoading = isJobLoading;
-  
-  if (isLoading) {
+  if (isJobLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
         <CircularProgress />
       </Box>
     );
   }
-  
+
   return (
     <Box>
-      {/* 返回按钮 */}
-      <Button 
-        startIcon={<ArrowBackIcon />}
-        onClick={handleBack}
-        sx={{ mb: 2 }}
-      >
-        返回
-      </Button>
-      
-      <Typography variant="h4" component="h1" gutterBottom>
-        {isEdit ? '编辑职位' : '添加新职位'}
-      </Typography>
-      
-      <Typography variant="body1" color="text.secondary" paragraph>
-        {isEdit ? '更新职位信息' : '添加一个新的职位到您的求职列表'}
-      </Typography>
-      
+      {/* 页面标题和操作按钮 */}
+      <Paper sx={{ p: 2, mb: 3 }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          spacing={2}
+        >
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <IconButton onClick={handleBack} size="small">
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h5">
+              {isEdit ? '编辑职位' : '添加职位'}
+            </Typography>
+          </Stack>
+          <Button
+            variant="contained"
+            startIcon={<SaveIcon />}
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? '保存中...' : '保存'}
+          </Button>
+        </Stack>
+      </Paper>
+
       {/* 错误提示 */}
       {jobError && (
         <Alert severity="error" sx={{ mb: 3 }}>
           {jobError}
         </Alert>
       )}
-      
+
+      {/* 表单 */}
       <Paper sx={{ p: 3 }}>
         <form onSubmit={handleSubmit}>
-          {/* 显示提交错误 */}
-          {formErrors.submit && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {formErrors.submit}
-            </Alert>
-          )}
-          
           <Grid container spacing={3}>
-            {/* 职位名称 */}
+            {/* 基本信息 */}
             <Grid item xs={12}>
-              <TextField
-                name="title"
-                label="职位名称"
-                value={formData.title}
-                onChange={handleChange}
-                fullWidth
-                required
-                error={!!formErrors.title}
-                helperText={formErrors.title}
-              />
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                基本信息
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="职位名称"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    error={!!formErrors.title}
+                    helperText={formErrors.title}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="公司名称"
+                    name="company"
+                    value={formData.company}
+                    onChange={handleChange}
+                    error={!!formErrors.company}
+                    helperText={formErrors.company}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth error={!!formErrors.jobType} required>
+                    <InputLabel>工作类型</InputLabel>
+                    <Select
+                      name="jobType"
+                      value={formData.jobType}
+                      onChange={handleChange}
+                      label="工作类型"
+                    >
+                      {jobTypeOptions.map(option => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {formErrors.jobType && (
+                      <FormHelperText>{formErrors.jobType}</FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="工作地点"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="薪资范围"
+                    name="salary"
+                    value={formData.salary}
+                    onChange={handleChange}
+                    placeholder="例如：15k-20k"
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth error={!!formErrors.status}>
+                    <InputLabel>状态</InputLabel>
+                    <Select
+                      name="status"
+                      value={formData.status}
+                      onChange={handleChange}
+                      label="状态"
+                    >
+                      {statusOptions.map(option => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
             </Grid>
-            
-            {/* 公司 */}
-            <Grid item xs={12} md={6}>
-              <TextField
-                name="company"
-                label="公司名称"
-                value={formData.company}
-                onChange={handleChange}
-                fullWidth
-                required
-                error={!!formErrors.company}
-                helperText={formErrors.company}
-                placeholder="请输入公司名称"
-              />
-            </Grid>
-            
-            {/* 工作类型 */}
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel>工作类型</InputLabel>
-                <Select
-                  name="jobType"
-                  value={formData.jobType}
-                  onChange={handleChange}
-                  label="工作类型"
-                >
-                  {jobTypeOptions.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            
-            {/* 地点 */}
-            <Grid item xs={12} md={6}>
-              <TextField
-                name="location"
-                label="工作地点"
-                value={formData.location}
-                onChange={handleChange}
-                fullWidth
-                placeholder="例如：北京"
-              />
-            </Grid>
-            
-            {/* 薪资 */}
-            <Grid item xs={12} md={6}>
-              <TextField
-                name="salary"
-                label="薪资范围"
-                value={formData.salary}
-                onChange={handleChange}
-                fullWidth
-                placeholder="例如：15k-20k"
-              />
-            </Grid>
-            
-            {/* 平台 */}
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel>平台</InputLabel>
-                <Select
-                  name="platform"
-                  value={formData.platform}
-                  onChange={handleChange}
-                  label="平台"
-                >
-                  {platformOptions.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            
-            {/* 来源 */}
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel>来源</InputLabel>
-                <Select
-                  name="source"
-                  value={formData.source}
-                  onChange={handleChange}
-                  label="来源"
-                >
-                  <MenuItem value="manual">手动添加</MenuItem>
-                  <MenuItem value="seek">Seek</MenuItem>
-                  <MenuItem value="linkedin">LinkedIn</MenuItem>
-                  <MenuItem value="indeed">Indeed</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            
-            {/* 职位链接 */}
+
             <Grid item xs={12}>
-              <TextField
-                name="sourceUrl"
-                label="职位链接"
-                value={formData.sourceUrl}
-                onChange={handleChange}
-                fullWidth
-                placeholder="例如：https://example.com/job/123"
-              />
+              <Divider />
             </Grid>
-            
+
+            {/* 职位来源 */}
+            <Grid item xs={12}>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                职位来源
+                <Tooltip title="选择职位的来源平台，如果是手动添加则无需填写职位链接">
+                  <IconButton size="small" sx={{ ml: 1 }}>
+                    <HelpOutlineIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth error={!!formErrors.platform} required>
+                    <InputLabel>平台</InputLabel>
+                    <Select
+                      name="platform"
+                      value={formData.platform}
+                      onChange={handleChange}
+                      label="平台"
+                    >
+                      {platformOptions.map(option => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {formErrors.platform && (
+                      <FormHelperText>{formErrors.platform}</FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="职位链接"
+                    name="sourceUrl"
+                    value={formData.sourceUrl}
+                    onChange={handleChange}
+                    error={!!formErrors.sourceUrl}
+                    helperText={formErrors.sourceUrl}
+                    required
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>
+
             {/* 职位描述 */}
             <Grid item xs={12}>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                职位描述
+              </Typography>
               <TextField
-                name="description"
-                label="职位描述"
-                value={formData.description}
-                onChange={handleChange}
                 fullWidth
                 multiline
                 rows={6}
-                placeholder="输入职位详细描述..."
+                label="职位描述"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="请输入职位描述、要求等信息..."
               />
             </Grid>
-            
-            {/* 状态 */}
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel>状态</InputLabel>
-                <Select
-                  name="status"
-                  value={formData.status}
-                  onChange={handleChange}
-                  label="状态"
-                >
-                  {statusOptions.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
           </Grid>
-          
-          <Divider sx={{ my: 3 }} />
-          
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-            <Button variant="outlined" onClick={handleBack}>
-              取消
-            </Button>
-            <Button 
-              type="submit" 
-              variant="contained" 
-              color="primary"
-            >
-              {isEdit ? '更新职位' : '保存职位'}
-            </Button>
-          </Box>
         </form>
       </Paper>
+
+      {/* 提示消息 */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbar.severity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
