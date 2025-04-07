@@ -19,14 +19,18 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText
 } from '@mui/material';
 import { useParams, useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { fetchJob, deleteJob } from '@/redux/slices/jobsSlice';
 import { createUserJob } from '@/redux/slices/userJobsSlice';
-import { ApplicationStatus } from '@/types';
+import { ApplicationStatus, JobStatus, JobSource } from '@/types';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LaunchIcon from '@mui/icons-material/Launch';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -36,6 +40,10 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import WorkIcon from '@mui/icons-material/Work';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import SourceIcon from '@mui/icons-material/Source';
+import UpdateIcon from '@mui/icons-material/Update';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 /**
  * 职位详情页面组件
@@ -135,13 +143,64 @@ const JobDetailPage: React.FC = () => {
   };
   
   // 格式化日期
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string, useRelative = false) => {
     const date = new Date(dateString);
+    if (useRelative) {
+      const now = new Date();
+      const diffTime = Math.abs(now.getTime() - date.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays === 0) return '今天';
+      if (diffDays === 1) return '昨天';
+      if (diffDays < 7) return `${diffDays}天前`;
+      if (diffDays < 30) return `${Math.floor(diffDays / 7)}周前`;
+      if (diffDays < 365) return `${Math.floor(diffDays / 30)}个月前`;
+      return `${Math.floor(diffDays / 365)}年前`;
+    }
+    
     return date.toLocaleDateString('zh-CN', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
+  };
+  
+  // 获取状态颜色
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case JobStatus.NEW:
+        return 'primary';
+      case JobStatus.APPLIED:
+        return 'info';
+      case JobStatus.INTERVIEWING:
+        return 'warning';
+      case JobStatus.OFFER:
+        return 'success';
+      case JobStatus.REJECTED:
+        return 'error';
+      case JobStatus.WITHDRAWN:
+        return 'default';
+      case JobStatus.CLOSED:
+        return 'default';
+      default:
+        return 'default';
+    }
+  };
+  
+  // 获取平台显示名称
+  const getPlatformLabel = (platform: string) => {
+    switch (platform) {
+      case JobSource.LINKEDIN:
+        return 'LinkedIn';
+      case JobSource.SEEK:
+        return 'Seek';
+      case JobSource.INDEED:
+        return 'Indeed';
+      case JobSource.OTHER:
+        return '其他';
+      default:
+        return platform;
+    }
   };
   
   if (isLoading) {
@@ -183,9 +242,17 @@ const JobDetailPage: React.FC = () => {
         {/* 职位标题和操作按钮 */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, flexWrap: 'wrap' }}>
           <Box>
-            <Typography variant="h4" component="h1" gutterBottom>
-              {job.title}
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+              <Typography variant="h4" component="h1">
+                {job.title}
+              </Typography>
+              <Chip
+                label={job.status}
+                color={getStatusColor(job.status)}
+                size="small"
+                sx={{ ml: 1 }}
+              />
+            </Box>
             
             <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
               <BusinessIcon sx={{ mr: 1, opacity: 0.7 }} />
@@ -218,7 +285,7 @@ const JobDetailPage: React.FC = () => {
         <Grid container spacing={3}>
           {/* 左侧详情 */}
           <Grid item xs={12} md={8}>
-            <Stack spacing={2}>
+            <Stack spacing={3}>
               {/* 基本信息 */}
               <Box>
                 <Grid container spacing={2}>
@@ -253,10 +320,21 @@ const JobDetailPage: React.FC = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <CalendarTodayIcon sx={{ mr: 1, opacity: 0.7 }} />
                       <Typography variant="body1">
-                        添加于 {formatDate(job.createdAt)}
+                        添加于 {formatDate(job.createdAt, true)}
                       </Typography>
                     </Box>
                   </Grid>
+
+                  {job.updatedAt && job.updatedAt !== job.createdAt && (
+                    <Grid item xs={12} sm={6}>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <UpdateIcon sx={{ mr: 1, opacity: 0.7 }} />
+                        <Typography variant="body1">
+                          更新于 {formatDate(job.updatedAt, true)}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  )}
                 </Grid>
               </Box>
               
@@ -277,30 +355,59 @@ const JobDetailPage: React.FC = () => {
                   </Typography>
                 )}
               </Box>
-              
-              {/* 外部链接 */}
-              {job.link && (
+
+              {/* 职位要求 */}
+              {job.requirements && job.requirements.length > 0 && (
                 <>
                   <Divider />
                   <Box>
                     <Typography variant="h6" gutterBottom>
-                      职位链接
+                      职位要求
                     </Typography>
+                    <List>
+                      {job.requirements.map((requirement, index) => (
+                        <ListItem key={index} sx={{ py: 0.5 }}>
+                          <ListItemIcon sx={{ minWidth: 32 }}>
+                            <FiberManualRecordIcon sx={{ fontSize: 8 }} />
+                          </ListItemIcon>
+                          <ListItemText primary={requirement} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                </>
+              )}
+              
+              {/* 职位来源 */}
+              <Divider />
+              <Box>
+                <Typography variant="h6" gutterBottom>
+                  职位来源
+                </Typography>
+                <Stack spacing={1}>
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <SourceIcon sx={{ mr: 1, opacity: 0.7 }} />
+                    <Typography variant="body1">
+                      来自 {getPlatformLabel(job.platform)}
+                    </Typography>
+                  </Box>
+                  
+                  {job.sourceUrl && (
                     <Link 
-                      href={job.link} 
+                      href={job.sourceUrl} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       onClick={handleExternalLinkClick}
                       sx={{ display: 'flex', alignItems: 'center' }}
                     >
                       <Typography variant="body1">
-                        在官方网站查看
+                        查看原始职位
                       </Typography>
                       <LaunchIcon fontSize="small" sx={{ ml: 0.5 }} />
                     </Link>
-                  </Box>
-                </>
-              )}
+                  )}
+                </Stack>
+              </Box>
             </Stack>
           </Grid>
           
