@@ -19,7 +19,7 @@ import {
   DollarSign,
   Briefcase
 } from 'lucide-react';
-import { JobStatus, JobSource } from '@/types';
+import { JobStatus, JobSource, JobType } from '@/types';
 
 /**
  * 职位列表页面组件
@@ -46,14 +46,11 @@ const JobsPage: React.FC = () => {
     dateRange: ''
   });
   
-  // 薪资范围选项
-  const salaryRanges = [
-    { label: '所有薪资', value: '' },
-    { label: '10k以下', value: '0-10000' },
-    { label: '10k-20k', value: '10000-20000' },
-    { label: '20k-30k', value: '20000-30000' },
-    { label: '30k-50k', value: '30000-50000' },
-    { label: '50k以上', value: '50000-999999' }
+  // 薪资排序选项
+  const salarySortOptions = [
+    { label: '默认排序', value: '' },
+    { label: '薪资从高到低', value: 'desc' },
+    { label: '薪资从低到高', value: 'asc' }
   ];
   
   // 时间范围选项
@@ -69,11 +66,11 @@ const JobsPage: React.FC = () => {
   // 工作类型选项
   const jobTypes = [
     { label: '所有类型', value: '' },
-    { label: '全职', value: 'FULL_TIME' },
-    { label: '兼职', value: 'PART_TIME' },
-    { label: '实习', value: 'INTERNSHIP' },
-    { label: '合同工', value: 'CONTRACT' },
-    { label: '自由职业', value: 'FREELANCE' }
+    { label: '全职', value: JobType.FULL_TIME },
+    { label: '兼职', value: JobType.PART_TIME },
+    { label: '实习', value: JobType.INTERNSHIP },
+    { label: '合同工', value: JobType.CONTRACT },
+    { label: '自由职业', value: JobType.FREELANCE }
   ];
   
   // 平台来源选项
@@ -305,18 +302,18 @@ const JobsPage: React.FC = () => {
                     </select>
                   </div>
                   
-                  {/* 薪资范围筛选 */}
+                  {/* 薪资排序 */}
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
                       <DollarSign className="w-4 h-4 text-gray-400" />
-                      薪资范围
+                      薪资排序
                     </label>
                     <select
                       value={filters.salaryRange}
                       onChange={(e) => handleFilterChange('salaryRange', e.target.value)}
                       className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     >
-                      {salaryRanges.map(option => (
+                      {salarySortOptions.map(option => (
                         <option key={option.value} value={option.value}>
                           {option.label}
                         </option>
@@ -385,7 +382,7 @@ const JobsPage: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-4">
-          {jobs.map((job) => (
+            {jobs.map((job) => (
             <div 
               key={job._id}
               className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200"
@@ -397,13 +394,13 @@ const JobsPage: React.FC = () => {
                       <a 
                         href={`/jobs/${job._id}`}
                         className="text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400"
-                        >
-                          {job.title}
+                          >
+                            {job.title}
                       </a>
                     </h3>
                     <p className="text-gray-500 dark:text-gray-400 flex items-center gap-2">
                       <Building2 className="w-4 h-4" />
-                          {typeof job.company === 'string' ? job.company : job.company.name}
+                            {typeof job.company === 'string' ? job.company : job.company.name}
                       {job.location && (
                         <>
                           <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
@@ -415,13 +412,13 @@ const JobsPage: React.FC = () => {
                       )}
                     </p>
                     <div className="flex flex-wrap gap-2 mt-3">
-                          {job.jobType && (
+                            {job.jobType && (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                           <Briefcase className="w-3 h-3" />
                           {job.jobType}
                         </span>
-                          )}
-                          {job.salary && (
+                            )}
+                            {job.salary && (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400">
                           <DollarSign className="w-3 h-3" />
                           {job.salary}
@@ -438,22 +435,22 @@ const JobsPage: React.FC = () => {
                     <button 
                       onClick={() => navigate(`/jobs/${job._id}`)}
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
-                        >
-                        查看详情
+                          >
+                            查看详情
                   </button>
                     <button 
                       onClick={() => {
                         window.location.href = 'http://localhost:3000/jobs/track';
                       }}
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
-                        >
-                        跟踪申请
+                          >
+                            跟踪申请
                   </button>
                     {job.sourceUrl && (
                       <a 
                         href={job.sourceUrl}
-                              target="_blank" 
-                              rel="noopener noreferrer"
+                                target="_blank" 
+                                rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                         onClick={(e) => e.stopPropagation()}
                       >

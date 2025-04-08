@@ -20,11 +20,84 @@ export const getJobs = async (
     const excludedFields = ['page', 'sort', 'limit', 'fields', 'search'];
     excludedFields.forEach(el => delete queryObj[el]);
 
-    // 高级筛选
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+    // 初始化查询对象
+    const finalQuery: any = {};
+    const sortOptions: any = {};
 
-    let finalQuery = JSON.parse(queryStr);
+    console.log('[Backend] Received query parameters:', req.query);
+
+    // 处理状态过滤
+    if (req.query.status) {
+      finalQuery.status = req.query.status;
+      console.log('[Backend] Adding status filter:', req.query.status);
+    }
+
+    // 处理工作类型过滤
+    if (req.query.jobType) {
+      finalQuery.jobType = req.query.jobType;
+      console.log('[Backend] Adding jobType filter:', req.query.jobType);
+    }
+
+    // 处理平台过滤
+    if (req.query.platform) {
+      finalQuery.platform = req.query.platform;
+      console.log('[Backend] Adding platform filter:', req.query.platform);
+    }
+
+    // 处理位置过滤
+    if (req.query.location) {
+      finalQuery.location = { $regex: String(req.query.location), $options: 'i' };
+      console.log('[Backend] Adding location filter:', req.query.location);
+    }
+
+    // 处理薪资范围过滤
+    if (req.query.salaryRange) {
+      const salaryRange = req.query.salaryRange as string;
+      console.log('[Backend] Processing salary range:', salaryRange);
+      
+      if (salaryRange === '') {
+        // 默认排序，不做任何处理
+        console.log('[Backend] Using default salary sort');
+      } else if (salaryRange === 'asc' || salaryRange === 'desc') {
+        // 处理排序
+        sortOptions.salary = salaryRange === 'desc' ? -1 : 1;
+        console.log('[Backend] Added salary sort:', salaryRange);
+      } else {
+        // 处理范围过滤
+        const [min, max] = salaryRange.split('-').map(Number);
+        if (!isNaN(min) && !isNaN(max)) {
+          finalQuery.$where = function() {
+            const salary = this.salary;
+            if (!salary) return false;
+            
+            // 移除所有非数字字符，保留数字和小数点
+            const cleanSalary = salary.replace(/[^\d.]/g, '');
+            const salaryNum = parseFloat(cleanSalary);
+            
+            return salaryNum >= min && salaryNum <= max;
+          };
+          console.log('[Backend] Added salary range filter:', min, '-', max);
+        }
+      }
+    }
+
+    // 处理日期范围过滤
+    if (req.query.dateRange) {
+      const [startDate, endDate] = (req.query.dateRange as string).split(',');
+      if (startDate && endDate) {
+        finalQuery.createdAt = {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate)
+        };
+        console.log('[Backend] Adding date range filter:', startDate, 'to', endDate);
+      }
+    }
+
+    // 处理排序
+    if (req.query.sort) {
+      const [field, order] = (req.query.sort as string).split(':');
+      sortOptions[field] = order === 'desc' ? -1 : 1;
+    }
 
     // 添加搜索逻辑
     if (req.query.search) {
@@ -37,52 +110,40 @@ export const getJobs = async (
       ];
     }
     
-    console.log('[Backend] Final MongoDB Query:', JSON.stringify(finalQuery, null, 2));
+    console.log('[Backend] Final query:', finalQuery);
 
-    // 查询数据
-    let query = Job.find(finalQuery);
+    try {
+      // 分页
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const skip = (page - 1) * limit;
 
-    // 排序
-    if (req.query.sort) {
-      const sortBy = (req.query.sort as string).split(',').join(' ');
-      query = query.sort(sortBy);
-    } else {
-      query = query.sort('-createdAt');
+      // 执行查询
+      const jobs = await Job.find(finalQuery)
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(limit);
+
+      // 获取总数
+      const total = await Job.countDocuments(finalQuery);
+      console.log(`[Backend] Total documents matching query: ${total}`);
+
+      // 返回结果
+      res.status(200).json(createApiResponse(
+        200,
+        '获取职位列表成功',
+        {
+          total,
+          page,
+          size: limit,
+          data: jobs,
+          totalPages: Math.ceil(total / limit)
+        }
+      ));
+    } catch (error) {
+      console.error('[Backend] Error in getJobs:', error);
+      next(error);
     }
-
-    // 字段限制
-    if (req.query.fields) {
-      const fields = (req.query.fields as string).split(',').join(' ');
-      query = query.select(fields);
-    } else {
-      query = query.select('-__v');
-    }
-
-    // 获取总数 (在分页前获取匹配搜索的总数)
-    const total = await Job.countDocuments(finalQuery);
-    console.log(`[Backend] Total documents matching query: ${total}`);
-
-    // 分页
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
-    const skip = (page - 1) * limit;
-    query = query.skip(skip).limit(limit);
-
-    // 执行查询
-    const jobs = await query;
-    
-    // 返回结果
-    res.status(200).json(createApiResponse(
-      200,
-      '获取职位列表成功',
-      {
-        total,
-        page,
-        size: limit,
-        data: jobs,
-        totalPages: Math.ceil(total / limit)
-      }
-    ));
   } catch (error) {
     next(error);
   }
