@@ -56,10 +56,6 @@ const JobDetailPage: React.FC = () => {
   
   // 删除确认对话框状态
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  // 跟踪申请对话框状态
-  const [trackDialogOpen, setTrackDialogOpen] = useState(false);
-  // 选择的申请状态
-  const [selectedStatus, setSelectedStatus] = useState<ApplicationStatus>(ApplicationStatus.WISHLIST);
   
   // 加载职位数据
   useEffect(() => {
@@ -97,35 +93,6 @@ const JobDetailPage: React.FC = () => {
       }
     }
     closeDeleteDialog();
-  };
-  
-  // 处理跟踪申请
-  const openTrackDialog = () => {
-    setTrackDialogOpen(true);
-  };
-  
-  const closeTrackDialog = () => {
-    setTrackDialogOpen(false);
-  };
-  
-  const handleStatusChange = (status: ApplicationStatus) => {
-    setSelectedStatus(status);
-  };
-  
-  // 确认跟踪申请
-  const confirmTrack = async () => {
-    if (id) {
-      try {
-        await dispatch(createUserJob({
-          job: id,
-          status: selectedStatus,
-          appliedDate: selectedStatus === ApplicationStatus.APPLIED ? new Date().toISOString() : undefined
-        })).unwrap();
-        closeTrackDialog();
-      } catch (error) {
-        console.error('创建申请记录失败:', error);
-      }
-    }
   };
   
   // 处理外部链接点击
@@ -262,6 +229,16 @@ const JobDetailPage: React.FC = () => {
           
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
             <Button
+              variant="contained"
+              color="primary"
+              startIcon={<CheckCircleOutlineIcon />}
+              onClick={() => {
+                window.location.href = 'http://localhost:3000/jobs/track';
+              }}
+            >
+              跟踪
+            </Button>
+            <Button
               variant="outlined"
               startIcon={<EditIcon />}
               onClick={handleEdit}
@@ -284,7 +261,7 @@ const JobDetailPage: React.FC = () => {
         {/* 职位信息 */}
         <Grid container spacing={3}>
           {/* 左侧详情 */}
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12}>
             <Stack spacing={3}>
               {/* 基本信息 */}
               <Box>
@@ -410,37 +387,6 @@ const JobDetailPage: React.FC = () => {
               </Box>
             </Stack>
           </Grid>
-          
-          {/* 右侧操作区 */}
-          <Grid item xs={12} md={4}>
-            <Paper elevation={0} variant="outlined" sx={{ p: 2 }}>
-              <Typography variant="h6" gutterBottom>
-                跟踪您的申请
-              </Typography>
-              <Typography variant="body2" color="text.secondary" paragraph>
-                添加此职位到您的申请跟踪表，记录申请进度和重要日期。
-              </Typography>
-              
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                onClick={openTrackDialog}
-                sx={{ mb: 1 }}
-              >
-                跟踪此职位申请
-              </Button>
-              
-              <Button
-                component={RouterLink}
-                to={`/application/new?jobId=${job._id}`}
-                variant="outlined"
-                fullWidth
-              >
-                高级设置
-              </Button>
-            </Paper>
-          </Grid>
         </Grid>
       </Paper>
       
@@ -455,38 +401,6 @@ const JobDetailPage: React.FC = () => {
         <DialogActions>
           <Button onClick={closeDeleteDialog}>取消</Button>
           <Button onClick={confirmDelete} color="error">删除</Button>
-        </DialogActions>
-      </Dialog>
-      
-      {/* 跟踪申请对话框 */}
-      <Dialog open={trackDialogOpen} onClose={closeTrackDialog}>
-        <DialogTitle>
-          跟踪申请状态
-        </DialogTitle>
-        <DialogContent>
-          <Typography paragraph>
-            选择此职位的当前申请状态：
-          </Typography>
-          <Grid container spacing={1}>
-            {Object.values(ApplicationStatus).map((status) => (
-              <Grid item xs={6} key={status}>
-                <Button
-                  variant={selectedStatus === status ? "contained" : "outlined"}
-                  onClick={() => handleStatusChange(status)}
-                  fullWidth
-                  sx={{ justifyContent: 'flex-start', mb: 1 }}
-                >
-                  {status}
-                </Button>
-              </Grid>
-            ))}
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeTrackDialog}>取消</Button>
-          <Button onClick={confirmTrack} color="primary" variant="contained">
-            添加到跟踪列表
-          </Button>
         </DialogActions>
       </Dialog>
     </Box>
