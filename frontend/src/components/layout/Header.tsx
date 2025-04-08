@@ -36,7 +36,8 @@ const Header: React.FC = () => {
     const path = location.pathname;
     
     if (path === '/welcome') return '欢迎';
-    if (path === '/jobs' || path.startsWith('/jobs/')) return '职位';
+    if (path === '/jobs') return '职位';
+    if (path.startsWith('/jobs/') && !path.includes('/edit/')) return '职位详情';
     if (path === '/resume-builder') return '简历生成器';
     if (path === '/cover-letters') return 'AI求职信和更多';
     if (path === '/auto-fill') return '自动填表';
