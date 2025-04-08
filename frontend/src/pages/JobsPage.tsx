@@ -111,6 +111,8 @@ const JobsPage: React.FC = () => {
         )
       };
       
+      console.log('Fetching jobs with params:', queryParams);
+      
       // 获取职位列表
       const result = await dispatch(fetchJobs(queryParams));
       

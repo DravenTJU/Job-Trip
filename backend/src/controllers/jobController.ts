@@ -17,15 +17,30 @@ export const getJobs = async (
   try {
     // 构建查询条件
     const queryObj = { ...req.query };
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    const excludedFields = ['page', 'sort', 'limit', 'fields', 'search'];
     excludedFields.forEach(el => delete queryObj[el]);
 
     // 高级筛选
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 
+    let finalQuery = JSON.parse(queryStr);
+
+    // 添加搜索逻辑
+    if (req.query.search) {
+      console.log(`[Backend] Received search term: ${req.query.search}`);
+      const searchRegex = new RegExp(req.query.search as string, 'i');
+      finalQuery.$or = [
+        { title: searchRegex },
+        { company: searchRegex },
+        { location: searchRegex }
+      ];
+    }
+    
+    console.log('[Backend] Final MongoDB Query:', JSON.stringify(finalQuery, null, 2));
+
     // 查询数据
-    let query = Job.find(JSON.parse(queryStr));
+    let query = Job.find(finalQuery);
 
     // 排序
     if (req.query.sort) {
@@ -43,6 +58,10 @@ export const getJobs = async (
       query = query.select('-__v');
     }
 
+    // 获取总数 (在分页前获取匹配搜索的总数)
+    const total = await Job.countDocuments(finalQuery);
+    console.log(`[Backend] Total documents matching query: ${total}`);
+
     // 分页
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
@@ -52,9 +71,6 @@ export const getJobs = async (
     // 执行查询
     const jobs = await query;
     
-    // 获取总数
-    const total = await Job.countDocuments(JSON.parse(queryStr));
-
     // 返回结果
     res.status(200).json(createApiResponse(
       200,
