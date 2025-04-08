@@ -18,7 +18,8 @@ import {
   Stack,
   IconButton,
   Tooltip,
-  Snackbar
+  Snackbar,
+  useTheme
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -35,6 +36,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
  * 用于创建或编辑职位
  */
 const JobFormPage: React.FC = () => {
+  const theme = useTheme();
   const { id } = useParams<{ id: string }>();
   const isEdit = !!id;
   const dispatch = useDispatch<AppDispatch>();
@@ -267,6 +269,27 @@ const JobFormPage: React.FC = () => {
     }));
   };
   
+  // 更新表单控件的样式
+  const formControlStyle = {
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: 'rgb(249, 250, 251)', // gray-50
+      borderRadius: '0.75rem',
+      '&:hover fieldset': {
+        borderColor: 'rgb(37, 99, 235)', // blue-600
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: 'rgb(37, 99, 235)', // blue-600
+        borderWidth: '1px'
+      },
+      '& fieldset': {
+        borderColor: 'rgb(229, 231, 235)', // gray-200
+      }
+    },
+    '& .MuiInputLabel-root.Mui-focused': {
+      color: 'rgb(37, 99, 235)' // blue-600
+    }
+  };
+  
   if (isJobLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
@@ -276,9 +299,18 @@ const JobFormPage: React.FC = () => {
   }
 
   return (
-    <Box>
+    <Box sx={{ maxWidth: '1200px', mx: 'auto', p: 3 }}>
       {/* 页面标题和操作按钮 */}
-      <Paper sx={{ p: 2, mb: 3 }}>
+      <Paper 
+        sx={{ 
+          p: 3, 
+          mb: 3,
+          backgroundColor: 'rgb(249, 250, 251)', // gray-50
+          boxShadow: 'none',
+          borderRadius: '0.5rem',
+          border: '1px solid rgb(229, 231, 235)' // gray-200
+        }}
+      >
         <Stack
           direction="row"
           alignItems="center"
@@ -286,10 +318,27 @@ const JobFormPage: React.FC = () => {
           spacing={2}
         >
           <Stack direction="row" alignItems="center" spacing={2}>
-            <IconButton onClick={handleBack} size="small">
+            <IconButton 
+              onClick={handleBack} 
+              size="small"
+              sx={{ 
+                color: 'rgb(75, 85, 99)', // gray-600
+                '&:hover': {
+                  color: 'rgb(37, 99, 235)', // blue-600
+                  backgroundColor: 'rgba(37, 99, 235, 0.04)'
+                }
+              }}
+            >
               <ArrowBackIcon />
             </IconButton>
-            <Typography variant="h5">
+            <Typography 
+              variant="h5"
+              sx={{ 
+                color: 'rgb(17, 24, 39)', // gray-900
+                fontWeight: 600,
+                fontSize: '1.5rem'
+              }}
+            >
               {isEdit ? '编辑职位' : '添加职位'}
             </Typography>
           </Stack>
@@ -298,6 +347,20 @@ const JobFormPage: React.FC = () => {
             startIcon={<SaveIcon />}
             onClick={handleSubmit}
             disabled={isSubmitting}
+            sx={{
+              backgroundColor: 'rgb(37, 99, 235)', // blue-600
+              '&:hover': {
+                backgroundColor: 'rgb(29, 78, 216)' // blue-700
+              },
+              '&:disabled': {
+                backgroundColor: 'rgb(229, 231, 235)', // gray-200
+                color: 'rgb(107, 114, 128)' // gray-500
+              },
+              textTransform: 'none',
+              fontWeight: 500,
+              px: 4,
+              borderRadius: '0.375rem'
+            }}
           >
             {isSubmitting ? '保存中...' : '保存'}
           </Button>
@@ -306,18 +369,45 @@ const JobFormPage: React.FC = () => {
 
       {/* 错误提示 */}
       {jobError && (
-        <Alert severity="error" sx={{ mb: 3 }}>
+        <Alert 
+          severity="error" 
+          sx={{ 
+            mb: 3,
+            backgroundColor: 'rgb(254, 242, 242)', // red-50
+            color: 'rgb(153, 27, 27)', // red-800
+            '& .MuiAlert-icon': {
+              color: 'rgb(153, 27, 27)' // red-800
+            },
+            borderRadius: '0.375rem'
+          }}
+        >
           {jobError}
         </Alert>
       )}
 
       {/* 表单 */}
-      <Paper sx={{ p: 3 }}>
+      <Paper 
+        sx={{ 
+          p: 3,
+          backgroundColor: 'rgb(249, 250, 251)', // gray-50
+          boxShadow: 'none',
+          borderRadius: '0.5rem',
+          border: '1px solid rgb(229, 231, 235)' // gray-200
+        }}
+      >
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             {/* 基本信息 */}
             <Grid item xs={12}>
-              <Typography variant="h6" sx={{ mb: 2 }}>
+              <Typography 
+                variant="h6" 
+                sx={{ 
+                  mb: 2,
+                  color: 'rgb(17, 24, 39)', // gray-900
+                  fontWeight: 600,
+                  fontSize: '1.25rem'
+                }}
+              >
                 基本信息
               </Typography>
               <Grid container spacing={2}>
@@ -331,6 +421,7 @@ const JobFormPage: React.FC = () => {
                     error={!!formErrors.title}
                     helperText={formErrors.title}
                     required
+                    sx={formControlStyle}
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -343,10 +434,16 @@ const JobFormPage: React.FC = () => {
                     error={!!formErrors.company}
                     helperText={formErrors.company}
                     required
+                    sx={formControlStyle}
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <FormControl fullWidth error={!!formErrors.jobType} required>
+                  <FormControl 
+                    fullWidth 
+                    error={!!formErrors.jobType} 
+                    required
+                    sx={formControlStyle}
+                  >
                     <InputLabel>工作类型</InputLabel>
                     <Select
                       name="jobType"
@@ -372,6 +469,7 @@ const JobFormPage: React.FC = () => {
                     name="location"
                     value={formData.location}
                     onChange={handleChange}
+                    sx={formControlStyle}
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -382,10 +480,15 @@ const JobFormPage: React.FC = () => {
                     value={formData.salary}
                     onChange={handleChange}
                     placeholder="例如：15k-20k"
+                    sx={formControlStyle}
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <FormControl fullWidth error={!!formErrors.status}>
+                  <FormControl 
+                    fullWidth 
+                    error={!!formErrors.status}
+                    sx={formControlStyle}
+                  >
                     <InputLabel>状态</InputLabel>
                     <Select
                       name="status"
@@ -405,22 +508,50 @@ const JobFormPage: React.FC = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Divider />
+              <Divider sx={{ 
+                my: 2,
+                borderColor: 'rgb(229, 231, 235)' // gray-200
+              }} />
             </Grid>
 
             {/* 职位来源 */}
             <Grid item xs={12}>
-              <Typography variant="h6" sx={{ mb: 2 }}>
+              <Typography 
+                variant="h6" 
+                sx={{ 
+                  mb: 2,
+                  color: 'rgb(17, 24, 39)', // gray-900
+                  fontWeight: 600,
+                  fontSize: '1.25rem',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
                 职位来源
                 <Tooltip title="选择职位的来源平台，如果是手动添加则无需填写职位链接">
-                  <IconButton size="small" sx={{ ml: 1 }}>
+                  <IconButton 
+                    size="small" 
+                    sx={{ 
+                      ml: 1,
+                      color: 'rgb(75, 85, 99)', // gray-600
+                      '&:hover': {
+                        color: 'rgb(37, 99, 235)', // blue-600
+                        backgroundColor: 'rgba(37, 99, 235, 0.04)'
+                      }
+                    }}
+                  >
                     <HelpOutlineIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
               </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
-                  <FormControl fullWidth error={!!formErrors.platform} required>
+                  <FormControl 
+                    fullWidth 
+                    error={!!formErrors.platform} 
+                    required
+                    sx={formControlStyle}
+                  >
                     <InputLabel>平台</InputLabel>
                     <Select
                       name="platform"
@@ -449,18 +580,30 @@ const JobFormPage: React.FC = () => {
                     error={!!formErrors.sourceUrl}
                     helperText={formErrors.sourceUrl}
                     required
+                    sx={formControlStyle}
                   />
                 </Grid>
               </Grid>
             </Grid>
 
             <Grid item xs={12}>
-              <Divider />
+              <Divider sx={{ 
+                my: 2,
+                borderColor: 'rgb(229, 231, 235)' // gray-200
+              }} />
             </Grid>
 
             {/* 职位描述 */}
             <Grid item xs={12}>
-              <Typography variant="h6" sx={{ mb: 2 }}>
+              <Typography 
+                variant="h6" 
+                sx={{ 
+                  mb: 2,
+                  color: 'rgb(17, 24, 39)', // gray-900
+                  fontWeight: 600,
+                  fontSize: '1.25rem'
+                }}
+              >
                 职位描述
               </Typography>
               <TextField
@@ -472,6 +615,7 @@ const JobFormPage: React.FC = () => {
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="请输入职位描述、要求等信息..."
+                sx={formControlStyle}
               />
             </Grid>
           </Grid>
@@ -489,7 +633,11 @@ const JobFormPage: React.FC = () => {
           onClose={handleSnackbarClose}
           severity={snackbar.severity}
           variant="filled"
-          sx={{ width: '100%' }}
+          sx={{ 
+            width: '100%',
+            backgroundColor: snackbar.severity === 'success' ? 'rgb(5, 150, 105)' : 'rgb(220, 38, 38)', // green-600 : red-600
+            borderRadius: '0.375rem'
+          }}
         >
           {snackbar.message}
         </Alert>

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import Job from '../models/jobModel';
 import UserJob from '../models/userJobModel';
 import { AppError, createApiResponse } from '../middleware/errorHandler';
+import ApplicationHistory from '../models/applicationHistoryModel';
 
 /**
  * @desc    获取所有职位
@@ -184,6 +185,55 @@ export const deleteJob = async (
       200,
       '删除职位成功',
       null
+    ));
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    从浏览器插件创建职位并关联到用户
+ * @route   POST /api/v1/jobs/extension
+ * @access  私有
+ */
+export const createJobFromExtension = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // 1. 创建职位记录
+    const job = await Job.create({
+      ...req.body,
+      source: 'extension', // 标记数据来源
+      createdBy: req.user?._id
+    });
+
+    // 2. 创建用户-职位关联
+    const userJob = await UserJob.create({
+      userId: req.user?._id,
+      jobId: job._id,
+      status: 'new',
+      notes: req.body.notes || '通过浏览器插件添加'
+    });
+
+    // 3. 创建申请历史记录
+    await ApplicationHistory.create({
+      userJobId: userJob._id,
+      previousStatus: '',
+      newStatus: 'new',
+      notes: '初始状态 - 通过浏览器插件添加',
+      updatedBy: req.user?._id,
+    });
+
+    // 4. 返回结果
+    res.status(201).json(createApiResponse(
+      201,
+      '职位创建成功',
+      {
+        job,
+        userJob
+      }
     ));
   } catch (error) {
     next(error);
