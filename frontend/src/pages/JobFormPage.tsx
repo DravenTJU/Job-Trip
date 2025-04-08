@@ -1,42 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Paper, 
-  TextField, 
-  Button, 
-  Grid,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Divider,
-  Alert,
-  CircularProgress,
-  FormHelperText,
-  SelectChangeEvent,
-  Stack,
-  IconButton,
-  Tooltip,
-  Snackbar,
-  useTheme
-} from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { createJob, updateJob, fetchJob } from '@/redux/slices/jobsSlice';
 import { Job, CreateJobData, JobStatus, JobType, JobSource } from '@/types';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import SaveIcon from '@mui/icons-material/Save';
-import DeleteIcon from '@mui/icons-material/Delete';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { Link } from 'react-router-dom';
+import { 
+  Search, 
+  Plus, 
+  ExternalLink, 
+  ChevronLeft, 
+  ChevronRight,
+  Filter,
+  SortDesc,
+  SortAsc,
+  X,
+  Calendar,
+  Building2,
+  MapPin,
+  DollarSign,
+  Briefcase,
+  ArrowLeft,
+  Save,
+  Trash,
+  HelpCircle
+} from 'lucide-react';
 
 /**
  * 职位表单页面
  * 用于创建或编辑职位
  */
 const JobFormPage: React.FC = () => {
-  const theme = useTheme();
   const { id } = useParams<{ id: string }>();
   const isEdit = !!id;
   const dispatch = useDispatch<AppDispatch>();
@@ -98,7 +92,7 @@ const JobFormPage: React.FC = () => {
   
   // 处理表单字段变更
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -269,380 +263,210 @@ const JobFormPage: React.FC = () => {
     }));
   };
   
-  // 更新表单控件的样式
-  const formControlStyle = {
-    '& .MuiOutlinedInput-root': {
-      backgroundColor: 'rgb(249, 250, 251)', // gray-50
-      borderRadius: '0.75rem',
-      '&:hover fieldset': {
-        borderColor: 'rgb(37, 99, 235)', // blue-600
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: 'rgb(37, 99, 235)', // blue-600
-        borderWidth: '1px'
-      },
-      '& fieldset': {
-        borderColor: 'rgb(229, 231, 235)', // gray-200
-      }
-    },
-    '& .MuiInputLabel-root.Mui-focused': {
-      color: 'rgb(37, 99, 235)' // blue-600
-    }
-  };
-  
   if (isJobLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
-        <CircularProgress />
-      </Box>
+      <div className="flex justify-center my-8">
+        <div className="loader"></div>
+      </div>
     );
   }
 
   return (
-    <Box sx={{ maxWidth: '1200px', mx: 'auto', p: 3 }}>
-      {/* 页面标题和操作按钮 */}
-      <Paper 
-        sx={{ 
-          p: 3, 
-          mb: 3,
-          backgroundColor: 'rgb(249, 250, 251)', // gray-50
-          boxShadow: 'none',
-          borderRadius: '0.5rem',
-          border: '1px solid rgb(229, 231, 235)' // gray-200
-        }}
-      >
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          spacing={2}
-        >
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <IconButton 
-              onClick={handleBack} 
-              size="small"
-              sx={{ 
-                color: 'rgb(75, 85, 99)', // gray-600
-                '&:hover': {
-                  color: 'rgb(37, 99, 235)', // blue-600
-                  backgroundColor: 'rgba(37, 99, 235, 0.04)'
-                }
-              }}
-            >
-              <ArrowBackIcon />
-            </IconButton>
-            <Typography 
-              variant="h5"
-              sx={{ 
-                color: 'rgb(17, 24, 39)', // gray-900
-                fontWeight: 600,
-                fontSize: '1.5rem'
-              }}
-            >
-              {isEdit ? '编辑职位' : '添加职位'}
-            </Typography>
-          </Stack>
-          <Button
-            variant="contained"
-            startIcon={<SaveIcon />}
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            sx={{
-              backgroundColor: 'rgb(37, 99, 235)', // blue-600
-              '&:hover': {
-                backgroundColor: 'rgb(29, 78, 216)' // blue-700
-              },
-              '&:disabled': {
-                backgroundColor: 'rgb(229, 231, 235)', // gray-200
-                color: 'rgb(107, 114, 128)' // gray-500
-              },
-              textTransform: 'none',
-              fontWeight: 500,
-              px: 4,
-              borderRadius: '0.375rem'
-            }}
-          >
-            {isSubmitting ? '保存中...' : '保存'}
-          </Button>
-        </Stack>
-      </Paper>
-
-      {/* 错误提示 */}
-      {jobError && (
-        <Alert 
-          severity="error" 
-          sx={{ 
-            mb: 3,
-            backgroundColor: 'rgb(254, 242, 242)', // red-50
-            color: 'rgb(153, 27, 27)', // red-800
-            '& .MuiAlert-icon': {
-              color: 'rgb(153, 27, 27)' // red-800
-            },
-            borderRadius: '0.375rem'
-          }}
-        >
-          {jobError}
-        </Alert>
-      )}
-
-      {/* 表单 */}
-      <Paper 
-        sx={{ 
-          p: 3,
-          backgroundColor: 'rgb(249, 250, 251)', // gray-50
-          boxShadow: 'none',
-          borderRadius: '0.5rem',
-          border: '1px solid rgb(229, 231, 235)' // gray-200
-        }}
-      >
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
-            {/* 基本信息 */}
-            <Grid item xs={12}>
-              <Typography 
-                variant="h6" 
-                sx={{ 
-                  mb: 2,
-                  color: 'rgb(17, 24, 39)', // gray-900
-                  fontWeight: 600,
-                  fontSize: '1.25rem'
-                }}
+    <div className="container-lg">
+      <div className="section space-y-6">
+        {/* 页面标题和操作按钮 */}
+        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 p-6">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={handleBack}
+                className="p-2 rounded-lg text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
               >
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+              <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+                {isEdit ? '编辑职位' : '添加职位'}
+              </h1>
+            </div>
+            <button
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors disabled:bg-gray-200 disabled:text-gray-500 disabled:shadow-none"
+            >
+              <Save className="w-4 h-4" />
+              {isSubmitting ? '保存中...' : '保存'}
+            </button>
+          </div>
+        </div>
+
+        {/* 错误提示 */}
+        {jobError && (
+          <div className="bg-red-50 dark:bg-red-500/10 text-red-800 dark:text-red-400 p-4 rounded-xl">
+            {jobError}
+          </div>
+        )}
+
+        {/* 表单 */}
+        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 p-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* 基本信息 */}
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                 基本信息
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="职位名称"
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    职位名称
+                  </label>
+                  <input
+                    type="text"
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
-                    error={!!formErrors.title}
-                    helperText={formErrors.title}
+                    className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                      formErrors.title 
+                        ? 'ring-red-500 focus:ring-red-500' 
+                        : 'ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500'
+                    } transition-shadow`}
                     required
-                    sx={formControlStyle}
                   />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="公司名称"
+                  {formErrors.title && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {formErrors.title}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    公司名称
+                  </label>
+                  <input
+                    type="text"
                     name="company"
                     value={formData.company}
                     onChange={handleChange}
-                    error={!!formErrors.company}
-                    helperText={formErrors.company}
+                    className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                      formErrors.company 
+                        ? 'ring-red-500 focus:ring-red-500' 
+                        : 'ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500'
+                    } transition-shadow`}
                     required
-                    sx={formControlStyle}
                   />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <FormControl 
-                    fullWidth 
-                    error={!!formErrors.jobType} 
-                    required
-                    sx={formControlStyle}
-                  >
-                    <InputLabel>工作类型</InputLabel>
-                    <Select
-                      name="jobType"
-                      value={formData.jobType}
-                      onChange={handleChange}
-                      label="工作类型"
-                    >
-                      {jobTypeOptions.map(option => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {formErrors.jobType && (
-                      <FormHelperText>{formErrors.jobType}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="工作地点"
-                    name="location"
-                    value={formData.location}
+                  {formErrors.company && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {formErrors.company}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    状态
+                  </label>
+                  <select
+                    name="status"
+                    value={formData.status}
                     onChange={handleChange}
-                    sx={formControlStyle}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="薪资范围"
-                    name="salary"
-                    value={formData.salary}
-                    onChange={handleChange}
-                    placeholder="例如：15k-20k"
-                    sx={formControlStyle}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <FormControl 
-                    fullWidth 
-                    error={!!formErrors.status}
-                    sx={formControlStyle}
+                    className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                      formErrors.status 
+                        ? 'ring-red-500 focus:ring-red-500' 
+                        : 'ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500'
+                    } transition-shadow`}
                   >
-                    <InputLabel>状态</InputLabel>
-                    <Select
-                      name="status"
-                      value={formData.status}
-                      onChange={handleChange}
-                      label="状态"
-                    >
-                      {statusOptions.map(option => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Grid>
+                    {statusOptions.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  {formErrors.status && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {formErrors.status}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
 
-            <Grid item xs={12}>
-              <Divider sx={{ 
-                my: 2,
-                borderColor: 'rgb(229, 231, 235)' // gray-200
-              }} />
-            </Grid>
+            <div className="border-t border-gray-900/5 dark:border-gray-100/5" />
 
             {/* 职位来源 */}
-            <Grid item xs={12}>
-              <Typography 
-                variant="h6" 
-                sx={{ 
-                  mb: 2,
-                  color: 'rgb(17, 24, 39)', // gray-900
-                  fontWeight: 600,
-                  fontSize: '1.25rem',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}
-              >
-                职位来源
-                <Tooltip title="选择职位的来源平台，如果是手动添加则无需填写职位链接">
-                  <IconButton 
-                    size="small" 
-                    sx={{ 
-                      ml: 1,
-                      color: 'rgb(75, 85, 99)', // gray-600
-                      '&:hover': {
-                        color: 'rgb(37, 99, 235)', // blue-600
-                        backgroundColor: 'rgba(37, 99, 235, 0.04)'
-                      }
-                    }}
+            <div className="space-y-6">
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  职位来源
+                </h2>
+                <button
+                  type="button"
+                  className="p-1 rounded-lg text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
+                  title="选择职位的来源平台，如果是手动添加则无需填写职位链接"
+                >
+                  <HelpCircle className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    来源平台
+                  </label>
+                  <select
+                    name="platform"
+                    value={formData.platform}
+                    onChange={handleChange}
+                    className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                   >
-                    <HelpOutlineIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                  <FormControl 
-                    fullWidth 
-                    error={!!formErrors.platform} 
-                    required
-                    sx={formControlStyle}
-                  >
-                    <InputLabel>平台</InputLabel>
-                    <Select
-                      name="platform"
-                      value={formData.platform}
-                      onChange={handleChange}
-                      label="平台"
-                    >
-                      {platformOptions.map(option => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {formErrors.platform && (
-                      <FormHelperText>{formErrors.platform}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="职位链接"
+                    {platformOptions.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    职位链接
+                  </label>
+                  <input
+                    type="url"
                     name="sourceUrl"
                     value={formData.sourceUrl}
                     onChange={handleChange}
-                    error={!!formErrors.sourceUrl}
-                    helperText={formErrors.sourceUrl}
-                    required
-                    sx={formControlStyle}
+                    className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    placeholder="https://"
                   />
-                </Grid>
-              </Grid>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Divider sx={{ 
-                my: 2,
-                borderColor: 'rgb(229, 231, 235)' // gray-200
-              }} />
-            </Grid>
+                </div>
+              </div>
+            </div>
 
             {/* 职位描述 */}
-            <Grid item xs={12}>
-              <Typography 
-                variant="h6" 
-                sx={{ 
-                  mb: 2,
-                  color: 'rgb(17, 24, 39)', // gray-900
-                  fontWeight: 600,
-                  fontSize: '1.25rem'
-                }}
-              >
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                 职位描述
-              </Typography>
-              <TextField
-                fullWidth
-                multiline
-                rows={6}
-                label="职位描述"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="请输入职位描述、要求等信息..."
-                sx={formControlStyle}
-              />
-            </Grid>
-          </Grid>
-        </form>
-      </Paper>
+              </h2>
+              <div>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  rows={6}
+                  className="w-full p-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                  placeholder="请输入职位描述、要求等信息..."
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
 
       {/* 提示消息 */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert
-          onClose={handleSnackbarClose}
-          severity={snackbar.severity}
-          variant="filled"
-          sx={{ 
-            width: '100%',
-            backgroundColor: snackbar.severity === 'success' ? 'rgb(5, 150, 105)' : 'rgb(220, 38, 38)', // green-600 : red-600
-            borderRadius: '0.375rem'
-          }}
-        >
+      {snackbar.open && (
+        <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg text-white ${
+          snackbar.severity === 'success' ? 'bg-green-600' : 'bg-red-600'
+        }`}>
           {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Box>
+        </div>
+      )}
+    </div>
   );
 };
 

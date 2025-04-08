@@ -101,9 +101,9 @@ const JobsPage: React.FC = () => {
   const loadJobs = async () => {
     try {
       const params = {
-        page,
-        limit,
-        search: searchTerm,
+      page,
+      limit,
+      search: searchTerm,
         sort: sortOption,
         ...filters
       };
@@ -183,9 +183,9 @@ const JobsPage: React.FC = () => {
             查看和管理您的所有求职申请
           </p>
         </div>
-        
-        {/* 搜索和筛选 */}
-        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-1 ring-gray-900/5 dark:ring-gray-100/5">
+      
+      {/* 搜索和筛选 */}
+        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5">
           <div className="p-6 space-y-6">
             {/* 搜索栏 */}
             <div className="flex flex-col md:flex-row gap-4">
@@ -193,17 +193,17 @@ const JobsPage: React.FC = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="搜索职位名称、公司或地点..."
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                  className="w-full h-11 pl-10 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+              placeholder="搜索职位名称、公司或地点..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+                  className="w-full h-11 pl-10 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                 />
               </div>
               <div className="flex gap-3">
                 <select
-                  value={sortOption}
-                  onChange={handleSortChange}
-                  className="h-11 min-w-[160px] bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+              value={sortOption}
+              onChange={handleSortChange}
+                  className="h-11 min-w-[160px] bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                 >
                   <option value="-createdAt">最新添加</option>
                   <option value="createdAt">最早添加</option>
@@ -217,7 +217,7 @@ const JobsPage: React.FC = () => {
                   className={`h-11 px-5 rounded-xl flex items-center gap-2 font-medium transition-all duration-200 ${
                     showFilters 
                       ? 'bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25' 
-                      : 'bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-1 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50'
+                      : 'bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50'
                   }`}
                 >
                   <Filter className="w-4 h-4" />
@@ -253,7 +253,7 @@ const JobsPage: React.FC = () => {
                     <select
                       value={filters.status}
                       onChange={(e) => handleFilterChange('status', e.target.value)}
-                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     >
                       {statusOptions.map(option => (
                         <option key={option.value} value={option.value}>
@@ -272,7 +272,7 @@ const JobsPage: React.FC = () => {
                     <select
                       value={filters.jobType}
                       onChange={(e) => handleFilterChange('jobType', e.target.value)}
-                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     >
                       {jobTypes.map(option => (
                         <option key={option.value} value={option.value}>
@@ -291,7 +291,7 @@ const JobsPage: React.FC = () => {
                     <select
                       value={filters.platform}
                       onChange={(e) => handleFilterChange('platform', e.target.value)}
-                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     >
                       {platforms.map(option => (
                         <option key={option.value} value={option.value}>
@@ -310,7 +310,7 @@ const JobsPage: React.FC = () => {
                     <select
                       value={filters.salaryRange}
                       onChange={(e) => handleFilterChange('salaryRange', e.target.value)}
-                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     >
                       {salaryRanges.map(option => (
                         <option key={option.value} value={option.value}>
@@ -329,7 +329,7 @@ const JobsPage: React.FC = () => {
                     <select
                       value={filters.dateRange}
                       onChange={(e) => handleFilterChange('dateRange', e.target.value)}
-                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     >
                       {dateRanges.map(option => (
                         <option key={option.value} value={option.value}>
@@ -350,7 +350,7 @@ const JobsPage: React.FC = () => {
                       value={filters.location}
                       onChange={(e) => handleFilterChange('location', e.target.value)}
                       placeholder="输入城市名称"
-                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     />
                   </div>
                 </div>
@@ -358,25 +358,25 @@ const JobsPage: React.FC = () => {
             )}
           </div>
         </div>
-        
-        {/* 错误提示 */}
-        {error && (
+      
+      {/* 错误提示 */}
+      {error && (
           <div className="rounded-xl bg-red-50 dark:bg-red-500/10 p-4 text-red-600 dark:text-red-400">
-            {error}
+          {error}
           </div>
-        )}
-        
-        {/* 职位列表 */}
-        {isLoading ? (
+      )}
+      
+      {/* 职位列表 */}
+      {isLoading ? (
           <div className="flex justify-center my-8">
             <div className="loader"></div>
           </div>
-        ) : jobs && jobs.length > 0 ? (
+      ) : jobs && jobs.length > 0 ? (
           <div className="space-y-4">
             {jobs.map((job) => (
               <div 
                 key={job._id}
-                className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-1 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200"
+                className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200"
               >
                 <div className="p-6">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -385,13 +385,13 @@ const JobsPage: React.FC = () => {
                         <a 
                           href={`/jobs/${job._id}`}
                           className="text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400"
-                        >
-                          {job.title}
+                          >
+                            {job.title}
                         </a>
                       </h3>
                       <p className="text-gray-500 dark:text-gray-400 flex items-center gap-2">
                         <Building2 className="w-4 h-4" />
-                        {typeof job.company === 'string' ? job.company : job.company.name}
+                            {typeof job.company === 'string' ? job.company : job.company.name}
                         {job.location && (
                           <>
                             <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
@@ -403,13 +403,13 @@ const JobsPage: React.FC = () => {
                         )}
                       </p>
                       <div className="flex flex-wrap gap-2 mt-3">
-                        {job.jobType && (
+                            {job.jobType && (
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                             <Briefcase className="w-3 h-3" />
                             {job.jobType}
                           </span>
-                        )}
-                        {job.salary && (
+                            )}
+                            {job.salary && (
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400">
                             <DollarSign className="w-3 h-3" />
                             {job.salary}
@@ -425,24 +425,24 @@ const JobsPage: React.FC = () => {
                     <div className="flex flex-wrap gap-2">
                       <button 
                         onClick={() => navigate(`/jobs/${job._id}`)}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-1 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
-                      >
-                        查看详情
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
+                          >
+                            查看详情
                       </button>
                       <button 
                         onClick={() => {
                           window.location.href = 'http://localhost:3000/jobs/track';
                         }}
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
-                      >
-                        跟踪申请
+                          >
+                            跟踪申请
                       </button>
                       {job.sourceUrl && (
                         <a 
                           href={job.sourceUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-1 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                           onClick={(e) => e.stopPropagation()}
                         >
                           <ExternalLink className="w-4 h-4" />
@@ -456,7 +456,7 @@ const JobsPage: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-1 ring-gray-900/5 dark:ring-gray-100/5 p-8">
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 p-8">
             <div className="text-center">
               <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
                 <Briefcase className="w-8 h-8 text-gray-400" />
@@ -482,7 +482,7 @@ const JobsPage: React.FC = () => {
         {/* 分页 */}
         {jobs && jobs.length > 0 && (
           <div className="flex justify-center mt-8">
-            <div className="inline-flex items-center gap-2 p-1 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-1 ring-gray-900/5 dark:ring-gray-100/5">
+            <div className="inline-flex items-center gap-2 p-1 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5">
               <button 
                 onClick={() => handlePageChange(page - 1)}
                 disabled={page === 1}

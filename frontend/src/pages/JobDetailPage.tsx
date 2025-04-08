@@ -175,7 +175,7 @@ const JobDetailPage: React.FC = () => {
       </button>
       
       {/* 职位详情卡片 */}
-      <div className="welcome-banner">
+      <div className="welcome-banner bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5">
         <div className="welcome-banner-decoration">
           <div className="absolute top-5 left-10 w-6 h-6 bg-yellow-300 rounded-full"></div>
           <div className="absolute top-20 right-20 w-8 h-8 bg-green-300 rounded"></div>
@@ -232,7 +232,7 @@ const JobDetailPage: React.FC = () => {
       <div className="section">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* 基本信息 */}
-          <div className="card p-6">
+          <div className="card p-6 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5">
             <h2 className="title-md">基本信息</h2>
             <div className="space-y-4">
               {job.location && (
@@ -289,7 +289,7 @@ const JobDetailPage: React.FC = () => {
           </div>
           
           {/* 来源信息 */}
-          <div className="card p-6">
+          <div className="card p-6 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5">
             <h2 className="title-md">来源信息</h2>
             <div className="space-y-4">
               <div className="data-item">
@@ -346,7 +346,7 @@ const JobDetailPage: React.FC = () => {
       {/* 职位描述 */}
       {job.description && (
         <div className="section">
-          <div className="card p-6">
+          <div className="card p-6 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5">
             <h2 className="title-md">职位描述</h2>
             <div className="prose prose-indigo max-w-none">
               {job.description}
@@ -358,7 +358,7 @@ const JobDetailPage: React.FC = () => {
       {/* 删除确认对话框 */}
       {deleteDialogOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 p-6">
             <h3 className="text-xl font-semibold mb-4">确认删除</h3>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
               您确定要删除此职位 "{job.title}" 吗？此操作无法撤销。
