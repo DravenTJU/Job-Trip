@@ -55,13 +55,73 @@ export const getJobs = async (
       const salaryRange = req.query.salaryRange as string;
       console.log('[Backend] Processing salary range:', salaryRange);
       
+      // 分页参数
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const skip = (page - 1) * limit;
+      
       if (salaryRange === '') {
         // 默认排序，不做任何处理
         console.log('[Backend] Using default salary sort');
       } else if (salaryRange === 'asc' || salaryRange === 'desc') {
-        // 处理排序
-        sortOptions.salary = salaryRange === 'desc' ? -1 : 1;
-        console.log('[Backend] Added salary sort:', salaryRange);
+        // 处理排序 - 使用聚合管道来处理薪资范围
+        const jobs = await Job.aggregate([
+          { $match: finalQuery },
+          {
+            $addFields: {
+              numericSalary: {
+                $let: {
+                  vars: {
+                    // 移除所有非数字字符，保留数字、小数点和连字符
+                    cleanSalary: {
+                      $replaceAll: {
+                        input: { $toLower: "$salary" },
+                        find: "k",
+                        replacement: ""
+                      }
+                    }
+                  },
+                  in: {
+                    $cond: {
+                      if: { $eq: [{ $indexOfBytes: ["$$cleanSalary", "-"] }, -1] },
+                      // 如果不是范围，直接转换为数字
+                      then: { $toDouble: "$$cleanSalary" },
+                      // 如果是范围，取第一个数字（最小值）
+                      else: {
+                        $toDouble: {
+                          $arrayElemAt: [
+                            { $split: ["$$cleanSalary", "-"] },
+                            0
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          { $sort: { numericSalary: salaryRange === 'desc' ? -1 : 1 } },
+          { $skip: skip },
+          { $limit: limit }
+        ]);
+
+        // 获取总数
+        const total = await Job.countDocuments(finalQuery);
+        console.log(`[Backend] Total documents matching query: ${total}`);
+
+        // 返回结果
+        return res.status(200).json(createApiResponse(
+          200,
+          '获取职位列表成功',
+          {
+            total,
+            page,
+            size: limit,
+            data: jobs,
+            totalPages: Math.ceil(total / limit)
+          }
+        ));
       } else {
         // 处理范围过滤
         const [min, max] = salaryRange.split('-').map(Number);
