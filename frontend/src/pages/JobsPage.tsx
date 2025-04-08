@@ -1,36 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Paper, 
-  Grid, 
-  Button,
-  TextField,
-  MenuItem,
-  InputAdornment,
-  Pagination,
-  Alert,
-  CircularProgress,
-  Chip,
-  Tooltip,
-  IconButton
-} from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
-import LaunchIcon from '@mui/icons-material/Launch';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
-import { RootState } from '@/redux/store';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
 import { fetchJobs } from '@/redux/slices/jobsSlice';
-import NoDataPlaceholder from '@/components/common/NoDataPlaceholder';
+import { 
+  Search, 
+  Plus, 
+  ExternalLink, 
+  ChevronLeft, 
+  ChevronRight,
+  Filter,
+  SortDesc,
+  SortAsc
+} from 'lucide-react';
 
 /**
  * 职位列表页面组件
  */
 const JobsPage: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { jobs = [], pagination, isLoading, error } = useAppSelector((state: RootState) => state.jobs);
+  const { jobs, isLoading, error } = useSelector((state: RootState) => state.jobs);
   
   // 搜索和筛选状态
   const [searchTerm, setSearchTerm] = useState('');
@@ -80,7 +70,7 @@ const JobsPage: React.FC = () => {
   };
   
   // 处理排序变更
-  const handleSortChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOption(e.target.value);
     setPage(1); // 重置页码
   };
@@ -96,211 +86,183 @@ const JobsPage: React.FC = () => {
   };
   
   return (
-    <Box>
-      <Grid container spacing={2} alignItems="center" sx={{ mb: 3 }}>
-        <Grid item xs={12} md={6}>
-          <Typography variant="h4" component="h1" gutterBottom>
-            职位列表
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            查看和管理您的所有求职申请
-          </Typography>
-        </Grid>
-        <Grid item xs={12} md={6} sx={{ textAlign: { xs: 'left', md: 'right' } }}>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={handleAddJob}
-            sx={{ mr: 1 }}
-          >
-            添加职位
-          </Button>
-        </Grid>
-      </Grid>
+    <div className="container-lg">
+      <div className="section">
+        <h1 className="title-lg">职位列表</h1>
+        <p className="text-description">
+          查看和管理您的所有求职申请
+        </p>
+      </div>
       
       {/* 搜索和筛选 */}
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              placeholder="搜索职位名称、公司或地点..."
-              variant="outlined"
-              size="small"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              select
-              fullWidth
-              label="排序方式"
-              value={sortOption}
-              onChange={handleSortChange}
-              variant="outlined"
-              size="small"
-            >
-              <MenuItem value="-createdAt">最新添加</MenuItem>
-              <MenuItem value="createdAt">最早添加</MenuItem>
-              <MenuItem value="title">职位名称（A-Z）</MenuItem>
-              <MenuItem value="-title">职位名称（Z-A）</MenuItem>
-              <MenuItem value="company">公司名称（A-Z）</MenuItem>
-              <MenuItem value="-company">公司名称（Z-A）</MenuItem>
-            </TextField>
-          </Grid>
-        </Grid>
-      </Paper>
+      <div className="section">
+        <div className="card p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="搜索职位名称、公司或地点..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                className="form-input pl-10"
+              />
+            </div>
+            <div>
+              <select
+                value={sortOption}
+                onChange={handleSortChange}
+                className="form-input"
+              >
+                <option value="-createdAt">最新添加</option>
+                <option value="createdAt">最早添加</option>
+                <option value="title">职位名称（A-Z）</option>
+                <option value="-title">职位名称（Z-A）</option>
+                <option value="company">公司名称（A-Z）</option>
+                <option value="-company">公司名称（Z-A）</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
       
       {/* 错误提示 */}
       {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
+        <div className="alert alert-error">
           {error}
-        </Alert>
+        </div>
       )}
       
       {/* 职位列表 */}
       {isLoading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-          <CircularProgress />
-        </Box>
+        <div className="flex justify-center my-8">
+          <div className="loader"></div>
+        </div>
       ) : jobs && jobs.length > 0 ? (
-        <>
-          <Grid container spacing={2}>
+        <div className="section">
+          <div className="space-y-4">
             {jobs.map((job) => (
-              <Grid item xs={12} key={job._id}>
-                <Box sx={{ mb: 2 }}>
-                  <Paper 
-                    elevation={1} 
-                    sx={{ 
-                      p: 2, 
-                      transition: 'transform 0.2s, box-shadow 0.2s', 
-                      '&:hover': { 
-                        transform: 'translateY(-2px)', 
-                        boxShadow: 3 
-                      }
-                    }}
-                  >
-                    <Grid container spacing={2} alignItems="center">
-                      {/* 职位基本信息 */}
-                      <Grid item xs={12} md={8}>
-                        <Box sx={{ mb: { xs: 1, md: 0 } }}>
-                          <Typography 
-                            variant="h6" 
-                            component={RouterLink} 
-                            to={`/jobs/${job._id}`}
-                            sx={{ 
-                              fontWeight: 'bold',
-                              textDecoration: 'none',
-                              color: 'primary.main',
-                              '&:hover': { textDecoration: 'underline' }
-                            }}
-                          >
-                            {job.title}
-                          </Typography>
-                          
-                          <Typography variant="body1" sx={{ my: 0.5 }}>
-                            {typeof job.company === 'string' ? job.company : job.company.name}
-                            {job.location && <span> · {job.location}</span>}
-                          </Typography>
-                          
-                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
-                            {job.jobType && (
-                              <Chip 
-                                label={job.jobType} 
-                                size="small" 
-                                variant="outlined" 
-                              />
-                            )}
-                            {job.salary && (
-                              <Chip 
-                                label={job.salary}
-                                size="small" 
-                                variant="outlined" 
-                                color="secondary"
-                              />
-                            )}
-                          </Box>
-                        </Box>
-                      </Grid>
-                      
-                      {/* 操作按钮 */}
-                      <Grid item xs={12} md={4} sx={{ textAlign: { xs: 'left', md: 'right' } }}>
-                        <Box sx={{ display: 'flex', gap: 1, justifyContent: { xs: 'flex-start', md: 'flex-end' } }}>
-                          <Button 
-                            component={RouterLink} 
-                            to={`/jobs/${job._id}`}
-                            variant="outlined" 
-                            size="small"
-                          >
-                            查看详情
-                          </Button>
-                          
-                          <Button 
-                            component={RouterLink} 
-                            to="/jobs/track"
-                            variant="contained" 
-                            size="small"
-                            color="primary"
-                          >
-                            跟踪申请
-                          </Button>
-                          
-                          {job.sourceUrl && (
-                            <Tooltip title="打开职位链接">
-                              <IconButton 
-                                component="a" 
-                                href={job.sourceUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                onClick={(e: React.MouseEvent) => e.stopPropagation()}
-                                size="small"
-                                color="primary"
-                              >
-                                <LaunchIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          )}
-                        </Box>
-                      </Grid>
-                    </Grid>
-                  </Paper>
-                </Box>
-              </Grid>
+              <div 
+                key={job._id}
+                className="card hover:shadow-md transition-shadow duration-200"
+              >
+                <div className="p-6">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                      <h3 className="title-sm mb-1">
+                        <a 
+                          href={`/jobs/${job._id}`}
+                          className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
+                        >
+                          {job.title}
+                        </a>
+                      </h3>
+                      <p className="text-description">
+                        {typeof job.company === 'string' ? job.company : job.company.name}
+                        {job.location && <span> · {job.location}</span>}
+                      </p>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {job.jobType && (
+                          <span className="badge badge-primary">
+                            {job.jobType}
+                          </span>
+                        )}
+                        {job.salary && (
+                          <span className="badge badge-success">
+                            {job.salary}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2">
+                      <button 
+                        onClick={() => navigate(`/jobs/${job._id}`)}
+                        className="btn btn-outline btn-sm"
+                      >
+                        查看详情
+                      </button>
+                      <button 
+                        onClick={() => {
+                          window.location.href = 'http://localhost:3000/jobs/track';
+                        }}
+                        className="btn btn-primary btn-sm"
+                      >
+                        跟踪申请
+                      </button>
+                      {job.sourceUrl && (
+                        <a 
+                          href={job.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn-secondary btn-sm"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <ExternalLink className="w-4 h-4 mr-1.5" />
+                          原始链接
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))}
-          </Grid>
+          </div>
           
           {/* 分页控件 */}
-          {pagination && pagination.pages > 1 && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-              <Pagination
-                count={pagination.pages}
-                page={page}
-                onChange={handlePageChange}
-                color="primary"
-              />
-            </Box>
+          {jobs.length > 0 && (
+            <div className="flex justify-center mt-8">
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => setPage(page - 1)}
+                  disabled={page === 1}
+                  className="btn btn-outline btn-sm"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <span className="text-gray-600 dark:text-gray-400">
+                  第 {page} 页
+                </span>
+                <button 
+                  onClick={() => setPage(page + 1)}
+                  disabled={jobs.length < limit}
+                  className="btn btn-outline btn-sm"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
           )}
-        </>
+        </div>
       ) : (
-        <Paper sx={{ p: 3, textAlign: 'center' }}>
-          <NoDataPlaceholder 
-            title="暂无职位数据"
-            message="您尚未添加任何职位申请。点击添加职位按钮开始追踪您的求职之旅。"
-            actionText="添加职位"
-            onAction={handleAddJob}
-          />
-        </Paper>
+        <div className="section">
+          <div className="card p-6 text-center">
+            <h3 className="title-sm mb-2">暂无职位数据</h3>
+            <p className="text-description mb-4">
+              您尚未添加任何职位申请。点击添加职位按钮开始追踪您的求职之旅。
+            </p>
+            <button 
+              onClick={handleAddJob}
+              className="btn btn-primary"
+            >
+              <Plus className="w-4 h-4 mr-1.5" />
+              添加职位
+            </button>
+          </div>
+        </div>
       )}
-    </Box>
+      
+      {/* 添加职位按钮 */}
+      <div className="section">
+        <button 
+          onClick={handleAddJob}
+          className="btn btn-primary"
+        >
+          <Plus className="w-4 h-4 mr-1.5" />
+          添加职位
+        </button>
+      </div>
+    </div>
   );
 };
 
