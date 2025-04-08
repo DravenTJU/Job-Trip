@@ -246,7 +246,7 @@ const JobsPage: React.FC = () => {
                           
                           <Button 
                             component={RouterLink} 
-                            to={`/application/new?jobId=${job._id}`}
+                            to="/jobs/track"
                             variant="contained" 
                             size="small"
                             color="primary"
