@@ -11,8 +11,15 @@ import {
   ChevronRight,
   Filter,
   SortDesc,
-  SortAsc
+  SortAsc,
+  X,
+  Calendar,
+  Building2,
+  MapPin,
+  DollarSign,
+  Briefcase
 } from 'lucide-react';
+import { JobStatus, JobSource } from '@/types';
 
 /**
  * 职位列表页面组件
@@ -27,6 +34,68 @@ const JobsPage: React.FC = () => {
   const [sortOption, setSortOption] = useState('-createdAt'); // 默认按创建时间降序
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
+  const [showFilters, setShowFilters] = useState(false);
+  
+  // 筛选条件
+  const [filters, setFilters] = useState({
+    status: '',
+    jobType: '',
+    platform: '',
+    location: '',
+    salaryRange: '',
+    dateRange: ''
+  });
+  
+  // 薪资范围选项
+  const salaryRanges = [
+    { label: '所有薪资', value: '' },
+    { label: '10k以下', value: '0-10000' },
+    { label: '10k-20k', value: '10000-20000' },
+    { label: '20k-30k', value: '20000-30000' },
+    { label: '30k-50k', value: '30000-50000' },
+    { label: '50k以上', value: '50000-999999' }
+  ];
+  
+  // 时间范围选项
+  const dateRanges = [
+    { label: '所有时间', value: '' },
+    { label: '今天', value: 'today' },
+    { label: '最近3天', value: '3days' },
+    { label: '最近一周', value: '1week' },
+    { label: '最近一月', value: '1month' },
+    { label: '最近三月', value: '3months' }
+  ];
+  
+  // 工作类型选项
+  const jobTypes = [
+    { label: '所有类型', value: '' },
+    { label: '全职', value: 'FULL_TIME' },
+    { label: '兼职', value: 'PART_TIME' },
+    { label: '实习', value: 'INTERNSHIP' },
+    { label: '合同工', value: 'CONTRACT' },
+    { label: '自由职业', value: 'FREELANCE' }
+  ];
+  
+  // 平台来源选项
+  const platforms = [
+    { label: '所有来源', value: '' },
+    { label: 'LinkedIn', value: JobSource.LINKEDIN },
+    { label: 'Seek', value: JobSource.SEEK },
+    { label: 'Indeed', value: JobSource.INDEED },
+    { label: '其他', value: JobSource.OTHER }
+  ];
+  
+  // 状态选项
+  const statusOptions = [
+    { label: '所有状态', value: '' },
+    { label: '新发布', value: JobStatus.NEW },
+    { label: '已申请', value: JobStatus.APPLIED },
+    { label: '面试中', value: JobStatus.INTERVIEWING },
+    { label: '已录用', value: JobStatus.OFFER },
+    { label: '已拒绝', value: JobStatus.REJECTED },
+    { label: '已撤回', value: JobStatus.WITHDRAWN },
+    { label: '已关闭', value: JobStatus.CLOSED }
+  ];
   
   // 加载职位列表数据
   const loadJobs = async () => {
@@ -35,23 +104,21 @@ const JobsPage: React.FC = () => {
         page,
         limit,
         search: searchTerm,
-        sort: sortOption
+        sort: sortOption,
+        ...filters
       };
-      console.log('开始加载职位列表数据...');
-      console.log('请求参数:', params);
       
       // 获取职位列表
       const result = await dispatch(fetchJobs(params));
       if (fetchJobs.fulfilled.match(result)) {
-        console.log('职位列表加载成功:', result.payload);
-        if (result.payload.data.length === 0) {
-          console.log('职位列表为空，尝试不带参数重新获取...');
-          // 尝试不带任何参数重新获取
-          const retryResult = await dispatch(fetchJobs({ page: 1, limit: 10 }));
-          console.log('重试结果:', retryResult);
+        if (result.payload.data.length === 0 && Object.values(filters).some(v => v !== '')) {
+          // 如果有筛选条件且没有数据，不要重试
+          return;
         }
-      } else {
-        console.error('职位列表加载失败:', result.error);
+        if (result.payload.data.length === 0) {
+          // 尝试不带任何参数重新获取
+          await dispatch(fetchJobs({ page: 1, limit: 10 }));
+        }
       }
     } catch (error) {
       console.error('加载数据时出错:', error);
@@ -61,7 +128,7 @@ const JobsPage: React.FC = () => {
   // 初始加载
   useEffect(() => {
     loadJobs();
-  }, [dispatch, page, limit, searchTerm, sortOption]);
+  }, [dispatch, page, limit, searchTerm, sortOption, filters]);
   
   // 处理搜索变更
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,9 +142,31 @@ const JobsPage: React.FC = () => {
     setPage(1); // 重置页码
   };
   
+  // 处理筛选变更
+  const handleFilterChange = (field: string, value: string) => {
+    setFilters(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    setPage(1); // 重置页码
+  };
+  
+  // 重置筛选条件
+  const resetFilters = () => {
+    setFilters({
+      status: '',
+      jobType: '',
+      platform: '',
+      location: '',
+      salaryRange: '',
+      dateRange: ''
+    });
+    setPage(1);
+  };
+  
   // 处理页码变更
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
   };
   
   // 添加新职位
@@ -87,98 +176,256 @@ const JobsPage: React.FC = () => {
   
   return (
     <div className="container-lg">
-      <div className="section">
-        <h1 className="title-lg">职位列表</h1>
-        <p className="text-description">
-          查看和管理您的所有求职申请
-        </p>
-      </div>
-      
-      {/* 搜索和筛选 */}
-      <div className="section">
-        <div className="card p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="搜索职位名称、公司或地点..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="form-input pl-10"
-              />
+      <div className="section space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">职位列表</h1>
+          <p className="text-gray-500 dark:text-gray-400">
+            查看和管理您的所有求职申请
+          </p>
+        </div>
+        
+        {/* 搜索和筛选 */}
+        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-1 ring-gray-900/5 dark:ring-gray-100/5">
+          <div className="p-6 space-y-6">
+            {/* 搜索栏 */}
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="搜索职位名称、公司或地点..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="w-full h-11 pl-10 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                />
+              </div>
+              <div className="flex gap-3">
+                <select
+                  value={sortOption}
+                  onChange={handleSortChange}
+                  className="h-11 min-w-[160px] bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                >
+                  <option value="-createdAt">最新添加</option>
+                  <option value="createdAt">最早添加</option>
+                  <option value="title">职位名称（A-Z）</option>
+                  <option value="-title">职位名称（Z-A）</option>
+                  <option value="company">公司名称（A-Z）</option>
+                  <option value="-company">公司名称（Z-A）</option>
+                </select>
+                <button
+                  onClick={() => setShowFilters(!showFilters)}
+                  className={`h-11 px-5 rounded-xl flex items-center gap-2 font-medium transition-all duration-200 ${
+                    showFilters 
+                      ? 'bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25' 
+                      : 'bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-1 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50'
+                  }`}
+                >
+                  <Filter className="w-4 h-4" />
+                  筛选
+                </button>
+              </div>
             </div>
-            <div>
-              <select
-                value={sortOption}
-                onChange={handleSortChange}
-                className="form-input"
-              >
-                <option value="-createdAt">最新添加</option>
-                <option value="createdAt">最早添加</option>
-                <option value="title">职位名称（A-Z）</option>
-                <option value="-title">职位名称（Z-A）</option>
-                <option value="company">公司名称（A-Z）</option>
-                <option value="-company">公司名称（Z-A）</option>
-              </select>
-            </div>
+            
+            {/* 筛选面板 */}
+            {showFilters && (
+              <div className="pt-6 border-t border-gray-900/5 dark:border-gray-100/5">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <Filter className="w-4 h-4 text-gray-400" />
+                    <h3 className="text-base font-medium">筛选条件</h3>
+                  </div>
+                  <button
+                    onClick={resetFilters}
+                    className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                    重置
+                  </button>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {/* 状态筛选 */}
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 ring-1 ring-gray-900/5 dark:ring-gray-100/5"></div>
+                      状态
+                    </label>
+                    <select
+                      value={filters.status}
+                      onChange={(e) => handleFilterChange('status', e.target.value)}
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    >
+                      {statusOptions.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {/* 工作类型筛选 */}
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                      <Briefcase className="w-4 h-4 text-gray-400" />
+                      工作类型
+                    </label>
+                    <select
+                      value={filters.jobType}
+                      onChange={(e) => handleFilterChange('jobType', e.target.value)}
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    >
+                      {jobTypes.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {/* 平台来源筛选 */}
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-gray-400" />
+                      平台来源
+                    </label>
+                    <select
+                      value={filters.platform}
+                      onChange={(e) => handleFilterChange('platform', e.target.value)}
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    >
+                      {platforms.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {/* 薪资范围筛选 */}
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                      <DollarSign className="w-4 h-4 text-gray-400" />
+                      薪资范围
+                    </label>
+                    <select
+                      value={filters.salaryRange}
+                      onChange={(e) => handleFilterChange('salaryRange', e.target.value)}
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    >
+                      {salaryRanges.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {/* 发布时间筛选 */}
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-gray-400" />
+                      发布时间
+                    </label>
+                    <select
+                      value={filters.dateRange}
+                      onChange={(e) => handleFilterChange('dateRange', e.target.value)}
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    >
+                      {dateRanges.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {/* 地点筛选 */}
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-gray-400" />
+                      工作地点
+                    </label>
+                    <input
+                      type="text"
+                      value={filters.location}
+                      onChange={(e) => handleFilterChange('location', e.target.value)}
+                      placeholder="输入城市名称"
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-1 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      </div>
-      
-      {/* 错误提示 */}
-      {error && (
-        <div className="alert alert-error">
-          {error}
-        </div>
-      )}
-      
-      {/* 职位列表 */}
-      {isLoading ? (
-        <div className="flex justify-center my-8">
-          <div className="loader"></div>
-        </div>
-      ) : jobs && jobs.length > 0 ? (
-        <div className="section">
+        
+        {/* 错误提示 */}
+        {error && (
+          <div className="rounded-xl bg-red-50 dark:bg-red-500/10 p-4 text-red-600 dark:text-red-400">
+            {error}
+          </div>
+        )}
+        
+        {/* 职位列表 */}
+        {isLoading ? (
+          <div className="flex justify-center my-8">
+            <div className="loader"></div>
+          </div>
+        ) : jobs && jobs.length > 0 ? (
           <div className="space-y-4">
             {jobs.map((job) => (
               <div 
                 key={job._id}
-                className="card hover:shadow-md transition-shadow duration-200"
+                className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-1 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200"
               >
                 <div className="p-6">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
-                      <h3 className="title-sm mb-1">
+                      <h3 className="text-lg font-medium mb-1">
                         <a 
                           href={`/jobs/${job._id}`}
-                          className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
+                          className="text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400"
                         >
                           {job.title}
                         </a>
                       </h3>
-                      <p className="text-description">
+                      <p className="text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                        <Building2 className="w-4 h-4" />
                         {typeof job.company === 'string' ? job.company : job.company.name}
-                        {job.location && <span> · {job.location}</span>}
+                        {job.location && (
+                          <>
+                            <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+                            <span className="flex items-center gap-1">
+                              <MapPin className="w-4 h-4" />
+                              {job.location}
+                            </span>
+                          </>
+                        )}
                       </p>
-                      <div className="flex flex-wrap gap-2 mt-2">
+                      <div className="flex flex-wrap gap-2 mt-3">
                         {job.jobType && (
-                          <span className="badge badge-primary">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                            <Briefcase className="w-3 h-3" />
                             {job.jobType}
                           </span>
                         )}
                         {job.salary && (
-                          <span className="badge badge-success">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400">
+                            <DollarSign className="w-3 h-3" />
                             {job.salary}
                           </span>
                         )}
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium ${getStatusStyles(job.status)}`}>
+                          <div className="w-2 h-2 rounded-full bg-current"></div>
+                          {job.status}
+                        </span>
                       </div>
                     </div>
                     
                     <div className="flex flex-wrap gap-2">
                       <button 
                         onClick={() => navigate(`/jobs/${job._id}`)}
-                        className="btn btn-outline btn-sm"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-1 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                       >
                         查看详情
                       </button>
@@ -186,7 +433,7 @@ const JobsPage: React.FC = () => {
                         onClick={() => {
                           window.location.href = 'http://localhost:3000/jobs/track';
                         }}
-                        className="btn btn-primary btn-sm"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
                       >
                         跟踪申请
                       </button>
@@ -195,11 +442,11 @@ const JobsPage: React.FC = () => {
                           href={job.sourceUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="btn btn-secondary btn-sm"
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-1 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          <ExternalLink className="w-4 h-4 mr-1.5" />
-                          原始链接
+                          <ExternalLink className="w-4 h-4" />
+                          查看原始职位
                         </a>
                       )}
                     </div>
@@ -208,62 +455,98 @@ const JobsPage: React.FC = () => {
               </div>
             ))}
           </div>
-          
-          {/* 分页控件 */}
-          {jobs.length > 0 && (
-            <div className="flex justify-center mt-8">
-              <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => setPage(page - 1)}
-                  disabled={page === 1}
-                  className="btn btn-outline btn-sm"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-                <span className="text-gray-600 dark:text-gray-400">
-                  第 {page} 页
-                </span>
-                <button 
-                  onClick={() => setPage(page + 1)}
-                  disabled={jobs.length < limit}
-                  className="btn btn-outline btn-sm"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
+        ) : (
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-1 ring-gray-900/5 dark:ring-gray-100/5 p-8">
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+                <Briefcase className="w-8 h-8 text-gray-400" />
               </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">暂无职位数据</h3>
+              <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
+                {Object.values(filters).some(v => v !== '') 
+                  ? '没有找到符合筛选条件的职位，请尝试调整筛选条件。'
+                  : '您尚未添加任何职位申请。点击添加职位按钮开始追踪您的求职之旅。'
+                }
+              </p>
+              <button 
+                onClick={handleAddJob}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                添加职位
+              </button>
             </div>
-          )}
-        </div>
-      ) : (
-        <div className="section">
-          <div className="card p-6 text-center">
-            <h3 className="title-sm mb-2">暂无职位数据</h3>
-            <p className="text-description mb-4">
-              您尚未添加任何职位申请。点击添加职位按钮开始追踪您的求职之旅。
-            </p>
-            <button 
-              onClick={handleAddJob}
-              className="btn btn-primary"
-            >
-              <Plus className="w-4 h-4 mr-1.5" />
-              添加职位
-            </button>
           </div>
+        )}
+        
+        {/* 分页 */}
+        {jobs && jobs.length > 0 && (
+          <div className="flex justify-center mt-8">
+            <div className="inline-flex items-center gap-2 p-1 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-1 ring-gray-900/5 dark:ring-gray-100/5">
+              <button 
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page === 1}
+                className={`p-2 rounded-lg ${
+                  page === 1
+                    ? 'text-gray-400 dark:text-gray-600'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50'
+                }`}
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <span className="px-3 py-1 text-sm font-medium text-gray-900 dark:text-gray-100">
+                第 {page} 页
+              </span>
+              <button 
+                onClick={() => handlePageChange(page + 1)}
+                disabled={jobs.length < limit}
+                className={`p-2 rounded-lg ${
+                  jobs.length < limit
+                    ? 'text-gray-400 dark:text-gray-600'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50'
+                }`}
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        )}
+        
+        {/* 添加职位按钮 */}
+        <div className="flex justify-end">
+          <button 
+            onClick={handleAddJob}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            添加职位
+          </button>
         </div>
-      )}
-      
-      {/* 添加职位按钮 */}
-      <div className="section">
-        <button 
-          onClick={handleAddJob}
-          className="btn btn-primary"
-        >
-          <Plus className="w-4 h-4 mr-1.5" />
-          添加职位
-        </button>
       </div>
     </div>
   );
+};
+
+// 获取状态样式
+const getStatusStyles = (status: string) => {
+  switch (status) {
+    case JobStatus.NEW:
+      return 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400';
+    case JobStatus.APPLIED:
+      return 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400';
+    case JobStatus.INTERVIEWING:
+      return 'bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-400';
+    case JobStatus.OFFER:
+      return 'bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400';
+    case JobStatus.REJECTED:
+      return 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400';
+    case JobStatus.WITHDRAWN:
+      return 'bg-gray-50 dark:bg-gray-500/10 text-gray-600 dark:text-gray-400';
+    case JobStatus.CLOSED:
+      return 'bg-gray-50 dark:bg-gray-500/10 text-gray-600 dark:text-gray-400';
+    default:
+      return 'bg-gray-50 dark:bg-gray-500/10 text-gray-600 dark:text-gray-400';
+  }
 };
 
 export default JobsPage; 

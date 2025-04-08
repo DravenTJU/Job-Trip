@@ -179,24 +179,42 @@ const JobFormPage: React.FC = () => {
       errors.company = '请输入公司名称';
     }
 
+    // 验证工作地点
+    if (!formData.location.trim()) {
+      errors.location = '请输入工作地点';
+    }
+
     // 验证工作类型
     if (!formData.jobType) {
       errors.jobType = '请选择工作类型';
+    } else if (!Object.values(JobType).includes(formData.jobType as JobType)) {
+      errors.jobType = '无效的工作类型';
     }
 
     // 验证平台
     if (!formData.platform) {
       errors.platform = '请选择平台';
+    } else if (!platformOptions.some(option => option.value === formData.platform)) {
+      errors.platform = '无效的平台';
     }
 
     // 验证来源
     if (!formData.source) {
-      errors.source = '请选择来源';
+      formData.source = formData.platform;
     }
 
     // 验证职位链接
-    if (formData.platform !== 'manual' && !formData.sourceUrl) {
-      errors.sourceUrl = '请输入职位链接';
+    if (formData.platform !== 'manual') {
+      if (!formData.sourceUrl) {
+        errors.sourceUrl = '请输入职位链接';
+      } else if (!formData.sourceUrl.startsWith('http://') && !formData.sourceUrl.startsWith('https://')) {
+        errors.sourceUrl = '请输入有效的职位链接';
+      }
+    }
+
+    // 如果是手动添加，生成sourceId
+    if (!formData.sourceId) {
+      formData.sourceId = generateSourceId();
     }
     
     setFormErrors(errors);
