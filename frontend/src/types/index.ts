@@ -44,11 +44,20 @@ export interface UpdatePasswordData {
 }
 
 // 公司相关接口
+export enum CompanySize {
+  STARTUP = 'startup',
+  SMALL = 'small',
+  MEDIUM = 'medium',
+  LARGE = 'large',
+  ENTERPRISE = 'enterprise'
+}
+
 export interface Company {
   _id: string;
   name: string;
   website?: string;
   industry?: string;
+  size?: CompanySize;
   location?: string;
   description?: string;
   createdAt: string;
@@ -59,21 +68,58 @@ export interface CreateCompanyData {
   name: string;
   website?: string;
   industry?: string;
+  size?: CompanySize;
   location?: string;
   description?: string;
+}
+
+// 薪资接口
+export interface Salary {
+  min?: number;
+  max?: number;
+  currency?: string;
+}
+
+// 职位状态枚举
+export enum JobStatus {
+  NEW = 'new',
+  APPLIED = 'applied',
+  INTERVIEWING = 'interviewing',
+  OFFER = 'offer',
+  REJECTED = 'rejected',
+  WITHDRAWN = 'withdrawn',
+  CLOSED = 'closed',
+}
+
+// 工作类型枚举
+export enum JobType {
+  FULL_TIME = 'full-time',
+  PART_TIME = 'part-time',
+  CONTRACT = 'contract',
+  FREELANCE = 'freelance',
+  INTERNSHIP = 'internship',
+}
+
+// 数据来源枚举
+export enum JobSource {
+  LINKEDIN = 'linkedin',
+  SEEK = 'seek',
+  INDEED = 'indeed',
+  MANUAL = 'manual',
+  OTHER = 'other'
 }
 
 // 职位相关接口
 export interface Job {
   _id: string;
+  platform: string;
   title: string;
   company: string | Company;
+  location: string;
   description?: string;
   jobType?: string;
-  location?: string;
   salary?: string;
   link?: string;
-  platform: string;
   source: string;
   sourceId: string;
   sourceUrl: string;
@@ -83,15 +129,16 @@ export interface Job {
   updatedAt: string;
 }
 
+// 创建职位的数据接口
 export interface CreateJobData {
+  platform: string;
   title: string;
   company: string;
+  location: string;
   description?: string;
   jobType?: string;
-  location?: string;
   salary?: string;
   link?: string;
-  platform: string;
   source: string;
   sourceId: string;
   sourceUrl: string;

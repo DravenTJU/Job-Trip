@@ -7,6 +7,7 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true
 });
 
 // 请求拦截器 - 添加token
@@ -46,7 +47,15 @@ apiClient.interceptors.response.use(
 // 通用请求函数
 export const request = async <T>(config: AxiosRequestConfig): Promise<T> => {
   try {
+    console.log('发送请求:', {
+      method: config.method,
+      url: config.url,
+      data: config.data,
+      params: config.params
+    });
+    
     const response: AxiosResponse = await apiClient(config);
+    console.log('收到响应:', response.data);
     
     // 检查是否是新的统一API响应格式
     if (response.data && ('code' in response.data) && ('data' in response.data)) {
@@ -61,19 +70,10 @@ export const request = async <T>(config: AxiosRequestConfig): Promise<T> => {
     // 向下兼容旧API格式
     return response.data as T;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      // 提取API返回的错误信息
-      const response = error.response?.data;
-      let errorMessage = error.message;
-      
-      // 处理新的API错误格式
-      if (response && 'message' in response) {
-        errorMessage = response.message;
-      } else if (response && 'error' in response) {
-        errorMessage = response.error;
-      }
-      
-      throw new Error(errorMessage);
+    console.error('API错误详情:', error);
+    if (axios.isAxiosError(error) && error.response) {
+      console.error('服务器响应:', error.response.data);
+      throw new Error(error.response.data.message || '服务器内部错误');
     }
     throw error;
   }
