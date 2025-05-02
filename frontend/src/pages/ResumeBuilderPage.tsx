@@ -84,17 +84,30 @@ const ResumeBuilderPage: React.FC = () => {
   // 处理AI优化简历
   const handleOptimizeResume = async (resume: Resume) => {
     try {
+      console.log('开始优化简历:', resume._id);
       setIsOptimizing(true);
       setOptimizationError(null);
       setResumeToOptimize(resume);
       
+      // 验证简历内容是否有效
+      if (!resume.content) {
+        throw new Error('简历内容为空，无法进行优化');
+      }
+      
+      console.log('调用AI服务优化简历...');
       // 调用AI服务优化简历
       const optimized = await resumeOptimizeService.optimizeResume(resume.content);
+      console.log('AI优化完成，准备显示预览');
+      
       setOptimizedContent(optimized);
       setShowOptimizePreview(true);
     } catch (error) {
-      setOptimizationError((error as Error).message);
       console.error('简历优化失败:', error);
+      // 提供更具体的错误信息
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : '简历优化失败，请稍后重试';
+      setOptimizationError(errorMessage);
     } finally {
       setIsOptimizing(false);
     }
@@ -203,13 +216,19 @@ const ResumeBuilderPage: React.FC = () => {
                               <Edit className="w-4 h-4 mr-1.5" />
                               编辑
                             </button>
-                            <button className="btn btn-outline btn-sm">
+                            <button 
+                              className="btn btn-outline btn-sm"
+                              onClick={(e) => e.stopPropagation()} // 阻止事件冒泡
+                            >
                               <Download className="w-4 h-4 mr-1.5" />
                               下载
                             </button>
                             <button 
                               className="btn btn-outline btn-sm"
-                              onClick={() => handleDuplicateResume(resume._id)}
+                              onClick={(e) => {
+                                e.stopPropagation(); // 阻止事件冒泡
+                                handleDuplicateResume(resume._id);
+                              }}
                             >
                               <Copy className="w-4 h-4 mr-1.5" />
                               复制
@@ -224,7 +243,10 @@ const ResumeBuilderPage: React.FC = () => {
 
                             <button 
                               className="btn btn-secondary btn-sm"
-                              onClick={() => handleOptimizeResume(resume)}
+                              onClick={(e) => {
+                                e.stopPropagation(); // 阻止事件冒泡
+                                handleOptimizeResume(resume);
+                              }}
                               disabled={isOptimizing}
                             >
                               <Wand2 className="w-4 h-4 mr-1.5" />
@@ -306,22 +328,34 @@ const ResumeBuilderPage: React.FC = () => {
                           <div className="flex flex-wrap gap-2">
                             <button 
                               className="btn btn-outline btn-sm"
-                              onClick={() => handleEditResume(resume._id)}
+                              onClick={(e) => {
+                                e.stopPropagation(); // 阻止事件冒泡
+                                handleEditResume(resume._id);
+                              }}
                             >
                               <Edit className="w-4 h-4 mr-1.5" />
                               编辑
                             </button>
-                            <button className="btn btn-outline btn-sm">
+                            <button 
+                              className="btn btn-outline btn-sm"
+                              onClick={(e) => e.stopPropagation()} // 阻止事件冒泡
+                            >
                               <Download className="w-4 h-4 mr-1.5" />
                               下载
                             </button>
-                            <button className="btn btn-outline btn-sm">
+                            <button 
+                              className="btn btn-outline btn-sm"
+                              onClick={(e) => e.stopPropagation()} // 阻止事件冒泡
+                            >
                               <FileText className="w-4 h-4 mr-1.5" />
                               预览
                             </button>
                             <button 
                               className="btn btn-danger btn-sm"
-                              onClick={() => handleDeleteResume(resume._id)}
+                              onClick={(e) => {
+                                e.stopPropagation(); // 阻止事件冒泡
+                                handleDeleteResume(resume._id);
+                              }}
                             >
                               <Trash className="w-4 h-4 mr-1.5" />
                               删除
@@ -329,7 +363,10 @@ const ResumeBuilderPage: React.FC = () => {
 
                             <button 
                               className="btn btn-secondary btn-sm"
-                              onClick={() => handleOptimizeResume(resume)}
+                              onClick={(e) => {
+                                e.stopPropagation(); // 阻止事件冒泡
+                                handleOptimizeResume(resume);
+                              }}
                               disabled={isOptimizing}
                             >
                               <Wand2 className="w-4 h-4 mr-1.5" />
