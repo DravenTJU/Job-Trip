@@ -24,6 +24,7 @@ const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'));
 const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
+const CoverLetterPage = lazy(() => import('@/pages/CoverLetterPage'));
 
 // 加载指示器
 const LoadingFallback = () => (
@@ -74,6 +75,7 @@ const AppRoutes = () => {
         <Route path="/resume-form/new" element={<ProtectedLayoutRoute element={<ResumeFormPage />} />} />
         <Route path="/resume-form/:id" element={<ProtectedLayoutRoute element={<ResumeFormPage />} />} />
         <Route path="/auto-fill" element={<ProtectedLayoutRoute element={<AutoFillPage />} />} />
+        <Route path="/cover-letters" element={<ProtectedLayoutRoute element={<CoverLetterPage />} />} />
         
         {/* 职位相关路由 */}
         <Route path="/jobs" element={<ProtectedLayoutRoute element={<JobsPage />} />} />
