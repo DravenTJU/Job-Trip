@@ -3,6 +3,7 @@ import authReducer from './slices/authSlice';
 import jobsReducer from './slices/jobsSlice';
 import companiesReducer from './slices/companiesSlice';
 import userJobsReducer from './slices/userJobsSlice';
+import resumesReducer from './slices/resumesSlice';
 
 // 创建Redux存储
 const store = configureStore({
@@ -11,6 +12,7 @@ const store = configureStore({
     jobs: jobsReducer,
     companies: companiesReducer,
     userJobs: userJobsReducer,
+    resumes: resumesReducer,
   },
   // 开发环境启用devTools
   devTools: process.env.NODE_ENV !== 'production',
@@ -20,4 +22,4 @@ const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-export default store; 
+export default store;

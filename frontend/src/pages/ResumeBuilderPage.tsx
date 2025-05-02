@@ -1,43 +1,40 @@
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Download, Copy, Edit, Trash, Plus, FileText, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ChevronDown, ChevronUp, Download, Copy, Edit, Trash, Plus, FileText, ExternalLink, Wand2 } from 'lucide-react';
+import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
+import { fetchResumes, deleteResume, duplicateResume } from '@/redux/slices/resumesSlice';
+import { Resume, ResumeType } from '@/types';
+import AlertMessage from '@/components/common/AlertMessage';
+import Loader from '@/components/common/Loader';
+import ConfirmDialog from '@/components/common/ConfirmDialog';
+import ResumeOptimizePreview from '@/components/resume/ResumeOptimizePreview';
+import resumeOptimizeService from '@/services/resumeOptimizeService';
 
 /**
  * 简历生成器页面组件
  * 用于创建和管理求职简历
  */
 const ResumeBuilderPage: React.FC = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { resumes, isLoading, error } = useAppSelector((state) => state.resumes);
+  
   const [activeAccordion, setActiveAccordion] = useState<string | null>('基础简历');
-  const [expandedResume, setExpandedResume] = useState<number | null>(1);
+  const [expandedResume, setExpandedResume] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [resumeToDelete, setResumeToDelete] = useState<string | null>(null);
+  
+  // AI优化相关状态
+  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [optimizationError, setOptimizationError] = useState<string | null>(null);
+  const [showOptimizePreview, setShowOptimizePreview] = useState(false);
+  const [optimizedContent, setOptimizedContent] = useState<string>('');
+  const [resumeToOptimize, setResumeToOptimize] = useState<Resume | null>(null);
 
-  // 简历列表数据
-  const resumeList = [
-    {
-      id: 1,
-      name: '软件工程师基础简历',
-      lastUpdated: '2023-05-15',
-      tailored: false,
-      targetPosition: '前端工程师',
-      thumbnail: 'https://placehold.co/120x160?text=简历1',
-    },
-    {
-      id: 2,
-      name: 'Twitter前端工程师定制简历',
-      lastUpdated: '2023-06-20',
-      tailored: true,
-      targetJob: 'Twitter前端工程师',
-      targetPosition: '前端工程师',
-      thumbnail: 'https://placehold.co/120x160?text=简历2',
-    },
-    {
-      id: 3,
-      name: 'Google全栈工程师定制简历',
-      lastUpdated: '2023-07-05',
-      tailored: true,
-      targetJob: 'Google全栈工程师',
-      targetPosition: '全栈工程师',
-      thumbnail: 'https://placehold.co/120x160?text=简历3',
-    }
-  ];
+  // 加载简历列表
+  useEffect(() => {
+    dispatch(fetchResumes());
+  }, [dispatch]);
 
   // 切换手风琴状态
   const toggleAccordion = (section: string) => {
@@ -45,8 +42,69 @@ const ResumeBuilderPage: React.FC = () => {
   };
 
   // 切换简历展开状态
-  const toggleResumeExpand = (id: number) => {
+  const toggleResumeExpand = (id: string) => {
     setExpandedResume(expandedResume === id ? null : id);
+  };
+
+  // 处理删除简历
+  const handleDeleteResume = (id: string) => {
+    setResumeToDelete(id);
+    setShowDeleteConfirm(true);
+  };
+
+  // 确认删除简历
+  const confirmDeleteResume = async () => {
+    if (resumeToDelete) {
+      await dispatch(deleteResume(resumeToDelete));
+      setShowDeleteConfirm(false);
+      setResumeToDelete(null);
+    }
+  };
+
+  // 处理复制简历
+  const handleDuplicateResume = async (id: string) => {
+    await dispatch(duplicateResume(id));
+  };
+
+  // 处理编辑简历
+  const handleEditResume = (id: string) => {
+    navigate(`/resume-form/${id}`);
+  };
+
+  // 处理创建新简历 - 默认创建基础简历
+  const handleCreateResume = () => {
+    navigate(`/resume-form/new`);
+  };
+  
+  // 处理创建定制简历
+  const handleCreateTailoredResume = () => {
+    navigate(`/resume-form/new?type=${ResumeType.TAILORED}`);
+  };
+  
+  // 处理AI优化简历
+  const handleOptimizeResume = async (resume: Resume) => {
+    try {
+      setIsOptimizing(true);
+      setOptimizationError(null);
+      setResumeToOptimize(resume);
+      
+      // 调用AI服务优化简历
+      const optimized = await resumeOptimizeService.optimizeResume(resume.content);
+      setOptimizedContent(optimized);
+      setShowOptimizePreview(true);
+    } catch (error) {
+      setOptimizationError((error as Error).message);
+      console.error('简历优化失败:', error);
+    } finally {
+      setIsOptimizing(false);
+    }
+  };
+  
+  // 关闭优化预览
+  const handleCloseOptimizePreview = () => {
+    setShowOptimizePreview(false);
+    setOptimizedContent('');
+    setResumeToOptimize(null);
   };
 
   return (
@@ -57,6 +115,27 @@ const ResumeBuilderPage: React.FC = () => {
           使用JobTrip的智能简历生成器创建专业、吸引人的简历，针对特定职位进行自动优化
         </p>
       </div>
+
+      {error && <AlertMessage type="error" message={error} />}
+      {isLoading && <Loader />}
+      
+      {/* AI优化错误提示 */}
+      {optimizationError && (
+        <AlertMessage type="error" message={optimizationError} />
+      )}
+      
+      {/* AI优化预览 */}
+      {showOptimizePreview && resumeToOptimize && (
+        <ResumeOptimizePreview
+          originalResume={{
+            name: resumeToOptimize.name,
+            content: resumeToOptimize.content,
+            targetPosition: resumeToOptimize.targetPosition
+          }}
+          optimizedContent={optimizedContent}
+          onClose={handleCloseOptimizePreview}
+        />
+      )}
 
       {/* 简历分类部分 */}
       <div className="section">
@@ -83,14 +162,14 @@ const ResumeBuilderPage: React.FC = () => {
             {activeAccordion === '基础简历' && (
               <div className="card-body">
                 <div className="space-y-4">
-                  {resumeList.filter(resume => !resume.tailored).map(resume => (
+                  {resumes.filter(resume => resume.type === ResumeType.BASE).map(resume => (
                     <div 
-                      key={resume.id}
+                      key={resume._id}
                       className="resume-card"
                     >
                       <div 
                         className="resume-card-header"
-                        onClick={() => toggleResumeExpand(resume.id)}
+                        onClick={() => toggleResumeExpand(resume._id)}
                       >
                         <div className="flex items-center">
                           <img 
@@ -101,12 +180,12 @@ const ResumeBuilderPage: React.FC = () => {
                           <div>
                             <h3 className="font-medium text-gray-900 dark:text-white">{resume.name}</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400">
-                              目标职位: {resume.targetPosition} • 更新于 {resume.lastUpdated}
+                              目标职位: {resume.targetPosition || '未指定'} • 更新于 {new Date(resume.updatedAt).toLocaleDateString()}
                             </p>
                           </div>
                         </div>
                         <div>
-                          {expandedResume === resume.id ? (
+                          {expandedResume === resume._id ? (
                             <ChevronUp className="accordion-icon" />
                           ) : (
                             <ChevronDown className="accordion-icon" />
@@ -114,10 +193,13 @@ const ResumeBuilderPage: React.FC = () => {
                         </div>
                       </div>
                       
-                      {expandedResume === resume.id && (
+                      {expandedResume === resume._id && (
                         <div className="card-footer">
                           <div className="flex flex-wrap gap-2">
-                            <button className="btn btn-outline btn-sm">
+                            <button 
+                              className="btn btn-outline btn-sm"
+                              onClick={() => handleEditResume(resume._id)}
+                            >
                               <Edit className="w-4 h-4 mr-1.5" />
                               编辑
                             </button>
@@ -125,13 +207,28 @@ const ResumeBuilderPage: React.FC = () => {
                               <Download className="w-4 h-4 mr-1.5" />
                               下载
                             </button>
-                            <button className="btn btn-outline btn-sm">
+                            <button 
+                              className="btn btn-outline btn-sm"
+                              onClick={() => handleDuplicateResume(resume._id)}
+                            >
                               <Copy className="w-4 h-4 mr-1.5" />
                               复制
                             </button>
-                            <button className="btn btn-danger btn-sm">
+                            <button 
+                              className="btn btn-danger btn-sm"
+                              onClick={() => handleDeleteResume(resume._id)}
+                            >
                               <Trash className="w-4 h-4 mr-1.5" />
                               删除
+                            </button>
+
+                            <button 
+                              className="btn btn-secondary btn-sm"
+                              onClick={() => handleOptimizeResume(resume)}
+                              disabled={isOptimizing}
+                            >
+                              <Wand2 className="w-4 h-4 mr-1.5" />
+                              {isOptimizing && resumeToOptimize?._id === resume._id ? '优化中...' : 'AI优化'}
                             </button>
                           </div>
                         </div>
@@ -139,9 +236,12 @@ const ResumeBuilderPage: React.FC = () => {
                     </div>
                   ))}
                   
-                  <button className="resume-add-button">
+                  <button 
+                    className="resume-add-button"
+                    onClick={handleCreateResume}
+                  >
                     <Plus className="w-5 h-5 mr-2" />
-                    创建新的基础简历
+                    创建新的简历
                   </button>
                 </div>
               </div>
@@ -170,14 +270,14 @@ const ResumeBuilderPage: React.FC = () => {
             {activeAccordion === '定制简历' && (
               <div className="card-body">
                 <div className="space-y-4">
-                  {resumeList.filter(resume => resume.tailored).map(resume => (
+                  {resumes.filter(resume => resume.type === ResumeType.TAILORED).map(resume => (
                     <div 
-                      key={resume.id}
+                      key={resume._id}
                       className="resume-card"
                     >
                       <div 
                         className="resume-card-header"
-                        onClick={() => toggleResumeExpand(resume.id)}
+                        onClick={() => toggleResumeExpand(resume._id)}
                       >
                         <div className="flex items-center">
                           <img 
@@ -188,12 +288,12 @@ const ResumeBuilderPage: React.FC = () => {
                           <div>
                             <h3 className="font-medium text-gray-900 dark:text-white">{resume.name}</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400">
-                              目标: {resume.targetJob} • 更新于 {resume.lastUpdated}
+                              目标: {resume.targetJob || '未指定'} • 更新于 {new Date(resume.updatedAt).toLocaleDateString()}
                             </p>
                           </div>
                         </div>
                         <div>
-                          {expandedResume === resume.id ? (
+                          {expandedResume === resume._id ? (
                             <ChevronUp className="accordion-icon" />
                           ) : (
                             <ChevronDown className="accordion-icon" />
@@ -201,10 +301,13 @@ const ResumeBuilderPage: React.FC = () => {
                         </div>
                       </div>
                       
-                      {expandedResume === resume.id && (
+                      {expandedResume === resume._id && (
                         <div className="card-footer">
                           <div className="flex flex-wrap gap-2">
-                            <button className="btn btn-outline btn-sm">
+                            <button 
+                              className="btn btn-outline btn-sm"
+                              onClick={() => handleEditResume(resume._id)}
+                            >
                               <Edit className="w-4 h-4 mr-1.5" />
                               编辑
                             </button>
@@ -216,9 +319,21 @@ const ResumeBuilderPage: React.FC = () => {
                               <FileText className="w-4 h-4 mr-1.5" />
                               预览
                             </button>
-                            <button className="btn btn-secondary btn-sm">
-                              <ExternalLink className="w-4 h-4 mr-1.5" />
-                              申请职位
+                            <button 
+                              className="btn btn-danger btn-sm"
+                              onClick={() => handleDeleteResume(resume._id)}
+                            >
+                              <Trash className="w-4 h-4 mr-1.5" />
+                              删除
+                            </button>
+
+                            <button 
+                              className="btn btn-secondary btn-sm"
+                              onClick={() => handleOptimizeResume(resume)}
+                              disabled={isOptimizing}
+                            >
+                              <Wand2 className="w-4 h-4 mr-1.5" />
+                              {isOptimizing && resumeToOptimize?._id === resume._id ? '优化中...' : 'AI优化'}
                             </button>
                           </div>
                         </div>
@@ -226,9 +341,12 @@ const ResumeBuilderPage: React.FC = () => {
                     </div>
                   ))}
                   
-                  <button className="resume-add-button">
+                  <button 
+                    className="resume-add-button"
+                    onClick={handleCreateResume}
+                  >
                     <Plus className="w-5 h-5 mr-2" />
-                    从现有简历创建定制版本
+                    创建新的简历
                   </button>
                 </div>
               </div>
@@ -237,28 +355,20 @@ const ResumeBuilderPage: React.FC = () => {
         </div>
       </div>
       
-      {/* 简历建议部分 */}
-      <div className="section card p-6">
-        <h2 className="title-md">简历建议</h2>
-        <div className="grid-cols-1-2">
-          <div className="resume-tip-card">
-            <h3 className="font-medium text-gray-900 mb-2 dark:text-white">简历长度</h3>
-            <p className="text-sm text-description mb-4">
-              您的简历应该保持在1-2页之间。当前简历有3页，考虑精简内容以提高可读性。
-            </p>
-            <button className="text-sm text-indigo-600 font-medium dark:text-indigo-400">查看如何优化 →</button>
-          </div>
-          <div className="resume-tip-card">
-            <h3 className="font-medium text-gray-900 mb-2 dark:text-white">行动导向的成就</h3>
-            <p className="text-sm text-description mb-4">
-              使用行动词来开始您的成就描述，并量化结果以展示您的影响力。
-            </p>
-            <button className="text-sm text-indigo-600 font-medium dark:text-indigo-400">查看示例 →</button>
-          </div>
-        </div>
-      </div>
+      {/* 简历建议部分已移除 */}
+
+      {/* 删除确认对话框 */}
+      <ConfirmDialog
+        open={showDeleteConfirm}
+        title="删除简历"
+        message="您确定要删除这份简历吗？此操作无法撤销。"
+        confirmText="删除"
+        cancelText="取消"
+        onConfirm={confirmDeleteResume}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
     </div>
   );
 };
 
-export default ResumeBuilderPage; 
+export default ResumeBuilderPage;

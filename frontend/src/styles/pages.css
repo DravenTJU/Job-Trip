@@ -29,11 +29,11 @@
 
 /* 简历生成器页面样式 */
 .resume-card {
-  @apply border border-gray-200 rounded-lg overflow-hidden dark:border-gray-700;
+  @apply border border-gray-200 rounded-lg overflow-hidden dark:border-gray-700 w-full;
 }
 
 .resume-card-header {
-  @apply p-3 flex justify-between items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700;
+  @apply p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700;
 }
 
 .resume-thumbnail {
@@ -140,4 +140,4 @@
 
 .job-add-button {
   @apply w-full py-2 text-gray-500 bg-white border border-dashed border-gray-300 rounded-md hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 flex items-center justify-center;
-} 
+}
