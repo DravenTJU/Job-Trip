@@ -76,11 +76,8 @@ const AppRoutes = () => {
         <Route path="/resume-form/new" element={<ProtectedLayoutRoute element={<ResumeFormPage />} />} />
         <Route path="/resume-form/:id" element={<ProtectedLayoutRoute element={<ResumeFormPage />} />} />
         <Route path="/auto-fill" element={<ProtectedLayoutRoute element={<AutoFillPage />} />} />
-<<<<<<< HEAD
         <Route path="/cover-letters" element={<ProtectedLayoutRoute element={<CoverLetterPage />} />} />
-=======
         <Route path="/chrome-extension" element={<ProtectedLayoutRoute element={<ChromeExtensionPage />} />} />
->>>>>>> main
         
         {/* 职位相关路由 */}
         <Route path="/jobs" element={<ProtectedLayoutRoute element={<JobsPage />} />} />
