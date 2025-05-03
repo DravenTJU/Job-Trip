@@ -1,4 +1,4 @@
-const enableLogFileDownload = true; // 设置为 true 以启用日志文件下载
+const enableLogFileDownload = false; // 设置为 true 以启用日志文件下载
 
 class Job {
   constructor({
