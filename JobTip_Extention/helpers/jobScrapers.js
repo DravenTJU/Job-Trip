@@ -1,4 +1,4 @@
-const enableLogFileDownload = false; // 设置为 true 以启用日志文件下载
+const enableLogFileDownload = true; // 设置为 true 以启用日志文件下载
 
 class Job {
   constructor({
@@ -478,8 +478,9 @@ const scrapers = {
                       try {
                         const html = doc.documentElement.outerHTML;
                         // 更新正則表達式以匹配更多格式
-                        const jobTypeRegex = /"text":"(Full-time|Part-time|Contract|Casual|Permanent|Temporary|Internship|Apprenticeship|Volunteer|Freelance|Seasonal|Fixed-term|Graduate|Entry level|Mid-Senior level|Senior level|Executive|Director|Not Applicable)"/;
+                        const jobTypeRegex = /"text":"\s*(Full-time|Part-time|Contract|Casual|Permanent|Temporary|Internship|Apprenticeship|Volunteer|Freelance|Seasonal|Fixed-term|Graduate|Entry level|Mid-Senior level|Senior level|Executive|Director|Not Applicable)"/i;
                         const match = html.match(jobTypeRegex);
+
                         if (match && match[1]) {
                           jobType = match[1];
                         }
@@ -502,16 +503,20 @@ const scrapers = {
                         jobType = detailJobTypeNode?.textContent?.trim() || '';
                       }
 
+                      log(`==========Job type found: ${jobType}`);
+
+
                       // 如果選擇器也失敗，嘗試從 metadata 中提取
                       if (!jobType) {
                         const metadataItems = Array.from(doc.querySelectorAll('span.job-card-container__footer-item'))
                           .map(item => item.textContent.trim())
                           .filter(text => text);
                         
+                        log(`==========metadataItems: ${metadataItems}`);
                         const jobTypeText = metadataItems.find(text =>
                           text.match(/\b(Full-time|Part-time|Contract|Temporary|Internship|Casual|Contractor|Graduate)\b/i)
                         );
-                        
+                        log(`==========Job type text foundjobTypeText: ${jobTypeText}`);
                         if (jobTypeText) {
                           jobType = jobTypeText.match(/\b(Full-time|Part-time|Contract|Temporary|Internship|Casual|Contractor|Graduate)\b/i)[0];
                         }

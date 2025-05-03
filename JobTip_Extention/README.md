@@ -1,7 +1,7 @@
 # Jobtip Browser Extension
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/Rorogogogo/Jobtip-extention/blob/main/LICENSE)
-[![GitHub Issues](https://img.shields.io/github/issues/Rorogogogo/Jobtip-extention)](https://github.com/Rorogogogo/Jobtip-extention/issues)
+
 
 A browser extension designed to streamline your job search by scraping job listings from various platforms and potentially integrating with the [Jobtip](https://jobtip.me/) service. This tool helps you gather and manage job application information efficiently.
 

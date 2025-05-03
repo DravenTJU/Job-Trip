@@ -174,8 +174,8 @@ function createJobSearchUrls (searchTerm, location) {
   })
 
   // Add region-specific Indeed
-  let indeedPrefix = 'au'
-  let indeedDomain = 'au.indeed.com'
+  let indeedPrefix = 'www'
+  let indeedDomain = 'www.indeed.com'
 
   if (location.includes('United Kingdom')) {
     indeedPrefix = 'uk'
@@ -186,6 +186,12 @@ function createJobSearchUrls (searchTerm, location) {
   } else if (location.includes('United States')) {
     indeedPrefix = 'us'
     indeedDomain = 'www.indeed.com'
+  } else if (location.includes('New Zealand')) {
+    indeedPrefix = 'nz'
+    indeedDomain = 'nz.indeed.com'
+  } else if (location.includes('Australia')) {
+    indeedPrefix = 'au'
+    indeedDomain = 'au.indeed.com'
   }
 
   sites.push({
