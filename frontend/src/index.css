@@ -9,28 +9,50 @@
 
 /* 全局样式 */
 @layer base {
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+  
   body {
-    @apply bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100;
+    background-color: #ffffff;
+    color: #111827;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #111827;
+      color: #f3f4f6;
+    }
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-medium;
+    font-weight: 500;
   }
   
   h1 {
-    @apply text-3xl md:text-4xl;
+    font-size: 1.875rem;
+    line-height: 2.25rem;
   }
   
   h2 {
-    @apply text-2xl md:text-3xl;
+    font-size: 1.5rem;
+    line-height: 2rem;
   }
   
   h3 {
-    @apply text-xl md:text-2xl;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
   }
   
   a {
-    @apply text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300;
+    color: #4f46e5;
+  }
+  
+  a:hover {
+    color: #4338ca;
   }
 }
 
@@ -45,14 +67,14 @@
   }
   
   .transition-fast {
-    @apply transition-all duration-150 ease-in-out;
+    transition: all 150ms ease-in-out;
   }
   
   .transition-medium {
-    @apply transition-all duration-300 ease-in-out;
+    transition: all 300ms ease-in-out;
   }
   
   .transition-slow {
-    @apply transition-all duration-500 ease-in-out;
+    transition: all 500ms ease-in-out;
   }
 }

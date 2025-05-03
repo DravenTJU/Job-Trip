@@ -15,16 +15,20 @@ export const connectDB = async (): Promise<void> => {
       throw new Error('未配置MongoDB连接URL，请检查环境变量');
     }
 
-    const conn = await mongoose.connect(mongoURI);
+    const conn = await mongoose.connect(mongoURI, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
 
-    logger.info(`MongoDB连接成功: ${mongoURI}`);
+    logger.info(`MongoDB连接成功: ${conn.connection.host}`);
   } catch (error) {
     if (error instanceof Error) {
       logger.error(`MongoDB连接失败: ${error.message}`);
     } else {
       logger.error('MongoDB连接失败，发生未知错误');
     }
-    process.exit(1);
+    // 不要直接退出进程，让应用继续运行
+    // process.exit(1);
   }
 };
 

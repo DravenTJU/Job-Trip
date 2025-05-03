@@ -1,4 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 // 主题模式类型
 type ThemeMode = 'light' | 'dark';
@@ -33,6 +35,19 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const defaultTheme: ThemeMode = savedTheme || (prefersDarkMode ? 'dark' : 'light');
   
   const [mode, setMode] = useState<ThemeMode>(defaultTheme);
+
+  // 创建主题
+  const theme = createTheme({
+    palette: {
+      mode,
+      primary: {
+        main: '#4f46e5',
+      },
+      secondary: {
+        main: '#10b981',
+      },
+    },
+  });
 
   // 切换主题函数
   const toggleTheme = () => {
@@ -75,7 +90,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   // 提供主题上下文
   return (
     <ThemeContext.Provider value={{ mode, toggleTheme }}>
-      {children}
+      <MuiThemeProvider theme={theme}>
+        <CssBaseline />
+        {children}
+      </MuiThemeProvider>
     </ThemeContext.Provider>
   );
 }; 

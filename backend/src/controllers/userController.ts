@@ -35,7 +35,15 @@ export const registerUser = async (
     // 生成JWT令牌
     const token = user.generateAuthToken();
 
-    // 返回用户数据和令牌（不包含密码）
+    // 设置cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7天
+    });
+
+    // 返回用户数据（不包含密码）
     const userData = {
       id: user._id,
       username: user.username,
@@ -50,7 +58,6 @@ export const registerUser = async (
       200,
       '用户注册成功',
       {
-        token,
         user: userData
       }
     ));
@@ -71,35 +78,49 @@ export const loginUser = async (
 ) => {
   try {
     const { email, password } = req.body;
+    console.log('Login attempt for email:', email);
 
     // 验证输入
     if (!email || !password) {
+      console.log('Missing email or password');
       return next(new AppError('请提供邮箱和密码', 400));
     }
 
     // 查找用户并选择密码字段
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
+      console.log('User not found for email:', email);
       return next(new AppError('无效的凭据', 401));
     }
 
     // 检查用户状态
     if (user.status !== 'active') {
+      console.log('User is not active:', user.status);
       return next(new AppError('此用户已被禁用，请联系管理员', 403));
     }
 
     // 检查密码
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
+      console.log('Password mismatch for user:', email);
       return next(new AppError('无效的凭据', 401));
     }
 
     // 生成JWT令牌
     const token = user.generateAuthToken();
+    console.log('Token generated for user:', email);
 
-    // 返回用户数据和令牌（不包含密码）
+    // 设置cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7天
+    });
+
+    // 返回用户数据（不包含密码）
     const userData = {
-      id: user._id,
+      id: user._id.toString(), // 确保ID是字符串
       username: user.username,
       email: user.email,
       firstName: user.firstName,
@@ -108,13 +129,44 @@ export const loginUser = async (
       status: user.status,
     };
 
-    res.status(200).json(createApiResponse(
+    console.log('Login response data:', { user: userData });
+
+    // 使用createApiResponse返回响应
+    res.json(createApiResponse(
       200,
       '登录成功',
       {
-        token,
         user: userData
       }
+    ));
+  } catch (error) {
+    console.error('Login error:', error);
+    next(error);
+  }
+};
+
+/**
+ * @desc    退出登录
+ * @route   POST /api/v1/users/logout
+ * @access  私有
+ */
+export const logoutUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // 清除cookie
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+    });
+
+    res.json(createApiResponse(
+      200,
+      '退出登录成功',
+      null
     ));
   } catch (error) {
     next(error);

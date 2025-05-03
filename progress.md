@@ -19,7 +19,7 @@
 - 更新了注册页面（RegisterPage）的UI设计
 - 新增电子邮件注册页面（EmailSignupPage）
 - 新增忘记密码页面（ForgotPasswordPage）
-- 新增重置密码页面（ResetPasswordPage）
+- 新增重置密码页面（ResetPasswordPage）nono
 - 所有页面保持一致的设计语言和视觉风格
 - 添加了社交媒体登录/注册选项
 - 改进了表单验证和用户反馈

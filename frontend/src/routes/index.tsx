@@ -17,11 +17,12 @@ const JobDetailPage = lazy(() => import('@/pages/JobDetailPage'));
 const JobFormPage = lazy(() => import('@/pages/JobFormPage'));
 const JobApplicationForm = lazy(() => import('@/pages/JobApplicationForm'));
 const StatsPage = lazy(() => import('@/pages/StatsPage'));
-const ProfilePage = lazy(() => import('@/pages/ProfilePage'));
+const ProfilePage = lazy(() => import('@/pages/profile/ProfilePage'));
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
 const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'));
 const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
+const AccountSettingsPage = lazy(() => import('@/pages/AccountSettingsPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 
 // 加载指示器
@@ -57,7 +58,7 @@ const AppRoutes = () => {
   return (
     <Suspense fallback={<LoadingFallback />}>
       <Routes>
-        {/* 公开路由 */}
+        {/* 公开路由（不带布局） */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -85,6 +86,7 @@ const AppRoutes = () => {
         {/* 其他应用路由 */}
         <Route path="/stats" element={<ProtectedLayoutRoute element={<StatsPage />} />} />
         <Route path="/profile" element={<ProtectedLayoutRoute element={<ProfilePage />} />} />
+        <Route path="/settings" element={<ProtectedLayoutRoute element={<AccountSettingsPage />} />} />
         
         {/* 404页面 */}
         <Route path="/404" element={<LayoutRoute element={<NotFoundPage />} />} />

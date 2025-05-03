@@ -1,63 +1,75 @@
+import { ApiResponse, Job, CreateJobData, PaginatedResponse } from '@/types';
 import api from './api';
-import { CreateJobData, Job, PaginatedResponse } from '@/types';
 
 // 职位服务
-const jobService = {
+class JobService {
   // 获取职位列表
-  getJobs: async (params?: { 
-    page?: number; 
+  async getJobs(params?: {
+    page?: number;
     limit?: number;
     search?: string;
     sort?: string;
-  }): Promise<PaginatedResponse<Job>> => {
+  }): Promise<PaginatedResponse<Job>> {
     try {
-      // 调用API获取职位列表，response.data.data已经在api.ts中提取
-      return await api.get<PaginatedResponse<Job>>('/jobs', params);
-    } catch (error) {
-      console.error('获取职位列表失败:', error);
-      throw error;
-    }
-  },
-
-  // 获取单个职位
-  getJob: async (id: string): Promise<Job> => {
-    try {
-      return await api.get<Job>(`/jobs/${id}`);
-    } catch (error) {
-      console.error(`获取职位(ID: ${id})失败:`, error);
-      throw error;
-    }
-  },
-
-  // 创建职位
-  createJob: async (jobData: CreateJobData): Promise<Job> => {
-    try {
-      return await api.post<Job>('/jobs', jobData);
-    } catch (error) {
-      console.error('创建职位失败:', error);
-      throw error;
-    }
-  },
-
-  // 更新职位
-  updateJob: async (id: string, jobData: Partial<CreateJobData>): Promise<Job> => {
-    try {
-      return await api.put<Job>(`/jobs/${id}`, jobData);
-    } catch (error) {
-      console.error(`更新职位(ID: ${id})失败:`, error);
-      throw error;
-    }
-  },
-
-  // 删除职位
-  deleteJob: async (id: string): Promise<void> => {
-    try {
-      await api.delete<void>(`/jobs/${id}`);
-    } catch (error) {
-      console.error(`删除职位(ID: ${id})失败:`, error);
-      throw error;
+      const response = await api.get<ApiResponse<PaginatedResponse<Job>>>('/jobs', {
+        params
+      });
+      if (!response || !response.data || !response.data.data) {
+        throw new Error('获取职位列表失败：无效的响应数据');
+      }
+      return response.data.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || '获取职位列表失败');
     }
   }
-};
 
-export default jobService; 
+  // 获取职位详情
+  async getJob(id: string): Promise<Job> {
+    try {
+      const response = await api.get<ApiResponse<Job>>(`/jobs/${id}`);
+      if (!response || !response.data || !response.data.data) {
+        throw new Error('获取职位详情失败：无效的响应数据');
+      }
+      return response.data.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || '获取职位详情失败');
+    }
+  }
+
+  // 创建职位
+  async createJob(jobData: CreateJobData): Promise<Job> {
+    try {
+      const response = await api.post<ApiResponse<Job>>('/jobs', jobData);
+      if (!response || !response.data || !response.data.data) {
+        throw new Error('创建职位失败：无效的响应数据');
+      }
+      return response.data.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || '创建职位失败');
+    }
+  }
+
+  // 更新职位
+  async updateJob(id: string, jobData: Partial<CreateJobData>): Promise<Job> {
+    try {
+      const response = await api.put<ApiResponse<Job>>(`/jobs/${id}`, jobData);
+      if (!response || !response.data || !response.data.data) {
+        throw new Error('更新职位失败：无效的响应数据');
+      }
+      return response.data.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || '更新职位失败');
+    }
+  }
+
+  // 删除职位
+  async deleteJob(id: string): Promise<void> {
+    try {
+      await api.delete<ApiResponse<void>>(`/jobs/${id}`);
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || '删除职位失败');
+    }
+  }
+}
+
+export const jobService = new JobService(); 

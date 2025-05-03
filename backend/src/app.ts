@@ -5,15 +5,13 @@ import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import swaggerUi from 'swagger-ui-express';
 import { errorHandler, createApiResponse } from './middleware/errorHandler';
-import userRoutes from './routes/userRoutes';
-import jobRoutes from './routes/jobRoutes';
-import companyRoutes from './routes/companyRoutes';
-import userJobRoutes from './routes/userJobRoutes';
+import routes from './routes';
 import { stream } from './utils/logger';
 import swaggerSpec from './config/swagger';
 import * as path from 'path';
 import * as fs from 'fs';
 import { getBasicCSP, getDocsCSP } from './utils/cspHelper';
+import cookieParser from 'cookie-parser';
 
 const app: Application = express();
 
@@ -40,17 +38,29 @@ app.use(helmet({
 
 // 配置CORS
 app.use(cors({
-  origin: '*', // 在开发环境中允许所有来源访问
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: process.env.NODE_ENV === 'development' 
+    ? 'http://localhost:3000' 
+    : process.env.FRONTEND_URL,
+  credentials: true, // 允许发送cookies
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 }));
+
+// 解析cookies
+app.use(cookieParser());
 
 // 速率限制器
 const limiter = rateLimit({
-  windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15分钟
-  max: Number(process.env.RATE_LIMIT_MAX) || 100, // 每个IP在windowMs内限制100个请求
-  standardHeaders: true, // 返回标准的RateLimit头信息
-  legacyHeaders: false, // 禁用`X-RateLimit-*` 头信息
+  windowMs: 15 * 60 * 1000, // 15分钟
+  max: 1000, // 限制每个IP 15分钟内最多1000个请求
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: '请求过于频繁，请稍后再试',
+  skipFailedRequests: true, // 不计算失败的请求
+  keyGenerator: (req) => {
+    // 使用用户ID作为key（如果已登录）
+    return req.user?.id || req.ip;
+  }
 });
 
 // 应用速率限制到所有请求
@@ -62,6 +72,9 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // HTTP请求日志
 app.use(morgan('combined', { stream }));
+
+// API路由
+app.use('/api/v1', routes);
 
 // 为Swagger UI创建特定中间件，确保所有资源通过HTTP加载
 app.use('/api-docs', (req: Request, res: Response, next: NextFunction) => {
@@ -303,12 +316,6 @@ app.use('/public', (req: Request, res: Response, next: NextFunction) => {
 app.get('/favicon.ico', (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, '../public/favicon.ico'));
 });
-
-// 主API路由
-app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/jobs', jobRoutes);
-app.use('/api/v1/companies', companyRoutes);
-app.use('/api/v1/userjobs', userJobRoutes);
 
 /**
  * @swagger

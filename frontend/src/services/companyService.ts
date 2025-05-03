@@ -1,62 +1,75 @@
+import { ApiResponse, Company, CreateCompanyData, PaginatedResponse } from '@/types';
 import api from './api';
-import { Company, CreateCompanyData, PaginatedResponse } from '@/types';
 
 // 公司服务
-const companyService = {
+class CompanyService {
   // 获取公司列表
-  getCompanies: async (params?: { 
-    page?: number; 
+  async getCompanies(params?: {
+    page?: number;
     limit?: number;
     search?: string;
     sort?: string;
-  }): Promise<PaginatedResponse<Company>> => {
+  }): Promise<PaginatedResponse<Company>> {
     try {
-      return await api.get<PaginatedResponse<Company>>('/companies', params);
-    } catch (error) {
-      console.error('获取公司列表失败:', error);
-      throw error;
-    }
-  },
-
-  // 获取单个公司
-  getCompany: async (id: string): Promise<Company> => {
-    try {
-      return await api.get<Company>(`/companies/${id}`);
-    } catch (error) {
-      console.error(`获取公司(ID: ${id})失败:`, error);
-      throw error;
-    }
-  },
-
-  // 创建公司
-  createCompany: async (companyData: CreateCompanyData): Promise<Company> => {
-    try {
-      return await api.post<Company>('/companies', companyData);
-    } catch (error) {
-      console.error('创建公司失败:', error);
-      throw error;
-    }
-  },
-
-  // 更新公司
-  updateCompany: async (id: string, companyData: Partial<CreateCompanyData>): Promise<Company> => {
-    try {
-      return await api.put<Company>(`/companies/${id}`, companyData);
-    } catch (error) {
-      console.error(`更新公司(ID: ${id})失败:`, error);
-      throw error;
-    }
-  },
-
-  // 删除公司
-  deleteCompany: async (id: string): Promise<void> => {
-    try {
-      await api.delete<void>(`/companies/${id}`);
-    } catch (error) {
-      console.error(`删除公司(ID: ${id})失败:`, error);
-      throw error;
+      const response = await api.get<ApiResponse<PaginatedResponse<Company>>>('/companies', {
+        params
+      });
+      if (!response || !response.data || !response.data.data) {
+        throw new Error('获取公司列表失败：无效的响应数据');
+      }
+      return response.data.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || '获取公司列表失败');
     }
   }
-};
 
-export default companyService; 
+  // 获取公司详情
+  async getCompany(id: string): Promise<Company> {
+    try {
+      const response = await api.get<ApiResponse<Company>>(`/companies/${id}`);
+      if (!response || !response.data || !response.data.data) {
+        throw new Error('获取公司详情失败：无效的响应数据');
+      }
+      return response.data.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || '获取公司详情失败');
+    }
+  }
+
+  // 创建公司
+  async createCompany(companyData: CreateCompanyData): Promise<Company> {
+    try {
+      const response = await api.post<ApiResponse<Company>>('/companies', companyData);
+      if (!response || !response.data || !response.data.data) {
+        throw new Error('创建公司失败：无效的响应数据');
+      }
+      return response.data.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || '创建公司失败');
+    }
+  }
+
+  // 更新公司
+  async updateCompany(id: string, companyData: Partial<CreateCompanyData>): Promise<Company> {
+    try {
+      const response = await api.put<ApiResponse<Company>>(`/companies/${id}`, companyData);
+      if (!response || !response.data || !response.data.data) {
+        throw new Error('更新公司失败：无效的响应数据');
+      }
+      return response.data.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || '更新公司失败');
+    }
+  }
+
+  // 删除公司
+  async deleteCompany(id: string): Promise<void> {
+    try {
+      await api.delete<ApiResponse<void>>(`/companies/${id}`);
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || '删除公司失败');
+    }
+  }
+}
+
+export const companyService = new CompanyService(); 

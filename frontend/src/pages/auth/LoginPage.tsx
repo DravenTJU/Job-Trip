@@ -105,112 +105,87 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // 验证表单
     if (!validateForm()) {
       return;
     }
     
-    // 调用登录Action
-    dispatch(login(formData));
+    try {
+      await dispatch(login(formData)).unwrap();
+      navigate(from, { replace: true });
+    } catch (error) {
+      // 错误已经在 Redux 中处理
+    }
   };
 
-  // 处理第三方登录
+  // 处理社交登录
   const handleSocialLogin = (provider: string) => {
-    // 实现社交媒体登录逻辑
-    console.log(`登录方式: ${provider}`);
+    // TODO: 实现社交登录
+    console.log(`Social login with ${provider}`);
   };
+
+  if (isLoading) {
+    return <Loader message="正在登录..." fullScreen />;
+  }
 
   return (
-    <Box 
-      sx={{ 
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+    <Box
+      sx={{
         minHeight: '100vh',
-        p: 2,
-        backgroundColor: 'background.default',
-        backgroundImage: 'linear-gradient(to bottom right, rgba(63, 81, 181, 0.05), rgba(63, 81, 181, 0.1))'
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        bgcolor: 'background.default'
       }}
     >
-      <Paper 
-        elevation={3} 
-        sx={{ 
-          p: 4, 
-          maxWidth: 450, 
+      <Paper
+        elevation={3}
+        sx={{
+          p: 4,
           width: '100%',
-          borderRadius: '16px',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)'
+          maxWidth: 400,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
         }}
       >
-        <Typography 
-          variant="h4" 
-          component="h1" 
-          align="center" 
-          gutterBottom
-          sx={{ 
-            fontWeight: 'bold',
-            color: 'primary.main',
-            mb: 1
-          }}
-        >
+        <Typography component="h1" variant="h4" sx={{ mb: 3 }}>
           登录
         </Typography>
-        <Typography 
-          variant="body1" 
-          align="center" 
-          color="text.secondary" 
-          sx={{ mb: 4 }}
-        >
-          登录到您的账户
-        </Typography>
 
-        {/* 错误提示 */}
         {error && (
-          <Alert severity="error" sx={{ mb: 3, borderRadius: '8px' }}>
+          <Alert severity="error" sx={{ width: '100%', mb: 2 }}>
             {error}
           </Alert>
         )}
 
-        <form onSubmit={handleSubmit}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
           <TextField
-            label="邮箱"
-            variant="outlined"
-            fullWidth
             margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="邮箱地址"
             name="email"
-            type="email"
+            autoComplete="email"
+            autoFocus
             value={formData.email}
             onChange={handleChange}
             error={!!fieldErrors.email}
             helperText={fieldErrors.email}
-            disabled={isLoading}
-            required
-            sx={{ 
-              mb: 2,
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '8px'
-              }
-            }}
           />
           <TextField
-            label="密码"
-            variant="outlined"
-            fullWidth
             margin="normal"
+            required
+            fullWidth
             name="password"
+            label="密码"
             type={showPassword ? 'text' : 'password'}
+            id="password"
+            autoComplete="current-password"
             value={formData.password}
             onChange={handleChange}
             error={!!fieldErrors.password}
             helperText={fieldErrors.password}
-            disabled={isLoading}
-            required
-            sx={{ 
-              mb: 1,
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '8px'
-              }
-            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -225,105 +200,50 @@ const LoginPage: React.FC = () => {
               ),
             }}
           />
-          
-          <Box sx={{ textAlign: 'right', mb: 3 }}>
-            <Link 
-              component={RouterLink} 
-              to="/forgot-password" 
-              variant="body2"
-              sx={{
-                color: 'primary.main',
-                textDecoration: 'none',
-                '&:hover': {
-                  textDecoration: 'underline'
-                }
-              }}
-            >
-              忘记密码？
-            </Link>
-          </Box>
-          
           <Button
             type="submit"
-            variant="contained"
-            color="primary"
             fullWidth
-            size="large"
-            sx={{ 
-              mb: 3,
-              py: 1.5,
-              borderRadius: '8px',
-              textTransform: 'none',
-              fontSize: '1rem',
-              fontWeight: 500,
-              boxShadow: '0 4px 12px rgba(63, 81, 181, 0.2)'
-            }}
-            disabled={isLoading}
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
           >
-            {isLoading ? <Loader size={24} /> : '登录'}
+            登录
           </Button>
-          
-          <Divider sx={{ my: 2 }}>
-            <Typography color="text.secondary" variant="body2">
-              或
-            </Typography>
-          </Divider>
-          
-          <Grid container spacing={2} sx={{ mb: 3 }}>
-            <Grid item xs={12} sm={6}>
-              <Button
-                variant="outlined"
-                fullWidth
-                startIcon={<Google />}
-                onClick={() => handleSocialLogin('google')}
-                sx={{ 
-                  py: 1.2,
-                  borderRadius: '8px',
-                  textTransform: 'none',
-                  borderColor: 'divider'
-                }}
-              >
-                Continue with Google
-              </Button>
+          <Grid container>
+            <Grid item xs>
+              <Link component={RouterLink} to="/forgot-password" variant="body2">
+                忘记密码？
+              </Link>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Button
-                variant="outlined"
-                fullWidth
-                startIcon={<Apple />}
-                onClick={() => handleSocialLogin('apple')}
-                sx={{ 
-                  py: 1.2,
-                  borderRadius: '8px',
-                  textTransform: 'none',
-                  borderColor: 'divider'
-                }}
-              >
-                Continue with Apple
-              </Button>
+            <Grid item>
+              <Link component={RouterLink} to="/register" variant="body2">
+                没有账号？立即注册
+              </Link>
             </Grid>
           </Grid>
-          
-          <Box sx={{ textAlign: 'center', mt: 2 }}>
-            <Typography variant="body2" color="text.secondary">
-              还没有账号？{' '}
-              <Link 
-                component={RouterLink} 
-                to="/register" 
-                sx={{
-                  color: 'primary.main',
-                  textDecoration: 'none',
-                  fontWeight: 500,
-                  '&:hover': {
-                    textDecoration: 'underline'
-                  }
-                }}
-              >
-                立即注册
-              </Link>
-            </Typography>
-          </Box>
-        </form>
+        </Box>
+
+        <Divider sx={{ my: 3, width: '100%' }}>
+          <Typography variant="body2" color="text.secondary">
+            或使用以下方式登录
+          </Typography>
+        </Divider>
+
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="outlined"
+            startIcon={<Google />}
+            onClick={() => handleSocialLogin('google')}
+          >
+            Google
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<Apple />}
+            onClick={() => handleSocialLogin('apple')}
+          >
+            Apple
+          </Button>
+        </Box>
       </Paper>
     </Box>
   );

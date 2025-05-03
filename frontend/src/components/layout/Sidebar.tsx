@@ -10,7 +10,8 @@ import {
   Users, 
   File, 
   Plus,
-  Star
+  Star,
+  Settings as SettingsIcon
 } from 'lucide-react';
 import { useAppSelector } from '@/hooks/reduxHooks';
 
@@ -53,25 +54,30 @@ const Sidebar: React.FC = () => {
       name: 'Chrome扩展', 
       path: '/chrome-extension', 
       icon: <Chrome className="sidebar-menu-icon" /> 
+    },
+    { 
+      name: '个人档案', 
+      path: '/profile', 
+      icon: <User /> 
     }
   ];
 
   // 二级菜单项
   const secondaryMenuItems = [
     { 
-      name: '个人资料', 
-      path: '/profile', 
-      icon: <User className="sidebar-menu-icon" /> 
+      name: '账号设置', 
+      path: '/settings', 
+      icon: <SettingsIcon className="sidebar-menu-icon" /> 
     },
     { 
       name: '联系人', 
       path: '/contacts', 
-      icon: <Users className="sidebar-menu-icon" /> 
+      icon: <User className="sidebar-menu-icon" /> 
     },
     { 
-      name: '文档', 
-      path: '/documents', 
-      icon: <File className="sidebar-menu-icon" /> 
+      name: 'Chrome扩展', 
+      path: '/chrome-extension', 
+      icon: <Chrome className="sidebar-menu-icon" /> 
     }
   ];
 

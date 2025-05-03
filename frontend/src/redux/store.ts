@@ -5,7 +5,7 @@ import companiesReducer from './slices/companiesSlice';
 import userJobsReducer from './slices/userJobsSlice';
 
 // 创建Redux存储
-const store = configureStore({
+export const store = configureStore({
   reducer: {
     auth: authReducer,
     jobs: jobsReducer,

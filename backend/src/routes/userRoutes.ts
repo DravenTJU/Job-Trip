@@ -5,6 +5,7 @@ import {
   getCurrentUser,
   updateUser,
   updatePassword,
+  logoutUser
 } from '../controllers/userController';
 import { protect } from '../middleware/authMiddleware';
 
@@ -352,5 +353,31 @@ router.put('/me', protect, updateUser);
  *         $ref: '#/components/responses/ServerError'
  */
 router.put('/password', protect, updatePassword);
+
+/**
+ * @swagger
+ * /users/logout:
+ *   post:
+ *     summary: 用户退出登录
+ *     tags: [用户]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: 用户退出登录成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
+ *             example:
+ *               code: 200
+ *               message: "用户退出登录成功"
+ *               data: {}
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
+ */
+router.post('/logout', protect, logoutUser);
 
 export default router; 
