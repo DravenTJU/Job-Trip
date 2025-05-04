@@ -2,8 +2,12 @@ import { Request, Response } from 'express';
 import { AppError } from '../utils/AppError';
 import { createApiResponse } from '../utils/apiResponse';
 
-const OPENAI_API_KEY = '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';
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_API_URL = 'https://openrouter.ai/api/v1';
+
+if (!OPENAI_API_KEY) {
+  throw new Error('OPENAI_API_KEY is not defined in environment variables');
+}
 
 interface OpenAIError {
   error?: {

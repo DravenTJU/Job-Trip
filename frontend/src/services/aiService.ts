@@ -48,7 +48,7 @@ ${baseContent}
         {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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'
+            'Authorization': 'Bearer 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'
           }
         }
       );

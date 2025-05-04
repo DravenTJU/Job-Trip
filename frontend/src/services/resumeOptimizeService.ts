@@ -80,7 +80,7 @@ ${JSON.stringify(resumeData, null, 2)}
       // 从环境变量获取API密钥，如果不存在则使用备用密钥
       // 在Vite项目中使用import.meta.env而不是process.env
       // const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || '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';
-      const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || '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';
+      const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || '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';
       console.log('正在发送AI优化请求...');
       const response = await axios.post<AIResponse>(
         'https://openrouter.ai/api/v1/chat/completions',
