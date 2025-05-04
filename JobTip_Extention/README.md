@@ -3,7 +3,7 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/Rorogogogo/Jobtip-extention/blob/main/LICENSE)
 
 
-A browser extension designed to streamline your job search by scraping job listings from various platforms and potentially integrating with the [Jobtip](https://jobtip.me/) service. This tool helps you gather and manage job application information efficiently.
+A browser extension designed to streamline your job search by scraping job listings from various platforms and potentially integrating with the Jobtip service. This tool helps you gather and manage job application information efficiently.
 
 ## ⚠️ Important Disclaimer
 
@@ -55,7 +55,7 @@ The extension attempts to extract the following details (availability may vary b
 
 ### Potential Integration
 
--   **Jobtip Sync**: The extension includes components suggesting the ability to sync scraped job data with the [Jobtip](https://jobtip.me/) service or a local backend instance. *(Verification of current sync status recommended)*.
+-   **Jobtip Sync**: The extension includes components suggesting the ability to sync scraped job data with the Jobtip service or a local backend instance. *(Verification of current sync status recommended)*.
 
 ## How to Use
 
@@ -126,9 +126,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 # Jobtip 浏览器扩展
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/Rorogogogo/Jobtip-extention/blob/main/LICENSE)
-[![GitHub Issues](https://img.shields.io/github/issues/Rorogogogo/Jobtip-extention)](https://github.com/Rorogogogo/Jobtip-extention/issues)
 
-这是一个浏览器扩展，旨在通过从各种平台抓取职位信息并可能与 [Jobtip](https://jobtip.me/) 服务集成来简化您的求职过程。该工具帮助您高效地收集和管理求职申请信息。
+
+这是一个浏览器扩展，旨在通过从各种平台抓取职位信息并可能与 Jobtip 服务集成来简化您的求职过程。该工具帮助您高效地收集和管理求职申请信息。
+
+## 注意
+- 需要先運行Jobtip服务(如: http://localhost:3000/)，才能正常使用本扩展使用网络爬虫，否则无法正常使用。
 
 ## ⚠️ 重要免责声明
 
@@ -180,7 +183,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### 潜在集成
 
--   **Jobtip 同步**：扩展包含建议能够将爬取的职位数据与 [Jobtip](https://jobtip.me/) 服务或本地后端实例同步的组件。*（建议验证当前同步状态）*。
+-   **Jobtip 同步**：扩展包含建议能够将爬取的职位数据与 Jobtip 服务或本地后端实例同步的组件。*（建议验证当前同步状态）*。
 
 ## 使用方法
 
