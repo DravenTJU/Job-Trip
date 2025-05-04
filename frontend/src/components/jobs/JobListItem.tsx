@@ -99,7 +99,7 @@ const JobListItem: React.FC<JobListItemProps> = ({ job }) => {
             
             <Button 
               component={RouterLink}
-              to="/jobs/track"
+              to="/dashboard"
               variant="contained" 
               size="small"
               color="primary"

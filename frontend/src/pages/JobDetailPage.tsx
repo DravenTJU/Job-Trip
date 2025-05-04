@@ -203,7 +203,7 @@ const JobDetailPage: React.FC = () => {
           <div className="flex gap-2">
             <button
               onClick={() => {
-                window.location.href = 'http://localhost:3000/jobs/track';
+                window.location.href = 'http://localhost:3000/dashboard';
               }}
               className="btn btn-primary gap-2"
             >
