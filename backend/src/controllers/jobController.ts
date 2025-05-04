@@ -3,6 +3,7 @@ import Job from '../models/jobModel';
 import UserJob from '../models/userJobModel';
 import { AppError, createApiResponse } from '../middleware/errorHandler';
 import ApplicationHistory from '../models/applicationHistoryModel';
+import jwt from 'jsonwebtoken';
 
 /**
  * @desc    获取所有职位
@@ -241,6 +242,33 @@ export const getJob = async (
   }
 };
 
+// 字段映射表
+const jobTypeMap: Record<string, string> = {
+  'Contract': 'contract',
+  'Full-time': 'full-time',
+  'Part-time': 'part-time',
+  'Freelance': 'freelance',
+  'Internship': 'internship',
+};
+const statusMap: Record<string, string> = {
+  'unapplied': 'new',
+};
+const sourceMap: Record<string, string> = {
+  'LinkedIn': 'linkedin',
+  'Seek': 'seek',
+  'Indeed': 'indeed',
+};
+
+function fixJobFields(job: any) {
+  return {
+    ...job,
+    jobType: jobTypeMap[job.jobType] || job.jobType,
+    status: statusMap[job.status] || job.status,
+    source: sourceMap[job.source] || job.source,
+    sourceId: job.sourceId || (job.sourceUrl ? job.sourceUrl.split('/').pop() : undefined)
+  };
+}
+
 /**
  * @desc    创建职位
  * @route   POST /api/v1/jobs
@@ -252,9 +280,53 @@ export const createJob = async (
   next: NextFunction
 ) => {
   try {
-    const job = await Job.create(req.body);
-
-    // 如果有用户，自动创建用户-职位关联
+    // 新增：支持插件批量导入
+    if (req.body.jobs && Array.isArray(req.body.jobs)) {
+      const { jobs, userToken } = req.body;
+      if (!userToken) {
+        return next(new AppError('用户令牌不能为空', 400));
+      }
+      const decoded = jwt.verify(userToken, process.env.JWT_SECRET as string) as { id: string };
+      const userId = decoded.id;
+      // 自动修正字段
+      const fixedJobs = jobs.map(fixJobFields);
+      // 查重：只插入数据库中不存在的 sourceId+platform
+      const uniqueJobs = [];
+      for (const job of fixedJobs) {
+        if (!job.sourceId || !job.platform) continue;
+        const exists = await Job.findOne({ sourceId: job.sourceId, platform: job.platform });
+        if (!exists) uniqueJobs.push(job);
+      }
+      if (uniqueJobs.length === 0) {
+        return res.status(200).json(createApiResponse(200, '无新职位需要导入', { total: 0, jobs: [] }));
+      }
+      const createdJobs = await Job.insertMany(uniqueJobs);
+      const userJobs = createdJobs.map(job => ({
+        userId,
+        jobId: job._id,
+        status: job.status || 'new',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }));
+      await UserJob.insertMany(userJobs);
+      return res.status(201).json(createApiResponse(
+        201,
+        '批量导入职位成功',
+        {
+          total: createdJobs.length,
+          jobs: createdJobs
+        }
+      ));
+    }
+    // 原有单条创建逻辑，自动修正字段，查重
+    const fixedJob = fixJobFields(req.body);
+    if (fixedJob.sourceId && fixedJob.platform) {
+      const exists = await Job.findOne({ sourceId: fixedJob.sourceId, platform: fixedJob.platform });
+      if (exists) {
+        return res.status(200).json(createApiResponse(200, '该职位已存在', exists));
+      }
+    }
+    const job = await Job.create(fixedJob);
     if (req.user) {
       await UserJob.create({
         userId: req.user._id,
@@ -262,13 +334,15 @@ export const createJob = async (
         status: 'new',
       });
     }
-
     res.status(201).json(createApiResponse(
       200,
       '创建职位成功',
       job
     ));
   } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      return next(new AppError('无效的用户令牌', 401));
+    }
     next(error);
   }
 };
@@ -378,6 +452,61 @@ export const createJobFromExtension = async (
       }
     ));
   } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    批量导入职位
+ * @route   POST /api/v1/jobs/batch
+ * @access  私有
+ */
+export const createJobsBatch = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { jobs, userToken } = req.body;
+
+    if (!jobs || !Array.isArray(jobs) || jobs.length === 0) {
+      return next(new AppError('职位列表不能为空', 400));
+    }
+
+    if (!userToken) {
+      return next(new AppError('用户令牌不能为空', 400));
+    }
+
+    // 验证用户令牌并获取用户ID
+    const decoded = jwt.verify(userToken, process.env.JWT_SECRET as string) as { id: string };
+    const userId = decoded.id;
+
+    // 批量创建职位
+    const createdJobs = await Job.insertMany(jobs);
+
+    // 创建用户职位关联
+    const userJobs = createdJobs.map(job => ({
+      userId,
+      jobId: job._id,
+      status: job.status || 'unapplied',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }));
+
+    await UserJob.insertMany(userJobs);
+
+    res.status(201).json(createApiResponse(
+      201,
+      '批量导入职位成功',
+      {
+        total: createdJobs.length,
+        jobs: createdJobs
+      }
+    ));
+  } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      return next(new AppError('无效的用户令牌', 401));
+    }
     next(error);
   }
 }; 

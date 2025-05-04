@@ -10,9 +10,9 @@ const DEV_CONFIG = {
   },
   // 後端 API 配置
   BACKEND: {
-    BASE_URL: 'http://localhost:5000',
-    API_ENDPOINT: 'http://localhost:5000/api/jobs',
-    BATCH_ENDPOINT: 'http://localhost:5000/api/jobs/batch'
+    BASE_URL: 'http://localhost:5001',
+    API_ENDPOINT: 'http://localhost:5001/api/v1/jobs',
+    BATCH_ENDPOINT: 'http://localhost:5001/api/v1/jobs/batch'
   }
 }
 

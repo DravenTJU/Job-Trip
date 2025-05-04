@@ -5,7 +5,8 @@ import {
   createJob,
   updateJob,
   deleteJob,
-  createJobFromExtension
+  createJobFromExtension,
+  createJobsBatch
 } from '../controllers/jobController';
 import { protect } from '../middleware/authMiddleware';
 
@@ -18,7 +19,10 @@ const router = express.Router();
  *   description: 职位管理API
  */
 
-// 所有路由都需要认证
+// POST / 不加 protect，兼容插件 body 传 userToken
+router.post('/', createJob);
+
+// 其余路由继续用 protect
 router.use(protect);
 
 /**
@@ -204,12 +208,13 @@ router.use(protect);
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.route('/')
-  .get(getJobs)
-  .post(createJob);
+router.get('/', getJobs);
 
 // 从浏览器插件创建职位
 router.post('/extension', createJobFromExtension);
+
+// 批量导入职位
+router.post('/batch', createJobsBatch);
 
 /**
  * @swagger
@@ -379,9 +384,8 @@ router.post('/extension', createJobFromExtension);
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.route('/:id')
-  .get(getJob)
-  .put(updateJob)
-  .delete(deleteJob);
+router.get('/:id', getJob);
+router.put('/:id', updateJob);
+router.delete('/:id', deleteJob);
 
 export default router; 
