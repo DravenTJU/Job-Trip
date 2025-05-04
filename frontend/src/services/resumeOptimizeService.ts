@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
 
 // AI简历优化服务接口
 interface AIResponse {
@@ -65,7 +64,7 @@ const resumeOptimizeService = {
   ): Promise<string> => {
     try {
       const response = await axios.post<ResumeOptimizationResponse>(
-        `${API_BASE_URL}/ai/resume/optimize`,
+        '/api/v1/ai/resume/optimize',
         {
           resumeContent,
           jobDescription,

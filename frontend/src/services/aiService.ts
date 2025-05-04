@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
 
 // AI服务接口
 interface AIResponse {
@@ -28,7 +27,7 @@ const aiService = {
   generateTailoredResume: async (baseContent: string, targetPosition: string, targetJob: string): Promise<string> => {
     try {
       const response = await axios.post<AIResponse>(
-        `${API_BASE_URL}/ai/resume`,
+        '/api/v1/ai/resume',
         {
           baseContent,
           targetPosition,
@@ -51,7 +50,7 @@ const aiService = {
     user: any;
   }) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/ai/cover-letter`, data);
+      const response = await axios.post('/api/v1/ai/cover-letter', data);
       return response.data;
     } catch (error) {
       console.error('Error generating cover letter:', error);
