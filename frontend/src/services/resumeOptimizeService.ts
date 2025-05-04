@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+
+// 使用相对路径，通过 Vite 代理转发到后端
+const API_BASE_URL = '/api';
 
 // AI简历优化服务接口
 interface AIResponse {
