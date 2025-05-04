@@ -7,7 +7,6 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true
 });
 
 // 请求拦截器 - 添加token
