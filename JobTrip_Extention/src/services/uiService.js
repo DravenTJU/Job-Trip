@@ -145,8 +145,8 @@ function createJobCard (job) {
 }
 
 // Function to update button states
-function updateButtonStates (showInJobtipBtn, hasJobs) {
-  showInJobtipBtn.disabled = !hasJobs
+function updateButtonStates (showInjobtripBtn, hasJobs) {
+  showInjobtripBtn.disabled = !hasJobs
 }
 
 export default {

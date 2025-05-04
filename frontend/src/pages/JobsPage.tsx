@@ -123,6 +123,10 @@ const JobsPage: React.FC = () => {
     loadJobs();
   }, [page, limit, searchTerm, sortOption, filters]);
   
+  useEffect(() => {
+    setSortOption('-createdAt'); // 每次进入页面都重置为最新添加
+  }, []);
+  
   // 处理搜索变更
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -169,11 +173,20 @@ const JobsPage: React.FC = () => {
   return (
     <div className="container-lg">
       <div className="section space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">职位列表</h1>
-          <p className="text-gray-500 dark:text-gray-400">
-            查看和管理您的所有求职申请
-          </p>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">职位列表</h1>
+            <p className="text-gray-500 dark:text-gray-400">
+              查看和管理您的所有求职申请
+            </p>
+          </div>
+          <button 
+            onClick={handleAddJob}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors mt-4 md:mt-0"
+          >
+            <Plus className="w-4 h-4" />
+            添加职位
+          </button>
         </div>
       
       {/* 搜索和筛选 */}
@@ -495,17 +508,6 @@ const JobsPage: React.FC = () => {
           </div>
         </div>
       )}
-        
-        {/* 添加职位按钮 */}
-        <div className="flex justify-end">
-          <button 
-            onClick={handleAddJob}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            添加职位
-          </button>
-        </div>
       </div>
     </div>
   );
