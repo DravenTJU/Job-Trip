@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { AppError } from '../utils/AppError';
 import { createApiResponse } from '../utils/apiResponse';
 
-const OPENAI_API_KEY = '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';
 const OPENAI_API_URL = 'https://openrouter.ai/api/v1';
 
 interface OpenAIError {
@@ -25,6 +24,11 @@ interface OpenAIResponse {
  */
 export const generateCoverLetter = async (req: Request, res: Response) => {
   try {
+    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+    if (!OPENAI_API_KEY) {
+      throw new AppError('OpenAI API key is not configured', 500);
+    }
+
     const { jobDescription, tone = 'professional', language = 'chinese', user } = req.body;
 
     console.log('Received request body:', req.body);
