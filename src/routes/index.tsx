@@ -18,7 +18,6 @@ const JobFormPage = lazy(() => import('@/pages/JobFormPage'));
 const JobApplicationForm = lazy(() => import('@/pages/JobApplicationForm'));
 const StatsPage = lazy(() => import('@/pages/StatsPage'));
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'));
-const AccountSettingsPage = lazy(() => import('@/pages/AccountSettingsPage'));
 const ChromeExtensionPage = lazy(() => import('@/pages/ChromeExtensionPage'));
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
 const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'));
@@ -26,80 +25,39 @@ const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage'))
 const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 const CoverLetterPage = lazy(() => import('@/pages/CoverLetterPage'));
+const AccountSettingsPage = lazy(() => import('@/pages/AccountSettingsPage'));
 
-// 加载指示器
-const LoadingFallback = () => (
-  <Box
-    sx={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-    }}
-  >
-    <CircularProgress />
-  </Box>
-);
-
-// 包装带布局的路由
-const LayoutRoute = ({ element }: { element: React.ReactNode }) => (
-  <Layout>{element}</Layout>
-);
-
-// 包装需要认证的路由
-const ProtectedLayoutRoute = ({ element }: { element: React.ReactNode }) => (
-  <ProtectedRoute>
-    <Layout>{element}</Layout>
-  </ProtectedRoute>
-);
-
-/**
- * 应用程序路由配置组件
- */
-const AppRoutes = () => {
+const AppRoutes: React.FC = () => {
   return (
     <Suspense fallback={<LoadingFallback />}>
       <Routes>
         {/* 公开路由 */}
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-        
-        {/* 带布局的公开路由 */}
         <Route path="/" element={<LayoutRoute element={<HomePage />} />} />
+        <Route path="/login" element={<LayoutRoute element={<LoginPage />} />} />
+        <Route path="/register" element={<LayoutRoute element={<RegisterPage />} />} />
+        <Route path="/forgot-password" element={<LayoutRoute element={<ForgotPasswordPage />} />} />
+        <Route path="/reset-password" element={<LayoutRoute element={<ResetPasswordPage />} />} />
         
-        {/* 需要认证的路由 */}
-        <Route path="/dashboard" element={<ProtectedLayoutRoute element={<DashboardPage />} />} />
+        {/* 受保护的路由 */}
         <Route path="/welcome" element={<ProtectedLayoutRoute element={<WelcomePage />} />} />
+        <Route path="/dashboard" element={<ProtectedLayoutRoute element={<DashboardPage />} />} />
         <Route path="/resume-builder" element={<ProtectedLayoutRoute element={<ResumeBuilderPage />} />} />
-        <Route path="/resume-form/new" element={<ProtectedLayoutRoute element={<ResumeFormPage />} />} />
-        <Route path="/resume-form/:id" element={<ProtectedLayoutRoute element={<ResumeFormPage />} />} />
-        <Route path="/cover-letters" element={<ProtectedLayoutRoute element={<CoverLetterPage />} />} />
-        <Route path="/chrome-extension" element={<ProtectedLayoutRoute element={<ChromeExtensionPage />} />} />
-        
-        {/* 职位相关路由 */}
+        <Route path="/resume-form" element={<ProtectedLayoutRoute element={<ResumeFormPage />} />} />
         <Route path="/jobs" element={<ProtectedLayoutRoute element={<JobsPage />} />} />
-        <Route path="/jobs/new" element={<ProtectedLayoutRoute element={<JobFormPage />} />} />
-        <Route path="/jobs/edit/:id" element={<ProtectedLayoutRoute element={<JobFormPage />} />} />
         <Route path="/jobs/:id" element={<ProtectedLayoutRoute element={<JobDetailPage />} />} />
-        
-        {/* 申请跟踪相关路由 */}
-        <Route path="/application/new" element={<ProtectedLayoutRoute element={<JobApplicationForm />} />} />
-        
-        {/* 其他应用路由 */}
+        <Route path="/jobs/new" element={<ProtectedLayoutRoute element={<JobFormPage />} />} />
+        <Route path="/jobs/:id/apply" element={<ProtectedLayoutRoute element={<JobApplicationForm />} />} />
         <Route path="/stats" element={<ProtectedLayoutRoute element={<StatsPage />} />} />
         <Route path="/profile" element={<ProtectedLayoutRoute element={<ProfilePage />} />} />
+        <Route path="/chrome-extension" element={<ProtectedLayoutRoute element={<ChromeExtensionPage />} />} />
+        <Route path="/cover-letters" element={<ProtectedLayoutRoute element={<CoverLetterPage />} />} />
         <Route path="/settings" element={<ProtectedLayoutRoute element={<AccountSettingsPage />} />} />
         
-        {/* 404页面 */}
-        <Route path="/404" element={<LayoutRoute element={<NotFoundPage />} />} />
-        
-        {/* 重定向到404 */}
-        <Route path="*" element={<Navigate to="/404" replace />} />
+        {/* 404 页面 */}
+        <Route path="*" element={<LayoutRoute element={<NotFoundPage />} />} />
       </Routes>
     </Suspense>
   );
 };
 
-export default AppRoutes;
+export default AppRoutes; 
