@@ -11,7 +11,7 @@ import {
   Plus,
   Star,
   PieChart,
-  Briefcase
+  Briefcase,
   UserCircle,
   BriefcaseIcon
 } from 'lucide-react';
