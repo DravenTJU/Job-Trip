@@ -82,7 +82,7 @@ const DraggableJobCard: React.FC<DraggableJobCardProps> = ({
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm">
+          <span className="px-2 py-0.5 bg-indigo-500 text-white rounded text-xs font-medium">
             {type}
           </span>
           <span className="text-base text-gray-900">{salary}</span>
