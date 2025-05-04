@@ -48,7 +48,7 @@ app.use(helmet({
 app.use(cors({
   origin: '*', // 在开发环境中允许所有来源访问
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // 速率限制器
