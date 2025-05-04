@@ -15,6 +15,7 @@ import companyRoutes from './routes/companyRoutes';
 import userJobRoutes from './routes/userJobRoutes';
 import resumeRoutes from './routes/resumeRoutes';
 import aiRoutes from './routes/aiRoutes';
+import userProfileRoutes from './routes/userProfileRoutes';
 import { stream } from './utils/logger';
 import swaggerSpec from './config/swagger';
 import * as path from 'path';
@@ -312,6 +313,7 @@ app.get('/favicon.ico', (req: Request, res: Response) => {
 
 // 主API路由
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/user-profiles', userProfileRoutes);
 app.use('/api/v1/jobs', jobRoutes);
 app.use('/api/v1/companies', companyRoutes);
 app.use('/api/v1/userjobs', userJobRoutes);
