@@ -41,13 +41,6 @@ const WelcomePage: React.FC = () => {
       status: 'pending',
       path: '/resume-builder/customize'
     },
-    {
-      id: 5,
-      title: '自动填写您的首个申请表',
-      description: '安装chrome扩展并设置您的自动填写资料后，前往求职申请表，让JobTrip为您填写。',
-      status: 'pending',
-      path: '/auto-fill'
-    }
   ];
 
   return (

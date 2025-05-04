@@ -12,7 +12,6 @@ const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
 const WelcomePage = lazy(() => import('@/pages/WelcomePage'));
 const ResumeBuilderPage = lazy(() => import('@/pages/ResumeBuilderPage'));
 const ResumeFormPage = lazy(() => import('@/pages/ResumeFormPage'));
-const AutoFillPage = lazy(() => import('@/pages/AutoFillPage'));
 const JobsPage = lazy(() => import('@/pages/JobsPage'));
 const JobDetailPage = lazy(() => import('@/pages/JobDetailPage'));
 const JobFormPage = lazy(() => import('@/pages/JobFormPage'));
@@ -75,7 +74,6 @@ const AppRoutes = () => {
         <Route path="/resume-builder" element={<ProtectedLayoutRoute element={<ResumeBuilderPage />} />} />
         <Route path="/resume-form/new" element={<ProtectedLayoutRoute element={<ResumeFormPage />} />} />
         <Route path="/resume-form/:id" element={<ProtectedLayoutRoute element={<ResumeFormPage />} />} />
-        <Route path="/auto-fill" element={<ProtectedLayoutRoute element={<AutoFillPage />} />} />
         <Route path="/cover-letters" element={<ProtectedLayoutRoute element={<CoverLetterPage />} />} />
         <Route path="/chrome-extension" element={<ProtectedLayoutRoute element={<ChromeExtensionPage />} />} />
         
