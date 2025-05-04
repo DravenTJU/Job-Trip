@@ -11,6 +11,7 @@ import {
   File, 
   Plus,
   Star,
+  UserCircle,
   BriefcaseIcon
 } from 'lucide-react';
 import { useAppSelector } from '@/hooks/reduxHooks';
@@ -63,6 +64,11 @@ const Sidebar: React.FC = () => {
       name: '个人资料', 
       path: '/profile', 
       icon: <User className="sidebar-menu-icon" /> 
+    },
+    { 
+      name: '用户档案', 
+      path: '/user-profile', 
+      icon: <UserCircle className="sidebar-menu-icon" /> 
     },
     { 
       name: '联系人', 
