@@ -1,3 +1,6 @@
+// 导出简历类型
+export * from './resumeTypes';
+
 // 用户相关接口
 export interface User {
   _id: string;
@@ -194,4 +197,4 @@ export interface ApiResponse<T> {
   data: T;
   timestamp: number;
   traceId?: string;
-} 
+}

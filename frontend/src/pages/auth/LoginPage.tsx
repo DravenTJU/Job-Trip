@@ -13,7 +13,7 @@ import {
   Alert
 } from '@mui/material';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff, Google, Apple } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import { login, clearError } from '@/redux/slices/authSlice';
 import Loader from '@/components/common/Loader';
@@ -114,6 +114,12 @@ const LoginPage: React.FC = () => {
     dispatch(login(formData));
   };
 
+  // 处理第三方登录
+  const handleSocialLogin = (provider: string) => {
+    // 实现社交媒体登录逻辑
+    console.log(`登录方式: ${provider}`);
+  };
+
   return (
     <Box 
       sx={{ 
@@ -122,17 +128,18 @@ const LoginPage: React.FC = () => {
         alignItems: 'center',
         minHeight: '100vh',
         p: 2,
-        backgroundColor: theme => theme.palette.mode === 'light' 
-          ? theme.palette.grey[100] 
-          : theme.palette.background.default
+        backgroundColor: 'background.default',
+        backgroundImage: 'linear-gradient(to bottom right, rgba(63, 81, 181, 0.05), rgba(63, 81, 181, 0.1))'
       }}
     >
       <Paper 
         elevation={3} 
         sx={{ 
           p: 4, 
-          maxWidth: 400, 
-          width: '100%' 
+          maxWidth: 450, 
+          width: '100%',
+          borderRadius: '16px',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)'
         }}
       >
         <Typography 
@@ -140,7 +147,11 @@ const LoginPage: React.FC = () => {
           component="h1" 
           align="center" 
           gutterBottom
-          sx={{ fontWeight: 'bold' }}
+          sx={{ 
+            fontWeight: 'bold',
+            color: 'primary.main',
+            mb: 1
+          }}
         >
           登录
         </Typography>
@@ -148,14 +159,14 @@ const LoginPage: React.FC = () => {
           variant="body1" 
           align="center" 
           color="text.secondary" 
-          sx={{ mb: 3 }}
+          sx={{ mb: 4 }}
         >
-          登录您的 JobTrip 职途助手账号
+          登录到您的账户
         </Typography>
 
         {/* 错误提示 */}
         {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
+          <Alert severity="error" sx={{ mb: 3, borderRadius: '8px' }}>
             {error}
           </Alert>
         )}
@@ -174,6 +185,12 @@ const LoginPage: React.FC = () => {
             helperText={fieldErrors.email}
             disabled={isLoading}
             required
+            sx={{ 
+              mb: 2,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px'
+              }
+            }}
           />
           <TextField
             label="密码"
@@ -188,6 +205,12 @@ const LoginPage: React.FC = () => {
             helperText={fieldErrors.password}
             disabled={isLoading}
             required
+            sx={{ 
+              mb: 1,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px'
+              }
+            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -203,8 +226,19 @@ const LoginPage: React.FC = () => {
             }}
           />
           
-          <Box sx={{ textAlign: 'right', mb: 2 }}>
-            <Link component={RouterLink} to="/forgot-password" variant="body2">
+          <Box sx={{ textAlign: 'right', mb: 3 }}>
+            <Link 
+              component={RouterLink} 
+              to="/forgot-password" 
+              variant="body2"
+              sx={{
+                color: 'primary.main',
+                textDecoration: 'none',
+                '&:hover': {
+                  textDecoration: 'underline'
+                }
+              }}
+            >
               忘记密码？
             </Link>
           </Box>
@@ -215,24 +249,80 @@ const LoginPage: React.FC = () => {
             color="primary"
             fullWidth
             size="large"
-            sx={{ mb: 2 }}
+            sx={{ 
+              mb: 3,
+              py: 1.5,
+              borderRadius: '8px',
+              textTransform: 'none',
+              fontSize: '1rem',
+              fontWeight: 500,
+              boxShadow: '0 4px 12px rgba(63, 81, 181, 0.2)'
+            }}
             disabled={isLoading}
           >
             {isLoading ? <Loader size={24} /> : '登录'}
           </Button>
           
-          <Divider sx={{ my: 2 }}>或</Divider>
+          <Divider sx={{ my: 2 }}>
+            <Typography color="text.secondary" variant="body2">
+              或
+            </Typography>
+          </Divider>
           
-          <Grid container justifyContent="center" sx={{ mt: 2 }}>
-            <Grid item>
-              <Typography variant="body2">
-                还没有账号？{' '}
-                <Link component={RouterLink} to="/register" variant="body2">
-                  立即注册
-                </Link>
-              </Typography>
+          <Grid container spacing={2} sx={{ mb: 3 }}>
+            <Grid item xs={12} sm={6}>
+              <Button
+                variant="outlined"
+                fullWidth
+                startIcon={<Google />}
+                onClick={() => handleSocialLogin('google')}
+                sx={{ 
+                  py: 1.2,
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  borderColor: 'divider'
+                }}
+              >
+                Continue with Google
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Button
+                variant="outlined"
+                fullWidth
+                startIcon={<Apple />}
+                onClick={() => handleSocialLogin('apple')}
+                sx={{ 
+                  py: 1.2,
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  borderColor: 'divider'
+                }}
+              >
+                Continue with Apple
+              </Button>
             </Grid>
           </Grid>
+          
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Typography variant="body2" color="text.secondary">
+              还没有账号？{' '}
+              <Link 
+                component={RouterLink} 
+                to="/register" 
+                sx={{
+                  color: 'primary.main',
+                  textDecoration: 'none',
+                  fontWeight: 500,
+                  '&:hover': {
+                    textDecoration: 'underline'
+                  }
+                }}
+              >
+                立即注册
+              </Link>
+            </Typography>
+          </Box>
         </form>
       </Paper>
     </Box>

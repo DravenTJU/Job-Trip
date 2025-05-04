@@ -13,6 +13,7 @@ import {
   Alert
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Visibility, VisibilityOff, Google, Apple } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import { register, clearError } from '@/redux/slices/authSlice';
 import Loader from '@/components/common/Loader';
@@ -27,17 +28,14 @@ const RegisterPage: React.FC = () => {
   
   const [formData, setFormData] = useState({
     username: '',
-    firstName: '',
-    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({
     username: '',
-    firstName: '',
-    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -65,12 +63,19 @@ const RegisterPage: React.FC = () => {
     }));
   };
 
+  // 处理密码可见性切换
+  const handleTogglePasswordVisibility = (field: 'password' | 'confirmPassword') => {
+    if (field === 'password') {
+      setShowPassword(!showPassword);
+    } else {
+      setShowConfirmPassword(!showConfirmPassword);
+    }
+  };
+
   // 表单验证
   const validateForm = (): boolean => {
     const errors = {
       username: '',
-      firstName: '',
-      lastName: '',
       email: '',
       password: '',
       confirmPassword: ''
@@ -83,12 +88,6 @@ const RegisterPage: React.FC = () => {
       isValid = false;
     } else if (formData.username.length < 3) {
       errors.username = '用户名最少3个字符';
-      isValid = false;
-    }
-
-    // 验证名字
-    if (!formData.firstName) {
-      errors.firstName = '请输入名字';
       isValid = false;
     }
 
@@ -133,13 +132,26 @@ const RegisterPage: React.FC = () => {
     }
     
     // 调用注册Action
-    const { confirmPassword, ...registerData } = formData;
+    const { confirmPassword, ...userData } = formData;
+    // 添加firstName和lastName空字段以符合UserRegisterData接口要求
+    const registerData = {
+      ...userData,
+      firstName: '未设置', // 默认值，用户可以后续在个人资料中修改
+      lastName: '',
+    };
+    
     const resultAction = await dispatch(register(registerData));
     
     if (register.fulfilled.match(resultAction)) {
       // 注册成功后跳转到登录页
       navigate('/login');
     }
+  };
+
+  // 处理第三方登录注册
+  const handleSocialSignup = (provider: string) => {
+    // 实现社交媒体注册逻辑
+    console.log(`注册方式: ${provider}`);
   };
 
   return (
@@ -150,17 +162,18 @@ const RegisterPage: React.FC = () => {
         alignItems: 'center',
         minHeight: '100vh',
         p: 2,
-        backgroundColor: theme => theme.palette.mode === 'light' 
-          ? theme.palette.grey[100] 
-          : theme.palette.background.default
+        backgroundColor: 'background.default',
+        backgroundImage: 'linear-gradient(to bottom right, rgba(63, 81, 181, 0.05), rgba(63, 81, 181, 0.1))'
       }}
     >
       <Paper 
         elevation={3} 
         sx={{ 
           p: 4, 
-          maxWidth: 500, 
-          width: '100%' 
+          maxWidth: 550, 
+          width: '100%',
+          borderRadius: '16px',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)'
         }}
       >
         <Typography 
@@ -168,25 +181,70 @@ const RegisterPage: React.FC = () => {
           component="h1" 
           align="center" 
           gutterBottom
-          sx={{ fontWeight: 'bold' }}
+          sx={{ 
+            fontWeight: 'bold',
+            color: 'primary.main',
+            mb: 1
+          }}
         >
-          创建账号
+          注册免费账号
         </Typography>
         <Typography 
           variant="body1" 
           align="center" 
           color="text.secondary" 
-          sx={{ mb: 3 }}
+          sx={{ mb: 4 }}
         >
-          注册 JobTrip 职途助手，开始管理您的求职之旅
+          掌控您的求职之旅
         </Typography>
 
         {/* 错误提示 */}
         {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
+          <Alert severity="error" sx={{ mb: 3, borderRadius: '8px' }}>
             {error}
           </Alert>
         )}
+
+        <Grid container spacing={2} sx={{ mb: 3 }}>
+          <Grid item xs={12} sm={6}>
+            <Button
+              variant="outlined"
+              fullWidth
+              startIcon={<Google />}
+              onClick={() => handleSocialSignup('google')}
+              sx={{ 
+                py: 1.2,
+                borderRadius: '8px',
+                textTransform: 'none',
+                borderColor: 'divider'
+              }}
+            >
+              使用Google继续
+            </Button>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Button
+              variant="outlined"
+              fullWidth
+              startIcon={<Apple />}
+              onClick={() => handleSocialSignup('apple')}
+              sx={{ 
+                py: 1.2,
+                borderRadius: '8px',
+                textTransform: 'none',
+                borderColor: 'divider'
+              }}
+            >
+              使用Apple继续
+            </Button>
+          </Grid>
+        </Grid>
+
+        <Divider sx={{ my: 2 }}>
+          <Typography color="text.secondary" variant="body2">
+            或使用邮箱注册
+          </Typography>
+        </Divider>
 
         <form onSubmit={handleSubmit}>
           <TextField
@@ -201,38 +259,13 @@ const RegisterPage: React.FC = () => {
             helperText={fieldErrors.username || '用户名至少3个字符'}
             disabled={isLoading}
             required
+            sx={{ 
+              mb: 2,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px'
+              }
+            }}
           />
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="名字"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                error={!!fieldErrors.firstName}
-                helperText={fieldErrors.firstName}
-                disabled={isLoading}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="姓氏"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                error={!!fieldErrors.lastName}
-                helperText={fieldErrors.lastName}
-                disabled={isLoading}
-              />
-            </Grid>
-          </Grid>
           <TextField
             label="邮箱"
             variant="outlined"
@@ -246,6 +279,12 @@ const RegisterPage: React.FC = () => {
             helperText={fieldErrors.email}
             disabled={isLoading}
             required
+            sx={{ 
+              mb: 2,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px'
+              }
+            }}
           />
           <TextField
             label="密码"
@@ -260,14 +299,21 @@ const RegisterPage: React.FC = () => {
             helperText={fieldErrors.password || '密码至少8个字符'}
             disabled={isLoading}
             required
+            sx={{ 
+              mb: 2,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px'
+              }
+            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
-                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label="切换密码可见性"
+                    onClick={() => handleTogglePasswordVisibility('password')}
                     edge="end"
                   >
-                    {showPassword ? '👁️' : '👁️‍🗨️'}
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               ),
@@ -279,13 +325,32 @@ const RegisterPage: React.FC = () => {
             fullWidth
             margin="normal"
             name="confirmPassword"
-            type="password"
+            type={showConfirmPassword ? 'text' : 'password'}
             value={formData.confirmPassword}
             onChange={handleChange}
             error={!!fieldErrors.confirmPassword}
             helperText={fieldErrors.confirmPassword}
             disabled={isLoading}
             required
+            sx={{ 
+              mb: 3,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px'
+              }
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="切换密码可见性"
+                    onClick={() => handleTogglePasswordVisibility('confirmPassword')}
+                    edge="end"
+                  >
+                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
           
           <Button
@@ -294,24 +359,39 @@ const RegisterPage: React.FC = () => {
             color="primary"
             fullWidth
             size="large"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ 
+              mb: 3,
+              py: 1.5,
+              borderRadius: '8px',
+              textTransform: 'none',
+              fontSize: '1rem',
+              fontWeight: 500,
+              boxShadow: '0 4px 12px rgba(63, 81, 181, 0.2)'
+            }}
             disabled={isLoading}
           >
-            {isLoading ? <Loader size={24} /> : '注册'}
+            {isLoading ? <Loader size={24} /> : '创建账号'}
           </Button>
           
-          <Divider sx={{ my: 2 }}>或</Divider>
-          
-          <Grid container justifyContent="center">
-            <Grid item>
-              <Typography variant="body2">
-                已有账号？{' '}
-                <Link component={RouterLink} to="/login" variant="body2">
-                  立即登录
-                </Link>
-              </Typography>
-            </Grid>
-          </Grid>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="body2" color="text.secondary">
+              已有账号？{' '}
+              <Link 
+                component={RouterLink} 
+                to="/login"
+                sx={{
+                  color: 'primary.main',
+                  textDecoration: 'none',
+                  fontWeight: 500,
+                  '&:hover': {
+                    textDecoration: 'underline'
+                  }
+                }}
+              >
+                登录
+              </Link>
+            </Typography>
+          </Box>
         </form>
       </Paper>
     </Box>
