@@ -50,7 +50,6 @@ const Footer: React.FC = () => {
               <ul className="space-y-2">
                 <li><Link to="/jobs" className="text-gray-500 hover:text-gray-700 text-sm dark:text-gray-400 dark:hover:text-white">职位追踪器</Link></li>
                 <li><Link to="/resume-builder" className="text-gray-500 hover:text-gray-700 text-sm dark:text-gray-400 dark:hover:text-white">AI简历生成器</Link></li>
-                <li><Link to="/auto-fill" className="text-gray-500 hover:text-gray-700 text-sm dark:text-gray-400 dark:hover:text-white">自动填表</Link></li>
                 <li><Link to="/cover-letter" className="text-gray-500 hover:text-gray-700 text-sm dark:text-gray-400 dark:hover:text-white">求职信生成器</Link></li>
               </ul>
             </div>

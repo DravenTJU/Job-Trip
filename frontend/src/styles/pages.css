@@ -48,31 +48,6 @@
   @apply border border-gray-200 rounded-lg p-4 dark:border-gray-700;
 }
 
-/* 自动填表页面样式 */
-.autofill-extension-banner {
-  @apply mb-8 bg-indigo-50 rounded-lg p-6 border border-indigo-200 dark:bg-indigo-900/20 dark:border-indigo-800;
-}
-
-.autofill-tab-content {
-  @apply bg-white border border-gray-200 rounded-lg p-6 dark:bg-gray-800 dark:border-gray-700;
-}
-
-.autofill-section {
-  @apply space-y-6;
-}
-
-.autofill-experience-card {
-  @apply border border-gray-200 rounded-lg p-4 dark:border-gray-700;
-}
-
-.autofill-experience-header {
-  @apply flex items-start justify-between;
-}
-
-.autofill-experience-icon {
-  @apply w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center dark:bg-gray-700;
-}
-
 .skill-tag {
   @apply bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-full text-sm font-medium dark:bg-indigo-900/30 dark:text-indigo-400;
 }
