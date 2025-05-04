@@ -427,16 +427,16 @@ button:disabled {
   font-weight: 500;
 }
 
-.show-in-jobtip-btn {
+.show-in-jobtrip-btn {
   background-color: var(--primary-dark);
   width: 100%;
 }
 
-.show-in-jobtip-btn:hover {
+.show-in-jobtrip-btn:hover {
   background-color: var(--primary);
 }
 
-.show-in-jobtip-btn::before {
+.show-in-jobtrip-btn::before {
   /* content: '🚀'; */
   font-size: 14px;
 }

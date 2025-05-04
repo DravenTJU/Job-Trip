@@ -5,7 +5,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
 // Check if the page is ready by sending a simple readiness check
 async function checkPageReady (tabId) {
-  console.log('Checking if Jobtip page is ready...')
+  console.log('Checking if jobtrip page is ready...')
   try {
     const result = await chrome.scripting.executeScript({
       target: { tabId },
@@ -54,13 +54,13 @@ async function checkVersion (shouldFocusPopup = true, retryCount = 0, existingTa
         await chrome.tabs.update(tab.id, { active: true })
       } catch (e) {
         console.warn('Existing tab no longer available, creating new one')
-        tab = await tabService.ensureJobtipWebsite(shouldFocusPopup)
+        tab = await tabService.ensurejobtripWebsite(shouldFocusPopup)
       }
     } else {
-      console.log('Ensuring Jobtip website is open...')
-      tab = await tabService.ensureJobtipWebsite(shouldFocusPopup)
+      console.log('Ensuring jobtrip website is open...')
+      tab = await tabService.ensurejobtripWebsite(shouldFocusPopup)
     }
-    console.log('Jobtip tab ready:', tab)
+    console.log('jobtrip tab ready:', tab)
 
     // Wait to ensure the page is fully loaded
     console.log('Waiting for page to be fully initialized...')
@@ -92,7 +92,7 @@ async function checkVersion (shouldFocusPopup = true, retryCount = 0, existingTa
     await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (message) => {
-        console.log('Executing in Jobtip tab, sending message:', message)
+        console.log('Executing in jobtrip tab, sending message:', message)
         window.postMessage(message, '*')
       },
       args: [{
@@ -125,13 +125,13 @@ async function checkVersion (shouldFocusPopup = true, retryCount = 0, existingTa
         }
       }, 8000) // Longer timeout
 
-      // Set up message listener in the Jobtip tab
+      // Set up message listener in the jobtrip tab
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: () => {
           return new Promise((resolve) => {
             const handler = (event) => {
-              console.log('Jobtip tab received event:', event)
+              console.log('jobtrip tab received event:', event)
               if (event.source !== window) {
                 console.log('Ignoring event from non-window source:', event.source)
                 return
@@ -145,12 +145,12 @@ async function checkVersion (shouldFocusPopup = true, retryCount = 0, existingTa
                 console.log('Ignoring message of type:', event.data.type)
               }
             }
-            console.log('Adding message event listener in Jobtip tab')
+            console.log('Adding message event listener in jobtrip tab')
             window.addEventListener('message', handler)
           })
         }
       }).then(([result]) => {
-        console.log('Received result from Jobtip tab script:', result)
+        console.log('Received result from jobtrip tab script:', result)
         clearTimeout(timeout)
         if (result && result.result) {
           console.log('Processing version check response data:', result.result)
@@ -174,7 +174,7 @@ async function checkVersion (shouldFocusPopup = true, retryCount = 0, existingTa
             message: response.message || 'Please update to the latest version'
           })
         } else {
-          console.warn('No valid result from Jobtip tab:', result)
+          console.warn('No valid result from jobtrip tab:', result)
 
           // Retry if we haven't retried too many times
           if (retryCount < 2) {
@@ -277,10 +277,10 @@ function showUpdateUI ({ currentVersion, minimumVersion, message }) {
   if (updateBtn) {
     updateBtn.addEventListener('click', async () => {
       try {
-        // 确保 Jobtip 网站已打开
-        const tab = await tabService.ensureJobtipWebsite(false)
+        // 确保 jobtrip 网站已打开
+        const tab = await tabService.ensurejobtripWebsite(false)
 
-        // Explicitly focus on the Jobtip tab
+        // Explicitly focus on the jobtrip tab
         await chrome.tabs.update(tab.id, { active: true })
         // Also bring the tab's window to the front
         const tabInfo = await chrome.tabs.get(tab.id)
@@ -288,13 +288,13 @@ function showUpdateUI ({ currentVersion, minimumVersion, message }) {
           await chrome.windows.update(tabInfo.windowId, { focused: true })
         }
 
-        console.log('Sending download trigger message to Jobtip...')
+        console.log('Sending download trigger message to jobtrip...')
 
         // Send download trigger message
         await chrome.scripting.executeScript({
           target: { tabId: tab.id },
           func: (message) => {
-            console.log('Executing in Jobtip tab, sending download message:', message)
+            console.log('Executing in jobtrip tab, sending download message:', message)
             window.postMessage(message, '*')
           },
           args: [{
@@ -339,7 +339,7 @@ function showUpdateUI ({ currentVersion, minimumVersion, message }) {
             type: 'basic',
             iconUrl: '/icons/icon128.png',
             title: 'Extension Update Required',
-            message: 'Please visit Jobtip website to download the latest extension.',
+            message: 'Please visit jobtrip website to download the latest extension.',
             priority: 2
           })
         }
@@ -350,7 +350,7 @@ function showUpdateUI ({ currentVersion, minimumVersion, message }) {
           type: 'basic',
           iconUrl: '/icons/icon128.png',
           title: 'Extension Update Required',
-          message: 'Please visit Jobtip website to download the latest extension.',
+          message: 'Please visit jobtrip website to download the latest extension.',
           priority: 2
         })
       }
