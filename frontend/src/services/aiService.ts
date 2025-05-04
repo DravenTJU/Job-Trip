@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 // AI服务接口
 interface AIResponse {
@@ -27,29 +28,11 @@ const aiService = {
   generateTailoredResume: async (baseContent: string, targetPosition: string, targetJob: string): Promise<string> => {
     try {
       const response = await axios.post<AIResponse>(
-        'https://openrouter.ai/api/v1/chat/completions',
+        `${API_BASE_URL}/ai/resume`,
         {
-          model: 'deepseek/deepseek-chat:free',
-          messages: [
-            {
-              role: 'user',
-              content: `我有一份基础简历，需要针对特定职位进行优化。请帮我根据目标职位和工作要求，重新编写简历内容，突出与该职位相关的技能和经验。
-
-基础简历内容：
-${baseContent}
-
-目标职位：${targetPosition}
-目标工作：${targetJob}
-
-请提供优化后的简历内容，保持专业性和针对性。`
-            }
-          ]
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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'
-          }
+          baseContent,
+          targetPosition,
+          targetJob
         }
       );
 
@@ -58,6 +41,21 @@ ${baseContent}
     } catch (error) {
       console.error('AI生成简历内容失败:', error);
       throw new Error('AI生成简历内容失败，请稍后重试');
+    }
+  },
+
+  generateCoverLetter: async (data: {
+    jobDescription: string;
+    tone?: string;
+    language?: string;
+    user: any;
+  }) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/ai/cover-letter`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Error generating cover letter:', error);
+      throw error;
     }
   }
 };
