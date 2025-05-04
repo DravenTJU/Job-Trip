@@ -1,5 +1,5 @@
 {
-  "name": "jobtrip-backend",
+  "name": "jobtrip-extension-backend",
   "version": "1.0.0",
   "description": "Backend API for jobtrip extension",
   "main": "server.js",
