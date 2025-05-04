@@ -4,13 +4,14 @@ import {
   Home, 
   FileText, 
   Sparkles, 
-  Zap, 
   Chrome, 
   User, 
   Users, 
   File, 
   Plus,
   Star,
+  PieChart,
+  Briefcase,
   UserCircle,
   BriefcaseIcon
 } from 'lucide-react';
@@ -37,9 +38,14 @@ const Sidebar: React.FC = () => {
       icon: <Home className="sidebar-menu-icon" /> 
     },
     { 
+      name: '仪表盘', 
+      path: '/dashboard', 
+      icon: <PieChart className="sidebar-menu-icon" /> 
+    },
+    {
       name: '职位', 
       path: '/jobs', 
-      icon: <BriefcaseIcon className="sidebar-menu-icon" /> 
+      icon: <Briefcase className="sidebar-menu-icon" /> 
     },
     { 
       name: '简历生成器', 
