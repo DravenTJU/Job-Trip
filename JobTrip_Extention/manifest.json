@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "JobTip Extention",
+  "name": "jobtrip Extention",
   "version": "1.0.1",
   "description": "Help you search and track job applications across multiple platforms",
   "permissions": [
@@ -23,7 +23,7 @@
     "http://localhost:3000/*",
     "http://localhost:5000/*",
     "https://github.com/*",
-    "https://*.jobtip.com/*"
+    "https://*.jobtrip.com/*"
   ],
   "action": {
     "default_icon": {
@@ -31,7 +31,7 @@
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     },
-    "default_title": "JobTip Extention"
+    "default_title": "jobtrip Extention"
   },
   "side_panel": {
     "default_path": "sidepanel.html"
@@ -53,7 +53,7 @@
         "http://localhost:3000/*",
         "http://localhost:5000/*",
         "https://github.com/*",
-        "https://*.jobtip.com/*"
+        "https://*.jobtrip.com/*"
       ],
       "js": [
         "helpers/jobScrapers.js",

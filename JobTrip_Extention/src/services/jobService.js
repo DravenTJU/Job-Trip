@@ -1,16 +1,16 @@
 import tabService from './tabService.js'
 
-// Function to send jobs to Jobtip
-async function sendJobsToJobtip (jobs) {
+// Function to send jobs to jobtrip
+async function sendJobsTojobtrip (jobs) {
   try {
-    const tab = await tabService.ensureJobtipWebsite()
+    const tab = await tabService.ensurejobtripWebsite()
 
     // Send jobs to the page using executeScript
-    console.log('Sending jobs to Jobtip tab...')
+    console.log('Sending jobs to jobtrip tab...')
     await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (message) => {
-        console.log('Executing in Jobtip tab, sending jobs:', message)
+        console.log('Executing in jobtrip tab, sending jobs:', message)
         window.postMessage(message, '*')
       },
       args: [{
@@ -39,7 +39,7 @@ async function sendJobsToJobtip (jobs) {
       }
       chrome.runtime.onMessage.addListener(messageListener)
 
-      // Also set up message listener in the Jobtip tab as backup
+      // Also set up message listener in the jobtrip tab as backup
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: () => {
@@ -96,7 +96,7 @@ async function sendJobsToJobtip (jobs) {
   }
 }
 
-// Function to find Jobtip job-market tab
+// Function to find jobtrip job-market tab
 async function findJobMarketTab () {
   const tabs = await chrome.tabs.query({})
   return tabs.find(tab =>
@@ -107,7 +107,7 @@ async function findJobMarketTab () {
   )
 }
 
-// Function to send jobs and show in Jobtip
+// Function to send jobs and show in jobtrip
 async function sendJobsAndShow (scrapedJobs, baseUrl, jobsAlreadySent = false) {
   const manifest = chrome.runtime.getManifest()
   const url = `${baseUrl}/job-market?source=extension&version=${manifest.version}`
@@ -140,11 +140,11 @@ async function sendJobsAndShow (scrapedJobs, baseUrl, jobsAlreadySent = false) {
 
   // Only send jobs if they haven't been sent already
   if (!jobsAlreadySent) {
-    // Send jobs to the Jobtip page
+    // Send jobs to the jobtrip page
     await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: (message) => {
-        console.log('Sending jobs to Jobtip page:', message)
+        console.log('Sending jobs to jobtrip page:', message)
         window.postMessage(message, '*')
       },
       args: [{
@@ -187,7 +187,7 @@ async function sendJobsAndShow (scrapedJobs, baseUrl, jobsAlreadySent = false) {
     await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: () => {
-        const overlay = document.getElementById('jobtip-scrape-overlay-container')
+        const overlay = document.getElementById('jobtrip-scrape-overlay-container')
         if (overlay) overlay.remove()
       }
     })
@@ -199,7 +199,7 @@ async function sendJobsAndShow (scrapedJobs, baseUrl, jobsAlreadySent = false) {
 }
 
 export default {
-  sendJobsToJobtip,
+  sendJobsTojobtrip,
   sendJobsAndShow,
   findJobMarketTab
 } 

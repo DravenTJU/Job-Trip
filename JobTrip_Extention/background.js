@@ -3,7 +3,7 @@ import sidePanelService from './src/services/sidePanelService.js'
 
 // Handle installation
 chrome.runtime.onInstalled.addListener(async () => {
-  console.log('Jobtip Assistant installed')
+  console.log('jobtrip Assistant installed')
 
   // Initialize side panel service
   sidePanelService.initialize()
@@ -39,7 +39,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }).catch(error => {
       console.error('Error getting base URL:', error)
       // Default to production URL if there's an error
-      const prodUrl = 'https://jobtip.me'
+      const prodUrl = 'https://jobtrip.me'
       console.log('Defaulting to production URL:', prodUrl)
       sendResponse(prodUrl)
     })

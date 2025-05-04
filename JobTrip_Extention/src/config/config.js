@@ -1,6 +1,6 @@
 import endpoints from './endpoints.js'
 
-// Configuration for the Jobtip extension
+// Configuration for the jobtrip extension
 const config = {
   // Development environment
   development: {

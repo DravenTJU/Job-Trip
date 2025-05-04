@@ -1,20 +1,20 @@
 import endpoints from '../config/endpoints.js'
 
-// Function to check if Jobtip tab exists and is ready
-async function findJobtipTab () {
+// Function to check if jobtrip tab exists and is ready
+async function findjobtripTab () {
   const config = await endpoints.detectEnvironment()
   const tabs = await chrome.tabs.query({})
   return tabs.find(tab =>
-    tab.url && tab.url.includes(config.FRONTEND.JOBTIP_URL)
+    tab.url && tab.url.includes(config.FRONTEND.jobtrip_URL)
   )
 }
 
-// Function to ensure Jobtip website is open
-async function ensureJobtipWebsite (shouldFocusPopup = true) {
-  console.group('ensureJobtipWebsite')
+// Function to ensure jobtrip website is open
+async function ensurejobtripWebsite (shouldFocusPopup = true) {
+  console.group('ensurejobtripWebsite')
   try {
-    const existingTab = await findJobtipTab()
-    console.log('Existing Jobtip tab:', existingTab)
+    const existingTab = await findjobtripTab()
+    console.log('Existing jobtrip tab:', existingTab)
 
     if (!existingTab) {
       console.log('No existing tab found, creating new tab')
@@ -24,13 +24,13 @@ async function ensureJobtipWebsite (shouldFocusPopup = true) {
         console.log('Got base URL:', baseUrl)
 
         if (!baseUrl) {
-          throw new Error('Failed to get Jobtip URL - base URL is undefined')
+          throw new Error('Failed to get jobtrip URL - base URL is undefined')
         }
 
         const manifest = chrome.runtime.getManifest()
         //跳出擴充功能頁面/////////////////////////
         const url = `${baseUrl}/login`
-        console.log('Opening Jobtip URL:', url)
+        console.log('Opening jobtrip URL:', url)
 
         const tab = await chrome.tabs.create({
           url: url,
@@ -68,7 +68,7 @@ async function ensureJobtipWebsite (shouldFocusPopup = true) {
         console.log('Tab fully loaded')
         return tab
       } catch (error) {
-        console.error('Error ensuring Jobtip website:', error)
+        console.error('Error ensuring jobtrip website:', error)
         throw error // Re-throw to be handled by caller
       }
     }
@@ -80,6 +80,6 @@ async function ensureJobtipWebsite (shouldFocusPopup = true) {
 }
 
 export default {
-  findJobtipTab,
-  ensureJobtipWebsite
+  findjobtripTab,
+  ensurejobtripWebsite
 } 
