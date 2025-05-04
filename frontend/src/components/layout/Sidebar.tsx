@@ -10,7 +10,8 @@ import {
   Users, 
   File, 
   Plus,
-  Star
+  Star,
+  PieChartIcon
 } from 'lucide-react';
 import { useAppSelector } from '@/hooks/reduxHooks';
 
@@ -33,6 +34,11 @@ const Sidebar: React.FC = () => {
       name: '欢迎', 
       path: '/welcome', 
       icon: <Home className="sidebar-menu-icon" /> 
+    },
+    { 
+      name: '仪表盘', 
+      path: '/dashboard', 
+      icon: <PieChartIcon className="sidebar-menu-icon" /> 
     },
     { 
       name: '简历生成器', 
