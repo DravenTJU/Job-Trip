@@ -155,8 +155,13 @@ export const getJobs = async (
 
     // 处理排序
     if (req.query.sort) {
-      const [field, order] = (req.query.sort as string).split(':');
-      sortOptions[field] = order === 'desc' ? -1 : 1;
+      const sortStr = req.query.sort as string;
+      // 支持 -createdAt 这种写法
+      if (sortStr.startsWith('-')) {
+        sortOptions[sortStr.slice(1)] = -1;
+      } else {
+        sortOptions[sortStr] = 1;
+      }
     }
 
     // 添加搜索逻辑
