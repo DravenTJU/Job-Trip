@@ -42,16 +42,8 @@ const JobsPage: React.FC = () => {
     jobType: '',
     platform: '',
     location: '',
-    salaryRange: '',
     dateRange: ''
   });
-  
-  // 薪资排序选项
-  const salarySortOptions = [
-    { label: '默认排序', value: '' },
-    { label: '薪资从高到低', value: 'desc' },
-    { label: '薪资从低到高', value: 'asc' }
-  ];
   
   // 时间范围选项
   const dateRanges = [
@@ -159,7 +151,6 @@ const JobsPage: React.FC = () => {
       jobType: '',
       platform: '',
       location: '',
-      salaryRange: '',
       dateRange: ''
     });
     setPage(1);
@@ -295,25 +286,6 @@ const JobsPage: React.FC = () => {
                       className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     >
                       {platforms.map(option => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  {/* 薪资排序 */}
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                      <DollarSign className="w-4 h-4 text-gray-400" />
-                      薪资排序
-                    </label>
-                    <select
-                      value={filters.salaryRange}
-                      onChange={(e) => handleFilterChange('salaryRange', e.target.value)}
-                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                    >
-                      {salarySortOptions.map(option => (
                         <option key={option.value} value={option.value}>
                           {option.label}
                         </option>
