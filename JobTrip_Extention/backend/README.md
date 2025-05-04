@@ -1,6 +1,6 @@
-# JobTip Backend API
+# jobtrip Backend API
 
-這是 JobTip 瀏覽器擴展的後端 API 服務。
+這是 jobtrip 瀏覽器擴展的後端 API 服務。
 
 ## 功能特點
 
