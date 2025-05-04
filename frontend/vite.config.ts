@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
   server: {
@@ -17,6 +17,7 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:5001',
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '/api/v1'),
       },
     },
   },

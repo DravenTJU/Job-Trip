@@ -1,5 +1,22 @@
 import axios from 'axios';
 
+// 使用相对路径，通过 Vite 代理转发到后端
+const API_BASE_URL = '/api';
+
+interface CoverLetterResponse {
+  success: boolean;
+  data: {
+    coverLetter: string;
+  };
+}
+
+interface ResumeResponse {
+  success: boolean;
+  data: {
+    resume: string;
+  };
+}
+
 // AI服务接口
 interface AIResponse {
   id: string;
