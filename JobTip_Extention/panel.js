@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // First set the country and update location options
   if (lastCountry) {
-    countrySelect.value = lastCountry
+    // countrySelect.value = lastCountry
     updateLocationOptions(lastCountry)
   } else {
     // If no country is selected, initialize with empty website options
@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Then set the location if it exists
   if (lastLocation) {
-    locationSelect.value = lastLocation
+    // locationSelect.value = lastLocation
   }
 
   // Load saved settings
