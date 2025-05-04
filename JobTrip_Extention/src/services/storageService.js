@@ -55,7 +55,7 @@ async function updateScrapingState (isActive) {
 // Function to get user token from localStorage (新增抓localstorage功能)////////////
 async function getUserToken() {
   const config = await endpoints.detectEnvironment()
-  const getLocalstorageTokenUrl = config.FRONTEND.JOBTIP_URL
+  const getLocalstorageTokenUrl = config.FRONTEND.jobtrip_URL
   const getLocalstorageTokenKey = config.FRONTEND.TOKEN_KEY
 
   return new Promise((resolve) => {

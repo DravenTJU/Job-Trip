@@ -1,9 +1,9 @@
-# Jobtip Browser Extension
+# jobtrip Browser Extension
 
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/Rorogogogo/Jobtip-extention/blob/main/LICENSE)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/Rorogogogo/jobtrip-extention/blob/main/LICENSE)
 
 
-A browser extension designed to streamline your job search by scraping job listings from various platforms and potentially integrating with the [Jobtip](https://jobtip.me/) service. This tool helps you gather and manage job application information efficiently.
+A browser extension designed to streamline your job search by scraping job listings from various platforms and potentially integrating with the jobtrip service. This tool helps you gather and manage job application information efficiently.
 
 ## ⚠️ Important Disclaimer
 
@@ -55,7 +55,7 @@ The extension attempts to extract the following details (availability may vary b
 
 ### Potential Integration
 
--   **Jobtip Sync**: The extension includes components suggesting the ability to sync scraped job data with the [Jobtip](https://jobtip.me/) service or a local backend instance. *(Verification of current sync status recommended)*.
+-   **jobtrip Sync**: The extension includes components suggesting the ability to sync scraped job data with the jobtrip service or a local backend instance. *(Verification of current sync status recommended)*.
 
 ## How to Use
 
@@ -63,7 +63,7 @@ The extension attempts to extract the following details (availability may vary b
     -   Download or clone the extension's source code.
     -   Open Google Chrome and navigate to `chrome://extensions/`.
     -   Enable "Developer mode" (usually a toggle in the top-right corner).
-    -   Click "Load unpacked" and select the directory containing the extension's `manifest.json` file (the `JobTip_Extention` folder).
+    -   Click "Load unpacked" and select the directory containing the extension's `manifest.json` file (the `jobtrip_Extention` folder).
 
 2.  **Login**:
     -   Make sure you are logged into your account on the job platform(s) you intend to search (e.g., LinkedIn, SEEK, Indeed).
@@ -74,10 +74,10 @@ The extension attempts to extract the following details (availability may vary b
     -   Perform a job search as usual.
 
 4.  **Scraping & Managing Jobs**
-    -   Click the Jobtip extension icon in your browser toolbar. This should open the Side Panel.
+    -   Click the jobtrip extension icon in your browser toolbar. This should open the Side Panel.
     -   Use the controls within the Side Panel to initiate scraping for the current page.
     -   View scraped jobs within the Side Panel.
-    -   (If applicable) Use options within the Side Panel or Popup to save/sync jobs to Jobtip.
+    -   (If applicable) Use options within the Side Panel or Popup to save/sync jobs to jobtrip.
 
 ## Supported Platforms (Details)
 
@@ -91,7 +91,7 @@ The extension attempts to extract the following details (availability may vary b
 -   The extension requests permissions necessary for its functionality (accessing tabs, storage, scripting on specific sites).
 -   It primarily scrapes publicly available data from job sites.
 -   Review the `host_permissions` in `manifest.json` for the list of sites the extension can interact with.
--   If syncing with Jobtip, data transmission security depends on the service's implementation (likely HTTPS).
+-   If syncing with jobtrip, data transmission security depends on the service's implementation (likely HTTPS).
 
 ## Development
 
@@ -123,12 +123,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-# Jobtip 浏览器扩展
+# jobtrip 浏览器扩展
 
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/Rorogogogo/Jobtip-extention/blob/main/LICENSE)
-[![GitHub Issues](https://img.shields.io/github/issues/Rorogogogo/Jobtip-extention)](https://github.com/Rorogogogo/Jobtip-extention/issues)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/Rorogogogo/jobtrip-extention/blob/main/LICENSE)
 
-这是一个浏览器扩展，旨在通过从各种平台抓取职位信息并可能与 [Jobtip](https://jobtip.me/) 服务集成来简化您的求职过程。该工具帮助您高效地收集和管理求职申请信息。
+
+这是一个浏览器扩展，旨在通过从各种平台抓取职位信息并可能与 jobtrip 服务集成来简化您的求职过程。该工具帮助您高效地收集和管理求职申请信息。
+
+## 注意
+- 需要先運行jobtrip服务(如: http://localhost:3000/)，才能正常使用本扩展使用网络爬虫，否则无法正常使用。
 
 ## ⚠️ 重要免责声明
 
@@ -180,7 +183,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### 潜在集成
 
--   **Jobtip 同步**：扩展包含建议能够将爬取的职位数据与 [Jobtip](https://jobtip.me/) 服务或本地后端实例同步的组件。*（建议验证当前同步状态）*。
+-   **jobtrip 同步**：扩展包含建议能够将爬取的职位数据与 jobtrip 服务或本地后端实例同步的组件。*（建议验证当前同步状态）*。
 
 ## 使用方法
 
@@ -188,7 +191,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
     -   下载或克隆扩展的源代码。
     -   打开 Google Chrome 并导航到 `chrome://extensions/`。
     -   启用"开发者模式"（通常在右上角的开关）。
-    -   点击"加载已解压的扩展程序"并选择包含扩展 `manifest.json` 文件的目录（`JobTip_Extention` 文件夹）。
+    -   点击"加载已解压的扩展程序"并选择包含扩展 `manifest.json` 文件的目录（`jobtrip_Extention` 文件夹）。
 
 2.  **登录**：
     -   确保您已登录到您打算搜索的求职平台（例如 LinkedIn、SEEK、Indeed）。
@@ -199,10 +202,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
     -   像往常一样进行职位搜索。
 
 4.  **爬取和管理职位**
-    -   点击浏览器工具栏中的 Jobtip 扩展图标。这将打开侧边栏。
+    -   点击浏览器工具栏中的 jobtrip 扩展图标。这将打开侧边栏。
     -   使用侧边栏中的控件开始爬取当前页面。
     -   在侧边栏中查看爬取的职位。
-    -   （如果适用）使用侧边栏或弹出窗口中的选项将职位保存/同步到 Jobtip。
+    -   （如果适用）使用侧边栏或弹出窗口中的选项将职位保存/同步到 jobtrip。
 
 ## 支持的平台（详情）
 
@@ -216,7 +219,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 -   扩展请求其功能所需的权限（访问标签页、存储、在特定网站上执行脚本）。
 -   主要爬取求职网站上公开可用的数据。
 -   查看 `manifest.json` 中的 `host_permissions` 了解扩展可以交互的网站列表。
--   如果与 Jobtip 同步，数据传输安全性取决于服务的实现（可能使用 HTTPS）。
+-   如果与 jobtrip 同步，数据传输安全性取决于服务的实现（可能使用 HTTPS）。
 
 ## 开发
 
