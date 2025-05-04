@@ -38,7 +38,6 @@ const Header: React.FC = () => {
     if (path === '/welcome') return '欢迎';
     if (path === '/resume-builder') return '简历生成器';
     if (path === '/cover-letters') return 'AI求职信和更多';
-    if (path === '/auto-fill') return '自动填表';
     if (path === '/chrome-extension') return 'Chrome扩展';
     if (path === '/profile') return '个人资料';
     if (path === '/contacts') return '联系人';
@@ -66,9 +65,6 @@ const Header: React.FC = () => {
               </Link>
               <Link to="/resume-builder" className="text-gray-600 hover:text-gray-900 text-sm dark:text-gray-300 dark:hover:text-white">
                 AI简历生成器
-              </Link>
-              <Link to="/auto-fill" className="text-gray-600 hover:text-gray-900 text-sm dark:text-gray-300 dark:hover:text-white">
-                自动填表
               </Link>
               <div className="relative group">
                 <button className="text-gray-600 hover:text-gray-900 text-sm dark:text-gray-300 dark:hover:text-white flex items-center">
@@ -138,13 +134,6 @@ const Header: React.FC = () => {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 AI简历生成器
-              </Link>
-              <Link 
-                to="/auto-fill" 
-                className="block py-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                自动填表
               </Link>
             </div>
           </div>
@@ -263,13 +252,6 @@ const Header: React.FC = () => {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   AI求职信和更多
-                </Link>
-                <Link 
-                  to="/auto-fill" 
-                  className="block px-3 py-2 text-gray-700 rounded-md hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  自动填表
                 </Link>
                 <Link 
                   to="/chrome-extension" 

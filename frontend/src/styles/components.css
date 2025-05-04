@@ -25,7 +25,7 @@
 
 /* 卡片样式 */
 .card {
-  @apply bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700;
+  @apply bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 w-full;
 }
 
 .card-header {
@@ -33,7 +33,7 @@
 }
 
 .card-body {
-  @apply p-4;
+  @apply p-5;
 }
 
 .card-footer {
@@ -182,4 +182,3 @@
 /* 手风琴展开图标 */
 .accordion-icon {
   @apply w-5 h-5 text-gray-500 dark:text-gray-400;
-} 

@@ -11,18 +11,20 @@ const HomePage = lazy(() => import('@/pages/HomePage'));
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
 const WelcomePage = lazy(() => import('@/pages/WelcomePage'));
 const ResumeBuilderPage = lazy(() => import('@/pages/ResumeBuilderPage'));
-const AutoFillPage = lazy(() => import('@/pages/AutoFillPage'));
+const ResumeFormPage = lazy(() => import('@/pages/ResumeFormPage'));
 const JobsPage = lazy(() => import('@/pages/JobsPage'));
 const JobDetailPage = lazy(() => import('@/pages/JobDetailPage'));
 const JobFormPage = lazy(() => import('@/pages/JobFormPage'));
 const JobApplicationForm = lazy(() => import('@/pages/JobApplicationForm'));
 const StatsPage = lazy(() => import('@/pages/StatsPage'));
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'));
+const ChromeExtensionPage = lazy(() => import('@/pages/ChromeExtensionPage'));
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
 const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'));
 const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
+const CoverLetterPage = lazy(() => import('@/pages/CoverLetterPage'));
 
 // 加载指示器
 const LoadingFallback = () => (
@@ -70,7 +72,10 @@ const AppRoutes = () => {
         <Route path="/dashboard" element={<ProtectedLayoutRoute element={<DashboardPage />} />} />
         <Route path="/welcome" element={<ProtectedLayoutRoute element={<WelcomePage />} />} />
         <Route path="/resume-builder" element={<ProtectedLayoutRoute element={<ResumeBuilderPage />} />} />
-        <Route path="/auto-fill" element={<ProtectedLayoutRoute element={<AutoFillPage />} />} />
+        <Route path="/resume-form/new" element={<ProtectedLayoutRoute element={<ResumeFormPage />} />} />
+        <Route path="/resume-form/:id" element={<ProtectedLayoutRoute element={<ResumeFormPage />} />} />
+        <Route path="/cover-letters" element={<ProtectedLayoutRoute element={<CoverLetterPage />} />} />
+        <Route path="/chrome-extension" element={<ProtectedLayoutRoute element={<ChromeExtensionPage />} />} />
         
         {/* 职位相关路由 */}
         <Route path="/jobs" element={<ProtectedLayoutRoute element={<JobsPage />} />} />
@@ -96,4 +101,6 @@ const AppRoutes = () => {
   );
 };
 
+
 export default AppRoutes; 
+

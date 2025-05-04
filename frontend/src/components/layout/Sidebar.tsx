@@ -51,11 +51,6 @@ const Sidebar: React.FC = () => {
       icon: <Sparkles className="sidebar-menu-icon" /> 
     },
     { 
-      name: '自动填表', 
-      path: '/auto-fill', 
-      icon: <Zap className="sidebar-menu-icon" /> 
-    },
-    { 
       name: 'Chrome扩展', 
       path: '/chrome-extension', 
       icon: <Chrome className="sidebar-menu-icon" /> 
