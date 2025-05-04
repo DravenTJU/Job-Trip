@@ -115,4 +115,4 @@
 
 .job-add-button {
   @apply w-full py-2 text-gray-500 bg-white border border-dashed border-gray-300 rounded-md hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 flex items-center justify-center;
-
+}
