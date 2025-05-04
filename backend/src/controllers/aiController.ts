@@ -2,12 +2,7 @@ import { Request, Response } from 'express';
 import { AppError } from '../utils/AppError';
 import { createApiResponse } from '../utils/apiResponse';
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_API_URL = 'https://openrouter.ai/api/v1';
-
-if (!OPENAI_API_KEY) {
-  throw new Error('OPENAI_API_KEY is not defined in environment variables');
-}
 
 interface OpenAIError {
   error?: {
@@ -29,6 +24,11 @@ interface OpenAIResponse {
  */
 export const generateCoverLetter = async (req: Request, res: Response) => {
   try {
+    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+    if (!OPENAI_API_KEY) {
+      throw new AppError('OpenAI API key is not configured', 500);
+    }
+
     const { jobDescription, tone = 'professional', language = 'chinese', user } = req.body;
 
     console.log('Received request body:', req.body);
