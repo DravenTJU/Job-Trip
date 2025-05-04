@@ -42,16 +42,8 @@ const JobsPage: React.FC = () => {
     jobType: '',
     platform: '',
     location: '',
-    salaryRange: '',
     dateRange: ''
   });
-  
-  // 薪资排序选项
-  const salarySortOptions = [
-    { label: '默认排序', value: '' },
-    { label: '薪资从高到低', value: 'desc' },
-    { label: '薪资从低到高', value: 'asc' }
-  ];
   
   // 时间范围选项
   const dateRanges = [
@@ -131,6 +123,10 @@ const JobsPage: React.FC = () => {
     loadJobs();
   }, [page, limit, searchTerm, sortOption, filters]);
   
+  useEffect(() => {
+    setSortOption('-createdAt'); // 每次进入页面都重置为最新添加
+  }, []);
+  
   // 处理搜索变更
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -159,7 +155,6 @@ const JobsPage: React.FC = () => {
       jobType: '',
       platform: '',
       location: '',
-      salaryRange: '',
       dateRange: ''
     });
     setPage(1);
@@ -178,11 +173,20 @@ const JobsPage: React.FC = () => {
   return (
     <div className="container-lg">
       <div className="section space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">职位列表</h1>
-          <p className="text-gray-500 dark:text-gray-400">
-            查看和管理您的所有求职申请
-          </p>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">职位列表</h1>
+            <p className="text-gray-500 dark:text-gray-400">
+              查看和管理您的所有求职申请
+            </p>
+          </div>
+          <button 
+            onClick={handleAddJob}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors mt-4 md:mt-0"
+          >
+            <Plus className="w-4 h-4" />
+            添加职位
+          </button>
         </div>
       
       {/* 搜索和筛选 */}
@@ -295,25 +299,6 @@ const JobsPage: React.FC = () => {
                       className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     >
                       {platforms.map(option => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  {/* 薪资排序 */}
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                      <DollarSign className="w-4 h-4 text-gray-400" />
-                      薪资排序
-                    </label>
-                    <select
-                      value={filters.salaryRange}
-                      onChange={(e) => handleFilterChange('salaryRange', e.target.value)}
-                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                    >
-                      {salarySortOptions.map(option => (
                         <option key={option.value} value={option.value}>
                           {option.label}
                         </option>
@@ -523,17 +508,6 @@ const JobsPage: React.FC = () => {
           </div>
         </div>
       )}
-        
-        {/* 添加职位按钮 */}
-        <div className="flex justify-end">
-          <button 
-            onClick={handleAddJob}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            添加职位
-          </button>
-        </div>
       </div>
     </div>
   );

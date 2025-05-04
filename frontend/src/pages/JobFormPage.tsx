@@ -44,9 +44,9 @@ const JobFormPage: React.FC = () => {
     title: '',
     company: '',
     description: '',
-    jobType: '',
+    jobType: JobType.FULL_TIME,
     location: '',
-    platform: 'manual',
+    platform: JobSource.SEEK,
     source: '',
     sourceId: '',
     sourceUrl: '',
@@ -77,7 +77,7 @@ const JobFormPage: React.FC = () => {
         title: job.title,
         company: typeof job.company === 'string' ? job.company : job.company.name,
         description: job.description || '',
-        jobType: job.jobType || '',
+        jobType: job.jobType || JobType.FULL_TIME,
         location: job.location || '',
         platform: job.platform,
         source: job.source,
@@ -95,6 +95,7 @@ const JobFormPage: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+    console.log(`输入框 ${name} 变化，值为: ${value}`);
     setFormData(prev => ({
       ...prev,
       [name!]: value,
@@ -109,11 +110,30 @@ const JobFormPage: React.FC = () => {
     }
   };
   
+  // 处理 select 组件变更
+  const handleSelectChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name!]: value,
+    }));
+    if (formErrors[name!]) {
+      setFormErrors(prev => ({
+        ...prev,
+        [name!]: '',
+      }));
+    }
+  };
+  
   // 处理表单提交
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log('表单提交事件触发');
     e.preventDefault();
     
     if (!validateForm()) {
+      console.log('表单校验未通过');
       setSnackbar({
         open: true,
         message: '请检查表单错误并重试',
@@ -121,7 +141,7 @@ const JobFormPage: React.FC = () => {
       });
       return;
     }
-    
+    console.log('表单校验通过，开始提交');
     setIsSubmitting(true);
     
     try {
@@ -129,6 +149,7 @@ const JobFormPage: React.FC = () => {
         ...formData,
         sourceId: formData.sourceId || generateSourceId()
       };
+      console.log('提交数据:', submitData);
       
       if (isEdit && id) {
         await dispatch(updateJob({ id, data: submitData })).unwrap();
@@ -139,6 +160,7 @@ const JobFormPage: React.FC = () => {
         });
       } else {
         await dispatch(createJob(submitData)).unwrap();
+        console.log('提交成功');
         setSnackbar({
           open: true,
           message: '职位创建成功',
@@ -151,6 +173,7 @@ const JobFormPage: React.FC = () => {
         navigate('/jobs');
       }, 1500);
     } catch (error) {
+      console.log('提交失败:', error);
       setSnackbar({
         open: true,
         message: '保存失败，请重试',
@@ -163,6 +186,7 @@ const JobFormPage: React.FC = () => {
   
   // 表单验证
   const validateForm = (): boolean => {
+    console.log('开始表单校验');
     const errors: Record<string, string> = {};
     
     // 验证标题
@@ -214,6 +238,7 @@ const JobFormPage: React.FC = () => {
     }
     
     setFormErrors(errors);
+    console.log('表单校验错误详情:', errors);
     return Object.keys(errors).length === 0;
   };
   
@@ -288,14 +313,6 @@ const JobFormPage: React.FC = () => {
                 {isEdit ? '编辑职位' : '添加职位'}
               </h1>
             </div>
-            <button
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors disabled:bg-gray-200 disabled:text-gray-500 disabled:shadow-none"
-            >
-              <Save className="w-4 h-4" />
-              {isSubmitting ? '保存中...' : '保存'}
-            </button>
           </div>
         </div>
 
@@ -361,12 +378,34 @@ const JobFormPage: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    工作地点
+                  </label>
+                  <input
+                    type="text"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleChange}
+                    className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                      formErrors.location 
+                        ? 'ring-red-500 focus:ring-red-500' 
+                        : 'ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500'
+                    } transition-shadow`}
+                    required
+                  />
+                  {formErrors.location && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {formErrors.location}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     状态
                   </label>
                   <select
                     name="status"
                     value={formData.status}
-                    onChange={handleChange}
+                    onChange={handleSelectChange}
                     className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
                       formErrors.status 
                         ? 'ring-red-500 focus:ring-red-500' 
@@ -382,6 +421,33 @@ const JobFormPage: React.FC = () => {
                   {formErrors.status && (
                     <p className="mt-1 text-sm text-red-600 dark:text-red-400">
                       {formErrors.status}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    职位类型
+                  </label>
+                  <select
+                    name="jobType"
+                    value={formData.jobType}
+                    onChange={handleSelectChange}
+                    className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                      formErrors.jobType 
+                        ? 'ring-red-500 focus:ring-red-500' 
+                        : 'ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500'
+                    } transition-shadow`}
+                  >
+                    <option value="">请选择职位类型</option>
+                    {jobTypeOptions.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  {formErrors.jobType && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {formErrors.jobType}
                     </p>
                   )}
                 </div>
@@ -412,8 +478,12 @@ const JobFormPage: React.FC = () => {
                   <select
                     name="platform"
                     value={formData.platform}
-                    onChange={handleChange}
-                    className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    onChange={handleSelectChange}
+                    className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                      formErrors.platform 
+                        ? 'ring-red-500 focus:ring-red-500' 
+                        : 'ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500'
+                    } transition-shadow"
                   >
                     {platformOptions.map(option => (
                       <option key={option.value} value={option.value}>
@@ -453,6 +523,18 @@ const JobFormPage: React.FC = () => {
                   placeholder="请输入职位描述、要求等信息..."
                 />
               </div>
+            </div>
+
+            {/* 保存按钮放在表单底部 */}
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors disabled:bg-gray-200 disabled:text-gray-500 disabled:shadow-none"
+              >
+                <Save className="w-4 h-4" />
+                {isSubmitting ? '保存中...' : '保存'}
+              </button>
             </div>
           </form>
         </div>
