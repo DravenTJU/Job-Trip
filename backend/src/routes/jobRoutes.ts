@@ -5,6 +5,7 @@ import {
   createJob,
   updateJob,
   deleteJob,
+  createJobFromExtension
 } from '../controllers/jobController';
 import { protect } from '../middleware/authMiddleware';
 
@@ -206,6 +207,9 @@ router.use(protect);
 router.route('/')
   .get(getJobs)
   .post(createJob);
+
+// 从浏览器插件创建职位
+router.post('/extension', createJobFromExtension);
 
 /**
  * @swagger
