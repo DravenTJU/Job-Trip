@@ -293,7 +293,7 @@ const apiExporter = {
         if (apiResponse.ok) {
           const data = await apiResponse.json();
           console.log('Export successful:', data);
-          uiService.showMessage(statusMessage, `Successfully exported ${data.data.length} jobs to backend with user token`, 'success');
+          uiService.showMessage(statusMessage, `Successfully exported ${data.data.length} jobs to backend with user token`);
         } else {
           const errorData = await apiResponse.json();
           console.error('API export error:', errorData.message);
@@ -348,6 +348,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const testGetBtn = document.getElementById('testGetBtn')
   const usertokenBtn = document.getElementById('usertokenBtn')////////////////
 
+  // 初始化国家和地点下拉菜单
+  updateLocationOptions(countrySelect.value);
+
   // 添加工作数量限制输入框
   const maxJobsContainer = document.createElement('div')
   maxJobsContainer.className = 'search-row'
@@ -384,18 +387,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   ])
 
   // First set the country and update location options
-  if (lastCountry) {
-    // countrySelect.value = lastCountry
-    updateLocationOptions(lastCountry)
-  } else {
-    // If no country is selected, initialize with empty website options
-    updateLocationOptions('')
-  }
+  // if (lastCountry) {
+  //   // countrySelect.value = lastCountry
+  //   updateLocationOptions(lastCountry)
+  // } else {
+  //   // If no country is selected, initialize with empty website options
+  //   updateLocationOptions('')
+  // }
 
-  // Then set the location if it exists
-  if (lastLocation) {
-    // locationSelect.value = lastLocation
-  }
+  // // Then set the location if it exists
+  // if (lastLocation) {
+  //   // locationSelect.value = lastLocation
+  // }
 
   // Load saved settings
   const savedSettings = await storageService.loadWebsiteSettings()

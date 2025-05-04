@@ -173,7 +173,7 @@ button:disabled {
 }
 
 #searchBtn::before {
-  content: '🔍';
+  /* content: '🔍'; */
   font-size: 14px;
 }
 
@@ -582,7 +582,7 @@ button:disabled {
 }
 
 .export-by-api-btn::before {
-  content: '📡';
+  /* content: '📡'; */
   font-size: 14px;
 }
 
@@ -595,7 +595,7 @@ button:disabled {
 }
 
 .test-get-btn::before {
-  content: '🔍';
+  /* content: '🔍'; */
   font-size: 14px;
 }
 
