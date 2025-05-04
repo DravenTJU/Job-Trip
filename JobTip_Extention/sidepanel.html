@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Jobtip Assistant</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+
+<body>
+  <div class="container">
+    <h2>Jobtip Assistant</h2>
+
+    <div id="websiteOptions" style="margin: 4px 0 10px 0;"></div>
+
+    <div class="search-section">
+      <input type="text" id="searchInput" class="search-input" value="Software Engineer" placeholder="Enter job title or keywords" required>
+
+      <div class="search-row">
+        <select id="country" class="location-select" required>
+          <option value="">Select Country</option>
+          <option value="United States">United States</option>
+          <option value="Australia">Australia</option>
+          <option value="United Kingdom">United Kingdom</option>
+          <option value="Canada">Canada</option>
+          <option value="New Zealand">New Zealand</option>
+        </select>
+      </div>
+
+      <div class="search-row">
+        <select id="location" class="location-select" required disabled>
+          <option value="">Select a location</option>
+        </select>
+      </div>
+
+      <div class="search-row">
+        <button id="searchBtn" style="width: 100%;">Search</button>
+      </div>
+    </div>
+
+    <!-- Location options templates (hidden) -->
+    <template id="usLocations">
+      <option value="New York, NY, United States">New York, NY</option>
+      <option value="Los Angeles, CA, United States">Los Angeles, CA</option>
+      <option value="Chicago, IL, United States">Chicago, IL</option>
+      <option value="Houston, TX, United States">Houston, TX</option>
+      <option value="Phoenix, AZ, United States">Phoenix, AZ</option>
+      <option value="Philadelphia, PA, United States">Philadelphia, PA</option>
+      <option value="San Antonio, TX, United States">San Antonio, TX</option>
+      <option value="San Diego, CA, United States">San Diego, CA</option>
+      <option value="Dallas, TX, United States">Dallas, TX</option>
+      <option value="San Jose, CA, United States">San Jose, CA</option>
+      <option value="Portland, OR, United States">Portland, OR</option>
+      <option value="Vancouver, WA, United States">Vancouver, WA</option>
+    </template>
+
+    <template id="australiaLocations">
+      <option value="Sydney, NSW, Australia">Sydney, NSW</option>
+      <option value="Melbourne, VIC, Australia">Melbourne, VIC</option>
+      <option value="Brisbane, QLD, Australia">Brisbane, QLD</option>
+      <option value="Perth, WA, Australia">Perth, WA</option>
+      <option value="Adelaide, SA, Australia">Adelaide, SA</option>
+      <option value="Gold Coast, QLD, Australia">Gold Coast, QLD</option>
+      <option value="Newcastle, NSW, Australia">Newcastle, NSW</option>
+      <option value="Canberra, ACT, Australia">Canberra, ACT</option>
+      <option value="Wollongong, NSW, Australia">Wollongong, NSW</option>
+      <option value="Hobart, TAS, Australia">Hobart, TAS</option>
+    </template>
+
+    <template id="ukLocations">
+      <option value="London, United Kingdom">London</option>
+      <option value="Manchester, United Kingdom">Manchester</option>
+      <option value="Birmingham, United Kingdom">Birmingham</option>
+      <option value="Leeds, United Kingdom">Leeds</option>
+      <option value="Glasgow, United Kingdom">Glasgow</option>
+      <option value="Liverpool, United Kingdom">Liverpool</option>
+      <option value="Edinburgh, United Kingdom">Edinburgh</option>
+      <option value="Bristol, United Kingdom">Bristol</option>
+      <option value="Cardiff, United Kingdom">Cardiff</option>
+      <option value="Belfast, United Kingdom">Belfast</option>
+    </template>
+
+    <template id="canadaLocations">
+      <option value="Toronto, ON, Canada">Toronto, ON</option>
+      <option value="Vancouver, BC, Canada">Vancouver, BC</option>
+      <option value="Montreal, QC, Canada">Montreal, QC</option>
+      <option value="Calgary, AB, Canada">Calgary, AB</option>
+      <option value="Ottawa, ON, Canada">Ottawa, ON</option>
+      <option value="Edmonton, AB, Canada">Edmonton, AB</option>
+      <option value="Winnipeg, MB, Canada">Winnipeg, MB</option>
+      <option value="Quebec City, QC, Canada">Quebec City, QC</option>
+      <option value="Halifax, NS, Canada">Halifax, NS</option>
+      <option value="Victoria, BC, Canada">Victoria, BC</option>
+    </template>
+
+    <template id="newZealandLocations">
+      <option value="Auckland, New Zealand">Auckland</option>
+      <option value="Wellington, New Zealand">Wellington</option>
+      <option value="Christchurch, New Zealand">Christchurch</option>
+      <option value="Hamilton, New Zealand">Hamilton</option>
+      <option value="Tauranga, New Zealand">Tauranga</option>
+      <option value="Dunedin, New Zealand">Dunedin</option>
+      <option value="Palmerston North, New Zealand">Palmerston North</option>
+      <option value="Nelson, New Zealand">Nelson</option>
+      <option value="Rotorua, New Zealand">Rotorua</option>
+      <option value="Queenstown, New Zealand">Queenstown</option>
+    </template>
+
+    <div class="progress-section" id="progressSection">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text" id="progressText">Scraping jobs...</div>
+      <div class="progress-detail" id="progressDetail"></div>
+    </div>
+
+    <div id="overlay" class="overlay">
+      <div class="overlay-content">
+        <div class="spinner"></div>
+        <div class="progress-text" id="overlayText">Scraping in progress...</div>
+        <div class="progress-detail" id="overlayDetail"></div>
+      </div>
+    </div>
+
+    <div id="statusMessage" class="status-message" style="display: none;"></div>
+
+    <div class="job-list" id="jobList">
+      <!-- Empty state will be added via JavaScript when needed -->
+    </div>
+
+    <!-- 先隱藏部分測試用button -->
+    <div class="job-actions"> 
+      <button id="showInJobtipBtn" class=" show-in-jobtip-btn" style="width: 100%;" disabled>🚀Export Job Results</button>
+      <button id="exportByApiBtn" class="export-by-api-btn" style="width: 100%;" disabled>Export Job Results By API</button>
+      <button id="testGetBtn" class="hidden test-get-btn" style="width: 100%;">Test GET Jobs API</button>
+      <button id="usertokenBtn" class="hidden user-token-get-btn" style="width: 100%;">User token</button>
+    </div>
+  </div>
+
+  <script src="./panel.js" type="module"></script>
+</body>
+
+</html>

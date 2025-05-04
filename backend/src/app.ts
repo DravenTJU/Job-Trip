@@ -1,3 +1,7 @@
+import dotenv from 'dotenv';
+// Load environment variables before any other imports
+dotenv.config();
+
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -9,6 +13,8 @@ import userRoutes from './routes/userRoutes';
 import jobRoutes from './routes/jobRoutes';
 import companyRoutes from './routes/companyRoutes';
 import userJobRoutes from './routes/userJobRoutes';
+import resumeRoutes from './routes/resumeRoutes';
+import aiRoutes from './routes/aiRoutes';
 import { stream } from './utils/logger';
 import swaggerSpec from './config/swagger';
 import * as path from 'path';
@@ -309,6 +315,8 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/jobs', jobRoutes);
 app.use('/api/v1/companies', companyRoutes);
 app.use('/api/v1/userjobs', userJobRoutes);
+app.use('/api/v1/resumes', resumeRoutes);
+app.use('/api/v1/ai', aiRoutes);
 
 /**
  * @swagger
@@ -351,4 +359,4 @@ app.use((req: Request, res: Response) => {
 // 全局错误处理中间件
 app.use(errorHandler);
 
-export default app; 
+export default app;
