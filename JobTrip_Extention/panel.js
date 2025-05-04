@@ -293,7 +293,7 @@ const apiExporter = {
         if (apiResponse.ok) {
           const data = await apiResponse.json();
           console.log('Export successful:', data);
-          uiService.showMessage(statusMessage, `Successfully exported ${data.data.length} jobs to backend with user token`, 'success');
+          uiService.showMessage(statusMessage, `Successfully exported ${data.data.length} jobs to backend with user token`);
         } else {
           const errorData = await apiResponse.json();
           console.error('API export error:', errorData.message);
