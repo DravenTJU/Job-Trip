@@ -1,9 +1,14 @@
 # jobtrip Browser Extension
 
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/Rorogogogo/jobtrip-extention/blob/main/LICENSE)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
+
+![intruoduction](https://github.com/user-attachments/assets/46e03815-69ff-475d-9d99-52d5faa215d3)
 
 A browser extension designed to streamline your job search by scraping job listings from various platforms and potentially integrating with the jobtrip service. This tool helps you gather and manage job application information efficiently.
+
+## Attention
+- You need to run jobtrip service (e.g.: http://localhost:3000/ ) before you can use this extension to use web crawler normally, otherwise it won't work properly.
 
 ## ⚠️ Important Disclaimer
 
@@ -72,13 +77,26 @@ The extension attempts to extract the following details (availability may vary b
 3.  **Job Search**
     -   Navigate to a supported job platform (LinkedIn Jobs, SEEK, Indeed).
     -   Perform a job search as usual.
+      
+
 
 4.  **Scraping & Managing Jobs**
     -   Click the jobtrip extension icon in your browser toolbar. This should open the Side Panel.
     -   Use the controls within the Side Panel to initiate scraping for the current page.
     -   View scraped jobs within the Side Panel.
-    -   (If applicable) Use options within the Side Panel or Popup to save/sync jobs to jobtrip.
+         ![linkedinSearch](https://github.com/user-attachments/assets/8847cdeb-640f-476e-aa41-65bed3ec8b30)
 
+    
+5. **Manage jobs**
+    - Save/synchronise jobs to jobtrip using the sidebar option (Export Job Results By API).
+      ![APIExport](https://github.com/user-attachments/assets/9cc998e4-7841-4701-b95d-943641c0412f)
+
+    - Save jobs as Json file locally using sidebar option (Export Job Results).
+      ![JsonExport](https://github.com/user-attachments/assets/3ef1f0a8-de0b-480c-b0d3-de3d799d6fdd)
+
+6. **Job details**
+    - Tap View job to go to the job details page.
+      
 ## Supported Platforms (Details)
 
 -   LinkedIn (`linkedin.com/jobs/*`)
@@ -125,13 +143,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 # jobtrip 浏览器扩展
 
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/Rorogogogo/jobtrip-extention/blob/main/LICENSE)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 
 这是一个浏览器扩展，旨在通过从各种平台抓取职位信息并可能与 jobtrip 服务集成来简化您的求职过程。该工具帮助您高效地收集和管理求职申请信息。
 
 ## 注意
-- 需要先運行jobtrip服务(如: http://localhost:3000/)，才能正常使用本扩展使用网络爬虫，否则无法正常使用。
+- 需要先運行jobtrip服务(如: http://localhost:3000/ )，才能正常使用本扩展使用网络爬虫，否则无法正常使用。
 
 ## ⚠️ 重要免责声明
 
@@ -201,11 +219,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
     -   导航到支持的求职平台（LinkedIn Jobs、SEEK、Indeed）。
     -   像往常一样进行职位搜索。
 
-4.  **爬取和管理职位**
+4.  **爬取职位**
     -   点击浏览器工具栏中的 jobtrip 扩展图标。这将打开侧边栏。
     -   使用侧边栏中的控件开始爬取当前页面。
     -   在侧边栏中查看爬取的职位。
-    -   （如果适用）使用侧边栏或弹出窗口中的选项将职位保存/同步到 jobtrip。
+      
+5. **管理职位**
+    -   使用侧边栏选项(Export Job Results By API)将职位保存/同步到 jobtrip。
+    -   使用侧边栏选项(Export Job Results)将职位保存為Json file到本地。
+
+6. **职位詳情**
+    -   点选View job可进入职位详情页
+
 
 ## 支持的平台（详情）
 
