@@ -96,6 +96,55 @@
 }
 ```
 
+## 2.6 简历集合 (resumes)
+
+```javascript
+{
+  _id: ObjectId,
+  name: String,           // 简历名称
+  user: ObjectId,         // 关联用户ID
+  content: String,        // 简历内容（JSON格式字符串）
+  targetPosition: String, // 目标职位
+  targetJob: String,      // 目标工作
+  createdAt: Date,        // 创建时间
+  updatedAt: Date         // 更新时间
+}
+```
+
+### 2.7 简历内容结构
+
+简历内容以JSON字符串形式存储在content字段中，解析后的结构如下：
+
+```javascript
+{
+  personalInfo: {
+    fullName: String,     // 姓名
+    email: String,        // 邮箱
+    phone: String,        // 电话
+    location: String      // 所在地
+  },
+  educations: [
+    {
+      education: String,   // 学历
+      school: String,      // 学校
+      major: String,       // 专业
+      startDate: String,   // 开始日期
+      endDate: String      // 结束日期
+    }
+  ],
+  workExperiences: [
+    {
+      company: String,     // 公司
+      position: String,    // 职位
+      startDate: String,   // 开始日期
+      endDate: String,     // 结束日期
+      responsibilities: String // 职责描述
+    }
+  ],
+  skills: String          // 技能描述
+}
+```
+
 ## 3. 索引设计
 
 ### 3.1 用户集合索引
@@ -124,6 +173,11 @@
 ### 3.5 公司集合索引
 - name (唯一索引)
 - industry (索引)
+
+### 3.6 简历集合索引
+- userId (索引)
+- createdAt (索引)
+- name (索引) 
 
 ## 4. 数据安全
 
