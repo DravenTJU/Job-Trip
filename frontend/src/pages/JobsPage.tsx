@@ -1,52 +1,131 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Paper, 
-  Grid, 
-  Button,
-  TextField,
-  MenuItem,
-  InputAdornment,
-  Pagination,
-  Alert,
-  CircularProgress,
-  Chip,
-  Tooltip,
-  IconButton
-} from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
-import LaunchIcon from '@mui/icons-material/Launch';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
 import { fetchJobs } from '@/redux/slices/jobsSlice';
-import { Job } from '@/types';
-import NoDataPlaceholder from '@/components/common/NoDataPlaceholder';
+import { 
+  Search, 
+  Plus, 
+  ExternalLink, 
+  ChevronLeft, 
+  ChevronRight,
+  Filter,
+  SortDesc,
+  SortAsc,
+  X,
+  Calendar,
+  Building2,
+  MapPin,
+  DollarSign,
+  Briefcase
+} from 'lucide-react';
+import { JobStatus, JobSource, JobType } from '@/types';
 
 /**
  * 职位列表页面组件
  */
 const JobsPage: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { jobs = [], pagination, isLoading, error } = useAppSelector(state => state.jobs);
+  const { jobs, isLoading, error, pagination } = useSelector((state: RootState) => state.jobs);
   
   // 搜索和筛选状态
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOption, setSortOption] = useState('-createdAt'); // 默认按创建时间降序
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
+  const [showFilters, setShowFilters] = useState(false);
+  
+  // 筛选条件
+  const [filters, setFilters] = useState({
+    status: '',
+    jobType: '',
+    platform: '',
+    location: '',
+    dateRange: ''
+  });
+  
+  // 时间范围选项
+  const dateRanges = [
+    { label: '所有时间', value: '' },
+    { label: '今天', value: 'today' },
+    { label: '最近3天', value: '3days' },
+    { label: '最近一周', value: '1week' },
+    { label: '最近一月', value: '1month' },
+    { label: '最近三月', value: '3months' }
+  ];
+  
+  // 工作类型选项
+  const jobTypes = [
+    { label: '所有类型', value: '' },
+    { label: '全职', value: JobType.FULL_TIME },
+    { label: '兼职', value: JobType.PART_TIME },
+    { label: '实习', value: JobType.INTERNSHIP },
+    { label: '合同工', value: JobType.CONTRACT },
+    { label: '自由职业', value: JobType.FREELANCE }
+  ];
+  
+  // 平台来源选项
+  const platforms = [
+    { label: '所有来源', value: '' },
+    { label: 'LinkedIn', value: JobSource.LINKEDIN },
+    { label: 'Seek', value: JobSource.SEEK },
+    { label: 'Indeed', value: JobSource.INDEED },
+    { label: '其他', value: JobSource.OTHER }
+  ];
+  
+  // 状态选项
+  const statusOptions = [
+    { label: '所有状态', value: '' },
+    { label: '新发布', value: JobStatus.NEW },
+    { label: '已申请', value: JobStatus.APPLIED },
+    { label: '面试中', value: JobStatus.INTERVIEWING },
+    { label: '已录用', value: JobStatus.OFFER },
+    { label: '已拒绝', value: JobStatus.REJECTED },
+    { label: '已撤回', value: JobStatus.WITHDRAWN },
+    { label: '已关闭', value: JobStatus.CLOSED }
+  ];
   
   // 加载职位列表数据
+  const loadJobs = async () => {
+    try {
+      // 构建查询参数
+      const queryParams = {
+        page,
+        limit,
+        ...(searchTerm && { search: searchTerm }),
+        ...(sortOption && { sort: sortOption }),
+        ...Object.fromEntries(
+          Object.entries(filters).filter(([_, value]) => value !== '')
+        )
+      };
+      
+      console.log('Fetching jobs with params:', queryParams);
+      
+      // 获取职位列表
+      const result = await dispatch(fetchJobs(queryParams));
+      
+      // 处理响应
+      if (fetchJobs.fulfilled.match(result)) {
+        // 如果当前页没有数据，且不是第一页，回到第一页
+        if (result.payload.data.length === 0 && page > 1) {
+          setPage(1);
+          return;
+        }
+      }
+    } catch (error) {
+      console.error('加载数据时出错:', error);
+    }
+  };
+  
+  // 初始加载和依赖更新时重新加载
   useEffect(() => {
-    dispatch(fetchJobs({
-      page,
-      limit,
-      search: searchTerm,
-      sort: sortOption
-    }));
-  }, [dispatch, page, limit, searchTerm, sortOption]);
+    loadJobs();
+  }, [page, limit, searchTerm, sortOption, filters]);
+  
+  useEffect(() => {
+    setSortOption('-createdAt'); // 每次进入页面都重置为最新添加
+  }, []);
   
   // 处理搜索变更
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,14 +134,35 @@ const JobsPage: React.FC = () => {
   };
   
   // 处理排序变更
-  const handleSortChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOption(e.target.value);
     setPage(1); // 重置页码
   };
   
+  // 处理筛选变更
+  const handleFilterChange = (field: string, value: string) => {
+    setFilters(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    setPage(1); // 重置页码
+  };
+  
+  // 重置筛选条件
+  const resetFilters = () => {
+    setFilters({
+      status: '',
+      jobType: '',
+      platform: '',
+      location: '',
+      dateRange: ''
+    });
+    setPage(1);
+  };
+  
   // 处理页码变更
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
   };
   
   // 添加新职位
@@ -71,211 +171,368 @@ const JobsPage: React.FC = () => {
   };
   
   return (
-    <Box>
-      <Grid container spacing={2} alignItems="center" sx={{ mb: 3 }}>
-        <Grid item xs={12} md={6}>
-          <Typography variant="h4" component="h1" gutterBottom>
-            职位列表
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            查看和管理您的所有求职申请
-          </Typography>
-        </Grid>
-        <Grid item xs={12} md={6} sx={{ textAlign: { xs: 'left', md: 'right' } }}>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
+    <div className="container-lg">
+      <div className="section space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">职位列表</h1>
+            <p className="text-gray-500 dark:text-gray-400">
+              查看和管理您的所有求职申请
+            </p>
+          </div>
+          <button 
             onClick={handleAddJob}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors mt-4 md:mt-0"
           >
+            <Plus className="w-4 h-4" />
             添加职位
-          </Button>
-        </Grid>
-      </Grid>
+          </button>
+        </div>
       
       {/* 搜索和筛选 */}
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
+        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5">
+          <div className="p-6 space-y-6">
+            {/* 搜索栏 */}
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
               placeholder="搜索职位名称、公司或地点..."
-              variant="outlined"
-              size="small"
               value={searchTerm}
               onChange={handleSearchChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              select
-              fullWidth
-              label="排序方式"
+                  className="w-full h-11 pl-10 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                />
+              </div>
+              <div className="flex gap-3">
+                <select
               value={sortOption}
               onChange={handleSortChange}
-              variant="outlined"
-              size="small"
-            >
-              <MenuItem value="-createdAt">最新添加</MenuItem>
-              <MenuItem value="createdAt">最早添加</MenuItem>
-              <MenuItem value="title">职位名称（A-Z）</MenuItem>
-              <MenuItem value="-title">职位名称（Z-A）</MenuItem>
-              <MenuItem value="company">公司名称（A-Z）</MenuItem>
-              <MenuItem value="-company">公司名称（Z-A）</MenuItem>
-            </TextField>
-          </Grid>
-        </Grid>
-      </Paper>
+                  className="h-11 min-w-[160px] bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                >
+                  <option value="-createdAt">最新添加</option>
+                  <option value="createdAt">最早添加</option>
+                  <option value="title">职位名称（A-Z）</option>
+                  <option value="-title">职位名称（Z-A）</option>
+                  <option value="company">公司名称（A-Z）</option>
+                  <option value="-company">公司名称（Z-A）</option>
+                </select>
+                <button
+                  onClick={() => setShowFilters(!showFilters)}
+                  className={`h-11 px-5 rounded-xl flex items-center gap-2 font-medium transition-all duration-200 ${
+                    showFilters 
+                      ? 'bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25' 
+                      : 'bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50'
+                  }`}
+                >
+                  <Filter className="w-4 h-4" />
+                  筛选
+                </button>
+              </div>
+            </div>
+            
+            {/* 筛选面板 */}
+            {showFilters && (
+              <div className="pt-6 border-t border-gray-900/5 dark:border-gray-100/5">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <Filter className="w-4 h-4 text-gray-400" />
+                    <h3 className="text-base font-medium">筛选条件</h3>
+                  </div>
+                  <button
+                    onClick={resetFilters}
+                    className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                    重置
+                  </button>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {/* 状态筛选 */}
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 ring-1 ring-gray-900/5 dark:ring-gray-100/5"></div>
+                      状态
+                    </label>
+                    <select
+                      value={filters.status}
+                      onChange={(e) => handleFilterChange('status', e.target.value)}
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    >
+                      {statusOptions.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {/* 工作类型筛选 */}
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                      <Briefcase className="w-4 h-4 text-gray-400" />
+                      工作类型
+                    </label>
+                    <select
+                      value={filters.jobType}
+                      onChange={(e) => handleFilterChange('jobType', e.target.value)}
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    >
+                      {jobTypes.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {/* 平台来源筛选 */}
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-gray-400" />
+                      平台来源
+                    </label>
+                    <select
+                      value={filters.platform}
+                      onChange={(e) => handleFilterChange('platform', e.target.value)}
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    >
+                      {platforms.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {/* 发布时间筛选 */}
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-gray-400" />
+                      发布时间
+                    </label>
+                    <select
+                      value={filters.dateRange}
+                      onChange={(e) => handleFilterChange('dateRange', e.target.value)}
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    >
+                      {dateRanges.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {/* 地点筛选 */}
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-gray-400" />
+                      工作地点
+                    </label>
+                    <input
+                      type="text"
+                      value={filters.location}
+                      onChange={(e) => handleFilterChange('location', e.target.value)}
+                      placeholder="输入城市名称"
+                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       
       {/* 错误提示 */}
       {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
+          <div className="rounded-xl bg-red-50 dark:bg-red-500/10 p-4 text-red-600 dark:text-red-400">
           {error}
-        </Alert>
+          </div>
       )}
       
       {/* 职位列表 */}
       {isLoading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-          <CircularProgress />
-        </Box>
-      ) : jobs && jobs.length > 0 ? (
-        <>
-          <Grid container spacing={2}>
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+        </div>
+      ) : error ? (
+        <div className="text-center py-12">
+          <p className="text-red-500">加载失败，请重试</p>
+        </div>
+      ) : jobs.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-gray-500">暂无职位数据</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
             {jobs.map((job) => (
-              <Grid item xs={12} key={job._id}>
-                <Box sx={{ mb: 2 }}>
-                  <Paper 
-                    elevation={1} 
-                    sx={{ 
-                      p: 2, 
-                      transition: 'transform 0.2s, box-shadow 0.2s', 
-                      '&:hover': { 
-                        transform: 'translateY(-2px)', 
-                        boxShadow: 3 
-                      }
-                    }}
-                  >
-                    <Grid container spacing={2} alignItems="center">
-                      {/* 职位基本信息 */}
-                      <Grid item xs={12} md={8}>
-                        <Box sx={{ mb: { xs: 1, md: 0 } }}>
-                          <Typography 
-                            variant="h6" 
-                            component={RouterLink} 
-                            to={`/jobs/${job._id}`}
-                            sx={{ 
-                              fontWeight: 'bold',
-                              textDecoration: 'none',
-                              color: 'primary.main',
-                              '&:hover': { textDecoration: 'underline' }
-                            }}
+            <div 
+              key={job._id}
+              className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200"
+            >
+              <div className="p-6">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <h3 className="text-lg font-medium mb-1">
+                      <a 
+                        href={`/jobs/${job._id}`}
+                        className="text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400"
                           >
                             {job.title}
-                          </Typography>
-                          
-                          <Typography variant="body1" sx={{ my: 0.5 }}>
+                      </a>
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                      <Building2 className="w-4 h-4" />
                             {typeof job.company === 'string' ? job.company : job.company.name}
-                            {job.location && <span> · {job.location}</span>}
-                          </Typography>
-                          
-                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
+                      {job.location && (
+                        <>
+                          <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-4 h-4" />
+                            {job.location}
+                          </span>
+                        </>
+                      )}
+                    </p>
+                    <div className="flex flex-wrap gap-2 mt-3">
                             {job.jobType && (
-                              <Chip 
-                                label={job.jobType} 
-                                size="small" 
-                                variant="outlined" 
-                              />
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                          <Briefcase className="w-3 h-3" />
+                          {job.jobType}
+                        </span>
                             )}
                             {job.salary && (
-                              <Chip 
-                                label={job.salary} 
-                                size="small" 
-                                variant="outlined" 
-                                color="secondary"
-                              />
-                            )}
-                          </Box>
-                        </Box>
-                      </Grid>
-                      
-                      {/* 操作按钮 */}
-                      <Grid item xs={12} md={4} sx={{ textAlign: { xs: 'left', md: 'right' } }}>
-                        <Box sx={{ display: 'flex', gap: 1, justifyContent: { xs: 'flex-start', md: 'flex-end' } }}>
-                          <Button 
-                            component={RouterLink} 
-                            to={`/jobs/${job._id}`}
-                            variant="outlined" 
-                            size="small"
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400">
+                          <DollarSign className="w-3 h-3" />
+                          {job.salary}
+                        </span>
+                      )}
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium ${getStatusStyles(job.status)}`}>
+                        <div className="w-2 h-2 rounded-full bg-current"></div>
+                        {job.status}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2">
+                    <button 
+                      onClick={() => navigate(`/jobs/${job._id}`)}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                           >
                             查看详情
-                          </Button>
-                          
-                          <Button 
-                            component={RouterLink} 
-                            to={`/application/new?jobId=${job._id}`}
-                            variant="contained" 
-                            size="small"
-                            color="primary"
-                          >
-                            跟踪申请
-                          </Button>
-                          
-                          {job.link && (
-                            <Tooltip title="打开职位链接">
-                              <IconButton 
-                                component="a" 
-                                href={job.link} 
+                  </button>
+                    <button 
+                      onClick={() => {
+                        window.location.href = 'http://localhost:3000/dashboard';
+                      }}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
+                    >
+                      跟踪申请
+                    </button>
+                    {job.sourceUrl && (
+                      <a 
+                        href={job.sourceUrl}
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                onClick={(e: React.MouseEvent) => e.stopPropagation()}
-                                size="small"
-                                color="primary"
-                              >
-                                <LaunchIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          )}
-                        </Box>
-                      </Grid>
-                    </Grid>
-                  </Paper>
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        查看原始职位
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
           
           {/* 分页控件 */}
-          {pagination && pagination.pages > 1 && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-              <Pagination
-                count={pagination.pages}
-                page={page}
-                onChange={handlePageChange}
-                color="primary"
-              />
-            </Box>
-          )}
-        </>
-      ) : (
-        <Paper sx={{ p: 3, textAlign: 'center' }}>
-          <NoDataPlaceholder 
-            title="暂无职位数据"
-            message="您尚未添加任何职位申请。点击添加职位按钮开始追踪您的求职之旅。"
-            actionText="添加职位"
-            onAction={handleAddJob}
-          />
-        </Paper>
+          <div className="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 px-4 py-3 sm:px-6 mt-4">
+            <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+              <span>第 {page} 页</span>
+              <span className="mx-2">·</span>
+              <span>每页 {limit} 条</span>
+              {pagination && (
+                <>
+                  <span className="mx-2">·</span>
+                  <span>共 {pagination.total} 条</span>
+                </>
+              )}
+            </div>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page === 1}
+                className={`inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                  ${page === 1 
+                    ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed' 
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+              >
+                <ChevronLeft className="w-5 h-5" />
+                上一页
+              </button>
+              {pagination && (
+                <div className="flex items-center space-x-1">
+                  {Array.from({ length: pagination.pages }, (_, i) => i + 1).map((pageNum) => (
+                    <button
+                      key={pageNum}
+                      onClick={() => handlePageChange(pageNum)}
+                      className={`inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                        ${pageNum === page
+                          ? 'bg-indigo-500 text-white'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        }`}
+                    >
+                      {pageNum}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <button
+                onClick={() => handlePageChange(page + 1)}
+                disabled={pagination ? page >= pagination.pages : jobs.length < limit}
+                className={`inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                  ${pagination && page >= pagination.pages
+                    ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed' 
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+              >
+                下一页
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
       )}
-    </Box>
+      </div>
+    </div>
   );
+};
+
+// 获取状态样式
+const getStatusStyles = (status: string) => {
+  switch (status) {
+    case JobStatus.NEW:
+      return 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400';
+    case JobStatus.APPLIED:
+      return 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400';
+    case JobStatus.INTERVIEWING:
+      return 'bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-400';
+    case JobStatus.OFFER:
+      return 'bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400';
+    case JobStatus.REJECTED:
+      return 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400';
+    case JobStatus.WITHDRAWN:
+      return 'bg-gray-50 dark:bg-gray-500/10 text-gray-600 dark:text-gray-400';
+    case JobStatus.CLOSED:
+      return 'bg-gray-50 dark:bg-gray-500/10 text-gray-600 dark:text-gray-400';
+    default:
+      return 'bg-gray-50 dark:bg-gray-500/10 text-gray-600 dark:text-gray-400';
+  }
 };
 
 export default JobsPage; 
