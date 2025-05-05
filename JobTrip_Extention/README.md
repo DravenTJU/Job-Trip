@@ -84,15 +84,15 @@ The extension attempts to extract the following details (availability may vary b
     -   Click the jobtrip extension icon in your browser toolbar. This should open the Side Panel.
     -   Use the controls within the Side Panel to initiate scraping for the current page.
     -   View scraped jobs within the Side Panel.
-         ![linkedinSearch](https://github.com/user-attachments/assets/8847cdeb-640f-476e-aa41-65bed3ec8b30)
+    <img src="https://github.com/user-attachments/assets/8847cdeb-640f-476e-aa41-65bed3ec8b30" width="500" />
 
     
 5. **Manage jobs**
     - Save/synchronise jobs to jobtrip using the sidebar option (Export Job Results By API).
-      ![APIExport](https://github.com/user-attachments/assets/9cc998e4-7841-4701-b95d-943641c0412f)
+    <img src="https://github.com/user-attachments/assets/9cc998e4-7841-4701-b95d-943641c0412f" width="500" />
 
     - Save jobs as Json file locally using sidebar option (Export Job Results).
-      ![JsonExport](https://github.com/user-attachments/assets/3ef1f0a8-de0b-480c-b0d3-de3d799d6fdd)
+    <img src="https://github.com/user-attachments/assets/3ef1f0a8-de0b-480c-b0d3-de3d799d6fdd" width="500" />
 
 6. **Job details**
     - Tap View job to go to the job details page.
