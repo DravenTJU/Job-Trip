@@ -83,8 +83,27 @@ const ResumeFormPage: React.FC = () => {
     };
   }, [dispatch, id, baseId, isEditMode]);
 
+  // 获取当前用户信息
+  const { user } = useAppSelector((state) => state.auth);
+
   // 当简历数据加载完成后，更新表单数据
-  useEffect(() => {
+  useEffect(() => {    
+    // 如果是新建简历模式且有用户数据，预填用户信息
+    if (!isEditMode && !baseId && user) {
+      setTimeout(() => {
+        // 预填个人信息
+        const fullNameElement = document.getElementById('fullName') as HTMLInputElement;
+        const emailElement = document.getElementById('email') as HTMLInputElement;
+        
+        // 组合姓名
+        const fullName = user.firstName && user.lastName 
+          ? `${user.firstName} ${user.lastName}` 
+          : user.firstName || user.lastName || '';
+          
+        if (fullNameElement && fullName) fullNameElement.value = fullName;
+        if (emailElement && user.email) emailElement.value = user.email;
+      }, 100);
+    }
     if (resume && (isEditMode || baseId)) {
       // 如果是基于现有简历创建定制简历，修改部分字段
       if (baseId && !isEditMode) {

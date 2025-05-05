@@ -81,6 +81,59 @@ const ResumeBuilderPage: React.FC = () => {
     navigate(`/resume-form/new?type=${ResumeType.TAILORED}`);
   };
   
+  // 处理下载简历
+  const handleDownloadResume = async (resumeId: string) => {
+    try {
+      // 获取认证令牌
+      const token = localStorage.getItem('token');
+      
+      // 发送带有认证信息的请求
+      const response = await fetch(
+        `/api/v1/resumes/${resumeId}/download`,
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+      
+      if (!response.ok) {
+        throw new Error('下载简历失败');
+      }
+      
+      // 将响应转换为blob
+      const blob = await response.blob();
+      
+      // 创建下载链接
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      
+      // 从Content-Disposition获取文件名，如果没有则使用默认名称
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let filename = 'resume.docx';
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename=([^;]+)/);
+        if (filenameMatch && filenameMatch[1]) {
+          filename = decodeURIComponent(filenameMatch[1].replace(/"/g, ''));
+        }
+      }
+      
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      
+      // 清理
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('下载简历时出错:', error);
+      // 可以在这里添加错误提示
+    }
+  };
+  
   // 处理AI优化简历
   const handleOptimizeResume = async (resume: Resume) => {
     try {
@@ -124,9 +177,9 @@ const ResumeBuilderPage: React.FC = () => {
     <div className="container-lg">
       <div className="section">
         <h1 className="title-lg">简历生成器</h1>
-        <p className="text-description">
+        {/* <p className="text-description">
           使用JobTrip的智能简历生成器创建专业、吸引人的简历，针对特定职位进行自动优化
-        </p>
+        </p> */}
       </div>
 
       {error && <AlertMessage type="error" message={error} />}
@@ -152,7 +205,7 @@ const ResumeBuilderPage: React.FC = () => {
 
       {/* 简历分类部分 */}
       <div className="section">
-        <div className="grid-cols-1-2">
+        <div className="grid-cols-1-1">
           {/* 基础简历部分 */}
           <div className="card">
             <div 
@@ -218,7 +271,10 @@ const ResumeBuilderPage: React.FC = () => {
                             </button>
                             <button 
                               className="btn btn-outline btn-sm"
-                              onClick={(e) => e.stopPropagation()} // 阻止事件冒泡
+                              onClick={(e) => {
+                                e.stopPropagation(); // 阻止事件冒泡
+                                handleDownloadResume(resume._id);
+                              }}
                             >
                               <Download className="w-4 h-4 mr-1.5" />
                               下载
@@ -240,7 +296,7 @@ const ResumeBuilderPage: React.FC = () => {
                               <Trash className="w-4 h-4 mr-1.5" />
                               删除
                             </button>
-
+                            {/* 
                             <button 
                               className="btn btn-secondary btn-sm"
                               onClick={(e) => {
@@ -252,6 +308,7 @@ const ResumeBuilderPage: React.FC = () => {
                               <Wand2 className="w-4 h-4 mr-1.5" />
                               {isOptimizing && resumeToOptimize?._id === resume._id ? '优化中...' : 'AI优化'}
                             </button>
+                            */}
                           </div>
                         </div>
                       )}
@@ -271,14 +328,14 @@ const ResumeBuilderPage: React.FC = () => {
           </div>
           
           {/* 定制简历部分 */}
-          <div className="card">
+          {/* <div className="card">
             <div 
               className="card-header cursor-pointer"
               onClick={() => toggleAccordion('定制简历')}
             >
               <div>
                 <h2 className="title-sm">定制简历</h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">针对特定职位优化的简历版本</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">优化的简历版本</p>
               </div>
               <div>
                 {activeAccordion === '定制简历' ? (
@@ -338,7 +395,10 @@ const ResumeBuilderPage: React.FC = () => {
                             </button>
                             <button 
                               className="btn btn-outline btn-sm"
-                              onClick={(e) => e.stopPropagation()} // 阻止事件冒泡
+                              onClick={(e) => {
+                                e.stopPropagation(); // 阻止事件冒泡
+                                handleDownloadResume(resume._id);
+                              }}
                             >
                               <Download className="w-4 h-4 mr-1.5" />
                               下载
@@ -360,18 +420,6 @@ const ResumeBuilderPage: React.FC = () => {
                               <Trash className="w-4 h-4 mr-1.5" />
                               删除
                             </button>
-
-                            <button 
-                              className="btn btn-secondary btn-sm"
-                              onClick={(e) => {
-                                e.stopPropagation(); // 阻止事件冒泡
-                                handleOptimizeResume(resume);
-                              }}
-                              disabled={isOptimizing}
-                            >
-                              <Wand2 className="w-4 h-4 mr-1.5" />
-                              {isOptimizing && resumeToOptimize?._id === resume._id ? '优化中...' : 'AI优化'}
-                            </button>
                           </div>
                         </div>
                       )}
@@ -388,7 +436,7 @@ const ResumeBuilderPage: React.FC = () => {
                 </div>
               </div>
             )}
-          </div>
+          </div>  */}
         </div>
       </div>
       
