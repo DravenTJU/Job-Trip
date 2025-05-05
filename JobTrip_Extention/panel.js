@@ -280,7 +280,7 @@ const apiExporter = {
 
         const exportData = formatJobData(scrapedJobs, userToken);
         console.log('Exporting jobs:', exportData)
-
+        console.log('API_ENDPOINT:', API_ENDPOINT)
         const apiResponse = await fetch(API_ENDPOINT, {
           method: 'POST',
           headers: {
@@ -289,11 +289,13 @@ const apiExporter = {
           },
           body: JSON.stringify(exportData)
         });
-        
+        console.log('apiResponse:', apiResponse)
         if (apiResponse.ok) {
           const data = await apiResponse.json();
           console.log('Export successful:', data);
-          uiService.showMessage(statusMessage, `Successfully exported ${data.data.length} jobs to backend with user token`);
+          // uiService.showMessage(statusMessage, `Successfully exported ${data.data.length} jobs to backend with user token`);
+          uiService.showMessage(statusMessage, `Successfully exported ${scrapedJobs.length} jobs to backend with user token`);
+
         } else {
           const errorData = await apiResponse.json();
           console.error('API export error:', errorData.message);

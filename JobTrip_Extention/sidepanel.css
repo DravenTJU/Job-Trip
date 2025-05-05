@@ -246,7 +246,7 @@ button:disabled {
 }
 
 .salary::before {
-  content: '💰';
+  /* content: '💰'; */
   margin-right: 4px;
   font-size: 12px;
 }
@@ -272,7 +272,7 @@ button:disabled {
 }
 
 .posted-date::before {
-  content: '🕒';
+  /* content: '🕒'; */
   margin-right: 4px;
   font-size: 12px;
 }
@@ -294,12 +294,12 @@ button:disabled {
 }
 
 .view-btn::before {
-  content: '👁️';
+  /* content: '👁️'; */
   font-size: 14px;
 }
 
 .save-btn::before {
-  content: '💾';
+  /* content: '💾'; */
   font-size: 14px;
 }
 
