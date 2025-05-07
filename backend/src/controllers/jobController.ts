@@ -120,7 +120,7 @@ export const getJobs = async (
             page,
             size: limit,
             data: jobs,
-            totalPages: Math.ceil(total / limit)
+            pages: Math.max(1, Math.ceil(total / limit))
           }
         ));
       } else {
@@ -203,7 +203,7 @@ export const getJobs = async (
           page,
           size: limit,
           data: jobs,
-          totalPages: Math.ceil(total / limit)
+          pages: Math.max(1, Math.ceil(total / limit))
         }
       ));
     } catch (error) {
