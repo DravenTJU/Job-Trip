@@ -6,7 +6,8 @@ import {
   createResume,
   updateResume,
   deleteResume,
-  duplicateResume
+  duplicateResume,
+  downloadResume
 } from '../controllers/resumeController';
 
 const router = express.Router();
@@ -27,5 +28,8 @@ router.route('/:id')
 
 // 复制简历
 router.post('/:id/duplicate', duplicateResume);
+
+// 下载简历
+router.get('/:id/download', downloadResume);
 
 export default router;

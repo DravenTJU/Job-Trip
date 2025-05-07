@@ -173,7 +173,7 @@ button:disabled {
 }
 
 #searchBtn::before {
-  content: '🔍';
+  /* content: '🔍'; */
   font-size: 14px;
 }
 
@@ -246,7 +246,7 @@ button:disabled {
 }
 
 .salary::before {
-  content: '💰';
+  /* content: '💰'; */
   margin-right: 4px;
   font-size: 12px;
 }
@@ -272,7 +272,7 @@ button:disabled {
 }
 
 .posted-date::before {
-  content: '🕒';
+  /* content: '🕒'; */
   margin-right: 4px;
   font-size: 12px;
 }
@@ -294,12 +294,12 @@ button:disabled {
 }
 
 .view-btn::before {
-  content: '👁️';
+  /* content: '👁️'; */
   font-size: 14px;
 }
 
 .save-btn::before {
-  content: '💾';
+  /* content: '💾'; */
   font-size: 14px;
 }
 
@@ -427,16 +427,16 @@ button:disabled {
   font-weight: 500;
 }
 
-.show-in-jobtip-btn {
+.show-in-jobtrip-btn {
   background-color: var(--primary-dark);
   width: 100%;
 }
 
-.show-in-jobtip-btn:hover {
+.show-in-jobtrip-btn:hover {
   background-color: var(--primary);
 }
 
-.show-in-jobtip-btn::before {
+.show-in-jobtrip-btn::before {
   /* content: '🚀'; */
   font-size: 14px;
 }
@@ -582,7 +582,7 @@ button:disabled {
 }
 
 .export-by-api-btn::before {
-  content: '📡';
+  /* content: '📡'; */
   font-size: 14px;
 }
 
@@ -595,7 +595,7 @@ button:disabled {
 }
 
 .test-get-btn::before {
-  content: '🔍';
+  /* content: '🔍'; */
   font-size: 14px;
 }
 

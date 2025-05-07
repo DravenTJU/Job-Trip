@@ -15,6 +15,7 @@ import companyRoutes from './routes/companyRoutes';
 import userJobRoutes from './routes/userJobRoutes';
 import resumeRoutes from './routes/resumeRoutes';
 import aiRoutes from './routes/aiRoutes';
+import userProfileRoutes from './routes/userProfileRoutes';
 import { stream } from './utils/logger';
 import swaggerSpec from './config/swagger';
 import * as path from 'path';
@@ -48,7 +49,7 @@ app.use(helmet({
 app.use(cors({
   origin: '*', // 在开发环境中允许所有来源访问
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // 速率限制器
@@ -312,6 +313,7 @@ app.get('/favicon.ico', (req: Request, res: Response) => {
 
 // 主API路由
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/user-profiles', userProfileRoutes);
 app.use('/api/v1/jobs', jobRoutes);
 app.use('/api/v1/companies', companyRoutes);
 app.use('/api/v1/userjobs', userJobRoutes);

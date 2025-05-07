@@ -3,16 +3,16 @@ const DEV_CONFIG = {
   // 前端服務器配置
   FRONTEND: {
     BASE_URL: 'http://localhost:3000',
-    // 用於檢查 Jobtip 網站是否開啟
-    JOBTIP_URL: 'http://localhost:3000',
+    // 用於檢查 jobtrip 網站是否開啟
+    jobtrip_URL: 'http://localhost:3000',
     // 用於獲取 localStorage 中的 token
     TOKEN_KEY: 'token'
   },
   // 後端 API 配置
   BACKEND: {
-    BASE_URL: 'http://localhost:5000',
-    API_ENDPOINT: 'http://localhost:5000/api/jobs',
-    BATCH_ENDPOINT: 'http://localhost:5000/api/jobs/batch'
+    BASE_URL: 'http://localhost:5001',
+    API_ENDPOINT: 'http://localhost:5001/api/v1/jobs',
+    BATCH_ENDPOINT: 'http://localhost:5001/api/v1/jobs/batch'
   }
 }
 
@@ -20,14 +20,14 @@ const DEV_CONFIG = {
 // 生產環境配置
 const PROD_CONFIG = {
   FRONTEND: {
-    BASE_URL: 'https://jobtip.com/',
-    JOBTIP_URL: 'jobtip.com',
+    BASE_URL: 'https://jobtrip.com/',
+    jobtrip_URL: 'jobtrip.com',
     TOKEN_KEY: 'token'
   },
   BACKEND: {
-    BASE_URL: 'https://api.jobtip.com',
-    API_ENDPOINT: 'https://api.jobtip.com/api/jobs',
-    BATCH_ENDPOINT: 'https://api.jobtip.com/api/jobs/batch'
+    BASE_URL: 'https://api.jobtrip.com',
+    API_ENDPOINT: 'https://api.jobtrip.com/api/jobs',
+    BATCH_ENDPOINT: 'https://api.jobtrip.com/api/jobs/batch'
   }
 }
 

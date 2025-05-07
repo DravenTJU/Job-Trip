@@ -14,13 +14,15 @@
     "lint": "eslint . --ext .ts",
     "test": "jest",
     "generate-docs": "node scripts/generate-redoc.js",
-    "init-db": "node scripts/initdb.js"
+    "init-db": "node scripts/initdb.js",
+    "seed": "ts-node scripts/seedJobs.ts"
   },
   "dependencies": {
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "docx": "^9.4.1",
     "dotenv": "^16.5.0",
     "express": "^4.18.2",
     "express-rate-limit": "^6.7.0",
@@ -35,6 +37,7 @@
     "winston": "^3.8.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.6.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
@@ -51,6 +54,7 @@
     "redoc-cli": "^0.13.21",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.3"
   },

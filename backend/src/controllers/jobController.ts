@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import Job from '../models/jobModel';
 import UserJob from '../models/userJobModel';
 import { AppError, createApiResponse } from '../middleware/errorHandler';
+import ApplicationHistory from '../models/applicationHistoryModel';
+import jwt from 'jsonwebtoken';
 
 /**
  * @desc    获取所有职位
@@ -16,56 +18,198 @@ export const getJobs = async (
   try {
     // 构建查询条件
     const queryObj = { ...req.query };
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    const excludedFields = ['page', 'sort', 'limit', 'fields', 'search'];
     excludedFields.forEach(el => delete queryObj[el]);
 
-    // 高级筛选
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+    // 初始化查询对象
+    const finalQuery: any = {};
+    const sortOptions: any = {};
 
-    // 查询数据
-    let query = Job.find(JSON.parse(queryStr));
+    console.log('[Backend] Received query parameters:', req.query);
 
-    // 排序
-    if (req.query.sort) {
-      const sortBy = (req.query.sort as string).split(',').join(' ');
-      query = query.sort(sortBy);
-    } else {
-      query = query.sort('-createdAt');
+    // 处理状态过滤
+    if (req.query.status) {
+      finalQuery.status = req.query.status;
+      console.log('[Backend] Adding status filter:', req.query.status);
     }
 
-    // 字段限制
-    if (req.query.fields) {
-      const fields = (req.query.fields as string).split(',').join(' ');
-      query = query.select(fields);
-    } else {
-      query = query.select('-__v');
+    // 处理工作类型过滤
+    if (req.query.jobType) {
+      finalQuery.jobType = req.query.jobType;
+      console.log('[Backend] Adding jobType filter:', req.query.jobType);
     }
 
-    // 分页
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
-    const skip = (page - 1) * limit;
-    query = query.skip(skip).limit(limit);
+    // 处理平台过滤
+    if (req.query.platform) {
+      finalQuery.platform = req.query.platform;
+      console.log('[Backend] Adding platform filter:', req.query.platform);
+    }
 
-    // 执行查询
-    const jobs = await query;
-    
-    // 获取总数
-    const total = await Job.countDocuments(JSON.parse(queryStr));
+    // 处理位置过滤
+    if (req.query.location) {
+      finalQuery.location = { $regex: String(req.query.location), $options: 'i' };
+      console.log('[Backend] Adding location filter:', req.query.location);
+    }
 
-    // 返回结果
-    res.status(200).json(createApiResponse(
-      200,
-      '获取职位列表成功',
-      {
-        total,
-        page,
-        size: limit,
-        data: jobs,
-        totalPages: Math.ceil(total / limit)
+    // 处理薪资范围过滤
+    if (req.query.salaryRange) {
+      const salaryRange = req.query.salaryRange as string;
+      console.log('[Backend] Processing salary range:', salaryRange);
+      
+      // 分页参数
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const skip = (page - 1) * limit;
+      
+      if (salaryRange === '') {
+        // 默认排序，不做任何处理
+        console.log('[Backend] Using default salary sort');
+      } else if (salaryRange === 'asc' || salaryRange === 'desc') {
+        // 处理排序 - 使用聚合管道来处理薪资范围
+        const jobs = await Job.aggregate([
+          { $match: finalQuery },
+          {
+            $addFields: {
+              numericSalary: {
+                $let: {
+                  vars: {
+                    // 移除所有非数字字符，保留数字、小数点和连字符
+                    cleanSalary: {
+                      $replaceAll: {
+                        input: { $toLower: "$salary" },
+                        find: "k",
+                        replacement: ""
+                      }
+                    }
+                  },
+                  in: {
+                    $cond: {
+                      if: { $eq: [{ $indexOfBytes: ["$$cleanSalary", "-"] }, -1] },
+                      // 如果不是范围，直接转换为数字
+                      then: { $toDouble: "$$cleanSalary" },
+                      // 如果是范围，取第一个数字（最小值）
+                      else: {
+                        $toDouble: {
+                          $arrayElemAt: [
+                            { $split: ["$$cleanSalary", "-"] },
+                            0
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          { $sort: { numericSalary: salaryRange === 'desc' ? -1 : 1 } },
+          { $skip: skip },
+          { $limit: limit }
+        ]);
+
+        // 获取总数
+        const total = await Job.countDocuments(finalQuery);
+        console.log(`[Backend] Total documents matching query: ${total}`);
+
+        // 返回结果
+        return res.status(200).json(createApiResponse(
+          200,
+          '获取职位列表成功',
+          {
+            total,
+            page,
+            size: limit,
+            data: jobs,
+            totalPages: Math.ceil(total / limit)
+          }
+        ));
+      } else {
+        // 处理范围过滤
+        const [min, max] = salaryRange.split('-').map(Number);
+        if (!isNaN(min) && !isNaN(max)) {
+          finalQuery.$where = function() {
+            const salary = this.salary;
+            if (!salary) return false;
+            
+            // 移除所有非数字字符，保留数字和小数点
+            const cleanSalary = salary.replace(/[^\d.]/g, '');
+            const salaryNum = parseFloat(cleanSalary);
+            
+            return salaryNum >= min && salaryNum <= max;
+          };
+          console.log('[Backend] Added salary range filter:', min, '-', max);
+        }
       }
-    ));
+    }
+
+    // 处理日期范围过滤
+    if (req.query.dateRange) {
+      const [startDate, endDate] = (req.query.dateRange as string).split(',');
+      if (startDate && endDate) {
+        finalQuery.createdAt = {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate)
+        };
+        console.log('[Backend] Adding date range filter:', startDate, 'to', endDate);
+      }
+    }
+
+    // 处理排序
+    if (req.query.sort) {
+      const sortStr = req.query.sort as string;
+      // 支持 -createdAt 这种写法
+      if (sortStr.startsWith('-')) {
+        sortOptions[sortStr.slice(1)] = -1;
+      } else {
+        sortOptions[sortStr] = 1;
+      }
+    }
+
+    // 添加搜索逻辑
+    if (req.query.search) {
+      console.log(`[Backend] Received search term: ${req.query.search}`);
+      const searchRegex = new RegExp(req.query.search as string, 'i');
+      finalQuery.$or = [
+        { title: searchRegex },
+        { company: searchRegex },
+        { location: searchRegex }
+      ];
+    }
+    
+    console.log('[Backend] Final query:', finalQuery);
+
+    try {
+      // 分页
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const skip = (page - 1) * limit;
+
+      // 执行查询
+      const jobs = await Job.find(finalQuery)
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(limit);
+
+      // 获取总数
+      const total = await Job.countDocuments(finalQuery);
+      console.log(`[Backend] Total documents matching query: ${total}`);
+
+      // 返回结果
+      res.status(200).json(createApiResponse(
+        200,
+        '获取职位列表成功',
+        {
+          total,
+          page,
+          size: limit,
+          data: jobs,
+          totalPages: Math.ceil(total / limit)
+        }
+      ));
+    } catch (error) {
+      console.error('[Backend] Error in getJobs:', error);
+      next(error);
+    }
   } catch (error) {
     next(error);
   }
@@ -98,6 +242,33 @@ export const getJob = async (
   }
 };
 
+// 字段映射表
+const jobTypeMap: Record<string, string> = {
+  'Contract': 'contract',
+  'Full-time': 'full-time',
+  'Part-time': 'part-time',
+  'Freelance': 'freelance',
+  'Internship': 'internship',
+};
+const statusMap: Record<string, string> = {
+  'unapplied': 'new',
+};
+const sourceMap: Record<string, string> = {
+  'LinkedIn': 'linkedin',
+  'Seek': 'seek',
+  'Indeed': 'indeed',
+};
+
+function fixJobFields(job: any) {
+  return {
+    ...job,
+    jobType: jobTypeMap[job.jobType] || job.jobType,
+    status: statusMap[job.status] || job.status,
+    source: sourceMap[job.source] || job.source,
+    sourceId: job.sourceId || (job.sourceUrl ? job.sourceUrl.split('/').pop() : undefined)
+  };
+}
+
 /**
  * @desc    创建职位
  * @route   POST /api/v1/jobs
@@ -109,9 +280,53 @@ export const createJob = async (
   next: NextFunction
 ) => {
   try {
-    const job = await Job.create(req.body);
-
-    // 如果有用户，自动创建用户-职位关联
+    // 新增：支持插件批量导入
+    if (req.body.jobs && Array.isArray(req.body.jobs)) {
+      const { jobs, userToken } = req.body;
+      if (!userToken) {
+        return next(new AppError('用户令牌不能为空', 400));
+      }
+      const decoded = jwt.verify(userToken, process.env.JWT_SECRET as string) as { id: string };
+      const userId = decoded.id;
+      // 自动修正字段
+      const fixedJobs = jobs.map(fixJobFields);
+      // 查重：只插入数据库中不存在的 sourceId+platform
+      const uniqueJobs = [];
+      for (const job of fixedJobs) {
+        if (!job.sourceId || !job.platform) continue;
+        const exists = await Job.findOne({ sourceId: job.sourceId, platform: job.platform });
+        if (!exists) uniqueJobs.push(job);
+      }
+      if (uniqueJobs.length === 0) {
+        return res.status(200).json(createApiResponse(200, '无新职位需要导入', { total: 0, jobs: [] }));
+      }
+      const createdJobs = await Job.insertMany(uniqueJobs);
+      const userJobs = createdJobs.map(job => ({
+        userId,
+        jobId: job._id,
+        status: job.status || 'new',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }));
+      await UserJob.insertMany(userJobs);
+      return res.status(201).json(createApiResponse(
+        201,
+        '批量导入职位成功',
+        {
+          total: createdJobs.length,
+          jobs: createdJobs
+        }
+      ));
+    }
+    // 原有单条创建逻辑，自动修正字段，查重
+    const fixedJob = fixJobFields(req.body);
+    if (fixedJob.sourceId && fixedJob.platform) {
+      const exists = await Job.findOne({ sourceId: fixedJob.sourceId, platform: fixedJob.platform });
+      if (exists) {
+        return res.status(200).json(createApiResponse(200, '该职位已存在', exists));
+      }
+    }
+    const job = await Job.create(fixedJob);
     if (req.user) {
       await UserJob.create({
         userId: req.user._id,
@@ -119,13 +334,15 @@ export const createJob = async (
         status: 'new',
       });
     }
-
     res.status(201).json(createApiResponse(
       200,
       '创建职位成功',
       job
     ));
   } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      return next(new AppError('无效的用户令牌', 401));
+    }
     next(error);
   }
 };
@@ -186,6 +403,110 @@ export const deleteJob = async (
       null
     ));
   } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    从浏览器插件创建职位并关联到用户
+ * @route   POST /api/v1/jobs/extension
+ * @access  私有
+ */
+export const createJobFromExtension = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // 1. 创建职位记录
+    const job = await Job.create({
+      ...req.body,
+      source: 'extension', // 标记数据来源
+      createdBy: req.user?._id
+    });
+
+    // 2. 创建用户-职位关联
+    const userJob = await UserJob.create({
+      userId: req.user?._id,
+      jobId: job._id,
+      status: 'new',
+      notes: req.body.notes || '通过浏览器插件添加'
+    });
+
+    // 3. 创建申请历史记录
+    await ApplicationHistory.create({
+      userJobId: userJob._id,
+      previousStatus: '',
+      newStatus: 'new',
+      notes: '初始状态 - 通过浏览器插件添加',
+      updatedBy: req.user?._id,
+    });
+
+    // 4. 返回结果
+    res.status(201).json(createApiResponse(
+      201,
+      '职位创建成功',
+      {
+        job,
+        userJob
+      }
+    ));
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    批量导入职位
+ * @route   POST /api/v1/jobs/batch
+ * @access  私有
+ */
+export const createJobsBatch = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { jobs, userToken } = req.body;
+
+    if (!jobs || !Array.isArray(jobs) || jobs.length === 0) {
+      return next(new AppError('职位列表不能为空', 400));
+    }
+
+    if (!userToken) {
+      return next(new AppError('用户令牌不能为空', 400));
+    }
+
+    // 验证用户令牌并获取用户ID
+    const decoded = jwt.verify(userToken, process.env.JWT_SECRET as string) as { id: string };
+    const userId = decoded.id;
+
+    // 批量创建职位
+    const createdJobs = await Job.insertMany(jobs);
+
+    // 创建用户职位关联
+    const userJobs = createdJobs.map(job => ({
+      userId,
+      jobId: job._id,
+      status: job.status || 'unapplied',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }));
+
+    await UserJob.insertMany(userJobs);
+
+    res.status(201).json(createApiResponse(
+      201,
+      '批量导入职位成功',
+      {
+        total: createdJobs.length,
+        jobs: createdJobs
+      }
+    ));
+  } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      return next(new AppError('无效的用户令牌', 401));
+    }
     next(error);
   }
 }; 

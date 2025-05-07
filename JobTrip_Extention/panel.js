@@ -273,14 +273,14 @@ const apiExporter = {
       if (scrapedJobs.length > 0) {
         const userToken = await storageService.getUserToken();
         if (!userToken) {
-          uiService.showMessage(statusMessage, 'Please log in to Jobtip first to get userToken, or keep the Jobtip page open', 'error');
-          const tab = await tabService.ensureJobtipWebsite(false);
+          uiService.showMessage(statusMessage, 'Please log in to jobtrip first to get userToken, or keep the jobtrip page open', 'error');
+          const tab = await tabService.ensurejobtripWebsite(false);
           return;
         }
 
         const exportData = formatJobData(scrapedJobs, userToken);
         console.log('Exporting jobs:', exportData)
-
+        console.log('API_ENDPOINT:', API_ENDPOINT)
         const apiResponse = await fetch(API_ENDPOINT, {
           method: 'POST',
           headers: {
@@ -289,11 +289,13 @@ const apiExporter = {
           },
           body: JSON.stringify(exportData)
         });
-        
+        console.log('apiResponse:', apiResponse)
         if (apiResponse.ok) {
           const data = await apiResponse.json();
           console.log('Export successful:', data);
-          uiService.showMessage(statusMessage, `Successfully exported ${data.data.length} jobs to backend with user token`, 'success');
+          // uiService.showMessage(statusMessage, `Successfully exported ${data.data.length} jobs to backend with user token`);
+          uiService.showMessage(statusMessage, `Successfully exported ${scrapedJobs.length} jobs to backend with user token`);
+
         } else {
           const errorData = await apiResponse.json();
           console.error('API export error:', errorData.message);
@@ -313,9 +315,9 @@ const apiExporter = {
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('DOM Content Loaded')
   
-  // 确保 Jobtip 网站已打开//////////////////////////////
-  const tab = await tabService.ensureJobtipWebsite(false)
-  console.log('Jobtip 网站已打开:', tab)
+  // 确保 jobtrip 网站已打开//////////////////////////////
+  const tab = await tabService.ensurejobtripWebsite(false)
+  console.log('jobtrip 网站已打开:', tab)
 
   // 注释掉版本检查部分
   // const versionCheck = await versionService.checkVersion(false)
@@ -331,7 +333,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const locationInput = document.getElementById('location')
   const searchBtn = document.getElementById('searchBtn')
   const scrapeBtn = document.getElementById('scrapeBtn')
-  const showInJobtipBtn = document.getElementById('showInJobtipBtn')
+  const showInjobtripBtn = document.getElementById('showInjobtripBtn')
   const jobList = document.getElementById('jobList')
   const statusMessage = document.getElementById('statusMessage')
   const progressSection = document.getElementById('progressSection')
@@ -347,6 +349,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const exportByApiBtn = document.getElementById('exportByApiBtn')
   const testGetBtn = document.getElementById('testGetBtn')
   const usertokenBtn = document.getElementById('usertokenBtn')////////////////
+
+  // 初始化国家和地点下拉菜单
+  updateLocationOptions(countrySelect.value);
 
   // 添加工作数量限制输入框
   const maxJobsContainer = document.createElement('div')
@@ -384,18 +389,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   ])
 
   // First set the country and update location options
-  if (lastCountry) {
-    countrySelect.value = lastCountry
-    updateLocationOptions(lastCountry)
-  } else {
-    // If no country is selected, initialize with empty website options
-    updateLocationOptions('')
-  }
+  // if (lastCountry) {
+  //   // countrySelect.value = lastCountry
+  //   updateLocationOptions(lastCountry)
+  // } else {
+  //   // If no country is selected, initialize with empty website options
+  //   updateLocationOptions('')
+  // }
 
-  // Then set the location if it exists
-  if (lastLocation) {
-    locationSelect.value = lastLocation
-  }
+  // // Then set the location if it exists
+  // if (lastLocation) {
+  //   // locationSelect.value = lastLocation
+  // }
 
   // Load saved settings
   const savedSettings = await storageService.loadWebsiteSettings()
@@ -406,9 +411,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     websiteOptions.addEventListener('change', handleCheckboxChange)
   }
 
-  // Update show in Jobtip button handler
+  // Update show in jobtrip button handler
   // 在本地導出Json文件//////////////////////////////
-  showInJobtipBtn.addEventListener('click', async () => {
+  showInjobtripBtn.addEventListener('click', async () => {
     console.log('Export JSON button clicked')
     console.log('Jobs to export:', scrapedJobs)
 
@@ -420,8 +425,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const userToken = await storageService.getUserToken();
       if (!userToken) {
-        uiService.showMessage(statusMessage, 'Please log in to Jobtip first to get userToken, or keep the Jobtip page open', 'error');
-        const tab = await tabService.ensureJobtipWebsite(false);
+        uiService.showMessage(statusMessage, 'Please log in to jobtrip first to get userToken, or keep the jobtrip page open', 'error');
+        const tab = await tabService.ensurejobtripWebsite(false);
         return;
       }
 
@@ -433,7 +438,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       const a = document.createElement('a')
       a.href = url
-      a.download = `jobtip_results_${new Date().toISOString().split('T')[0]}.json`
+      a.download = `jobtrip_results_${new Date().toISOString().split('T')[0]}.json`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
@@ -478,7 +483,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 注释掉与后端通信的代码
     // Send scraping started message to frontend
-    // await tabService.ensureJobtipWebsite().then(tab => {
+    // await tabService.ensurejobtripWebsite().then(tab => {
     //   chrome.scripting.executeScript({
     //     target: { tabId: tab.id },
     //     func: (message) => {
@@ -669,40 +674,40 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       // const a = document.createElement('a')
       // a.href = url
-      // a.download = `jobtip_jobs_${new Date().toISOString().split('T')[0]}.json`
+      // a.download = `jobtrip_jobs_${new Date().toISOString().split('T')[0]}.json`
       // document.body.appendChild(a)
       // a.click()
       // document.body.removeChild(a)
       // URL.revokeObjectURL(url)
       
-      // uiService.updateButtonStates(showInJobtipBtn, scrapedJobs.length > 0)
+      // uiService.updateButtonStates(showInjobtripBtn, scrapedJobs.length > 0)
       
       // if (userToken) {
       //   uiService.showMessage(statusMessage, '工作結果導出成功，包含 user token');
       // } else {
-      //   uiService.showMessage(statusMessage, '工作結果導出成功，但未找到 user token，請先登入Jobtip');
+      //   uiService.showMessage(statusMessage, '工作結果導出成功，但未找到 user token，請先登入jobtrip');
       // }
 
 
 
-      // 注释掉自动发送到Jobtip的代码
-      // Automatically trigger show in Jobtip if jobs were found
+      // 注释掉自动发送到jobtrip的代码
+      // Automatically trigger show in jobtrip if jobs were found
       // if (scrapedJobs.length > 0) {
       //   try {
-      //     console.log('Attempting to auto-send jobs to Jobtip...')
-      //     const response = await jobService.sendJobsToJobtip(scrapedJobs)
-      //     console.log('Auto-sending jobs to Jobtip:', response)
+      //     console.log('Attempting to auto-send jobs to jobtrip...')
+      //     const response = await jobService.sendJobsTojobtrip(scrapedJobs)
+      //     console.log('Auto-sending jobs to jobtrip:', response)
 
       //     if (response && response.success) {
-      //       uiService.showMessage(statusMessage, 'Jobs sent to Jobtip successfully')
+      //       uiService.showMessage(statusMessage, 'Jobs sent to jobtrip successfully')
       //     } else {
-      //       console.error('Failed to auto-send jobs to Jobtip:', {
+      //       console.error('Failed to auto-send jobs to jobtrip:', {
       //         response,
       //         scrapedJobs
       //       })
       //     }
       //   } catch (error) {
-      //     console.error('Error auto-sending jobs to Jobtip:', {
+      //     console.error('Error auto-sending jobs to jobtrip:', {
       //       error,
       //       scrapedJobs
       //       })
@@ -712,7 +717,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // 注释掉与后端通信的代码
       // Send scraping completed message to frontend
-      // await tabService.ensureJobtipWebsite().then(tab => {
+      // await tabService.ensurejobtripWebsite().then(tab => {
       //   chrome.scripting.executeScript({
       //     target: { tabId: tab.id },
       //     func: (message) => {
@@ -764,7 +769,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           uiService.showMessage(statusMessage, `Successfully retrieved user token: ${userToken}`, 'success');
           console.log('User token:', userToken);
         } else {
-          uiService.showMessage(statusMessage, 'User token not found, please ensure you are logged in to Jobtip', 'error');
+          uiService.showMessage(statusMessage, 'User token not found, please ensure you are logged in to jobtrip', 'error');
         }
       } catch (error) {
         console.error('Error retrieving user token:', error);

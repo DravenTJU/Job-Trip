@@ -41,7 +41,7 @@ function createScrapeOverlay () {
 
   // Create overlay in a shadow DOM to isolate styles
   const overlayContainer = document.createElement('div')
-  overlayContainer.id = 'jobtip-scrape-overlay-container'
+  overlayContainer.id = 'jobtrip-scrape-overlay-container'
   overlayContainer.style.cssText = `
     position: fixed;
     top: 0;
@@ -119,7 +119,7 @@ function createScrapeOverlay () {
   spinner.className = 'spinner'
 
   const message = document.createElement('h3')
-  message.textContent = 'Jobtip Scraping in Progress'
+  message.textContent = 'jobtrip Scraping in Progress'
 
   const subMessage = document.createElement('p')
   subMessage.textContent = 'Please do not close this tab or interact with the page until scraping is complete.'
@@ -139,7 +139,7 @@ function createScrapeOverlay () {
 }
 
 function removeScrapeOverlay () {
-  const overlay = document.getElementById('jobtip-scrape-overlay-container')
+  const overlay = document.getElementById('jobtrip-scrape-overlay-container')
   if (overlay) {
     overlay.remove()
   }
@@ -280,7 +280,7 @@ chrome.storage.local.get('isScrapingActive', (result) => {
 
 // Ensure overlay persists after dynamic page updates
 const observer = new MutationObserver(() => {
-  if (isScrapingActive && !document.getElementById('jobtip-scrape-overlay-container')) {
+  if (isScrapingActive && !document.getElementById('jobtrip-scrape-overlay-container')) {
     createScrapeOverlay()
   }
 })

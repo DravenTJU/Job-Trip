@@ -4,13 +4,16 @@ import {
   Home, 
   FileText, 
   Sparkles, 
-  Zap, 
   Chrome, 
   User, 
   Users, 
   File, 
   Plus,
-  Star
+  Star,
+  PieChart,
+  Briefcase,
+  UserCircle,
+  BriefcaseIcon
 } from 'lucide-react';
 import { useAppSelector } from '@/hooks/reduxHooks';
 
@@ -35,6 +38,16 @@ const Sidebar: React.FC = () => {
       icon: <Home className="sidebar-menu-icon" /> 
     },
     { 
+      name: '仪表盘', 
+      path: '/dashboard', 
+      icon: <PieChart className="sidebar-menu-icon" /> 
+    },
+    {
+      name: '职位', 
+      path: '/jobs', 
+      icon: <Briefcase className="sidebar-menu-icon" /> 
+    },
+    { 
       name: '简历生成器', 
       path: '/resume-builder', 
       icon: <FileText className="sidebar-menu-icon" /> 
@@ -57,6 +70,11 @@ const Sidebar: React.FC = () => {
       name: '个人资料', 
       path: '/profile', 
       icon: <User className="sidebar-menu-icon" /> 
+    },
+    { 
+      name: '用户档案', 
+      path: '/user-profile', 
+      icon: <UserCircle className="sidebar-menu-icon" /> 
     },
     { 
       name: '联系人', 
