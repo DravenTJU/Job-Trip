@@ -34,6 +34,9 @@ const router = express.Router();
  *                 enum: [chinese, english]
  *                 default: chinese
  *                 description: 语言
+ *               resumeId:
+ *                 type: string
+ *                 description: 简历ID（可选）
  *               user:
  *                 type: object
  *                 properties:

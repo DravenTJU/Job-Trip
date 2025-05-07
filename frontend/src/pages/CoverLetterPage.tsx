@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sparkles, Copy, Download, RefreshCw } from 'lucide-react';
-import { useAppSelector } from '@/hooks/reduxHooks';
+import { useAppSelector, useAppDispatch } from '@/hooks/reduxHooks';
+import { fetchResumes } from '@/redux/slices/resumesSlice';
+import { Resume } from '@/types';
 
 const CoverLetterPage: React.FC = () => {
   const [jobDescription, setJobDescription] = useState('');
   const [tone, setTone] = useState('professional');
   const [language, setLanguage] = useState('chinese');
+  const [selectedResumeId, setSelectedResumeId] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [coverLetter, setCoverLetter] = useState('');
   const [error, setError] = useState('');
   const { user } = useAppSelector((state) => state.auth);
+  const { resumes } = useAppSelector((state) => state.resumes);
+  const dispatch = useAppDispatch();
+
+  // 加载用户的简历列表
+  useEffect(() => {
+    dispatch(fetchResumes());
+  }, [dispatch]);
 
   const handleGenerate = async () => {
     if (!jobDescription.trim()) {
@@ -38,6 +48,7 @@ const CoverLetterPage: React.FC = () => {
         tone,
         language,
         user: userData,
+        resumeId: selectedResumeId || undefined,
       });
 
       const response = await fetch('http://localhost:3000/api/v1/ai/cover-letter', {
@@ -51,6 +62,7 @@ const CoverLetterPage: React.FC = () => {
           tone,
           language,
           user: userData,
+          resumeId: selectedResumeId || undefined,
         }),
       });
 
@@ -139,6 +151,27 @@ const CoverLetterPage: React.FC = () => {
                 <option value="english">English</option>
               </select>
             </div>
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              选择简历（可选）
+            </label>
+            <select
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              value={selectedResumeId}
+              onChange={(e) => setSelectedResumeId(e.target.value)}
+            >
+              <option value="">不使用简历</option>
+              {resumes.map((resume: Resume) => (
+                <option key={resume._id} value={resume._id}>
+                  {resume.name}
+                </option>
+              ))}
+            </select>
+            <p className="text-sm text-gray-500 mt-2">
+              选择简历可以帮助AI生成更符合您背景的求职信
+            </p>
           </div>
 
           <button
