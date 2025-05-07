@@ -260,11 +260,13 @@ const sourceMap: Record<string, string> = {
 };
 
 function fixJobFields(job: any) {
+  // 统一 source 字段为小写再映射
+  const rawSource = job.source ? String(job.source).toLowerCase() : '';
   return {
     ...job,
     jobType: jobTypeMap[job.jobType] || job.jobType,
     status: statusMap[job.status] || job.status,
-    source: sourceMap[job.source] || job.source,
+    source: sourceMap[job.source] || sourceMap[rawSource] || rawSource || job.source,
     sourceId: job.sourceId || (job.sourceUrl ? job.sourceUrl.split('/').pop() : undefined)
   };
 }
