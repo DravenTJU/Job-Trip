@@ -76,23 +76,14 @@ const Sidebar: React.FC = () => {
       icon: <Sparkles className="sidebar-menu-icon" /> 
     },
     { 
-      name: 'Chrome扩展', 
-      path: '/chrome-extension', 
-      icon: <Chrome className="sidebar-menu-icon" /> 
-    }
-  ];
-
-  // 二级菜单项
-  const secondaryMenuItems = [
-    { 
-      name: '个人资料', 
-      path: '/profile', 
+      name: '用户档案', 
+      path: '/user-profile', 
       icon: <User className="sidebar-menu-icon" /> 
     },
     { 
-      name: '用户档案', 
-      path: '/user-profile', 
-      icon: <UserCircle className="sidebar-menu-icon" /> 
+      name: 'Chrome扩展', 
+      path: '/chrome-extension', 
+      icon: <Chrome className="sidebar-menu-icon" /> 
     }
   ];
 
@@ -112,27 +103,6 @@ const Sidebar: React.FC = () => {
         {/* 主菜单 */}
         <div className="sidebar-content">
           {mainMenuItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`sidebar-menu-item ${
-                isActive(item.path)
-                  ? 'sidebar-menu-item-active'
-                  : 'sidebar-menu-item-inactive'
-              }`}
-            >
-              <div className={`${isActive(item.path) ? 'sidebar-menu-icon-active' : 'sidebar-menu-icon-inactive'}`}>
-                {item.icon}
-              </div>
-              <span className="ml-3">{item.name}</span>
-            </Link>
-          ))}
-
-          {/* 分割线 */}
-          <div className="sidebar-divider"></div>
-
-          {/* 二级菜单 */}
-          {secondaryMenuItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}

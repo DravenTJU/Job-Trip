@@ -17,7 +17,6 @@ const JobDetailPage = lazy(() => import('@/pages/JobDetailPage'));
 const JobFormPage = lazy(() => import('@/pages/JobFormPage'));
 const JobApplicationForm = lazy(() => import('@/pages/JobApplicationForm'));
 const StatsPage = lazy(() => import('@/pages/StatsPage'));
-const ProfilePage = lazy(() => import('@/pages/ProfilePage'));
 const AccountSettingsPage = lazy(() => import('@/pages/AccountSettingsPage'));
 const UserProfilePage = lazy(() => import('@/pages/UserProfilePage'));
 const ChromeExtensionPage = lazy(() => import('@/pages/ChromeExtensionPage'));
@@ -90,7 +89,6 @@ const AppRoutes = () => {
         
         {/* 其他应用路由 */}
         <Route path="/stats" element={<ProtectedLayoutRoute element={<StatsPage />} />} />
-        <Route path="/profile" element={<ProtectedLayoutRoute element={<ProfilePage />} />} />
         <Route path="/settings" element={<ProtectedLayoutRoute element={<AccountSettingsPage />} />} />
         <Route path="/user-profile" element={<ProtectedLayoutRoute element={<UserProfilePage />} />} />
         
