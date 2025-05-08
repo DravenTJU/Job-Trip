@@ -169,8 +169,8 @@ const ResumeBuilderPage: React.FC = () => {
   };
 
   return (
-    <div className="container-lg">
-      <div className="section">
+    <div className="container-lg px-4">
+      <div className="section space-y-6 mb-8">
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">简历生成器</h1>
         <p className="text-gray-500 dark:text-gray-400">
           根据您的个人档案生成简历
@@ -211,101 +211,93 @@ const ResumeBuilderPage: React.FC = () => {
         />
       )}
 
-      {/* 简历列表部分 - 不再分类 */}
-      <div className="section">
+      {/* 简历列表部分 */}
+      <div className="section space-y-6">
         <div className="space-y-4"> 
           {/* 直接遍历所有简历 */}
           {resumes.map(resume => (
             <div 
               key={resume._id}
-              className="resume-card" // 保留单个简历卡片样式
+              className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 overflow-hidden"
             >
               <div 
-                className="resume-card-header" // 保留卡片头部样式
+                className="p-4 bg-gray-50/30 dark:bg-gray-700/30 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center cursor-pointer"
                 onClick={() => toggleResumeExpand(resume._id)}
               >
                 <div className="flex items-center">
                   {/* 使用默认图标或根据类型显示不同图标 */}
-                  {resume.thumbnail ? (
+                  {/* {resume.thumbnail ? (
                     <img 
                       src={resume.thumbnail} 
                       alt={resume.name}
-                      className="resume-thumbnail"
+                      className="w-10 h-14 object-cover rounded mr-3"
                     />
                   ) : (
-                    <FileText className="resume-thumbnail-placeholder" /> // 使用 FileText 作为默认图标
-                  )}
+                    <div className="w-10 h-14 bg-gray-100 dark:bg-gray-600 rounded flex items-center justify-center mr-3">
+                      <FileText className="w-6 h-6 text-gray-400 dark:text-gray-300" />
+                    </div>
+                  )} */}
                   <div>
-                    <h3 className="font-medium text-gray-900 dark:text-white">{resume.name}</h3>
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{resume.name}</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       {/* 显示简历类型 */} 
-                      <span className={`resume-type-badge ${resume.type === ResumeType.TAILORED ? 'badge-tailored' : 'badge-base'}`}>
+                      {/* <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium mr-2 ${
+                        resume.type === ResumeType.TAILORED 
+                          ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
+                          : 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                      }`}>
                         {resume.type === ResumeType.TAILORED ? '定制' : '基础'}
-                      </span>
-                      目标职位: {resume.targetPosition || '未指定'} • 更新于 {new Date(resume.updatedAt).toLocaleDateString()}
+                      </span> */}
+                      创建于{new Date(resume.createdAt).toLocaleDateString()} • 更新于 {new Date(resume.updatedAt).toLocaleDateString()} • 目标职位: {resume.targetPosition || '未指定'}
                     </p>
                   </div>
                 </div>
                 <div>
                   {expandedResume === resume._id ? (
-                    <ChevronUp className="accordion-icon" />
+                    <ChevronUp className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                   ) : (
-                    <ChevronDown className="accordion-icon" />
+                    <ChevronDown className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                   )}
                 </div>
               </div>
               
               {expandedResume === resume._id && (
-                <div className="card-footer"> 
+                <div className="p-4 bg-white/50 dark:bg-gray-800/50"> 
                   <div className="flex flex-wrap gap-2">
                     <button 
-                      className="btn btn-outline btn-sm"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                       onClick={() => handleEditResume(resume._id)}
                     >
-                      <Edit className="w-4 h-4 mr-1.5" />
+                      <Edit className="w-4 h-4" />
                       编辑
                     </button>
                     <button 
-                      className="btn btn-outline btn-sm"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                       onClick={(e) => {
                         e.stopPropagation(); 
                         handleDownloadResume(resume._id);
                       }}
                     >
-                      <Download className="w-4 h-4 mr-1.5" />
+                      <Download className="w-4 h-4" />
                       下载
                     </button>
                     <button 
-                      className="btn btn-outline btn-sm"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                       onClick={(e) => {
                         e.stopPropagation(); 
                         handleDuplicateResume(resume._id);
                       }}
                     >
-                      <Copy className="w-4 h-4 mr-1.5" />
+                      <Copy className="w-4 h-4" />
                       复制
                     </button>
                     <button 
-                      className="btn btn-danger btn-sm"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-red-50/50 dark:bg-red-900/50 backdrop-blur-lg ring-2 ring-red-900/5 dark:ring-red-100/5 hover:bg-red-100/50 dark:hover:bg-red-800/50 transition-colors text-red-600 dark:text-red-400"
                       onClick={() => handleDeleteResume(resume._id)}
                     >
-                      <Trash className="w-4 h-4 mr-1.5" />
+                      <Trash className="w-4 h-4" />
                       删除
                     </button>
-                    {/* AI 优化按钮保持不变 */}
-                    {/* 
-                    <button 
-                      className="btn btn-secondary btn-sm"
-                      onClick={(e) => {
-                        e.stopPropagation(); 
-                        handleOptimizeResume(resume);
-                      }}
-                      disabled={isOptimizing}
-                    >
-                      <Wand2 className="w-4 h-4 mr-1.5" />
-                      {isOptimizing && resumeToOptimize?._id === resume._id ? '优化中...' : 'AI优化'}
-                    </button>
-                    */}
                   </div>
                 </div>
               )}
@@ -314,11 +306,11 @@ const ResumeBuilderPage: React.FC = () => {
           
           {/* 创建新简历按钮 */} 
           <button 
-            className="resume-add-button" 
-            onClick={handleCreateResume} // 默认创建基础简历，或提供选项
+            className="w-full py-5 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-2xl ring-2 ring-indigo-500/20 dark:ring-indigo-400/20 border-dashed border-2 border-indigo-300 dark:border-indigo-700 flex items-center justify-center hover:bg-indigo-50/50 dark:hover:bg-indigo-900/20 transition-colors text-indigo-600 dark:text-indigo-400"
+            onClick={handleCreateResume}
           >
             <Plus className="w-5 h-5 mr-2" />
-            创建新的简历
+            <span className="text-lg font-medium">创建新的简历</span>
           </button>
         </div>
       </div>

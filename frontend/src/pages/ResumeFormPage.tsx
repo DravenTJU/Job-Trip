@@ -11,9 +11,6 @@ import { Plus, Trash } from 'lucide-react';
  * 简历表单页面组件
  * 用于创建和编辑简历
  */
-
-// 添加样式
-import './ResumeFormPage.css';
 const ResumeFormPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
@@ -177,10 +174,11 @@ const ResumeFormPage: React.FC = () => {
     
     if (name === 'type') {
       // 如果类型是定制简历，自动设置tailored为true
-      const isTailored = value === ResumeType.TAILORED;
+      const resumeType = value === ResumeType.TAILORED.toString() ? ResumeType.TAILORED : ResumeType.BASE;
+      const isTailored = resumeType === ResumeType.TAILORED;
       setFormData({
         ...formData,
-        [name]: value,
+        type: resumeType,
         tailored: isTailored,
       });
     } else {
@@ -287,12 +285,12 @@ const ResumeFormPage: React.FC = () => {
     const resumeContent = JSON.stringify({
       educations,
       workExperiences,
-      skills: document.getElementById('skills')?.value || '',
+      skills: (document.getElementById('skills') as HTMLTextAreaElement)?.value || '',
       personalInfo: {
-        fullName: document.getElementById('fullName')?.value || '',
-        email: document.getElementById('email')?.value || '',
-        phone: document.getElementById('phone')?.value || '',
-        location: document.getElementById('location')?.value || ''
+        fullName: (document.getElementById('fullName') as HTMLInputElement)?.value || '',
+        email: (document.getElementById('email') as HTMLInputElement)?.value || '',
+        phone: (document.getElementById('phone') as HTMLInputElement)?.value || '',
+        location: (document.getElementById('location') as HTMLInputElement)?.value || ''
       }
     });
     
@@ -316,28 +314,37 @@ const ResumeFormPage: React.FC = () => {
   }
 
   return (
-    <div className="container-lg">
-      <div className="section">
-        <h1 className="title-lg">{isEditMode ? '编辑简历' : '创建新简历'}</h1>
-        <p className="text-description">
+    <div className="container-lg px-4">
+      <div className="section space-y-6 mb-8">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+          {isEditMode ? '编辑简历' : '创建新简历'}
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400">
           {isEditMode 
             ? '更新您的简历信息，使其保持最新状态' 
             : '创建一份新的简历，展示您的技能和经验'}
         </p>
       </div>
 
-      {error && <AlertMessage type="error" message={error} />}
+      {error && 
+        <AlertMessage 
+          open={!!error} 
+          severity="error" 
+          message={error} 
+          onClose={() => {}} 
+        />
+      }
 
-      <div className="card">
-        <div className="card-body">
+      <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 mb-8">
+        <div className="p-6">
           <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="name" className="form-label">简历名称</label>
+            <div className="mb-6">
+              <label htmlFor="name"><h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">简历名称</h3></label>
               <input
                 type="text"
                 id="name"
                 name="name"
-                className="form-input"
+                className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                 value={formData.name}
                 onChange={handleChange}
                 required
@@ -355,13 +362,13 @@ const ResumeFormPage: React.FC = () => {
 
             {formData.type === ResumeType.TAILORED && (
               <>
-                <div className="form-group">
-                  <label htmlFor="targetPosition" className="form-label">目标职位</label>
+                <div className="mb-6">
+                  <label htmlFor="targetPosition" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">目标职位</label>
                   <input
                     type="text"
                     id="targetPosition"
                     name="targetPosition"
-                    className="form-input"
+                    className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     value={formData.targetPosition}
                     onChange={handleChange}
                     placeholder="例如：前端工程师"
@@ -369,13 +376,13 @@ const ResumeFormPage: React.FC = () => {
                   />
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="targetJob" className="form-label">目标工作</label>
+                <div className="mb-6">
+                  <label htmlFor="targetJob" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">目标工作</label>
                   <input
                     type="text"
                     id="targetJob"
                     name="targetJob"
-                    className="form-input"
+                    className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     value={formData.targetJob}
                     onChange={handleChange}
                     placeholder="例如：Google前端工程师"
@@ -384,19 +391,21 @@ const ResumeFormPage: React.FC = () => {
                 </div>
                 
                 {generationError && (
-                  <AlertMessage type="error" message={generationError} />
+                  <div className="rounded-xl bg-red-50 dark:bg-red-500/10 p-4 text-red-600 dark:text-red-400 mb-6">
+                    {generationError}
+                  </div>
                 )}
                 
-                <div className="form-group">
+                <div className="mb-6">
                   <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
                     onClick={handleGenerateTailoredResume}
                     disabled={isGenerating}
                   >
                     {isGenerating ? '生成中...' : 'AI生成定制简历内容'}
                   </button>
-                  <p className="text-sm text-gray-500 mt-2">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                     点击按钮使用AI根据您的基础简历内容和目标职位生成定制简历
                   </p>
                 </div>
@@ -404,47 +413,49 @@ const ResumeFormPage: React.FC = () => {
             )}
 
               {/* 个人信息部分 */}
-              <div className="form-section">
-                <h3 className="form-section-title">个人信息</h3>
-                <div className="form-group">
-                  <label htmlFor="fullName" className="form-label">姓名</label>
+              <div className="mb-8">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">个人信息</h3>
+                </div>
+                <div className="mb-6">
+                  <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">姓名</label>
                   <input
                     type="text"
                     id="fullName"
                     name="fullName"
-                    className="form-input"
+                    className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     placeholder="请输入您的姓名"
                   />
                 </div>
-                <div className="grid-cols-1-2">
-                  <div className="form-group">
-                    <label htmlFor="email" className="form-label">邮箱</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="mb-6">
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">邮箱</label>
                     <input
                       type="email"
                       id="email"
                       name="email"
-                      className="form-input"
+                      className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                       placeholder="请输入您的邮箱"
                     />
                   </div>
-                  <div className="form-group">
-                    <label htmlFor="phone" className="form-label">电话</label>
+                  <div className="mb-6">
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">电话</label>
                     <input
                       type="tel"
                       id="phone"
                       name="phone"
-                      className="form-input"
+                      className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                       placeholder="请输入您的电话号码"
                     />
                   </div>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="location" className="form-label">所在地</label>
+                <div className="mb-6">
+                  <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">所在地</label>
                   <input
                     type="text"
                     id="location"
                     name="location"
-                    className="form-input"
+                    className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     placeholder="城市，省份"
                   />
                 </div>
@@ -452,14 +463,14 @@ const ResumeFormPage: React.FC = () => {
               
               {/* 教育背景部分 */}
               <div className="form-section">
-                <div className="form-section-header">
-                  <h3 className="form-section-title">教育背景</h3>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">教育背景</h3>
                   <button 
                     type="button" 
-                    className="btn btn-outline btn-sm" 
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                     onClick={addEducation}
                   >
-                    <Plus className="w-4 h-4 mr-1" />
+                    <Plus className="w-4 h-4" />
                     添加教育经历
                   </button>
                 </div>
@@ -479,63 +490,63 @@ const ResumeFormPage: React.FC = () => {
                       )}
                     </div>
                     
-                    <div className="form-group">
-                      <label htmlFor={`education-${index}`} className="form-label">学历</label>
+                    <div className="mb-4">
+                      <label htmlFor={`education-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">学历</label>
                       <input
                         type="text"
                         id={`education-${index}`}
                         name={`education-${index}`}
-                        className="form-input"
+                        className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                         value={education.education}
                         onChange={(e) => handleEducationChange(index, 'education', e.target.value)}
                         placeholder="最高学历"
                       />
                     </div>
-                    <div className="grid-cols-1-2">
-                      <div className="form-group">
-                        <label htmlFor={`school-${index}`} className="form-label">学校</label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div className="mb-2">
+                        <label htmlFor={`school-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">学校</label>
                         <input
                           type="text"
                           id={`school-${index}`}
                           name={`school-${index}`}
-                          className="form-input"
+                          className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                           value={education.school}
                           onChange={(e) => handleEducationChange(index, 'school', e.target.value)}
                           placeholder="毕业院校"
                         />
                       </div>
-                      <div className="form-group">
-                        <label htmlFor={`major-${index}`} className="form-label">专业</label>
+                      <div className="mb-2">
+                        <label htmlFor={`major-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">专业</label>
                         <input
                           type="text"
                           id={`major-${index}`}
                           name={`major-${index}`}
-                          className="form-input"
+                          className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                           value={education.major}
                           onChange={(e) => handleEducationChange(index, 'major', e.target.value)}
                           placeholder="所学专业"
                         />
                       </div>
                     </div>
-                    <div className="grid-cols-1-2">
-                      <div className="form-group">
-                        <label htmlFor={`eduStartDate-${index}`} className="form-label">入学时间</label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="mb-2">
+                        <label htmlFor={`eduStartDate-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">入学时间</label>
                         <input
                           type="date"
                           id={`eduStartDate-${index}`}
                           name={`eduStartDate-${index}`}
-                          className="form-input"
+                          className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                           value={education.startDate}
                           onChange={(e) => handleEducationChange(index, 'startDate', e.target.value)}
                         />
                       </div>
-                      <div className="form-group">
-                        <label htmlFor={`eduEndDate-${index}`} className="form-label">毕业时间</label>
+                      <div className="mb-2">
+                        <label htmlFor={`eduEndDate-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">毕业时间</label>
                         <input
                           type="date"
                           id={`eduEndDate-${index}`}
                           name={`eduEndDate-${index}`}
-                          className="form-input"
+                          className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                           value={education.endDate}
                           onChange={(e) => handleEducationChange(index, 'endDate', e.target.value)}
                         />
@@ -546,15 +557,15 @@ const ResumeFormPage: React.FC = () => {
               </div>
               
               {/* 工作经历部分 */}
-              <div className="form-section">
-                <div className="form-section-header">
-                  <h3 className="form-section-title">工作经历</h3>
+              <div className="form-section mb-8">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">工作经历</h3>
                   <button 
                     type="button" 
-                    className="btn btn-outline btn-sm" 
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                     onClick={addWorkExperience}
                   >
-                    <Plus className="w-4 h-4 mr-1" />
+                    <Plus className="w-4 h-4" />
                     添加工作经历
                   </button>
                 </div>
@@ -574,49 +585,49 @@ const ResumeFormPage: React.FC = () => {
                       )}
                     </div>
                     
-                    <div className="form-group">
-                      <label htmlFor={`company-${index}`} className="form-label">公司名称</label>
+                    <div className="mb-4">
+                      <label htmlFor={`company-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">公司名称</label>
                       <input
                         type="text"
                         id={`company-${index}`}
                         name={`company-${index}`}
-                        className="form-input"
+                        className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                         value={experience.company}
                         onChange={(e) => handleWorkExperienceChange(index, 'company', e.target.value)}
                         placeholder="公司名称"
                       />
                     </div>
-                    <div className="form-group">
-                      <label htmlFor={`position-${index}`} className="form-label">职位</label>
+                    <div className="mb-4">
+                      <label htmlFor={`position-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">职位</label>
                       <input
                         type="text"
                         id={`position-${index}`}
                         name={`position-${index}`}
-                        className="form-input"
+                        className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                         value={experience.position}
                         onChange={(e) => handleWorkExperienceChange(index, 'position', e.target.value)}
                         placeholder="担任职位"
                       />
                     </div>
-                    <div className="grid-cols-1-2">
-                      <div className="form-group">
-                        <label htmlFor={`workStartDate-${index}`} className="form-label">开始时间</label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div className="mb-2">
+                        <label htmlFor={`workStartDate-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">开始时间</label>
                         <input
                           type="date"
                           id={`workStartDate-${index}`}
                           name={`workStartDate-${index}`}
-                          className="form-input"
+                          className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                           value={experience.startDate}
                           onChange={(e) => handleWorkExperienceChange(index, 'startDate', e.target.value)}
                         />
                       </div>
-                      <div className="form-group">
-                        <label htmlFor={`workEndDate-${index}`} className="form-label">结束时间</label>
+                      <div className="mb-2">
+                        <label htmlFor={`workEndDate-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">结束时间</label>
                         <input
                           type="date"
                           id={`workEndDate-${index}`}
                           name={`workEndDate-${index}`}
-                          className="form-input"
+                          className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                           value={experience.endDate}
                           onChange={(e) => handleWorkExperienceChange(index, 'endDate', e.target.value)}
                         />
@@ -627,7 +638,7 @@ const ResumeFormPage: React.FC = () => {
                       <textarea
                         id={`responsibilities-${index}`}
                         name={`responsibilities-${index}`}
-                        className="form-textarea enhanced-textarea"
+                        className="w-full min-h-[120px] px-3 py-2 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow resize-y"
                         rows={4}
                         value={experience.responsibilities}
                         onChange={(e) => handleWorkExperienceChange(index, 'responsibilities', e.target.value)}
@@ -642,14 +653,13 @@ const ResumeFormPage: React.FC = () => {
               </div>
               
               {/* 技能部分 */}
-              <div className="form-section">
-                <h3 className="form-section-title">技能</h3>
-                <div className="form-group">
-                  <label htmlFor="skills" className="form-label">专业技能</label>
+              <div className="form-section mb-8">
+              <label htmlFor="skills"><h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">专业技能</h3></label>
+              <div className="mb-4">
                   <textarea
                     id="skills"
                     name="skills"
-                    className="form-textarea enhanced-textarea"
+                    className="w-full min-h-[120px] px-3 py-2 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow resize-y"
                     rows={4}
                     placeholder="列出您的专业技能，例如：
 • 前端开发：React, Vue, TypeScript, HTML5, CSS3
@@ -668,15 +678,18 @@ const ResumeFormPage: React.FC = () => {
                 value={formData.content}
               />
 
-            <div className="form-actions">
+            <div className="flex justify-end gap-4 mt-8">
               <button 
                 type="button" 
-                className="btn btn-outline" 
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                 onClick={() => navigate('/resume-builder')}
               >
                 取消
               </button>
-              <button type="submit" className="btn btn-primary">
+              <button 
+                type="submit" 
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
+              >
                 {isEditMode ? '更新简历' : '创建简历'}
               </button>
             </div>
