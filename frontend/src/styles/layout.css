@@ -137,7 +137,7 @@
 }
 
 .main-content-sidebar {
-  @apply flex-grow p-6 pt-20 overflow-y-auto;
+  @apply flex-grow p-6 overflow-y-auto;
 }
 
 /* 页脚样式 */

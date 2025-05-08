@@ -34,7 +34,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div className="layout-sidebar">
       <Sidebar />
       <div className="flex flex-col flex-1 w-full ml-0 md:ml-64">
-        <Header />
         <main className="main-content-sidebar">
           {children}
         </main>
