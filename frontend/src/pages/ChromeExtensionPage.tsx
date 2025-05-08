@@ -33,9 +33,9 @@ const ChromeExtensionPage: React.FC = () => {
   return (
     <div className="container-lg">
       <div className="section">
-        <h1 className="title-lg">JobTrip Chrome扩展</h1>
-        <p className="text-description">
-          安装我们的Chrome扩展，让您的求职过程更加高效和智能。
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Chrome 扩展插件</h1>
+        <p className="text-gray-500 dark:text-gray-400">
+          安装我们的 Chrome 扩展插件，挖掘更多职位信息
         </p>
       </div>
 
@@ -45,14 +45,14 @@ const ChromeExtensionPage: React.FC = () => {
           <div className="flex items-center mb-4 md:mb-0">
             <Chrome className="w-12 h-12 text-indigo-600 mr-4" />
             <div>
-              <h2 className="title-sm">JobTrip Chrome扩展</h2>
+              <h2 className="title-sm">Chrome 扩展插件</h2>
               <p className="text-description">版本 1.0.0</p>
             </div>
           </div>
             <a href="https://codeload.github.com/MagicDogGuo/JobTip_Extention/zip/refs/heads/main" download>
                 <button className="btn btn-primary">
                     <Download className="w-4 h-4 mr-2" />
-                    下载Chrome扩展
+                    下载 Chrome 扩展插件
                 </button>
             </a>
         </div>
@@ -129,8 +129,8 @@ const ChromeExtensionPage: React.FC = () => {
               <span className="text-indigo-600 dark:text-indigo-400 font-medium">5</span>
             </div>
             <div>
-              <h3 className="title-sm mb-1">釘選延伸功能</h3>
-              <p className="text-description">點擊 Chrome 工具列上的拼圖圖示，釘住 JobTrip 擴充套件以方便存取。</p>
+              <h3 className="title-sm mb-1">固定扩展程序</h3>
+              <p className="text-description">点击 Chrome 工具栏上的拼图图标，固定 JobTrip 扩展程序以方便访问。</p>
             </div>
           </div>
           <div className="flex items-start">
@@ -138,11 +138,11 @@ const ChromeExtensionPage: React.FC = () => {
               <span className="text-indigo-600 dark:text-indigo-400 font-medium">6</span>
             </div>
             <div>
-              <h3 className="title-sm mb-1">開始使用</h3>
-              <p className="text-description mb-2">按一下 JobTrip 延伸功能圖示，輸入您的工作搜尋準則（標題、地點和平台），然後按一下「開始搜尋」。擴充套件會自動搜刮工作並將其匯入 JobTrip。</p>
+              <h3 className="title-sm mb-1">开始使用</h3>
+              <p className="text-description mb-2">点击 JobTrip 扩展程序图标，输入您的工作搜索条件（职位、地点和平台），然后点击"开始搜索"。扩展程序会自动搜索工作并将其导入 JobTrip。</p>
               <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-900 rounded-lg p-4 mb-4">
                 <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                  在搜尋前請確保有使用您的帳號登入 LinkedIn、Seek、Indeed 才能夠進行職位搜尋。
+                  在搜索前请确保已使用您的帐号登录 LinkedIn、Seek、Indeed 才能够进行职位搜索。
                 </p>
               </div>
             </div>
@@ -152,9 +152,9 @@ const ChromeExtensionPage: React.FC = () => {
 
       {/* 注意事項 */}
       <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-900 rounded-lg p-6 mb-8">
-        <h3 className="title-sm mb-2 text-blue-800 dark:text-blue-200">注意事項</h3>
+        <h3 className="title-sm mb-2 text-blue-800 dark:text-blue-200">注意事项</h3>
         <p className="text-blue-700 dark:text-blue-300">
-          擴展套件需要存取招聘網站的權限才能正常運作。您可在安裝時查看權限。
+          扩展程序需要访问招聘网站的权限才能正常运作。您可在安装时查看权限。
         </p>
       </div>
 

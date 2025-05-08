@@ -403,11 +403,11 @@ const DashboardPage: React.FC = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <CustomDragLayer />
-      <div className="max-w-7xl mx-auto">
+      <div className="container-lg">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2 dark:text-white">职位追踪</h1>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">职位追踪</h1>
           <p className="text-gray-600 dark:text-gray-300">
-            管理您的求职过程，跟踪每个职位的申请状态和进度。
+            跟踪每个职位的申请状态和进度
           </p>
         </div>
         

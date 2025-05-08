@@ -98,9 +98,9 @@ const CoverLetterPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">AI 求职信生成器</h1>
+    <div className="container-lg">
+      <div className="section">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">AI求职信生成器</h1>
         
         {error && (
           <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
