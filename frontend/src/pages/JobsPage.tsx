@@ -177,7 +177,7 @@ const JobsPage: React.FC = () => {
           <div>
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">职位列表</h1>
             <p className="text-gray-500 dark:text-gray-400">
-              查看和管理您的所有求职申请
+              查看和管理您的所有职位信息
             </p>
           </div>
           <button 
@@ -185,7 +185,7 @@ const JobsPage: React.FC = () => {
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors mt-4 md:mt-0"
           >
             <Plus className="w-4 h-4" />
-            添加职位
+            手动添加职位
           </button>
         </div>
       

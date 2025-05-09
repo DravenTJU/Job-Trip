@@ -19,7 +19,6 @@ const ResumeBuilderPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { resumes, isLoading, error } = useAppSelector((state) => state.resumes);
   
-  const [activeAccordion, setActiveAccordion] = useState<string | null>('基础简历');
   const [expandedResume, setExpandedResume] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [resumeToDelete, setResumeToDelete] = useState<string | null>(null);
@@ -33,13 +32,8 @@ const ResumeBuilderPage: React.FC = () => {
 
   // 加载简历列表
   useEffect(() => {
-    dispatch(fetchResumes());
+    dispatch(fetchResumes({}));
   }, [dispatch]);
-
-  // 切换手风琴状态
-  const toggleAccordion = (section: string) => {
-    setActiveAccordion(activeAccordion === section ? null : section);
-  };
 
   // 切换简历展开状态
   const toggleResumeExpand = (id: string) => {
@@ -148,8 +142,9 @@ const ResumeBuilderPage: React.FC = () => {
       }
       
       console.log('调用AI服务优化简历...');
-      // 调用AI服务优化简历
-      const optimized = await resumeOptimizeService.optimizeResume(resume.content);
+      // 假设 optimizeResume 需要 resumeId 和 targetPosition
+      // (如果需要的参数不同，需要调整)
+      const optimized = await resumeOptimizeService.optimizeResume(resume._id, resume.targetPosition || '', resume.content); 
       console.log('AI优化完成，准备显示预览');
       
       setOptimizedContent(optimized);
@@ -174,20 +169,33 @@ const ResumeBuilderPage: React.FC = () => {
   };
 
   return (
-    <div className="container-lg">
-      <div className="section">
-        <h1 className="title-lg">简历生成器</h1>
-        {/* <p className="text-description">
-          使用JobTrip的智能简历生成器创建专业、吸引人的简历，针对特定职位进行自动优化
-        </p> */}
+    <div className="container-lg px-4">
+      <div className="section space-y-6 mb-8">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">简历生成器</h1>
+        <p className="text-gray-500 dark:text-gray-400">
+          根据您的个人档案生成简历
+        </p>
       </div>
 
-      {error && <AlertMessage type="error" message={error} />}
+      {/* 传入 open prop 并根据 error 状态控制 */}
+      {error && 
+        <AlertMessage 
+          open={!!error} 
+          severity="error" 
+          message={error} 
+          onClose={() => { /* 处理关闭逻辑, 例如 dispatch(clearError()) */ }} 
+        />
+      }
       {isLoading && <Loader />}
       
-      {/* AI优化错误提示 */}
+      {/* AI优化错误提示 - 传入 open prop 并根据 optimizationError 状态控制 */}
       {optimizationError && (
-        <AlertMessage type="error" message={optimizationError} />
+        <AlertMessage 
+          open={!!optimizationError} 
+          severity="error" 
+          message={optimizationError} 
+          onClose={() => setOptimizationError(null)} 
+        /> 
       )}
       
       {/* AI优化预览 */}
@@ -203,245 +211,110 @@ const ResumeBuilderPage: React.FC = () => {
         />
       )}
 
-      {/* 简历分类部分 */}
-      <div className="section">
-        <div className="grid-cols-1-1">
-          {/* 基础简历部分 */}
-          <div className="card">
+      {/* 简历列表部分 */}
+      <div className="section space-y-6">
+        <div className="space-y-4"> 
+          {/* 直接遍历所有简历 */}
+          {resumes.map(resume => (
             <div 
-              className="card-header cursor-pointer"
-              onClick={() => toggleAccordion('基础简历')}
+              key={resume._id}
+              className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 overflow-hidden"
             >
-              <div>
-                <h2 className="title-sm">基础简历</h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">创建一份多功能简历作为基础模板</p>
-              </div>
-              <div>
-                {activeAccordion === '基础简历' ? (
-                  <ChevronUp className="accordion-icon" />
-                ) : (
-                  <ChevronDown className="accordion-icon" />
-                )}
-              </div>
-            </div>
-            
-            {activeAccordion === '基础简历' && (
-              <div className="card-body">
-                <div className="space-y-4">
-                  {resumes.filter(resume => resume.type === ResumeType.BASE).map(resume => (
-                    <div 
-                      key={resume._id}
-                      className="resume-card"
-                    >
-                      <div 
-                        className="resume-card-header"
-                        onClick={() => toggleResumeExpand(resume._id)}
-                      >
-                        <div className="flex items-center">
-                          <img 
-                            src={resume.thumbnail} 
-                            alt={resume.name}
-                            className="resume-thumbnail"
-                          />
-                          <div>
-                            <h3 className="font-medium text-gray-900 dark:text-white">{resume.name}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                              目标职位: {resume.targetPosition || '未指定'} • 更新于 {new Date(resume.updatedAt).toLocaleDateString()}
-                            </p>
-                          </div>
-                        </div>
-                        <div>
-                          {expandedResume === resume._id ? (
-                            <ChevronUp className="accordion-icon" />
-                          ) : (
-                            <ChevronDown className="accordion-icon" />
-                          )}
-                        </div>
-                      </div>
-                      
-                      {expandedResume === resume._id && (
-                        <div className="card-footer">
-                          <div className="flex flex-wrap gap-2">
-                            <button 
-                              className="btn btn-outline btn-sm"
-                              onClick={() => handleEditResume(resume._id)}
-                            >
-                              <Edit className="w-4 h-4 mr-1.5" />
-                              编辑
-                            </button>
-                            <button 
-                              className="btn btn-outline btn-sm"
-                              onClick={(e) => {
-                                e.stopPropagation(); // 阻止事件冒泡
-                                handleDownloadResume(resume._id);
-                              }}
-                            >
-                              <Download className="w-4 h-4 mr-1.5" />
-                              下载
-                            </button>
-                            <button 
-                              className="btn btn-outline btn-sm"
-                              onClick={(e) => {
-                                e.stopPropagation(); // 阻止事件冒泡
-                                handleDuplicateResume(resume._id);
-                              }}
-                            >
-                              <Copy className="w-4 h-4 mr-1.5" />
-                              复制
-                            </button>
-                            <button 
-                              className="btn btn-danger btn-sm"
-                              onClick={() => handleDeleteResume(resume._id)}
-                            >
-                              <Trash className="w-4 h-4 mr-1.5" />
-                              删除
-                            </button>
-                            {/* 
-                            <button 
-                              className="btn btn-secondary btn-sm"
-                              onClick={(e) => {
-                                e.stopPropagation(); // 阻止事件冒泡
-                                handleOptimizeResume(resume);
-                              }}
-                              disabled={isOptimizing}
-                            >
-                              <Wand2 className="w-4 h-4 mr-1.5" />
-                              {isOptimizing && resumeToOptimize?._id === resume._id ? '优化中...' : 'AI优化'}
-                            </button>
-                            */}
-                          </div>
-                        </div>
-                      )}
+              <div 
+                className="p-4 bg-gray-50/30 dark:bg-gray-700/30 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center cursor-pointer"
+                onClick={() => toggleResumeExpand(resume._id)}
+              >
+                <div className="flex items-center">
+                  {/* 使用默认图标或根据类型显示不同图标 */}
+                  {/* {resume.thumbnail ? (
+                    <img 
+                      src={resume.thumbnail} 
+                      alt={resume.name}
+                      className="w-10 h-14 object-cover rounded mr-3"
+                    />
+                  ) : (
+                    <div className="w-10 h-14 bg-gray-100 dark:bg-gray-600 rounded flex items-center justify-center mr-3">
+                      <FileText className="w-6 h-6 text-gray-400 dark:text-gray-300" />
                     </div>
-                  ))}
-                  
-                  <button 
-                    className="resume-add-button"
-                    onClick={handleCreateResume}
-                  >
-                    <Plus className="w-5 h-5 mr-2" />
-                    创建新的简历
-                  </button>
+                  )} */}
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{resume.name}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {/* 显示简历类型 */} 
+                      {/* <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium mr-2 ${
+                        resume.type === ResumeType.TAILORED 
+                          ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
+                          : 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                      }`}>
+                        {resume.type === ResumeType.TAILORED ? '定制' : '基础'}
+                      </span> */}
+                      创建于{new Date(resume.createdAt).toLocaleDateString()} • 更新于 {new Date(resume.updatedAt).toLocaleDateString()} • 目标职位: {resume.targetPosition || '未指定'}
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  {expandedResume === resume._id ? (
+                    <ChevronUp className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                  )}
                 </div>
               </div>
-            )}
-          </div>
+              
+              {expandedResume === resume._id && (
+                <div className="p-4 bg-white/50 dark:bg-gray-800/50"> 
+                  <div className="flex flex-wrap gap-2">
+                    <button 
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
+                      onClick={() => handleEditResume(resume._id)}
+                    >
+                      <Edit className="w-4 h-4" />
+                      编辑
+                    </button>
+                    <button 
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation(); 
+                        handleDownloadResume(resume._id);
+                      }}
+                    >
+                      <Download className="w-4 h-4" />
+                      下载
+                    </button>
+                    <button 
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation(); 
+                        handleDuplicateResume(resume._id);
+                      }}
+                    >
+                      <Copy className="w-4 h-4" />
+                      复制
+                    </button>
+                    <button 
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-red-50/50 dark:bg-red-900/50 backdrop-blur-lg ring-2 ring-red-900/5 dark:ring-red-100/5 hover:bg-red-100/50 dark:hover:bg-red-800/50 transition-colors text-red-600 dark:text-red-400"
+                      onClick={() => handleDeleteResume(resume._id)}
+                    >
+                      <Trash className="w-4 h-4" />
+                      删除
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
           
-          {/* 定制简历部分 */}
-          {/* <div className="card">
-            <div 
-              className="card-header cursor-pointer"
-              onClick={() => toggleAccordion('定制简历')}
-            >
-              <div>
-                <h2 className="title-sm">定制简历</h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">优化的简历版本</p>
-              </div>
-              <div>
-                {activeAccordion === '定制简历' ? (
-                  <ChevronUp className="accordion-icon" />
-                ) : (
-                  <ChevronDown className="accordion-icon" />
-                )}
-              </div>
-            </div>
-            
-            {activeAccordion === '定制简历' && (
-              <div className="card-body">
-                <div className="space-y-4">
-                  {resumes.filter(resume => resume.type === ResumeType.TAILORED).map(resume => (
-                    <div 
-                      key={resume._id}
-                      className="resume-card"
-                    >
-                      <div 
-                        className="resume-card-header"
-                        onClick={() => toggleResumeExpand(resume._id)}
-                      >
-                        <div className="flex items-center">
-                          <img 
-                            src={resume.thumbnail} 
-                            alt={resume.name}
-                            className="resume-thumbnail"
-                          />
-                          <div>
-                            <h3 className="font-medium text-gray-900 dark:text-white">{resume.name}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                              目标: {resume.targetJob || '未指定'} • 更新于 {new Date(resume.updatedAt).toLocaleDateString()}
-                            </p>
-                          </div>
-                        </div>
-                        <div>
-                          {expandedResume === resume._id ? (
-                            <ChevronUp className="accordion-icon" />
-                          ) : (
-                            <ChevronDown className="accordion-icon" />
-                          )}
-                        </div>
-                      </div>
-                      
-                      {expandedResume === resume._id && (
-                        <div className="card-footer">
-                          <div className="flex flex-wrap gap-2">
-                            <button 
-                              className="btn btn-outline btn-sm"
-                              onClick={(e) => {
-                                e.stopPropagation(); // 阻止事件冒泡
-                                handleEditResume(resume._id);
-                              }}
-                            >
-                              <Edit className="w-4 h-4 mr-1.5" />
-                              编辑
-                            </button>
-                            <button 
-                              className="btn btn-outline btn-sm"
-                              onClick={(e) => {
-                                e.stopPropagation(); // 阻止事件冒泡
-                                handleDownloadResume(resume._id);
-                              }}
-                            >
-                              <Download className="w-4 h-4 mr-1.5" />
-                              下载
-                            </button>
-                            <button 
-                              className="btn btn-outline btn-sm"
-                              onClick={(e) => e.stopPropagation()} // 阻止事件冒泡
-                            >
-                              <FileText className="w-4 h-4 mr-1.5" />
-                              预览
-                            </button>
-                            <button 
-                              className="btn btn-danger btn-sm"
-                              onClick={(e) => {
-                                e.stopPropagation(); // 阻止事件冒泡
-                                handleDeleteResume(resume._id);
-                              }}
-                            >
-                              <Trash className="w-4 h-4 mr-1.5" />
-                              删除
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                  
-                  <button 
-                    className="resume-add-button"
-                    onClick={handleCreateResume}
-                  >
-                    <Plus className="w-5 h-5 mr-2" />
-                    创建新的简历
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>  */}
+          {/* 创建新简历按钮 */} 
+          <button 
+            className="w-full py-5 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-2xl ring-2 ring-indigo-500/20 dark:ring-indigo-400/20 border-dashed border-2 border-indigo-300 dark:border-indigo-700 flex items-center justify-center hover:bg-indigo-50/50 dark:hover:bg-indigo-900/20 transition-colors text-indigo-600 dark:text-indigo-400"
+            onClick={handleCreateResume}
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            <span className="text-lg font-medium">创建新的简历</span>
+          </button>
         </div>
       </div>
       
-      {/* 简历建议部分已移除 */}
-
       {/* 删除确认对话框 */}
       <ConfirmDialog
         open={showDeleteConfirm}

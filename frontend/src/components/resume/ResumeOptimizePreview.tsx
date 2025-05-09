@@ -5,9 +5,7 @@ import { createResume } from '@/redux/slices/resumesSlice';
 import { CreateResumeData, ResumeType } from '@/types';
 import AlertMessage from '@/components/common/AlertMessage';
 import Loader from '@/components/common/Loader';
-import { Wand2 } from 'lucide-react';
-import './ResumeOptimizePreview.css';
-import '@/pages/ResumeFormPage.css';
+import { Wand2, X } from 'lucide-react';
 
 interface ResumeOptimizePreviewProps {
   originalResume: {
@@ -205,153 +203,185 @@ const ResumeOptimizePreview: React.FC<ResumeOptimizePreviewProps> = ({
     }
   }, [parsedContent, originalParsedContent]);
 
-  // 保存为新简历
+  // 处理保存为新简历
   const handleSaveAsNew = async () => {
     try {
       setIsSaving(true);
       setError(null);
       
-      // 准备新简历数据
       const newResumeData: CreateResumeData = {
         name: `${originalResume.name} - AI优化版`,
-        content: typeof parsedContent === 'object' ? JSON.stringify(parsedContent) : optimizedContent,
-        type: ResumeType.TAILORED,
+        content: optimizedContent,
+        type: ResumeType.BASE,
         targetPosition: originalResume.targetPosition || '',
-        tailored: true
+        targetJob: '',
+        tailored: false
       };
       
-      // 创建新简历
-      await dispatch(createResume(newResumeData)).unwrap();
+      await dispatch(createResume(newResumeData));
       setSaveSuccess(true);
       
-      // 保存成功后直接关闭预览页面
-      onClose();
+      // 保存成功后3秒关闭预览
+      setTimeout(() => {
+        onClose();
+        navigate('/resume-builder');
+      }, 3000);
     } catch (error) {
-      setError((error as Error).message || '保存失败，请重试');
+      setError((error as Error).message);
     } finally {
       setIsSaving(false);
     }
   };
 
   return (
-    <div className="resume-preview-overlay">
-      <div className="resume-preview-container">
-        <div className="resume-preview-header">
-          <h2 className="title-md">AI优化简历预览</h2>
+    <div className="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/70 backdrop-blur-sm flex justify-center items-center z-[1000]">
+      <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-2xl w-[95%] max-w-5xl max-h-[92vh] flex flex-col shadow-xl ring-2 ring-gray-900/5 dark:ring-gray-100/5">
+        <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 flex items-center">
+            <Wand2 className="w-5 h-5 mr-2 text-indigo-500 dark:text-indigo-400" />
+            AI优化预览
+          </h2>
           <button 
-            className="btn btn-outline btn-sm" 
             onClick={onClose}
-            disabled={isSaving}
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
           >
-            关闭
+            <X className="w-5 h-5" />
           </button>
         </div>
         
-        <div className="resume-preview-content">
-          <div className="card">
-            <div className="card-body">
-              {typeof parsedContent === 'object' ? (
-                <div className="form-content">
-                  {/* 个人信息部分 */}
-                  <div className="form-section">
-                    <h3 className="form-section-title">个人信息</h3>
-                    <div className="form-group">
-                      <label className="form-label">姓名</label>
-                      <input
-                        type="text"
-                        className="form-input"
-                        value={parsedContent.personalInfo?.fullName || ''}
-                        readOnly
-                      />
-                    </div>
-                    <div className="grid-cols-1-2">
-                      <div className="form-group">
-                        <label className="form-label">邮箱</label>
+        <div className="flex-1 p-5 overflow-y-auto max-h-[70vh] flex flex-col gap-5">
+          {/* 优化项列表部分 */}
+          <div className="bg-gray-50/70 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl p-4">
+            <div className="flex items-center mb-4">
+              <h3 className="text-lg font-medium text-indigo-600 dark:text-indigo-400">优化项</h3>
+            </div>
+            
+            {optimizationItems.length > 0 ? (
+              <div className="space-y-3">
+                {optimizationItems.map((item, index) => (
+                  <div 
+                    key={index} 
+                    className={`p-3 rounded-lg border-l-4 bg-white dark:bg-gray-800 shadow-sm ${
+                      item.type === 'improved' 
+                        ? 'border-indigo-500 dark:border-indigo-400' 
+                        : item.type === 'added'
+                          ? 'border-green-500 dark:border-green-400'
+                          : 'border-amber-500 dark:border-amber-400'
+                    }`}
+                  >
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1">{item.title}</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">{item.description}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-gray-500 dark:text-gray-400 italic py-3">
+                正在分析优化内容...
+              </p>
+            )}
+          </div>
+          
+          {/* 简历内容预览部分 */}
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+            {/* 简历预览内容 */}
+            {typeof parsedContent === 'object' ? (
+              <div className="p-5">
+                {/* 个人信息部分 */}
+                {parsedContent.personalInfo && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 border-b border-gray-200 dark:border-gray-700 pb-2">个人信息</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">姓名</label>
+                        <input
+                          type="text"
+                          className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 text-gray-900 dark:text-gray-100"
+                          value={parsedContent.personalInfo.fullName || ''}
+                          readOnly
+                        />
+                      </div>
+                      <div className="mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">邮箱</label>
                         <input
                           type="email"
-                          className="form-input"
-                          value={parsedContent.personalInfo?.email || ''}
+                          className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 text-gray-900 dark:text-gray-100"
+                          value={parsedContent.personalInfo.email || ''}
                           readOnly
                         />
                       </div>
-                      <div className="form-group">
-                        <label className="form-label">电话</label>
+                      <div className="mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">电话</label>
                         <input
                           type="tel"
-                          className="form-input"
-                          value={parsedContent.personalInfo?.phone || ''}
+                          className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 text-gray-900 dark:text-gray-100"
+                          value={parsedContent.personalInfo.phone || ''}
+                          readOnly
+                        />
+                      </div>
+                      <div className="mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">所在地</label>
+                        <input
+                          type="text"
+                          className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 text-gray-900 dark:text-gray-100"
+                          value={parsedContent.personalInfo.location || ''}
                           readOnly
                         />
                       </div>
                     </div>
-                    <div className="form-group">
-                      <label className="form-label">所在地</label>
-                      <input
-                        type="text"
-                        className="form-input"
-                        value={parsedContent.personalInfo?.location || ''}
-                        readOnly
-                      />
-                    </div>
                   </div>
-                  
-                  {/* 教育背景部分 */}
-                  {parsedContent.educations && parsedContent.educations.length > 0 && (
-                    <div className="form-section">
-                      <div className="form-section-header">
-                        <h3 className="form-section-title">教育背景</h3>
-                      </div>
-                      
+                )}
+                
+                {/* 教育背景部分 */}
+                {parsedContent.educations && parsedContent.educations.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 border-b border-gray-200 dark:border-gray-700 pb-2">教育背景</h3>
+                    <div className="space-y-4">
                       {parsedContent.educations.map((edu: any, index: number) => (
-                        <div key={index} className="education-item mb-4 p-3 border rounded">
-                          <div className="education-header flex justify-between items-center mb-2">
-                            <h4 className="text-md font-medium">教育经历 #{index + 1}</h4>
-                          </div>
-                          
-                          <div className="form-group">
-                            <label className="form-label">学历</label>
-                            <input
-                              type="text"
-                              className="form-input"
-                              value={edu.education || ''}
-                              readOnly
-                            />
-                          </div>
-                          <div className="grid-cols-1-2">
-                            <div className="form-group">
-                              <label className="form-label">学校</label>
+                        <div key={index} className="p-3 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">学历</label>
                               <input
                                 type="text"
-                                className="form-input"
+                                className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 text-gray-900 dark:text-gray-100"
+                                value={edu.education || ''}
+                                readOnly
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">学校</label>
+                              <input
+                                type="text"
+                                className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 text-gray-900 dark:text-gray-100"
                                 value={edu.school || ''}
                                 readOnly
                               />
                             </div>
-                            <div className="form-group">
-                              <label className="form-label">专业</label>
-                              <input
-                                type="text"
-                                className="form-input"
-                                value={edu.major || ''}
-                                readOnly
-                              />
-                            </div>
                           </div>
-                          <div className="grid-cols-1-2">
-                            <div className="form-group">
-                              <label className="form-label">入学时间</label>
+                          <div className="mb-2">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">专业</label>
+                            <input
+                              type="text"
+                              className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 text-gray-900 dark:text-gray-100"
+                              value={edu.major || ''}
+                              readOnly
+                            />
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">开始时间</label>
                               <input
                                 type="text"
-                                className="form-input"
+                                className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 text-gray-900 dark:text-gray-100"
                                 value={edu.startDate || ''}
                                 readOnly
                               />
                             </div>
-                            <div className="form-group">
-                              <label className="form-label">毕业时间</label>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">结束时间</label>
                               <input
                                 type="text"
-                                className="form-input"
+                                className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 text-gray-900 dark:text-gray-100"
                                 value={edu.endDate || ''}
                                 readOnly
                               />
@@ -360,63 +390,58 @@ const ResumeOptimizePreview: React.FC<ResumeOptimizePreviewProps> = ({
                         </div>
                       ))}
                     </div>
-                  )}
-                  
-                  {/* 工作经历部分 */}
-                  {parsedContent.workExperiences && parsedContent.workExperiences.length > 0 && (
-                    <div className="form-section">
-                      <div className="form-section-header">
-                        <h3 className="form-section-title">工作经历</h3>
-                      </div>
-                      
+                  </div>
+                )}
+                
+                {/* 工作经历部分 */}
+                {parsedContent.workExperiences && parsedContent.workExperiences.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 border-b border-gray-200 dark:border-gray-700 pb-2">工作经历</h3>
+                    <div className="space-y-4">
                       {parsedContent.workExperiences.map((exp: any, index: number) => (
-                        <div key={index} className="work-experience-item mb-4 p-3 border rounded">
-                          <div className="work-experience-header flex justify-between items-center mb-2">
-                            <h4 className="text-md font-medium">工作经历 #{index + 1}</h4>
-                          </div>
-                          
-                          <div className="form-group">
-                            <label className="form-label">公司名称</label>
+                        <div key={index} className="p-3 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl">
+                          <div className="mb-2">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">公司名称</label>
                             <input
                               type="text"
-                              className="form-input"
+                              className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 text-gray-900 dark:text-gray-100"
                               value={exp.company || ''}
                               readOnly
                             />
                           </div>
-                          <div className="form-group">
-                            <label className="form-label">职位</label>
+                          <div className="mb-2">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">职位</label>
                             <input
                               type="text"
-                              className="form-input"
+                              className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 text-gray-900 dark:text-gray-100"
                               value={exp.position || ''}
                               readOnly
                             />
                           </div>
-                          <div className="grid-cols-1-2">
-                            <div className="form-group">
-                              <label className="form-label">开始时间</label>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">开始时间</label>
                               <input
                                 type="text"
-                                className="form-input"
+                                className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 text-gray-900 dark:text-gray-100"
                                 value={exp.startDate || ''}
                                 readOnly
                               />
                             </div>
-                            <div className="form-group">
-                              <label className="form-label">结束时间</label>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">结束时间</label>
                               <input
                                 type="text"
-                                className="form-input"
+                                className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 text-gray-900 dark:text-gray-100"
                                 value={exp.endDate || ''}
                                 readOnly
                               />
                             </div>
                           </div>
-                          <div className="form-group">
-                            <label className="form-label">工作职责与成就</label>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">工作职责</label>
                             <textarea
-                              className="form-textarea enhanced-textarea"
+                              className="w-full min-h-[120px] px-3 py-2 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 resize-none text-gray-900 dark:text-gray-100"
                               rows={4}
                               value={exp.responsibilities || ''}
                               readOnly
@@ -425,65 +450,66 @@ const ResumeOptimizePreview: React.FC<ResumeOptimizePreviewProps> = ({
                         </div>
                       ))}
                     </div>
-                  )}
-                  
-                  {/* 技能部分 */}
-                  {parsedContent.skills && (
-                    <div className="form-section">
-                      <h3 className="form-section-title">技能</h3>
-                      <div className="form-group">
-                        <label className="form-label">专业技能</label>
-                        <textarea
-                          className="form-textarea enhanced-textarea"
-                          rows={4}
-                          value={parsedContent.skills || ''}
-                          readOnly
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="text-resume">
-                  {/* 显示文本格式简历内容 */}
-                  <pre>{optimizedContent}</pre>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          {/* AI优化项列表 */}
-          <div className="optimization-items-section">
-            <div className="optimization-header">
-              <Wand2 className="w-5 h-5 mr-2" />
-              <h3 className="optimization-title">AI优化项</h3>
-            </div>
-            <div className="optimization-items-list">
-              {optimizationItems.length > 0 ? (
-                optimizationItems.map((item, index) => (
-                  <div key={index} className={`optimization-item ${item.type}`}>
-                    <div className="optimization-item-title">{item.title}</div>
-                    <div className="optimization-item-description">{item.description}</div>
                   </div>
-                ))
-              ) : (
-                <div className="no-optimization-items">正在分析AI优化项...</div>
-              )}
-            </div>
+                )}
+                
+                {/* 技能部分 */}
+                {parsedContent.skills && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 border-b border-gray-200 dark:border-gray-700 pb-2">技能</h3>
+                    <div>
+                      <textarea
+                        className="w-full min-h-[120px] px-3 py-2 bg-gray-50/50 dark:bg-gray-900/50 rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 resize-none text-gray-900 dark:text-gray-100"
+                        rows={5}
+                        value={parsedContent.skills || ''}
+                        readOnly
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="p-5">
+                <pre className="whitespace-pre-wrap font-sans text-sm text-gray-800 dark:text-gray-200 leading-relaxed">
+                  {parsedContent}
+                </pre>
+              </div>
+            )}
           </div>
         </div>
         
-        <div className="resume-preview-footer">
-          {error && <AlertMessage type="error" message={error} />}
-          {saveSuccess && <AlertMessage type="success" message="保存成功！正在返回简历列表..." />}
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
+          {/* 错误提示 */}
+          {error && (
+            <div className="text-red-600 dark:text-red-400 text-sm">
+              {error}
+            </div>
+          )}
           
-          <button 
-            className="btn btn-primary" 
-            onClick={handleSaveAsNew}
-            disabled={isSaving || saveSuccess}
-          >
-            {isSaving ? <Loader size={20} message="" /> : '保存为新简历'}
-          </button>
+          {/* 成功提示 */}
+          {saveSuccess && (
+            <div className="text-green-600 dark:text-green-400 text-sm">
+              保存成功！正在返回简历列表...
+            </div>
+          )}
+          
+          <div className="flex gap-3 ml-auto">
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
+              onClick={onClose}
+            >
+              取消
+            </button>
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
+              onClick={handleSaveAsNew}
+              disabled={isSaving}
+            >
+              {isSaving ? <Loader size={20} message="" /> : '保存为新简历'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

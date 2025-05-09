@@ -44,11 +44,11 @@ const WelcomePage: React.FC = () => {
   ];
 
   return (
-    <div className="container-sm">
+    <div className="container-lg px-4">
       {/* 欢迎标语和愉快图案背景 */}
-      <div className="welcome-banner">
+      <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 mb-8 py-12 px-6 relative overflow-hidden">
         {/* 背景装饰 */}
-        <div className="welcome-banner-decoration">
+        <div className="absolute inset-0 overflow-hidden opacity-30">
           <div className="absolute top-5 left-10 w-6 h-6 bg-yellow-300 rounded-full"></div>
           <div className="absolute top-20 right-20 w-8 h-8 bg-green-300 rounded"></div>
           <div className="absolute bottom-10 left-1/4 w-5 h-5 bg-red-300 rounded-full"></div>
@@ -57,33 +57,30 @@ const WelcomePage: React.FC = () => {
         </div>
         
         <div className="relative">
-          <h1 className="title-lg mb-6">
-            欢迎，{userName}！
-          </h1>
-          <div className="text-4xl md:text-6xl font-bold text-indigo-800 dark:text-indigo-300">
-            Draven!
+          <div className="text-4xl md:text-4xl font-bold text-indigo-800 dark:text-indigo-300">
+            欢迎回来，{userName}！
           </div>
-          <p className="mt-6 text-lg text-description max-w-2xl">
+          <p className="mt-6 text-lg text-gray-500 dark:text-gray-400 max-w-2xl">
             体验JobTrip的全部功能，完成下面的步骤来高效管理您的求职过程，提高成功率，加速您的职业发展。
           </p>
         </div>
       </div>
 
       {/* 入门步骤 */}
-      <div className="section">
-        <h2 className="title-md mb-6">开始使用</h2>
-        <div className="welcome-steps-container">
+      <div className="section space-y-6">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">开始使用</h2>
+        <div className="space-y-4">
           {onboardingSteps.map((step) => (
             <div 
               key={step.id} 
-              className="welcome-step"
+              className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 p-5"
             >
               <div className="flex items-start">
                 <div className="flex-shrink-0 mr-4">
-                  <div className={`welcome-step-number ${
+                  <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
                     step.status === 'completed' 
-                      ? 'welcome-step-number-completed' 
-                      : 'welcome-step-number-pending'
+                      ? 'border-green-500 bg-green-100 dark:bg-green-900/30' 
+                      : 'border-indigo-500 bg-indigo-100 dark:bg-indigo-900/30'
                   }`}>
                     {step.status === 'completed' ? (
                       <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
@@ -93,24 +90,24 @@ const WelcomePage: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex-grow">
-                  <h3 className="title-sm mb-1">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-1">
                     {step.title}
                   </h3>
-                  <p className="text-sm text-description mb-3">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
                     {step.description}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {step.id === 1 && (
-                      <button className="btn btn-primary">
-                        <Download className="w-4 h-4 mr-1.5" />
+                      <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors">
+                        <Download className="w-4 h-4" />
                         下载Chrome扩展
                       </button>
                     )}
                     <Link 
                       to={step.path} 
-                      className="btn btn-secondary"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                     >
-                      开始 <ChevronRight className="w-4 h-4 ml-1.5" />
+                      开始 <ChevronRight className="w-4 h-4" />
                     </Link>
                   </div>
                 </div>

@@ -1,16 +1,29 @@
 import React, { useState } from 'react';
 import { useDrop } from 'react-dnd';
-import { Job, Interview } from '../../types/job';
+// 定义本地的Interview接口，而不是从types/job导入
 import DraggableJobCard from './DraggableJobCard';
 import { Plus, X } from 'lucide-react';
 
-interface DroppableColumnProps {
+// 定义Interview接口
+export interface Interview {
+  id: string;
+  jobId: string;
+  company: string;
+  position: string;
+  time: string;
+  duration: string;
+  round: string;
+  status: 'confirmed' | 'pending';
+}
+
+// 使用泛型定义组件，以便接受DashboardPage中的Job类型
+interface DroppableColumnProps<T extends { id: string; title: string; company: string; type?: string; }> {
   title: string;
   count: number;
-  jobs: Job[];
+  jobs: T[];
   interviews?: Interview[];
-  onDrop: (item: Job) => void;
-  onEdit?: (job: Job) => void;
+  onDrop: (item: T) => void;
+  onEdit?: (job: T) => void;
   onDelete?: (jobId: string) => void;
   todos?: Array<{id: string; jobId: string; task: string; completed: boolean}>;
   onAddTodo?: (jobId: string, task: string) => void;
@@ -18,7 +31,7 @@ interface DroppableColumnProps {
   onDeleteTodo?: (todoId: string) => void;
 }
 
-export const DroppableColumn: React.FC<DroppableColumnProps> = ({
+export const DroppableColumn = <T extends { id: string; title: string; company: string; type?: string; }>({
   title,
   count,
   jobs,
@@ -30,8 +43,8 @@ export const DroppableColumn: React.FC<DroppableColumnProps> = ({
   onAddTodo,
   onToggleTodo,
   onDeleteTodo
-}) => {
-  const [{ isOver }, drop] = useDrop<Job, void, { isOver: boolean }>({
+}: DroppableColumnProps<T>) => {
+  const [{ isOver }, drop] = useDrop<T, void, { isOver: boolean }>({
     accept: 'job',
     drop: (item) => {
       console.log('Dropping job:', item);
@@ -58,17 +71,17 @@ export const DroppableColumn: React.FC<DroppableColumnProps> = ({
   return (
     <div
       ref={drop as any}
-      className={`flex flex-col gap-4 p-4 rounded-lg bg-gray-50 min-h-[200px] ${
+      className={`flex flex-col gap-4 p-4 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 min-h-[200px] ${
         isOver ? 'border-2 border-blue-500' : 'border-2 border-transparent'
       }`}
     >
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        <span className="px-2 py-1 bg-gray-200 rounded-full text-sm">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{title}</h3>
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
           {count}
         </span>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         {jobs.map((job) => {
           const interview = interviews?.find((i) => i.jobId === job.id);
           const jobTodos = todos.filter(todo => todo.jobId === job.id);
@@ -76,7 +89,7 @@ export const DroppableColumn: React.FC<DroppableColumnProps> = ({
           return (
             <div key={job.id} className="space-y-2">
               <DraggableJobCard
-                {...job}
+                {...job as any}
                 interview={interview}
                 onEdit={onEdit}
                 onDelete={onDelete}
@@ -93,7 +106,7 @@ export const DroppableColumn: React.FC<DroppableColumnProps> = ({
                         onChange={() => onToggleTodo?.(todo.id)}
                         className="mr-2 rounded border-gray-300"
                       />
-                      <span className={todo.completed ? 'line-through text-gray-400' : ''}>
+                      <span className={todo.completed ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300'}>
                         {todo.task}
                       </span>
                       <button
@@ -115,12 +128,12 @@ export const DroppableColumn: React.FC<DroppableColumnProps> = ({
                     value={newTaskText}
                     onChange={(e) => setNewTaskText(e.target.value)}
                     placeholder="输入任务内容..."
-                    className="flex-1 text-sm px-2 py-1 border border-gray-300 rounded"
+                    className="flex-1 text-sm h-9 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     onKeyPress={(e) => e.key === 'Enter' && handleAddTask(job.id)}
                   />
                   <button
                     onClick={() => handleAddTask(job.id)}
-                    className="text-blue-600 hover:text-blue-700 text-sm"
+                    className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 text-sm"
                   >
                     添加
                   </button>
@@ -137,7 +150,7 @@ export const DroppableColumn: React.FC<DroppableColumnProps> = ({
               ) : (
                 <button
                   onClick={() => setNewTaskJobId(job.id)}
-                  className="ml-4 text-gray-500 hover:text-gray-700 text-sm flex items-center"
+                  className="ml-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 text-sm flex items-center"
                 >
                   <Plus className="h-4 w-4 mr-1" />
                   添加任务

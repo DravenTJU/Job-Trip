@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
 import { DndProvider, useDragLayer } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { BriefcaseIcon, PlusCircle, Filter, Search, BellIcon, CalendarIcon, PieChartIcon, MoreHorizontal, Plus, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import DroppableColumn from '@/components/job/DroppableColumn';
+import { BriefcaseIcon, Search, BellIcon, CalendarIcon, PieChartIcon, Plus, X } from 'lucide-react';
+import DroppableColumn, { Interview } from '@/components/dashboard/DroppableColumn';
+
+// 定义本地Job接口
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  type: string;
+  salary: string;
+  nextInterview?: string;
+}
 
 // 自定义拖拽层组件
 const CustomDragLayer: React.FC = () => {
@@ -37,7 +46,7 @@ const CustomDragLayer: React.FC = () => {
           transform: 'rotate(-2deg)',
           opacity: 0.8
         }}
-        className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-indigo-500 dark:border-indigo-400 w-[300px]"
+        className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 p-4 w-[300px]"
       >
         <div className="flex flex-col gap-2">
           <div className="flex justify-between items-start">
@@ -47,36 +56,16 @@ const CustomDragLayer: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center gap-2 text-sm">
-            <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
               {item.type}
             </span>
-            <span className="text-gray-500 dark:text-gray-400">{item.salary}</span>
+            <span className="text-gray-700 dark:text-gray-300">{item.salary}</span>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
-interface Job {
-  id: string;
-  title: string;
-  company: string;
-  type: string;
-  salary: string;
-  nextInterview?: string;
-}
-
-interface Interview {
-  id: string;
-  jobId: string;
-  company: string;
-  position: string;
-  time: string;
-  duration: string;
-  round: string;
-  status: 'confirmed' | 'pending';
-}
 
 interface EditModalProps {
   job: Job | null;
@@ -121,57 +110,57 @@ const EditModal: React.FC<EditModalProps> = ({ job, onClose, onSave }) => {
   if (!job) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-2xl shadow-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 p-6 w-full max-w-md">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium">编辑职位信息</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">编辑职位信息</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
             <X className="h-5 w-5" />
           </button>
         </div>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">职位名称</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">职位名称</label>
             <input
               type="text"
               value={editedJob.title}
               onChange={(e) => setEditedJob({ ...editedJob, title: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">公司</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">公司</label>
             <input
               type="text"
               value={editedJob.company}
               onChange={(e) => setEditedJob({ ...editedJob, company: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">类型</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">类型</label>
             <input
               type="text"
               value={editedJob.type}
               onChange={(e) => setEditedJob({ ...editedJob, type: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">薪资</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">薪资</label>
             <input
               type="text"
               value={editedJob.salary}
               onChange={handleSalaryChange}
               placeholder="例如：15-20"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
             />
           </div>
         </div>
         <div className="mt-6 flex justify-end space-x-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
           >
             取消
           </button>
@@ -180,7 +169,7 @@ const EditModal: React.FC<EditModalProps> = ({ job, onClose, onSave }) => {
               onSave(editedJob);
               onClose();
             }}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
           >
             保存
           </button>
@@ -403,19 +392,19 @@ const DashboardPage: React.FC = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <CustomDragLayer />
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2 dark:text-white">职位追踪</h1>
-          <p className="text-gray-600 dark:text-gray-300">
-            管理您的求职过程，跟踪每个职位的申请状态和进度。
+      <div className="container-lg px-4">
+        <div className="section space-y-6 mb-8">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">职位追踪</h1>
+          <p className="text-gray-500 dark:text-gray-400">
+            跟踪每个职位的申请状态和进度
           </p>
         </div>
         
         {/* 统计卡片 */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-100 dark:border-gray-700">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 p-4">
             <div className="flex items-center">
-              <div className="bg-indigo-100 dark:bg-indigo-900 p-3 rounded-lg">
+              <div className="bg-indigo-100 dark:bg-indigo-900/40 p-3 rounded-xl">
                 <BriefcaseIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
               </div>
               <div className="ml-4">
@@ -426,9 +415,9 @@ const DashboardPage: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-100 dark:border-gray-700">
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 p-4">
             <div className="flex items-center">
-              <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
+              <div className="bg-blue-100 dark:bg-blue-900/40 p-3 rounded-xl">
                 <CalendarIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
               <div className="ml-4">
@@ -439,9 +428,9 @@ const DashboardPage: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-100 dark:border-gray-700">
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 p-4">
             <div className="flex items-center">
-              <div className="bg-green-100 dark:bg-green-900 p-3 rounded-lg">
+              <div className="bg-green-100 dark:bg-green-900/40 p-3 rounded-xl">
                 <PieChartIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
               <div className="ml-4">
@@ -452,9 +441,9 @@ const DashboardPage: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-100 dark:border-gray-700">
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 p-4">
             <div className="flex items-center">
-              <div className="bg-orange-100 dark:bg-orange-900 p-3 rounded-lg">
+              <div className="bg-orange-100 dark:bg-orange-900/40 p-3 rounded-xl">
                 <BellIcon className="h-6 w-6 text-orange-600 dark:text-orange-400" />
               </div>
               <div className="ml-4">
@@ -468,14 +457,14 @@ const DashboardPage: React.FC = () => {
         </div>
         
         {/* 搜索和筛选 */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
           <div className="relative flex-1 max-w-md">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-gray-400" />
             </div>
             <input
               type="text"
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="w-full h-11 pl-10 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
               placeholder="搜索职位..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -484,9 +473,9 @@ const DashboardPage: React.FC = () => {
           <div className="flex space-x-3">
             <button 
               onClick={() => setEditingJob({ id: `new_${Date.now()}`, title: '', company: '', type: '', salary: '' })}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
             >
-              <Plus className="mr-2 h-5 w-5" />
+              <Plus className="h-5 w-5" />
               添加职位
             </button>
           </div>
@@ -498,7 +487,7 @@ const DashboardPage: React.FC = () => {
             title="待申请"
             count={filterJobs(jobs.pending).length}
             jobs={filterJobs(jobs.pending)}
-            onDrop={(item) => handleDrop('pending', item)}
+            onDrop={(item) => handleDrop('pending', item as Job)}
             onEdit={handleEdit}
             onDelete={handleDelete}
             todos={todos}
@@ -510,7 +499,7 @@ const DashboardPage: React.FC = () => {
             title="已申请"
             count={filterJobs(jobs.applied).length}
             jobs={filterJobs(jobs.applied)}
-            onDrop={(item) => handleDrop('applied', item)}
+            onDrop={(item) => handleDrop('applied', item as Job)}
             onEdit={handleEdit}
             onDelete={handleDelete}
             todos={todos}
@@ -522,7 +511,7 @@ const DashboardPage: React.FC = () => {
             title="面试中"
             count={filterJobs(jobs.interviewing).length}
             jobs={filterJobs(jobs.interviewing)}
-            onDrop={(item) => handleDrop('interviewing', item)}
+            onDrop={(item) => handleDrop('interviewing', item as Job)}
             onEdit={handleEdit}
             onDelete={handleDelete}
             todos={todos}
@@ -533,16 +522,16 @@ const DashboardPage: React.FC = () => {
         </div>
         
         {/* 近期面试提醒 */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow mb-8 border border-gray-100 dark:border-gray-700">
+        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 mb-8">
           <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-            <h2 className="font-medium text-gray-900 dark:text-white">近期面试安排</h2>
+            <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">近期面试安排</h2>
           </div>
           <div className="p-4">
             <div className="space-y-4">
               {interviews.map((interview) => (
                 <div key={interview.id} className="flex items-start group">
                   <div className="flex-shrink-0">
-                    <div className="bg-blue-100 dark:bg-blue-900 p-2.5 rounded-full">
+                    <div className="bg-blue-100 dark:bg-blue-900/40 p-2.5 rounded-full">
                       <CalendarIcon className="h-5 w-5 text-blue-700 dark:text-blue-300" />
                     </div>
                   </div>
@@ -556,10 +545,10 @@ const DashboardPage: React.FC = () => {
                   <div className="ml-auto flex items-center space-x-2">
                     <button
                       onClick={() => toggleInterviewStatus(interview.id)}
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium cursor-pointer hover:opacity-80 transition-opacity ${
+                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium cursor-pointer hover:opacity-80 transition-opacity ${
                         interview.status === 'confirmed'
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                          ? 'bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400'
+                          : 'bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-400'
                       }`}
                     >
                       {interview.status === 'confirmed' ? '已确认' : '待确认'}
@@ -573,14 +562,19 @@ const DashboardPage: React.FC = () => {
                   </div>
                 </div>
               ))}
+              {interviews.length === 0 && (
+                <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
+                  暂无面试安排
+                </p>
+              )}
             </div>
           </div>
         </div>
 
         {/* 待处理任务列表 */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow mb-8">
+        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 mb-8">
           <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-            <h2 className="font-medium text-gray-900 dark:text-white">待处理任务</h2>
+            <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">待处理任务</h2>
           </div>
           <div className="p-4">
             <div className="space-y-3">
@@ -598,11 +592,11 @@ const DashboardPage: React.FC = () => {
                         className="rounded border-gray-300"
                       />
                       <div>
-                        <p className={`text-sm ${todo.completed ? 'line-through text-gray-400' : 'text-gray-900'}`}>
+                        <p className={`text-sm ${todo.completed ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-900 dark:text-gray-100'}`}>
                           {todo.task}
                         </p>
                         {job && (
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
                             {job.company} - {job.title}
                           </p>
                         )}
@@ -618,7 +612,7 @@ const DashboardPage: React.FC = () => {
                 );
               })}
               {todos.length === 0 && (
-                <p className="text-sm text-gray-500 text-center py-4">
+                <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
                   暂无待处理任务
                 </p>
               )}
