@@ -84,6 +84,27 @@ async function setupCollections(db) {
     ]);
     console.log('✅ 公司集合和索引创建成功');
 
+    // 6. 用户档案集合
+    await db.createCollection('user_profiles');
+    await db.collection('user_profiles').createIndexes([
+      { key: { userId: 1 }, name: 'userId_index', unique: true },
+      { key: { 'skills.name': 1 }, name: 'skills_name_index' },
+      { key: { 'workExperiences.company': 1 }, name: 'workExperiences_company_index' },
+      { key: { 'educations.institution': 1 }, name: 'educations_institution_index' },
+      { key: { lastUpdated: 1 }, name: 'lastUpdated_index' },
+      { key: { createdAt: 1 }, name: 'createdAt_index' }
+    ]);
+    console.log('✅ 用户档案集合和索引创建成功');
+
+    // 7. 简历集合
+    await db.createCollection('resumes');
+    await db.collection('resumes').createIndexes([
+      { key: { userId: 1 }, name: 'userId_index' },
+      { key: { createdAt: 1 }, name: 'createdAt_index' },
+      { key: { name: 1 }, name: 'name_index' }
+    ]);
+    console.log('✅ 简历集合和索引创建成功');
+
   } catch (error) {
     console.error('❌ 创建集合和索引失败:', error);
     throw error;
@@ -418,6 +439,320 @@ async function insertTestData(db) {
     
     const historyResult = await db.collection('application_history').insertMany(applicationHistory);
     console.log(`✅ 已插入 ${historyResult.insertedCount} 条测试申请历史记录`);
+
+    // 6. 添加用户档案测试数据
+    const userProfiles = [
+      {
+        userId: users[0]._id,
+        headline: "资深前端开发工程师",
+        photo: "https://example.com/photos/user1.jpg",
+        biography: "拥有5年前端开发经验，专注于构建用户友好的Web应用程序。",
+        contactInfo: {
+          email: "test1@example.com",
+          phone: "+64 21 123 4567",
+          website: "https://johndoe.example.com",
+          address: "奥克兰, 新西兰",
+          socialMedia: {
+            linkedin: "https://linkedin.com/in/johndoe",
+            github: "https://github.com/johndoe",
+            twitter: "https://twitter.com/johndoe"
+          }
+        },
+        educations: [
+          {
+            institution: "奥克兰大学",
+            degree: "硕士",
+            field: "计算机科学",
+            startDate: new Date("2015-09-01"),
+            endDate: new Date("2017-06-30"),
+            description: "专注于Web开发和用户界面设计",
+            location: "奥克兰, 新西兰"
+          },
+          {
+            institution: "北京大学",
+            degree: "学士",
+            field: "软件工程",
+            startDate: new Date("2011-09-01"),
+            endDate: new Date("2015-06-30"),
+            description: "软件工程专业，GPA 3.8/4.0",
+            location: "北京, 中国"
+          }
+        ],
+        workExperiences: [
+          {
+            company: "科技云创有限公司",
+            position: "高级前端开发工程师",
+            startDate: new Date("2020-03-01"),
+            endDate: null,
+            current: true,
+            description: "负责公司主要产品的前端架构设计和开发，优化用户体验和性能。",
+            location: "奥克兰, 新西兰",
+            achievements: [
+              "将网站加载时间减少50%",
+              "实现了响应式设计，支持所有设备类型",
+              "引入了组件库和自动化测试流程"
+            ]
+          },
+          {
+            company: "数字科技有限公司",
+            position: "前端开发工程师",
+            startDate: new Date("2017-07-01"),
+            endDate: new Date("2020-02-28"),
+            current: false,
+            description: "负责公司电子商务平台的前端开发，使用React和Redux。",
+            location: "奥克兰, 新西兰",
+            achievements: [
+              "开发了5个主要功能模块",
+              "参与重构前端代码架构，提高了代码质量",
+              "实现了A/B测试系统，提高转化率15%"
+            ]
+          }
+        ],
+        skills: [
+          {
+            name: "React",
+            level: "专家",
+            endorsements: 12,
+            category: "前端框架"
+          },
+          {
+            name: "Vue.js",
+            level: "高级",
+            endorsements: 8,
+            category: "前端框架"
+          },
+          {
+            name: "JavaScript",
+            level: "专家",
+            endorsements: 15,
+            category: "编程语言"
+          },
+          {
+            name: "TypeScript",
+            level: "高级",
+            endorsements: 10,
+            category: "编程语言"
+          }
+        ],
+        certifications: [
+          {
+            name: "AWS认证开发者 - 助理",
+            issuer: "Amazon Web Services",
+            issueDate: new Date("2019-05-15"),
+            expirationDate: new Date("2022-05-15"),
+            credentialId: "AWS-DEV-123456",
+            credentialUrl: "https://aws.amazon.com/verification"
+          }
+        ],
+        projects: [
+          {
+            name: "电子商务平台重构",
+            description: "使用React和Node.js重构公司的电子商务平台，改善用户体验和性能。",
+            startDate: new Date("2019-03-01"),
+            endDate: new Date("2019-09-30"),
+            url: "https://example-ecommerce.com",
+            technologies: ["React", "Node.js", "MongoDB", "Redis"]
+          }
+        ],
+        languages: [
+          {
+            language: "中文",
+            proficiency: "母语"
+          },
+          {
+            language: "英语",
+            proficiency: "高级"
+          }
+        ],
+        volunteerExperiences: [
+          {
+            organization: "代码教育协会",
+            role: "志愿讲师",
+            startDate: new Date("2018-01-01"),
+            endDate: new Date("2019-12-31"),
+            description: "为青少年教授编程基础知识，组织了10次工作坊。"
+          }
+        ],
+        honorsAwards: [
+          {
+            title: "优秀员工奖",
+            issuer: "数字科技有限公司",
+            date: new Date("2019-12-15"),
+            description: "因出色的工作表现和团队贡献而获得"
+          }
+        ],
+        recommendations: [
+          {
+            recommenderName: "王经理",
+            recommenderTitle: "技术总监",
+            relationship: "直属上级",
+            content: "张三是一位出色的开发者，他的技术能力和解决问题的思路都非常优秀。他在我们团队中发挥了重要作用，我强烈推荐他。",
+            date: new Date("2020-02-20")
+          }
+        ],
+        profileCompleteness: 85,
+        lastUpdated: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        userId: users[1]._id,
+        headline: "UI/UX设计师",
+        photo: "https://example.com/photos/user2.jpg",
+        biography: "创意型UI/UX设计师，热衷于创造美观且用户友好的界面。",
+        contactInfo: {
+          email: "test2@example.com",
+          phone: "+64 21 987 6543",
+          website: "https://janesmith.example.com",
+          address: "惠灵顿, 新西兰"
+        },
+        educations: [
+          {
+            institution: "维多利亚大学惠灵顿分校",
+            degree: "学士",
+            field: "设计学",
+            startDate: new Date("2014-09-01"),
+            endDate: new Date("2018-06-30"),
+            description: "专注于用户界面设计和用户体验研究",
+            location: "惠灵顿, 新西兰"
+          }
+        ],
+        workExperiences: [
+          {
+            company: "新创数字科技",
+            position: "UI/UX设计师",
+            startDate: new Date("2018-07-01"),
+            endDate: null,
+            current: true,
+            description: "负责公司产品的用户界面设计和用户体验优化。",
+            location: "惠灵顿, 新西兰",
+            achievements: [
+              "重新设计了公司主要产品界面，提高用户满意度25%",
+              "建立了公司设计系统，提高了开发效率",
+              "领导了3个主要产品的设计过程"
+            ]
+          }
+        ],
+        skills: [
+          {
+            name: "Figma",
+            level: "专家",
+            endorsements: 10,
+            category: "设计工具"
+          },
+          {
+            name: "Adobe Photoshop",
+            level: "高级",
+            endorsements: 8,
+            category: "设计工具"
+          },
+          {
+            name: "用户研究",
+            level: "中级",
+            endorsements: 5,
+            category: "软技能"
+          }
+        ],
+        profileCompleteness: 65,
+        lastUpdated: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+
+    const profileResult = await db.collection('user_profiles').insertMany(userProfiles);
+    console.log(`✅ 已插入 ${profileResult.insertedCount} 个测试用户档案`);
+
+    // 7. 添加简历测试数据
+    const resumes = [
+      {
+        name: "前端开发工程师简历",
+        userId: users[0]._id,
+        targetPosition: "高级前端开发工程师",
+        targetJob: "前端开发",
+        content: JSON.stringify({
+          personalInfo: {
+            fullName: "张三",
+            email: "test1@example.com",
+            phone: "+64 21 123 4567",
+            location: "奥克兰, 新西兰"
+          },
+          educations: [
+            {
+              education: "硕士",
+              school: "奥克兰大学",
+              major: "计算机科学",
+              startDate: "2015-09",
+              endDate: "2017-06"
+            },
+            {
+              education: "学士",
+              school: "北京大学",
+              major: "软件工程",
+              startDate: "2011-09",
+              endDate: "2015-06"
+            }
+          ],
+          workExperiences: [
+            {
+              company: "科技云创有限公司",
+              position: "高级前端开发工程师",
+              startDate: "2020-03",
+              endDate: "至今",
+              responsibilities: "负责公司主要产品的前端架构设计和开发，优化用户体验和性能。"
+            },
+            {
+              company: "数字科技有限公司",
+              position: "前端开发工程师",
+              startDate: "2017-07",
+              endDate: "2020-02",
+              responsibilities: "负责公司电子商务平台的前端开发，使用React和Redux。"
+            }
+          ],
+          skills: "React, Vue.js, JavaScript, TypeScript, HTML5, CSS3, Webpack, Git, Jest"
+        }),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: "UI/UX设计师简历",
+        userId: users[1]._id,
+        targetPosition: "资深UI/UX设计师",
+        targetJob: "UI/UX设计",
+        content: JSON.stringify({
+          personalInfo: {
+            fullName: "李四",
+            email: "test2@example.com",
+            phone: "+64 21 987 6543",
+            location: "惠灵顿, 新西兰"
+          },
+          educations: [
+            {
+              education: "学士",
+              school: "维多利亚大学惠灵顿分校",
+              major: "设计学",
+              startDate: "2014-09",
+              endDate: "2018-06"
+            }
+          ],
+          workExperiences: [
+            {
+              company: "新创数字科技",
+              position: "UI/UX设计师",
+              startDate: "2018-07",
+              endDate: "至今",
+              responsibilities: "负责公司产品的用户界面设计和用户体验优化。"
+            }
+          ],
+          skills: "Figma, Sketch, Adobe Photoshop, Adobe Illustrator, 原型设计, 用户研究, 可用性测试"
+        }),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+
+    const resumeResult = await db.collection('resumes').insertMany(resumes);
+    console.log(`✅ 已插入 ${resumeResult.insertedCount} 份测试简历`);
 
   } catch (error) {
     console.error('❌ 插入测试数据失败:', error);
