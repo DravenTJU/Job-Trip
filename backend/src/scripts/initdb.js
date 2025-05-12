@@ -445,7 +445,6 @@ async function insertTestData(db) {
       {
         userId: users[0]._id,
         headline: "资深前端开发工程师",
-        photo: "https://example.com/photos/user1.jpg",
         biography: "拥有5年前端开发经验，专注于构建用户友好的Web应用程序。",
         contactInfo: {
           email: "test1@example.com",
@@ -598,7 +597,6 @@ async function insertTestData(db) {
       {
         userId: users[1]._id,
         headline: "UI/UX设计师",
-        photo: "https://example.com/photos/user2.jpg",
         biography: "创意型UI/UX设计师，热衷于创造美观且用户友好的界面。",
         contactInfo: {
           email: "test2@example.com",
