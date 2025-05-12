@@ -175,7 +175,7 @@ const JobDetailPage: React.FC = () => {
       </button>
       
       {/* 职位详情卡片 */}
-      <div className="welcome-banner bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5">
+      <div className="welcome-banner bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 p-6 mb-6 relative">
         <div className="welcome-banner-decoration">
           <div className="absolute top-5 left-10 w-6 h-6 bg-yellow-300 rounded-full"></div>
           <div className="absolute top-20 right-20 w-8 h-8 bg-green-300 rounded"></div>
