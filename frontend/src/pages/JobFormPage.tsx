@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { createJob, updateJob, fetchJob } from '@/redux/slices/jobsSlice';
 import { Job, CreateJobData, JobStatus, JobType, JobSource } from '@/types';
+import { JOB_STATUS_OPTIONS } from '@/utils/jobStatusUtils';
 import { Link } from 'react-router-dom';
 import { 
   Search, 
@@ -243,15 +244,7 @@ const JobFormPage: React.FC = () => {
   };
   
   // 状态选项
-  const statusOptions = [
-    { value: JobStatus.NEW, label: '新职位' },
-    { value: JobStatus.APPLIED, label: '已申请' },
-    { value: JobStatus.INTERVIEWING, label: '面试中' },
-    { value: JobStatus.OFFER, label: '已录用' },
-    { value: JobStatus.REJECTED, label: '已拒绝' },
-    { value: JobStatus.WITHDRAWN, label: '已撤回' },
-    { value: JobStatus.CLOSED, label: '已关闭' }
-  ];
+  const statusOptions = JOB_STATUS_OPTIONS;
 
   // 工作类型选项
   const jobTypeOptions = [

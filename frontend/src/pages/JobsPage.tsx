@@ -19,7 +19,8 @@ import {
   DollarSign,
   Briefcase
 } from 'lucide-react';
-import { JobStatus, JobSource, JobType } from '@/types';
+import { JobSource, JobType } from '@/types';
+import { getStatusStyle, JOB_STATUS_OPTIONS } from '@/utils/jobStatusUtils';
 
 /**
  * 职位列表页面组件
@@ -77,13 +78,7 @@ const JobsPage: React.FC = () => {
   // 状态选项
   const statusOptions = [
     { label: '所有状态', value: '' },
-    { label: '新发布', value: JobStatus.NEW },
-    { label: '已申请', value: JobStatus.APPLIED },
-    { label: '面试中', value: JobStatus.INTERVIEWING },
-    { label: '已录用', value: JobStatus.OFFER },
-    { label: '已拒绝', value: JobStatus.REJECTED },
-    { label: '已撤回', value: JobStatus.WITHDRAWN },
-    { label: '已关闭', value: JobStatus.CLOSED }
+    ...JOB_STATUS_OPTIONS
   ];
   
   // 加载职位列表数据
@@ -306,11 +301,11 @@ const JobsPage: React.FC = () => {
                     </select>
                   </div>
                   
-                  {/* 发布时间筛选 */}
+                  {/* 添加时间筛选 */}
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-gray-400" />
-                      发布时间
+                      添加时间
                     </label>
                     <select
                       value={filters.dateRange}
@@ -409,7 +404,7 @@ const JobsPage: React.FC = () => {
                           {job.salary}
                         </span>
                       )}
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium ${getStatusStyles(job.status)}`}>
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium badge ${getStatusStyle(job.status)}`}>
                         <div className="w-2 h-2 rounded-full bg-current"></div>
                         {job.status}
                       </span>
@@ -440,7 +435,7 @@ const JobsPage: React.FC = () => {
                         onClick={(e) => e.stopPropagation()}
                       >
                         <ExternalLink className="w-4 h-4" />
-                        查看原始职位
+                        原始链接
                       </a>
                     )}
                   </div>
@@ -511,28 +506,6 @@ const JobsPage: React.FC = () => {
       </div>
     </div>
   );
-};
-
-// 获取状态样式
-const getStatusStyles = (status: string) => {
-  switch (status) {
-    case JobStatus.NEW:
-      return 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400';
-    case JobStatus.APPLIED:
-      return 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400';
-    case JobStatus.INTERVIEWING:
-      return 'bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-400';
-    case JobStatus.OFFER:
-      return 'bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400';
-    case JobStatus.REJECTED:
-      return 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400';
-    case JobStatus.WITHDRAWN:
-      return 'bg-gray-50 dark:bg-gray-500/10 text-gray-600 dark:text-gray-400';
-    case JobStatus.CLOSED:
-      return 'bg-gray-50 dark:bg-gray-500/10 text-gray-600 dark:text-gray-400';
-    default:
-      return 'bg-gray-50 dark:bg-gray-500/10 text-gray-600 dark:text-gray-400';
-  }
 };
 
 export default JobsPage; 

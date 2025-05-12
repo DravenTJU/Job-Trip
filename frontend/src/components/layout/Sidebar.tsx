@@ -55,6 +55,11 @@ const Sidebar: React.FC = () => {
       path: '/welcome', 
       icon: <Home className="sidebar-menu-icon" /> 
     },
+    { 
+      name: 'Chrome扩展', 
+      path: '/chrome-extension', 
+      icon: <Chrome className="sidebar-menu-icon" /> 
+    },
     {
       name: '职位列表', 
       path: '/jobs', 
@@ -66,6 +71,11 @@ const Sidebar: React.FC = () => {
       icon: <PieChart className="sidebar-menu-icon" /> 
     },
     { 
+      name: '个人档案', 
+      path: '/profile', 
+      icon: <User className="sidebar-menu-icon" /> 
+    },
+    { 
       name: '简历生成', 
       path: '/resume-builder', 
       icon: <FileText className="sidebar-menu-icon" /> 
@@ -74,16 +84,6 @@ const Sidebar: React.FC = () => {
       name: 'AI求职信', 
       path: '/cover-letters', 
       icon: <Sparkles className="sidebar-menu-icon" /> 
-    },
-    { 
-      name: '用户档案', 
-      path: '/user-profile', 
-      icon: <User className="sidebar-menu-icon" /> 
-    },
-    { 
-      name: 'Chrome扩展', 
-      path: '/chrome-extension', 
-      icon: <Chrome className="sidebar-menu-icon" /> 
     }
   ];
 
@@ -124,11 +124,11 @@ const Sidebar: React.FC = () => {
         <div className="sidebar-user">
           <div className="flex items-center flex-1 min-w-0">
             <div className="icon-container icon-container-primary flex-shrink-0">
-              {user?.firstName?.charAt(0) || user?.username?.charAt(0) || 'U'}
+              {user?.username?.charAt(0) || 'U'}
             </div>
             <div className="ml-3 min-w-0">
-              <p className="text-sm font-medium text-gray-800 dark:text-white truncate">
-                {user?.firstName || user?.username || '用户'}
+              <p className="text-sm font-medium text-gray-800 dark:text-white truncate" title={user?.username}>
+                {user?.username || '用户'}
               </p>
             </div>
           </div>

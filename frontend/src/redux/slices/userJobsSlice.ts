@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { ApplicationStatus, CreateUserJobData, PaginatedResponse, UserJob } from '@/types';
 import userJobService from '@/services/userJobService';
+import { ApiError, isApiError } from '../../types/api';
 
 // 异步Thunk actions
 export const fetchUserJobs = createAsyncThunk(
@@ -15,7 +16,12 @@ export const fetchUserJobs = createAsyncThunk(
     try {
       const response = await userJobService.getUserJobs(params);
       return response;
-    } catch (error) {
+    } catch (error: any) {
+      // 优先使用ApiError的状态码和消息
+      if (isApiError(error)) {
+        return rejectWithValue(error.message);
+      }
+      // 降级到旧的错误处理
       return rejectWithValue((error as Error).message);
     }
   }
@@ -27,7 +33,12 @@ export const fetchUserJob = createAsyncThunk(
     try {
       const response = await userJobService.getUserJob(id);
       return response;
-    } catch (error) {
+    } catch (error: any) {
+      // 优先使用ApiError的状态码和消息
+      if (isApiError(error)) {
+        return rejectWithValue(error.message);
+      }
+      // 降级到旧的错误处理
       return rejectWithValue((error as Error).message);
     }
   }

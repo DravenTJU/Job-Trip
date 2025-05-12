@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Resume, { ResumeType } from '../models/resumeModel';
-import { AppError, createApiResponse } from '../middleware/errorHandler';
+import { AppError } from '../utils/AppError';
+import { createApiResponse } from '../middleware/errorHandler';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
 
 /**

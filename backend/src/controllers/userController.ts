@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import User from '../models/userModel';
-import { AppError, createApiResponse } from '../middleware/errorHandler';
+import { AppError } from '../utils/AppError';
+import { createApiResponse } from '../middleware/errorHandler';
 
 /**
  * @desc    注册新用户
@@ -27,8 +28,6 @@ export const registerUser = async (
       username,
       email,
       password,
-      firstName,
-      lastName,
       preferences,
     });
 

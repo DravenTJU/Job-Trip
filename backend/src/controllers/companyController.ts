@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Company from '../models/companyModel';
-import { AppError, createApiResponse } from '../middleware/errorHandler';
+import { AppError } from '../utils/AppError';
+import { createApiResponse } from '../middleware/errorHandler';
 
 /**
  * @desc    获取所有公司

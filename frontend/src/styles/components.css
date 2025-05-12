@@ -49,8 +49,32 @@
   @apply bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400;
 }
 
+.badge-pending {
+  @apply bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400;
+}
+
 .badge-success {
   @apply bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400;
+}
+
+.badge-info {
+  @apply bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400;
+}
+
+.badge-warning {
+  @apply bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400;
+}
+
+.badge-error {
+  @apply bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400;
+}
+
+.badge-default {
+  @apply bg-gray-50 text-gray-700 dark:bg-gray-800 dark:text-gray-400;
+}
+
+.badge-purple {
+  @apply bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400;
 }
 
 /* 表单样式 */
@@ -182,4 +206,13 @@
 /* 手风琴展开图标 */
 .accordion-icon {
   @apply w-5 h-5 text-gray-500 dark:text-gray-400;
+}
+
+/* 欢迎横幅 */
+.welcome-banner {
+  @apply overflow-hidden;
+}
+
+.welcome-banner-decoration {
+  @apply absolute inset-0 overflow-hidden pointer-events-none;
 }

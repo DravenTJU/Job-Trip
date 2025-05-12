@@ -14,7 +14,7 @@
     "lint": "eslint . --ext .ts",
     "test": "jest",
     "generate-docs": "node scripts/generate-redoc.js",
-    "init-db": "node scripts/initdb.js",
+    "init-db": "node src/scripts/initdb.js",
     "seed": "ts-node scripts/seedJobs.ts"
   },
   "dependencies": {

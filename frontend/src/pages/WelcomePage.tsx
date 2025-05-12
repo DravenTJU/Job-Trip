@@ -5,41 +5,56 @@ import { useAppSelector } from '@/hooks/reduxHooks';
 
 /**
  * 欢迎页面组件
- * 展示给登录用户的欢迎页面
+ * 展示给登录用户的欢迎页面，引导用户完成核心功能的使用流程
+ * 基于项目使命：简化求职过程，自动化数据收集，提高求职效率
  */
 const WelcomePage: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
-  const userName = user?.firstName || user?.username || '用户';
+  const userName = user?.username || '求职者';
 
   // 入门步骤数据
   const onboardingSteps = [
     {
       id: 1,
-      title: '安装Chrome扩展',
-      description: '获取JobTrip的chrome扩展，用于收藏职位、查看职位洞察和自动填写申请表。',
+      title: '安装 Chrome 扩展',
+      description: '获取并安装 JobTrip 的浏览器扩展，自动从 LinkedIn、Seek 和 Indeed 等平台收集职位信息。',
       status: 'pending',
       path: '/chrome-extension'
     },
     {
       id: 2,
-      title: '将您的前3个职位保存到求职追踪器',
-      description: '通过任何求职板或搜索引擎使用chrome扩展保存职位，或手动添加它们。',
+      title: '浏览您的职位列表',
+      description: '查看自动抓取或手动添加的职位信息，所有数据都集中在一处，方便您快速筛选和比较。',
       status: 'pending',
-      path: '/job-search/2025'
+      path: '/jobs'
     },
     {
       id: 3,
-      title: '创建您的基础简历',
-      description: '选择您的目标职位标题，并构建您的最佳基础简历。',
+      title: '跟踪申请状态',
+      description: '轻松跟踪每个职位的申请进度（新发现、已申请、面试中等），避免错过重要机会。',
+      status: 'pending',
+      path: '/dashboard'
+    },
+    {
+      id: 4,
+      title: '完善您的个人档案',
+      description: '创建专业的个人档案，包括教育背景、工作经验和技能，为简历生成和职位匹配奠定基础。',
+      status: 'pending',
+      path: '/profile'
+    },
+    {
+      id: 5,
+      title: '生成针对性简历',
+      description: '基于您的档案和目标职位，智能生成量身定制的简历，提高求职成功率。',
       status: 'pending',
       path: '/resume-builder'
     },
     {
-      id: 4,
-      title: '为特定职位调整您的简历',
-      description: '一旦您创建了基础简历并收藏了一些职位，是时候制作为特定职位申请定制的简历了。',
+      id: 6,
+      title: '创建个性化求职信',
+      description: '为特定职位自动生成定制求职信，突出您与职位要求的匹配点，节省宝贵时间。',
       status: 'pending',
-      path: '/resume-builder/customize'
+      path: '/cover-letters'
     },
   ];
 
@@ -61,14 +76,14 @@ const WelcomePage: React.FC = () => {
             欢迎回来，{userName}！
           </div>
           <p className="mt-6 text-lg text-gray-500 dark:text-gray-400 max-w-2xl">
-            体验JobTrip的全部功能，完成下面的步骤来高效管理您的求职过程，提高成功率，加速您的职业发展。
+            JobTrip 职途助手为您简化求职流程，自动收集多平台职位信息并提供统一管理。完成以下步骤，轻松组织您的求职过程，减少手动追踪工作，让您专注于获得理想职位。
           </p>
         </div>
       </div>
 
       {/* 入门步骤 */}
       <div className="section space-y-6">
-        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">开始使用</h2>
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">开始使用您的一站式求职助手</h2>
         <div className="space-y-4">
           {onboardingSteps.map((step) => (
             <div 
@@ -100,14 +115,15 @@ const WelcomePage: React.FC = () => {
                     {step.id === 1 && (
                       <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors">
                         <Download className="w-4 h-4" />
-                        下载Chrome扩展
+                        下载 Chrome 扩展
                       </button>
                     )}
                     <Link 
                       to={step.path} 
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                     >
-                      开始 <ChevronRight className="w-4 h-4" />
+                      {step.id === 1 ? '查看安装说明' : '开始'}
+                      <ChevronRight className="w-4 h-4" />
                     </Link>
                   </div>
                 </div>

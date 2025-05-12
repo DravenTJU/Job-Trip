@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import Job from '../models/jobModel';
 import UserJob from '../models/userJobModel';
-import { AppError, createApiResponse } from '../middleware/errorHandler';
+import { AppError } from '../utils/AppError';
+import { createApiResponse } from '../middleware/errorHandler';
 import ApplicationHistory from '../models/applicationHistoryModel';
 import jwt from 'jsonwebtoken';
 

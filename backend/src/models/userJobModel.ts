@@ -55,6 +55,6 @@ userJobSchema.index({ jobId: 1 });
 userJobSchema.index({ createdAt: 1 });
 
 // 创建模型
-const UserJob = mongoose.model<IUserJob>('UserJob', userJobSchema);
+const UserJob = mongoose.model<IUserJob>('UserJob', userJobSchema, 'user_jobs');
 
 export default UserJob; 

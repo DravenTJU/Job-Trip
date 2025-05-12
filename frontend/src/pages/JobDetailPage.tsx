@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { fetchJob, deleteJob } from '@/redux/slices/jobsSlice';
-import { ApplicationStatus, JobStatus, JobSource } from '@/types';
+import { ApplicationStatus, JobSource } from '@/types';
+import { getStatusStyle } from '@/utils/jobStatusUtils';
 import { 
   ArrowLeft, 
   Building2, 
@@ -16,7 +17,8 @@ import {
   Clock, 
   Edit3, 
   Trash2, 
-  ExternalLink 
+  ExternalLink,
+  X
 } from 'lucide-react';
 
 /**
@@ -101,28 +103,6 @@ const JobDetailPage: React.FC = () => {
     });
   };
   
-  // 获取状态颜色
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case JobStatus.NEW:
-        return 'badge-primary';
-      case JobStatus.APPLIED:
-        return 'badge-info';
-      case JobStatus.INTERVIEWING:
-        return 'badge-warning';
-      case JobStatus.OFFER:
-        return 'badge-success';
-      case JobStatus.REJECTED:
-        return 'badge-error';
-      case JobStatus.WITHDRAWN:
-        return 'badge-default';
-      case JobStatus.CLOSED:
-        return 'badge-default';
-      default:
-        return 'badge-default';
-    }
-  };
-  
   // 获取平台显示名称
   const getPlatformLabel = (platform: string) => {
     switch (platform) {
@@ -175,7 +155,7 @@ const JobDetailPage: React.FC = () => {
       </button>
       
       {/* 职位详情卡片 */}
-      <div className="welcome-banner bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5">
+      <div className="welcome-banner bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 p-6 mb-6 relative">
         <div className="welcome-banner-decoration">
           <div className="absolute top-5 left-10 w-6 h-6 bg-yellow-300 rounded-full"></div>
           <div className="absolute top-20 right-20 w-8 h-8 bg-green-300 rounded"></div>
@@ -188,7 +168,7 @@ const JobDetailPage: React.FC = () => {
           {/* 职位标题和状态 */}
           <div className="flex items-center gap-3 mb-4">
             <h1 className="title-lg">{job.title}</h1>
-            <span className={`badge ${getStatusColor(job.status)}`}>
+            <span className={`badge ${getStatusStyle(job.status)}`}>
               {job.status}
             </span>
           </div>
@@ -276,7 +256,7 @@ const JobDetailPage: React.FC = () => {
                   <Calendar className="w-5 h-5 text-gray-400" />
                 </div>
                 <div className="data-item-content">
-                  <div className="data-item-label">发布时间</div>
+                  <div className="data-item-label">添加时间</div>
                   <div className="data-item-value">
                     {formatDate(job.createdAt)}
                     <span className="text-gray-400 text-sm ml-2">
@@ -317,7 +297,7 @@ const JobDetailPage: React.FC = () => {
                         onClick={handleExternalLinkClick}
                         className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
                       >
-                        查看原始职位
+                        查看原始职位信息
                       </a>
                     </div>
                   </div>

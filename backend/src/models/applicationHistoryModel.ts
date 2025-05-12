@@ -47,7 +47,8 @@ applicationHistorySchema.index({ createdAt: 1 });
 // 创建模型
 const ApplicationHistory = mongoose.model<IApplicationHistory>(
   'ApplicationHistory',
-  applicationHistorySchema
+  applicationHistorySchema,
+  'application_history'
 );
 
 export default ApplicationHistory; 

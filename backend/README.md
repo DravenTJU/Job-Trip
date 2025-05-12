@@ -67,11 +67,11 @@ npm test
 2. 找到服务器的IP地址（例如：192.168.1.132）
 3. 在局域网内的其他设备上，通过浏览器访问：
    ```
-   http://192.168.1.132:5000
+   http://192.168.1.132:5001
    ```
 
 注意：
-- 确保服务器防火墙允许5000端口的入站连接
+- 确保服务器防火墙允许5001端口的入站连接
 - 如果使用了不同端口，请相应调整访问URL
 
 ## API文档
@@ -79,14 +79,14 @@ npm test
 API文档使用以下方式提供：
 
 1. **Swagger UI文档**
-   - 本地访问: http://localhost:5000/api-docs
-   - 局域网访问: http://192.168.1.132:5000/api-docs
-   - Swagger JSON: http://localhost:5000/api-docs.json
+   - 本地访问: http://localhost:5001/api-docs
+   - 局域网访问: http://192.168.1.132:5001/api-docs
+   - Swagger JSON: http://localhost:5001/api-docs.json
 
 2. **ReDoc美化文档** (推荐)
-   - 本地访问: http://localhost:5000/docs
-   - 局域网访问: http://192.168.1.132:5000/docs
-   - 静态文档: http://localhost:5000/static-docs
+   - 本地访问: http://localhost:5001/docs
+   - 局域网访问: http://192.168.1.132:5001/docs
+   - 静态文档: http://localhost:5001/static-docs
 
 ### 生成静态API文档
 要生成静态API文档，请使用以下命令：
