@@ -124,11 +124,11 @@ const Sidebar: React.FC = () => {
         <div className="sidebar-user">
           <div className="flex items-center flex-1 min-w-0">
             <div className="icon-container icon-container-primary flex-shrink-0">
-              {user?.firstName?.charAt(0) || user?.username?.charAt(0) || 'U'}
+              {user?.username?.charAt(0) || 'U'}
             </div>
             <div className="ml-3 min-w-0">
-              <p className="text-sm font-medium text-gray-800 dark:text-white truncate">
-                {user?.firstName || user?.username || '用户'}
+              <p className="text-sm font-medium text-gray-800 dark:text-white truncate" title={user?.username}>
+                {user?.username || '用户'}
               </p>
             </div>
           </div>

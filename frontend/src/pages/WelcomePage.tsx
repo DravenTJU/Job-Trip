@@ -9,7 +9,7 @@ import { useAppSelector } from '@/hooks/reduxHooks';
  */
 const WelcomePage: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
-  const userName = user?.firstName || user?.username || '用户';
+  const userName = user?.username || '求职者';
 
   // 入门步骤数据
   const onboardingSteps = [
