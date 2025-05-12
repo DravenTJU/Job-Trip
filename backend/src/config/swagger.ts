@@ -528,6 +528,223 @@ const swaggerDefinition = {
         ]
       },
       
+      // 用户档案相关模型
+      UserProfile: {
+        type: 'object',
+        properties: {
+          _id: {
+            type: 'string',
+            description: '用户档案ID',
+          },
+          userId: {
+            type: 'string',
+            description: '用户ID',
+          },
+          headline: {
+            type: 'string',
+            description: '个人标题/职业概述',
+          },
+          biography: {
+            type: 'string',
+            description: '个人简介',
+          },
+          contactInfo: {
+            type: 'object',
+            properties: {
+              email: {
+                type: 'string',
+                description: '邮箱',
+              },
+              phone: {
+                type: 'string',
+                description: '电话',
+              },
+              website: {
+                type: 'string',
+                description: '个人网站',
+              },
+              address: {
+                type: 'string',
+                description: '地址',
+              },
+              socialMedia: {
+                type: 'object',
+                properties: {
+                  linkedin: {
+                    type: 'string',
+                    description: 'LinkedIn链接',
+                  },
+                  github: {
+                    type: 'string',
+                    description: 'GitHub链接',
+                  },
+                  twitter: {
+                    type: 'string',
+                    description: 'Twitter链接',
+                  },
+                  other: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        name: {
+                          type: 'string',
+                          description: '社交媒体名称',
+                        },
+                        url: {
+                          type: 'string',
+                          description: '社交媒体链接',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          educations: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                institution: {
+                  type: 'string',
+                  description: '学校名称',
+                },
+                degree: {
+                  type: 'string',
+                  description: '学位',
+                },
+                field: {
+                  type: 'string',
+                  description: '专业领域',
+                },
+                startDate: {
+                  type: 'string',
+                  format: 'date-time',
+                  description: '开始日期',
+                },
+                endDate: {
+                  type: 'string',
+                  format: 'date-time',
+                  description: '结束日期',
+                },
+                description: {
+                  type: 'string',
+                  description: '描述/成就',
+                },
+                location: {
+                  type: 'string',
+                  description: '地点',
+                },
+              },
+            },
+          },
+          workExperiences: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                company: {
+                  type: 'string',
+                  description: '公司名称',
+                },
+                position: {
+                  type: 'string',
+                  description: '职位',
+                },
+                startDate: {
+                  type: 'string',
+                  format: 'date-time',
+                  description: '开始日期',
+                },
+                endDate: {
+                  type: 'string',
+                  format: 'date-time',
+                  description: '结束日期',
+                },
+                current: {
+                  type: 'boolean',
+                  description: '是否为当前工作',
+                },
+                description: {
+                  type: 'string',
+                  description: '工作描述',
+                },
+                location: {
+                  type: 'string',
+                  description: '地点',
+                },
+                achievements: {
+                  type: 'array',
+                  items: {
+                    type: 'string',
+                  },
+                  description: '成就列表',
+                },
+              },
+            },
+          },
+          skills: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                name: {
+                  type: 'string',
+                  description: '技能名称',
+                },
+                level: {
+                  type: 'string',
+                  enum: ['初级', '中级', '高级', '专家'],
+                  description: '熟练程度',
+                },
+                endorsements: {
+                  type: 'integer',
+                  description: '认可数',
+                },
+                category: {
+                  type: 'string',
+                  description: '技能分类',
+                },
+              },
+            },
+          },
+          profileCompleteness: {
+            type: 'integer',
+            description: '档案完整度百分比',
+          },
+          lastUpdated: {
+            type: 'string',
+            format: 'date-time',
+            description: '最后更新时间',
+          },
+          createdAt: {
+            type: 'string',
+            format: 'date-time',
+          },
+          updatedAt: {
+            type: 'string',
+            format: 'date-time',
+          },
+        },
+      },
+      UserProfileResponse: {
+        type: 'object',
+        allOf: [
+          {
+            $ref: '#/components/schemas/ApiResponse'
+          },
+          {
+            properties: {
+              data: {
+                $ref: '#/components/schemas/UserProfile'
+              }
+            }
+          }
+        ]
+      },
+      
       // 错误响应模型
       ErrorResponse: {
         type: 'object',
