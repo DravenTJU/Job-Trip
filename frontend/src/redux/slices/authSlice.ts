@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { User, UserLoginData, UserRegisterData, UpdatePasswordData } from '@/types';
 import authService from '@/services/authService';
+import { ApiError, isApiError } from '../../types/api';
 
 // 异步Thunk actions
 export const login = createAsyncThunk(
@@ -33,7 +34,12 @@ export const getCurrentUser = createAsyncThunk(
     try {
       const response = await authService.getCurrentUser();
       return response;
-    } catch (error) {
+    } catch (error: any) {
+      // 优先使用ApiError的状态码和消息
+      if (isApiError(error)) {
+        return rejectWithValue(error.message);
+      }
+      // 降级到旧的错误处理
       return rejectWithValue((error as Error).message);
     }
   }
@@ -45,7 +51,12 @@ export const updateProfile = createAsyncThunk(
     try {
       const response = await authService.updateProfile(userData);
       return response;
-    } catch (error) {
+    } catch (error: any) {
+      // 优先使用ApiError的状态码和消息
+      if (isApiError(error)) {
+        return rejectWithValue(error.message);
+      }
+      // 降级到旧的错误处理
       return rejectWithValue((error as Error).message);
     }
   }
