@@ -1,7 +1,6 @@
 /* 导入样式组件 */
 @import './styles/components.css';
 @import './styles/layout.css';
-@import './styles/pages.css';
 
 @tailwind base;
 @tailwind components;
