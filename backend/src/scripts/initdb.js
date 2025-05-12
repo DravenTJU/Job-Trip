@@ -123,8 +123,6 @@ async function insertTestData(db) {
         username: 'testuser1',
         email: 'test1@example.com',
         password: hashedPassword,
-        firstName: '张',
-        lastName: '三',
         preferences: {
           theme: 'light',
           notifications: true,
@@ -138,8 +136,6 @@ async function insertTestData(db) {
         username: 'testuser2',
         email: 'test2@example.com',
         password: hashedPassword,
-        firstName: '李',
-        lastName: '四',
         preferences: {
           theme: 'dark',
           notifications: true,
@@ -444,6 +440,8 @@ async function insertTestData(db) {
     const userProfiles = [
       {
         userId: users[0]._id,
+        firstName: "三",
+        lastName: "张",
         headline: "资深前端开发工程师",
         biography: "拥有5年前端开发经验，专注于构建用户友好的Web应用程序。",
         contactInfo: {
@@ -596,6 +594,8 @@ async function insertTestData(db) {
       },
       {
         userId: users[1]._id,
+        firstName: "四",
+        lastName: "李",
         headline: "UI/UX设计师",
         biography: "创意型UI/UX设计师，热衷于创造美观且用户友好的界面。",
         contactInfo: {

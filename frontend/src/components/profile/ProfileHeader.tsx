@@ -9,6 +9,8 @@ interface ProfileHeaderProps {
 }
 
 interface BasicInfoData {
+  firstName: string;
+  lastName: string;
   headline: string;
   biography: string;
   contactInfo: {
@@ -37,10 +39,17 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
     setIsEditing(false);
   };
 
+  // 拼接显示全名
+  const fullName = profile.firstName && profile.lastName
+    ? `${profile.firstName} ${profile.lastName}`
+    : profile.firstName || profile.lastName || '';
+
   if (isEditing) {
     return (
       <BasicInfoForm
         initialData={{
+          firstName: profile.firstName || '',
+          lastName: profile.lastName || '',
           headline: profile.headline,
           biography: profile.biography,
           contactInfo: profile.contactInfo
@@ -66,7 +75,12 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => {
         {/* 个人信息 */}
         <div className="flex-grow space-y-3">
           <div className="flex justify-between items-start">
-            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{profile.headline}</h1>
+            <div>
+              {fullName && (
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">{fullName}</h1>
+              )}
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{profile.headline}</h2>
+            </div>
             <button
               onClick={() => setIsEditing(true)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"

@@ -4,6 +4,8 @@ import { IUser } from './userModel';
 // 用户档案接口
 export interface IUserProfile extends Document {
   userId: mongoose.Types.ObjectId | IUser;
+  firstName?: string;
+  lastName?: string;
   headline?: string;
   biography?: string;
   contactInfo: {
@@ -206,6 +208,8 @@ const userProfileSchema = new Schema<IUserProfile>(
       required: [true, '用户ID是必填项'],
       unique: true
     },
+    firstName: String,
+    lastName: String,
     headline: String,
     biography: String,
     contactInfo: {

@@ -28,8 +28,6 @@ export const registerUser = async (
       username,
       email,
       password,
-      firstName,
-      lastName,
       preferences,
     });
 

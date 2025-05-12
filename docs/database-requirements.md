@@ -15,8 +15,6 @@
   username: String,          // 用户名
   email: String,            // 邮箱
   password: String,         // 加密后的密码
-  firstName: String,        // 名
-  lastName: String,         // 姓
   createdAt: Date,         // 创建时间
   updatedAt: Date,         // 更新时间
   preferences: {
@@ -35,6 +33,8 @@
   userId: ObjectId,           // 关联用户ID (关联到users集合)
   
   // 基本信息
+  firstName: String,        // 名
+  lastName: String,         // 姓
   headline: String,           // 个人标题/职业概述
   biography: String,          // 个人简介
   contactInfo: {

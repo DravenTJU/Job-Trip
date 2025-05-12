@@ -1,5 +1,7 @@
 // 基础类型定义
 export interface BasicInfo {
+  firstName: string;
+  lastName: string;
   headline: string;
   photo: string;
   biography: string;
@@ -104,6 +106,8 @@ export interface Recommendation {
 export interface UserProfile {
   _id?: string;
   userId: string;
+  firstName: string;
+  lastName: string;
   headline: string;
   photo: string;
   biography: string;
@@ -139,6 +143,7 @@ export interface ProfileState {
   profile: UserProfile | null;
   isLoading: boolean;
   error: string | null;
+  profileNotFound: boolean;
   activeSection: string;
   editMode: boolean;
   currentEditItem: any | null;

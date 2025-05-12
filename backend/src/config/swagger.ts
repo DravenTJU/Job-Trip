@@ -540,6 +540,14 @@ const swaggerDefinition = {
             type: 'string',
             description: '用户ID',
           },
+          firstName: {
+            type: 'string',
+            description: '名',
+          },
+          lastName: {
+            type: 'string',
+            description: '姓',
+          },
           headline: {
             type: 'string',
             description: '个人标题/职业概述',
