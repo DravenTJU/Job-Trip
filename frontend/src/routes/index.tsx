@@ -24,6 +24,7 @@ const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage'))
 const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 const CoverLetterPage = lazy(() => import('@/pages/CoverLetterPage'));
+const ProfilePage = lazy(() => import('@/pages/profile'));
 
 // 加载指示器
 const LoadingFallback = () => (
@@ -76,6 +77,7 @@ const AppRoutes = () => {
         <Route path="/cover-letters" element={<ProtectedLayoutRoute element={<CoverLetterPage />} />} />
         <Route path="/chrome-extension" element={<ProtectedLayoutRoute element={<ChromeExtensionPage />} />} />
         <Route path="/settings" element={<ProtectedLayoutRoute element={<SettingsPage />} />} />
+        <Route path="/profile" element={<ProtectedLayoutRoute element={<ProfilePage />} />} />
         
         {/* 职位相关路由 */}
         <Route path="/jobs" element={<ProtectedLayoutRoute element={<JobsPage />} />} />

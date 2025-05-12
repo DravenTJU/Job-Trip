@@ -66,6 +66,11 @@ const Sidebar: React.FC = () => {
       icon: <PieChart className="sidebar-menu-icon" /> 
     },
     { 
+      name: '个人档案', 
+      path: '/profile', 
+      icon: <User className="sidebar-menu-icon" /> 
+    },
+    { 
       name: '简历生成', 
       path: '/resume-builder', 
       icon: <FileText className="sidebar-menu-icon" /> 
@@ -74,11 +79,6 @@ const Sidebar: React.FC = () => {
       name: 'AI求职信', 
       path: '/cover-letters', 
       icon: <Sparkles className="sidebar-menu-icon" /> 
-    },
-    { 
-      name: '用户档案', 
-      path: '/user-profile', 
-      icon: <User className="sidebar-menu-icon" /> 
     },
     { 
       name: 'Chrome扩展', 

@@ -4,6 +4,7 @@ import jobsReducer from './slices/jobsSlice';
 import companiesReducer from './slices/companiesSlice';
 import userJobsReducer from './slices/userJobsSlice';
 import resumesReducer from './slices/resumesSlice';
+import profileReducer from './slices/profileSlice';
 
 // 创建Redux存储
 const store = configureStore({
@@ -13,6 +14,7 @@ const store = configureStore({
     companies: companiesReducer,
     userJobs: userJobsReducer,
     resumes: resumesReducer,
+    profile: profileReducer,
   },
   // 开发环境启用devTools
   devTools: process.env.NODE_ENV !== 'production',
