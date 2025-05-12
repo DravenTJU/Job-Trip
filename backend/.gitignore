@@ -7,6 +7,7 @@ yarn.lock
 dist/
 build/
 coverage/
+public/docs/
 
 # 环境变量
 .env
