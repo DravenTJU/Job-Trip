@@ -55,6 +55,11 @@ const Sidebar: React.FC = () => {
       path: '/welcome', 
       icon: <Home className="sidebar-menu-icon" /> 
     },
+    { 
+      name: 'Chrome扩展', 
+      path: '/chrome-extension', 
+      icon: <Chrome className="sidebar-menu-icon" /> 
+    },
     {
       name: '职位列表', 
       path: '/jobs', 
@@ -79,11 +84,6 @@ const Sidebar: React.FC = () => {
       name: 'AI求职信', 
       path: '/cover-letters', 
       icon: <Sparkles className="sidebar-menu-icon" /> 
-    },
-    { 
-      name: 'Chrome扩展', 
-      path: '/chrome-extension', 
-      icon: <Chrome className="sidebar-menu-icon" /> 
     }
   ];
 
