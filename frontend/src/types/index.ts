@@ -86,6 +86,8 @@ export interface Salary {
 // 职位状态枚举
 export enum JobStatus {
   NEW = 'new',
+  NOT_INTERESTED = 'not_interested',
+  PENDING = 'pending',
   APPLIED = 'applied',
   INTERVIEWING = 'interviewing',
   OFFER = 'offer',

@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { fetchJob, deleteJob } from '@/redux/slices/jobsSlice';
-import { ApplicationStatus, JobStatus, JobSource } from '@/types';
+import { ApplicationStatus, JobSource } from '@/types';
+import { getStatusStyle } from '@/utils/jobStatusUtils';
 import { 
   ArrowLeft, 
   Building2, 
@@ -16,7 +17,8 @@ import {
   Clock, 
   Edit3, 
   Trash2, 
-  ExternalLink 
+  ExternalLink,
+  X
 } from 'lucide-react';
 
 /**
@@ -101,28 +103,6 @@ const JobDetailPage: React.FC = () => {
     });
   };
   
-  // 获取状态颜色
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case JobStatus.NEW:
-        return 'badge-primary';
-      case JobStatus.APPLIED:
-        return 'badge-info';
-      case JobStatus.INTERVIEWING:
-        return 'badge-warning';
-      case JobStatus.OFFER:
-        return 'badge-success';
-      case JobStatus.REJECTED:
-        return 'badge-error';
-      case JobStatus.WITHDRAWN:
-        return 'badge-default';
-      case JobStatus.CLOSED:
-        return 'badge-default';
-      default:
-        return 'badge-default';
-    }
-  };
-  
   // 获取平台显示名称
   const getPlatformLabel = (platform: string) => {
     switch (platform) {
@@ -188,7 +168,7 @@ const JobDetailPage: React.FC = () => {
           {/* 职位标题和状态 */}
           <div className="flex items-center gap-3 mb-4">
             <h1 className="title-lg">{job.title}</h1>
-            <span className={`badge ${getStatusColor(job.status)}`}>
+            <span className={`badge ${getStatusStyle(job.status)}`}>
               {job.status}
             </span>
           </div>
