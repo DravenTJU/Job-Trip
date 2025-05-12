@@ -306,11 +306,11 @@ const JobsPage: React.FC = () => {
                     </select>
                   </div>
                   
-                  {/* 发布时间筛选 */}
+                  {/* 添加时间筛选 */}
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-gray-400" />
-                      发布时间
+                      添加时间
                     </label>
                     <select
                       value={filters.dateRange}
@@ -440,7 +440,7 @@ const JobsPage: React.FC = () => {
                         onClick={(e) => e.stopPropagation()}
                       >
                         <ExternalLink className="w-4 h-4" />
-                        查看原始职位
+                        原始链接
                       </a>
                     )}
                   </div>

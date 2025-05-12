@@ -276,7 +276,7 @@ const JobDetailPage: React.FC = () => {
                   <Calendar className="w-5 h-5 text-gray-400" />
                 </div>
                 <div className="data-item-content">
-                  <div className="data-item-label">发布时间</div>
+                  <div className="data-item-label">添加时间</div>
                   <div className="data-item-value">
                     {formatDate(job.createdAt)}
                     <span className="text-gray-400 text-sm ml-2">
@@ -317,7 +317,7 @@ const JobDetailPage: React.FC = () => {
                         onClick={handleExternalLinkClick}
                         className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
                       >
-                        查看原始职位
+                        查看原始职位信息
                       </a>
                     </div>
                   </div>

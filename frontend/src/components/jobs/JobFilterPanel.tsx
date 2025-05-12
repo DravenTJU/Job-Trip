@@ -112,7 +112,7 @@ const JobFilterPanel: React.FC<JobFilterPanelProps> = ({ onFilter }) => {
       chips.push(
         <Chip 
           key="datePosted" 
-          label={`发布时间: ${activeFilters.datePosted}`} 
+          label={`添加时间: ${activeFilters.datePosted}`} 
           onDelete={removeFilter('datePosted')}
           size="small"
         />
@@ -187,11 +187,11 @@ const JobFilterPanel: React.FC<JobFilterPanelProps> = ({ onFilter }) => {
             
             <Grid item xs={12} sm={6} md={3}>
               <FormControl fullWidth variant="outlined" size="small">
-                <InputLabel>发布时间</InputLabel>
+                <InputLabel>添加时间</InputLabel>
                 <Select
                   value={filters.datePosted || ''}
                   onChange={handleFilterChange('datePosted') as any}
-                  label="发布时间"
+                  label="添加时间"
                 >
                   <MenuItem value="">全部</MenuItem>
                   <MenuItem value="今天">今天</MenuItem>
