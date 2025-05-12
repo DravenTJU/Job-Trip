@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import UserJob from '../models/userJobModel';
 import Job from '../models/jobModel';
-import { AppError, createApiResponse } from '../middleware/errorHandler';
+import { AppError } from '../utils/AppError';
+import { createApiResponse } from '../middleware/errorHandler';
 
 /**
  * @desc    获取用户的所有职位申请

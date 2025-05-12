@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { AppError } from './errorHandler';
+import { AppError } from '../utils/AppError';
 import User, { IUser } from '../models/userModel';
 
 // 扩展Express请求类型以包含用户

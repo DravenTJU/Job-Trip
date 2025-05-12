@@ -1,35 +1,32 @@
 import { Request, Response, NextFunction } from 'express';
 import logger from '../utils/logger';
+import { AppError } from '../utils/AppError';
 
 /**
- * 自定义错误类
- */
-export class AppError extends Error {
-  statusCode: number;
-  isOperational: boolean;
-
-  constructor(message: string, statusCode: number) {
-    super(message);
-    this.statusCode = statusCode;
-    this.isOperational = true;
-
-    Error.captureStackTrace(this, this.constructor);
-  }
-}
-
-/**
- * 统一API响应格式
+ * 统一API响应格式接口
+ * @template T - 响应数据的类型
  */
 export interface ApiResponse<T> {
+  /** 响应状态码 */
   code: number;
+  /** 响应消息 */
   message: string;
+  /** 响应数据 */
   data: T | null;
+  /** 响应时间戳 */
   timestamp: number;
+  /** 请求追踪ID，可选 */
   traceId?: string;
 }
 
 /**
- * 创建统一的API响应
+ * 创建统一格式的API响应对象
+ * @template T - 响应数据的类型
+ * @param code - 响应状态码
+ * @param message - 响应消息
+ * @param data - 响应数据，默认为null
+ * @param traceId - 请求追踪ID，可选
+ * @returns 格式化的API响应对象
  */
 export const createApiResponse = <T>(
   code: number, 
@@ -48,6 +45,12 @@ export const createApiResponse = <T>(
 
 /**
  * 全局错误处理中间件
+ * 处理应用程序中的所有错误，将其转换为统一的API响应格式
+ * 
+ * @param err - 捕获的错误对象
+ * @param req - Express请求对象
+ * @param res - Express响应对象
+ * @param next - Express下一个中间件函数
  */
 export const errorHandler = (
   err: Error | AppError,
