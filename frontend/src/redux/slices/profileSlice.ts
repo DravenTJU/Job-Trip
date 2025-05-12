@@ -1,11 +1,13 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { ProfileState, UserProfile, Education, WorkExperience, Skill, Certification, Project, Language, VolunteerExperience, HonorAward, Recommendation } from '../../types/profile';
 import profileService from '../../services/profileService';
+import { ApiError, isApiError } from '../../types/api';
 
 const initialState: ProfileState = {
   profile: null,
   isLoading: false,
   error: null,
+  profileNotFound: false,
   activeSection: 'basic',
   editMode: false,
   currentEditItem: null
@@ -16,10 +18,34 @@ export const fetchUserProfile = createAsyncThunk(
   'profile/fetchUserProfile',
   async (_, { rejectWithValue }) => {
     try {
+      console.log('fetchUserProfile: 开始获取用户档案');
       const response = await profileService.getUserProfile();
+      console.log('fetchUserProfile: 成功获取用户档案', response);
       return response;
-    } catch (error) {
-      return rejectWithValue('获取用户档案失败');
+    } catch (error: any) {
+      console.log('fetchUserProfile: 获取用户档案出错', error);
+      
+      // 使用改进的错误处理逻辑
+      // 优先检查ApiError类型和状态码
+      if (isApiError(error) && error.status === 404) {
+        console.log('fetchUserProfile: 检测到ApiError 404错误，设置profileNotFound=true');
+        return rejectWithValue({ message: '用户档案不存在', notFound: true });
+      }
+      
+      // 向后兼容 - 检查旧版错误对象
+      if (error.response && error.response.status === 404) {
+        console.log('fetchUserProfile: 检测到旧版404错误，设置profileNotFound=true');
+        return rejectWithValue({ message: '用户档案不存在', notFound: true });
+      }
+      
+      // 检查错误消息内容作为降级处理
+      if (error.message && error.message.includes('用户档案不存在')) {
+        console.log('fetchUserProfile: 从错误消息判断档案不存在，设置profileNotFound=true');
+        return rejectWithValue({ message: '用户档案不存在', notFound: true });
+      }
+      
+      console.log('fetchUserProfile: 其他错误，设置profileNotFound=false');
+      return rejectWithValue({ message: '获取用户档案失败', notFound: false });
     }
   }
 );
@@ -381,6 +407,22 @@ export const deleteRecommendation = createAsyncThunk(
   }
 );
 
+// 新增创建用户档案的thunk
+export const createUserProfile = createAsyncThunk(
+  'profile/createUserProfile',
+  async (profileData: Partial<UserProfile>, { rejectWithValue }) => {
+    try {
+      console.log('createUserProfile: 开始创建用户档案', profileData);
+      const response = await profileService.createUserProfile(profileData);
+      console.log('createUserProfile: 成功创建用户档案', response);
+      return response;
+    } catch (error) {
+      console.log('createUserProfile: 创建用户档案失败', error);
+      return rejectWithValue('创建用户档案失败');
+    }
+  }
+);
+
 // 创建slice
 const profileSlice = createSlice({
   name: 'profile',
@@ -403,16 +445,24 @@ const profileSlice = createSlice({
     builder
       // fetchUserProfile
       .addCase(fetchUserProfile.pending, (state) => {
+        console.log('Redux state: fetchUserProfile.pending');
         state.isLoading = true;
         state.error = null;
+        state.profileNotFound = false;
       })
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        console.log('Redux state: fetchUserProfile.fulfilled, payload:', action.payload);
         state.isLoading = false;
         state.profile = action.payload;
+        state.error = null;
+        state.profileNotFound = false;
       })
-      .addCase(fetchUserProfile.rejected, (state, action) => {
+      .addCase(fetchUserProfile.rejected, (state, action: PayloadAction<any>) => {
+        console.log('Redux state: fetchUserProfile.rejected, payload:', action.payload);
         state.isLoading = false;
-        state.error = action.payload as string;
+        state.error = action.payload.message || '获取用户档案失败';
+        state.profileNotFound = action.payload.notFound || false;
+        console.log('Redux state更新后: profileNotFound =', state.profileNotFound);
       })
       
       // updateUserProfile
@@ -639,6 +689,23 @@ const profileSlice = createSlice({
         if (state.profile && state.profile.recommendations) {
           state.profile.recommendations = state.profile.recommendations.filter(rec => rec._id !== action.payload);
         }
+      })
+      .addCase(createUserProfile.pending, (state) => {
+        console.log('Redux state: createUserProfile.pending');
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(createUserProfile.fulfilled, (state, action) => {
+        console.log('Redux state: createUserProfile.fulfilled');
+        state.isLoading = false;
+        state.profile = action.payload;
+        state.error = null;
+        state.profileNotFound = false;
+      })
+      .addCase(createUserProfile.rejected, (state, action) => {
+        console.log('Redux state: createUserProfile.rejected');
+        state.isLoading = false;
+        state.error = action.payload as string;
       });
   }
 });

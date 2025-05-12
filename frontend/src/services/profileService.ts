@@ -8,6 +8,11 @@ const getUserProfile = async (): Promise<UserProfile> => {
   return api.get<UserProfile>(`${API_PATH}/me`);
 };
 
+// 创建用户档案
+const createUserProfile = async (profileData: Partial<UserProfile>): Promise<UserProfile> => {
+  return api.post<UserProfile>(`${API_PATH}/me`, profileData);
+};
+
 // 更新当前用户的档案
 const updateUserProfile = async (profileData: Partial<UserProfile>): Promise<UserProfile> => {
   return api.put<UserProfile>(`${API_PATH}/me`, profileData);
@@ -159,6 +164,7 @@ const calculateProfileCompleteness = (profile: UserProfile): number => {
 
 export default {
   getUserProfile,
+  createUserProfile,
   updateUserProfile,
   deleteUserProfile,
   addEducation,

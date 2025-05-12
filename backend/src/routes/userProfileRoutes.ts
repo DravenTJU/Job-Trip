@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   getCurrentUserProfile,
+  createUserProfile,
   updateUserProfile,
   deleteUserProfile,
   addEducation,
@@ -59,6 +60,30 @@ router.use(protect);
  *         description: 用户档案不存在
  *       500:
  *         description: 服务器错误
+ *   post:
+ *     summary: 创建用户档案
+ *     tags: [用户档案]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UserProfile'
+ *     responses:
+ *       201:
+ *         description: 成功创建用户档案
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
+ *       400:
+ *         description: 用户档案已存在
+ *       401:
+ *         description: 未授权
+ *       500:
+ *         description: 服务器错误
  *   put:
  *     summary: 更新当前用户的档案
  *     tags: [用户档案]
@@ -99,6 +124,7 @@ router.use(protect);
 router
   .route('/me')
   .get(getCurrentUserProfile)
+  .post(createUserProfile)
   .put(updateUserProfile)
   .delete(deleteUserProfile);
 

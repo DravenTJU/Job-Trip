@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import UserProfile from '../models/userProfileModel';
+import User from '../models/userModel';
 import { AppError } from '../utils/AppError';
 import { createApiResponse } from '../middleware/errorHandler';
+import { Document } from 'mongoose';
 
 /**
  * @desc    获取当前用户的档案
@@ -16,16 +18,12 @@ export const getCurrentUserProfile = async (
   try {
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
-    // 如果用户档案不存在，创建一个空的档案
+    // 如果用户档案不存在，返回404状态码而不是创建新档案
     if (!userProfile) {
-      const newUserProfile = await UserProfile.create({
-        userId: req.user?._id,
-      });
-
-      return res.status(200).json(createApiResponse(
-        200,
-        '获取用户档案成功',
-        newUserProfile
+      return res.status(404).json(createApiResponse(
+        404,
+        '用户档案不存在',
+        { profileExists: false }
       ));
     }
 
@@ -33,6 +31,52 @@ export const getCurrentUserProfile = async (
       200,
       '获取用户档案成功',
       userProfile
+    ));
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    创建用户档案（新API）
+ * @route   POST /api/v1/user-profiles/me
+ * @access  私有
+ */
+export const createUserProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // 检查用户档案是否已存在
+    const existingProfile = await UserProfile.findOne({ userId: req.user?._id });
+    
+    if (existingProfile) {
+      return res.status(400).json(createApiResponse(
+        400,
+        '用户档案已存在',
+        { profileExists: true }
+      ));
+    }
+    
+    const { firstName, lastName, ...profileData } = req.body;
+    
+    // 创建新用户档案
+    const newUserProfile = await UserProfile.create({
+      userId: req.user?._id,
+      ...profileData,
+      profileCompleteness: 0  // 初始完整度为0
+    });
+
+    // 计算更新后的档案完整度
+    const profileCompleteness = calculateProfileCompleteness(newUserProfile);
+    newUserProfile.profileCompleteness = profileCompleteness;
+    await newUserProfile.save();
+
+    res.status(201).json(createApiResponse(
+      201,
+      '用户档案创建成功',
+      newUserProfile
     ));
   } catch (error) {
     next(error);
@@ -51,18 +95,13 @@ export const updateUserProfile = async (
 ) => {
   try {
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
+    const { firstName, lastName } = req.body;
 
     if (!userProfile) {
-      // 如果用户档案不存在，创建一个新的
-      const newUserProfile = await UserProfile.create({
-        userId: req.user?._id,
-        ...req.body
-      });
-
-      return res.status(201).json(createApiResponse(
-        201,
-        '用户档案创建成功',
-        newUserProfile
+      return res.status(404).json(createApiResponse(
+        404,
+        '用户档案不存在，请先创建档案',
+        { profileExists: false }
       ));
     }
 
@@ -76,6 +115,13 @@ export const updateUserProfile = async (
       { new: true, runValidators: true }
     );
 
+    // 计算更新后的档案完整度
+    if (updatedProfile) {
+      const profileCompleteness = calculateProfileCompleteness(updatedProfile);
+      updatedProfile.profileCompleteness = profileCompleteness;
+      await updatedProfile.save();
+    }
+
     res.status(200).json(createApiResponse(
       200,
       '用户档案更新成功',
@@ -84,6 +130,31 @@ export const updateUserProfile = async (
   } catch (error) {
     next(error);
   }
+};
+
+// 添加档案完整度计算函数
+const calculateProfileCompleteness = (profile: Document) => {
+  if (!profile) return 0;
+  
+  let completedSections = 0;
+  let totalSections = 8; // 基本信息、教育、工作、技能、证书、项目、语言、荣誉奖项
+  
+  // 基本信息（标题、简介）
+  if (profile.headline && profile.biography) completedSections++;
+  
+  // 联系信息
+  if (profile.contactInfo && (profile.contactInfo.email || profile.contactInfo.phone)) completedSections++;
+  
+  // 其他部分
+  if (profile.educations && profile.educations.length > 0) completedSections++;
+  if (profile.workExperiences && profile.workExperiences.length > 0) completedSections++;
+  if (profile.skills && profile.skills.length > 0) completedSections++;
+  if (profile.certifications && profile.certifications.length > 0) completedSections++;
+  if (profile.projects && profile.projects.length > 0) completedSections++;
+  if (profile.languages && profile.languages.length > 0) completedSections++;
+  if (profile.honorsAwards && profile.honorsAwards.length > 0) completedSections++;
+  
+  return Math.round((completedSections / totalSections) * 100);
 };
 
 /**
