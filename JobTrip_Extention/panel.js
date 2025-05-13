@@ -150,8 +150,26 @@ function displayJobs (jobs) {
 }
 
 // API 端点定义
-const API_ENDPOINT = endpoints.DEV_CONFIG.BACKEND.API_ENDPOINT
-const API_GET_JOBS = endpoints.DEV_CONFIG.BACKEND.API_ENDPOINT
+let API_ENDPOINT = null
+let API_GET_JOBS = null
+
+// 初始化 API 端点
+async function initializeEndpoints() {
+  try {
+    const config = await endpoints.detectEnvironment()
+    API_ENDPOINT = config.BACKEND.API_ENDPOINT
+    API_GET_JOBS = config.BACKEND.API_ENDPOINT
+    console.log('API endpoints initialized:', { API_ENDPOINT, API_GET_JOBS })
+  } catch (error) {
+    console.error('Error initializing endpoints:', error)
+    // 默认使用生产环境配置
+    API_ENDPOINT = endpoints.PROD_CONFIG.BACKEND.API_ENDPOINT
+    API_GET_JOBS = endpoints.PROD_CONFIG.BACKEND.API_ENDPOINT
+  }
+}
+
+// 立即初始化端点
+initializeEndpoints()
 
 // 全局变量
 let scrapedJobs = []

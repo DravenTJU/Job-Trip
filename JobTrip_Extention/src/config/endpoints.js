@@ -20,14 +20,14 @@ const DEV_CONFIG = {
 // 生產環境配置
 const PROD_CONFIG = {
   FRONTEND: {
-    BASE_URL: 'https://jobtrip.com/',
-    jobtrip_URL: 'jobtrip.com',
+    BASE_URL: 'https://jobtrip.draven.best/',
+    jobtrip_URL: 'jobtrip.draven.best',
     TOKEN_KEY: 'token'
   },
   BACKEND: {
-    BASE_URL: 'https://api.jobtrip.com',
-    API_ENDPOINT: 'https://api.jobtrip.com/api/jobs',
-    BATCH_ENDPOINT: 'https://api.jobtrip.com/api/jobs/batch'
+    BASE_URL: 'https://api.jobtrip.draven.best',
+    API_ENDPOINT: 'https://api.jobtrip.draven.best/api/v1/jobs',
+    BATCH_ENDPOINT: 'https://api.jobtrip.draven.best/api/v1/jobs/batch'
   }
 }
 
