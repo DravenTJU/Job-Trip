@@ -17,8 +17,8 @@ const ChromeExtensionPage: React.FC = () => {
       </div>
 
       {/* 下载区域 */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
-        <div className="flex flex-col md:flex-row items-center justify-between">
+      <div className="w-fit bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+        <div className="flex flex-col md:flex-row items-center justify-start">
           <div className="flex items-center mb-4 md:mb-0">
             <Chrome className="w-12 h-12 text-indigo-600 mr-4" />
             <div>
@@ -26,7 +26,7 @@ const ChromeExtensionPage: React.FC = () => {
               <p className="text-description">版本 1.0.0</p>
             </div>
           </div>
-            <a href="https://codeload.github.com/MagicDogGuo/JobTip_Extention/zip/refs/heads/main" download>
+            <a href="https://codeload.github.com/MagicDogGuo/JobTip_Extention/zip/refs/heads/main" download className="md:ml-8">
                 <button className="btn btn-primary">
                     <Download className="w-4 h-4 mr-2" />
                     下载扩展程序
