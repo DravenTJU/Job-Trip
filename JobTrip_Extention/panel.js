@@ -31,7 +31,7 @@ const handleCheckboxChange = async (e) => {
 }
 
 // Function to update location options based on country selection
-function updateLocationOptions (country) {
+export function updateLocationOptions (country) {
   const locationSelect = document.getElementById('location')
   const templateId = {
     'United States': 'usLocations',
@@ -183,7 +183,7 @@ const JOB_DATA_STRUCTURE = {
 };
 
 // 格式化工作數據的函數
-const formatJobData = (jobs, userToken) => {
+export const formatJobData = (jobs, userToken) => {
   return {
     ...JOB_DATA_STRUCTURE,
     totalJobs: jobs.length,
