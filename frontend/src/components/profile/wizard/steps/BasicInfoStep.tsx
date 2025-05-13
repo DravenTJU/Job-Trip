@@ -94,7 +94,7 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, onUpdate, onNext })
 
   return (
     <div>
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">基本信息</h2>
+      <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">基本信息</h2>
       
       <form onSubmit={handleSubmit}>
         <div className="space-y-6">
@@ -110,9 +110,9 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, onUpdate, onNext })
                   id="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md ${
-                    errors.lastName ? 'border-red-500' : ''
-                  }`}
+                  className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                    errors.lastName ? 'ring-red-500 dark:ring-red-500' : 'ring-gray-900/5 dark:ring-gray-100/5'
+                  } focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100`}
                   placeholder="例如：张"
                 />
                 {errors.lastName && <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>}
@@ -130,9 +130,9 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, onUpdate, onNext })
                   id="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md ${
-                    errors.firstName ? 'border-red-500' : ''
-                  }`}
+                  className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                    errors.firstName ? 'ring-red-500 dark:ring-red-500' : 'ring-gray-900/5 dark:ring-gray-100/5'
+                  } focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100`}
                   placeholder="例如：明"
                 />
                 {errors.firstName && <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>}
@@ -151,9 +151,9 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, onUpdate, onNext })
                 id="headline"
                 value={formData.headline}
                 onChange={handleChange}
-                className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md ${
-                  errors.headline ? 'border-red-500' : ''
-                }`}
+                className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                  errors.headline ? 'ring-red-500 dark:ring-red-500' : 'ring-gray-900/5 dark:ring-gray-100/5'
+                } focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100`}
                 placeholder="例如：资深前端开发工程师"
               />
               {errors.headline && <p className="mt-1 text-sm text-red-500">{errors.headline}</p>}
@@ -172,9 +172,9 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, onUpdate, onNext })
                 rows={4}
                 value={formData.biography}
                 onChange={handleChange}
-                className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md ${
-                  errors.biography ? 'border-red-500' : ''
-                }`}
+                className={`w-full bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                  errors.biography ? 'ring-red-500 dark:ring-red-500' : 'ring-gray-900/5 dark:ring-gray-100/5'
+                } focus:ring-2 focus:ring-indigo-500 transition-shadow px-4 py-3 dark:text-gray-100`}
                 placeholder="介绍您的专业背景、技能和经验..."
               />
               {errors.biography && <p className="mt-1 text-sm text-red-500">{errors.biography}</p>}

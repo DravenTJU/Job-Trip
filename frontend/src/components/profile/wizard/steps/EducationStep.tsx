@@ -142,7 +142,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
 
   return (
     <div>
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">教育经历</h2>
+      <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">教育经历</h2>
       
       {/* 已添加的教育经历列表 */}
       {educations.length > 0 ? (
@@ -150,7 +150,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
           <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-3">已添加的教育经历</h3>
           <div className="space-y-4">
             {educations.map((education, index) => (
-              <div key={index} className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
+              <div key={index} className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 overflow-hidden hover:shadow-lg transition-all duration-200">
                 <div className="px-4 py-5 sm:px-6 flex justify-between items-start">
                   <div>
                     <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100">{education.institution}</h4>
@@ -171,14 +171,14 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
                     <button
                       type="button"
                       onClick={() => handleEditEducation(index)}
-                      className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 dark:border-gray-600 shadow-sm text-xs font-medium rounded text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                     >
                       编辑
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDeleteEducation(index)}
-                      className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 dark:border-gray-600 shadow-sm text-xs font-medium rounded text-red-700 dark:text-red-400 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium bg-red-50/50 dark:bg-red-900/50 backdrop-blur-lg ring-2 ring-red-600/10 dark:ring-red-500/10 hover:bg-red-100/50 dark:hover:bg-red-800/50 text-red-600 dark:text-red-400 transition-colors"
                     >
                       删除
                     </button>
@@ -189,7 +189,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
           </div>
         </div>
       ) : (
-        <div className="text-center py-8 mb-6">
+        <div className="text-center py-8 mb-6 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5">
           <svg
             className="mx-auto h-12 w-12 text-gray-400"
             fill="none"
@@ -211,7 +211,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
 
       {/* 添加/编辑教育经历表单 */}
       {showForm ? (
-        <form onSubmit={handleAddEducation} className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg mb-6">
+        <form onSubmit={handleAddEducation} className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 p-6 mb-6">
           <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
             <div className="sm:col-span-3">
               <label htmlFor="institution" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -224,9 +224,9 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
                   id="institution"
                   value={currentEducation.institution}
                   onChange={handleChange}
-                  className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md ${
-                    errors.institution ? 'border-red-500' : ''
-                  }`}
+                  className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                    errors.institution ? 'ring-red-500 dark:ring-red-500' : 'ring-gray-900/5 dark:ring-gray-100/5'
+                  } focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100`}
                 />
                 {errors.institution && <p className="mt-1 text-sm text-red-500">{errors.institution}</p>}
               </div>
@@ -243,7 +243,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
                   id="location"
                   value={currentEducation.location}
                   onChange={handleChange}
-                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md"
+                  className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100"
                 />
               </div>
             </div>
@@ -259,9 +259,9 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
                   id="degree"
                   value={currentEducation.degree}
                   onChange={handleChange}
-                  className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md ${
-                    errors.degree ? 'border-red-500' : ''
-                  }`}
+                  className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                    errors.degree ? 'ring-red-500 dark:ring-red-500' : 'ring-gray-900/5 dark:ring-gray-100/5'
+                  } focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100`}
                 />
                 {errors.degree && <p className="mt-1 text-sm text-red-500">{errors.degree}</p>}
               </div>
@@ -278,9 +278,9 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
                   id="field"
                   value={currentEducation.field}
                   onChange={handleChange}
-                  className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md ${
-                    errors.field ? 'border-red-500' : ''
-                  }`}
+                  className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                    errors.field ? 'ring-red-500 dark:ring-red-500' : 'ring-gray-900/5 dark:ring-gray-100/5'
+                  } focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100`}
                 />
                 {errors.field && <p className="mt-1 text-sm text-red-500">{errors.field}</p>}
               </div>
@@ -297,9 +297,9 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
                   id="startDate"
                   value={currentEducation.startDate}
                   onChange={handleChange}
-                  className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md ${
-                    errors.startDate ? 'border-red-500' : ''
-                  }`}
+                  className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                    errors.startDate ? 'ring-red-500 dark:ring-red-500' : 'ring-gray-900/5 dark:ring-gray-100/5'
+                  } focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100`}
                 />
                 {errors.startDate && <p className="mt-1 text-sm text-red-500">{errors.startDate}</p>}
               </div>
@@ -316,7 +316,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
                   id="endDate"
                   value={currentEducation.endDate}
                   onChange={handleChange}
-                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md"
+                  className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100"
                 />
               </div>
             </div>
@@ -332,7 +332,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
                   rows={3}
                   value={currentEducation.description}
                   onChange={handleChange}
-                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md"
+                  className="w-full bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow px-4 py-3 dark:text-gray-100"
                   placeholder="您可以描述学习成果、课程、活动或其他相关信息"
                 />
               </div>
@@ -343,13 +343,13 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
             <button
               type="button"
               onClick={handleCancelEdit}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
             >
               取消
             </button>
             <button
               type="submit"
-              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
             >
               {editIndex >= 0 ? '更新' : '添加'}
             </button>
@@ -360,10 +360,10 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
           <button
             type="button"
             onClick={() => setShowForm(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
           >
             <svg
-              className="-ml-1 mr-2 h-5 w-5"
+              className="h-5 w-5"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"

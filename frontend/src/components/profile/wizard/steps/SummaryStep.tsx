@@ -9,13 +9,13 @@ interface SummaryStepProps {
 const SummaryStep: React.FC<SummaryStepProps> = ({ data, onFinish, onPrevious }) => {
   return (
     <div>
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">确认信息</h2>
+      <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">确认信息</h2>
       
       <div className="space-y-8">
         {/* 基本信息 */}
         <div>
           <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">基本信息</h3>
-          <div className="mt-3 bg-gray-50 dark:bg-gray-700 overflow-hidden shadow rounded-lg">
+          <div className="mt-3 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 overflow-hidden">
             <div className="px-4 py-5 sm:p-6">
               <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                 <div className="sm:col-span-1">
@@ -43,7 +43,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ data, onFinish, onPrevious })
         {data.contactInfo && (
           <div>
             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">联系信息</h3>
-            <div className="mt-3 bg-gray-50 dark:bg-gray-700 overflow-hidden shadow rounded-lg">
+            <div className="mt-3 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 overflow-hidden">
               <div className="px-4 py-5 sm:p-6">
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                   <div className="sm:col-span-1">
@@ -73,7 +73,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ data, onFinish, onPrevious })
         
         {/* 其他部分摘要 */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <div className="bg-gray-50 dark:bg-gray-700 overflow-hidden shadow rounded-lg">
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 overflow-hidden">
             <div className="px-4 py-5 sm:p-6">
               <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">教育经历</h3>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -84,7 +84,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ data, onFinish, onPrevious })
             </div>
           </div>
           
-          <div className="bg-gray-50 dark:bg-gray-700 overflow-hidden shadow rounded-lg">
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 overflow-hidden">
             <div className="px-4 py-5 sm:p-6">
               <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">工作经验</h3>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -95,7 +95,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ data, onFinish, onPrevious })
             </div>
           </div>
           
-          <div className="bg-gray-50 dark:bg-gray-700 overflow-hidden shadow rounded-lg">
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 overflow-hidden">
             <div className="px-4 py-5 sm:p-6">
               <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">技能</h3>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -106,7 +106,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ data, onFinish, onPrevious })
             </div>
           </div>
           
-          <div className="bg-gray-50 dark:bg-gray-700 overflow-hidden shadow rounded-lg">
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 overflow-hidden">
             <div className="px-4 py-5 sm:p-6">
               <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">证书资质</h3>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -117,7 +117,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ data, onFinish, onPrevious })
             </div>
           </div>
           
-          <div className="bg-gray-50 dark:bg-gray-700 overflow-hidden shadow rounded-lg">
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 overflow-hidden">
             <div className="px-4 py-5 sm:p-6">
               <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">项目经历</h3>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -128,7 +128,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ data, onFinish, onPrevious })
             </div>
           </div>
           
-          <div className="bg-gray-50 dark:bg-gray-700 overflow-hidden shadow rounded-lg">
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 overflow-hidden">
             <div className="px-4 py-5 sm:p-6">
               <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">语言能力</h3>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -139,7 +139,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ data, onFinish, onPrevious })
             </div>
           </div>
           
-          <div className="bg-gray-50 dark:bg-gray-700 overflow-hidden shadow rounded-lg">
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 overflow-hidden">
             <div className="px-4 py-5 sm:p-6">
               <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">荣誉奖项</h3>
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -151,7 +151,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ data, onFinish, onPrevious })
           </div>
         </div>
         
-        <div className="bg-yellow-50 dark:bg-yellow-900/30 p-4 rounded-md">
+        <div className="bg-yellow-50/80 dark:bg-yellow-900/30 p-5 rounded-xl ring-2 ring-yellow-200 dark:ring-yellow-800/50 backdrop-blur-lg">
           <div className="flex">
             <div className="flex-shrink-0">
               <svg className="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
