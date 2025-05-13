@@ -220,25 +220,6 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
               </div>
             </div>
           </div>
-          
-          <div className="pt-5">
-            <div className="flex justify-between">
-              <button
-                type="button"
-                onClick={onPrevious}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-              >
-                上一步
-              </button>
-              
-              <button
-                type="submit"
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-              >
-                下一步
-              </button>
-            </div>
-          </div>
         </div>
       </form>
     </div>

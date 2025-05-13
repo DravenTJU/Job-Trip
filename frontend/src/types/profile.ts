@@ -3,7 +3,6 @@ export interface BasicInfo {
   firstName: string;
   lastName: string;
   headline: string;
-  photo: string;
   biography: string;
   contactInfo: {
     email: string;
@@ -109,7 +108,6 @@ export interface UserProfile {
   firstName: string;
   lastName: string;
   headline: string;
-  photo: string;
   biography: string;
   contactInfo: {
     email: string;
