@@ -22,6 +22,7 @@ import {
 import * as LucideIcons from 'lucide-react';
 import { JobSource, JobType } from '@/types';
 import { getStatusStyle, getStatusIcon, JOB_STATUS_OPTIONS } from '@/utils/jobStatusUtils';
+import StatusSelect from '@/components/common/StatusSelect';
 
 /**
  * 职位列表页面组件
@@ -251,17 +252,11 @@ const JobsPage: React.FC = () => {
                       <div className="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 ring-1 ring-gray-900/5 dark:ring-gray-100/5"></div>
                       职位状态
                     </label>
-                    <select
+                    <StatusSelect
                       value={filters.status}
-                      onChange={(e) => handleFilterChange('status', e.target.value)}
-                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                    >
-                      {statusOptions.map(option => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(value) => handleFilterChange('status', value)}
+                      includeAllOption={true}
+                    />
                   </div>
                   
                   {/* 工作类型筛选 */}
