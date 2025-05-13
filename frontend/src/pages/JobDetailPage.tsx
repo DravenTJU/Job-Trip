@@ -20,6 +20,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
+import StatusBadge from '@/components/common/StatusBadge';
 
 /**
  * 职位详情页面组件
@@ -168,14 +169,15 @@ const JobDetailPage: React.FC = () => {
           {/* 职位标题和状态 */}
           <div className="flex items-center gap-3 mb-4">
             <h1 className="title-lg">{job.title}</h1>
-            <span className={`badge ${getStatusStyle(job.status)} flex items-center gap-1.5`}>
-              {(() => {
-                const iconName = getStatusIcon(job.status);
-                const Icon = (LucideIcons as any)[iconName] || LucideIcons.HelpCircle;
-                return <Icon className="w-4 h-4" />;
-              })()}
-              {getStatusLabel(job.status)}
-            </span>
+            <StatusBadge 
+              jobId={job._id} 
+              status={job.status} 
+              onStatusChange={(jobId, newStatus) => {
+                // 可选：在后台同步Redux，但UI已由组件自己更新
+                // 我们不依赖这个回调来更新UI
+                console.log('状态已更新:', jobId, newStatus);
+              }}
+            />
           </div>
           
           {/* 公司名称 */}

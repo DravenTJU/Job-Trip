@@ -24,6 +24,7 @@ import * as LucideIcons from 'lucide-react';
 import { JobSource, JobType } from '@/types';
 import { getStatusStyle, getStatusIcon, JOB_STATUS_OPTIONS, getStatusLabel } from '@/utils/jobStatusUtils';
 import StatusSelect from '@/components/common/StatusSelect';
+import StatusBadge from '@/components/common/StatusBadge';
 
 /**
  * 职位列表页面组件
@@ -401,14 +402,16 @@ const JobsPage: React.FC = () => {
                           {job.salary}
                         </span>
                       )}
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium badge ${getStatusStyle(job.status)}`}>
-                        {(() => {
-                          const iconName = getStatusIcon(job.status);
-                          const Icon = (LucideIcons as any)[iconName] || LucideIcons.HelpCircle;
-                          return <Icon className="w-3.5 h-3.5" />;
-                        })()}
-                        {getStatusLabel(job.status)}
-                      </span>
+                      <StatusBadge 
+                        jobId={job._id} 
+                        status={job.status} 
+                        size="sm"
+                        onStatusChange={(jobId, newStatus) => {
+                          // 可选：在后台同步Redux，但UI已由组件自己更新
+                          // 我们不依赖这个回调来更新UI
+                          console.log('列表中状态已更新:', jobId, newStatus);
+                        }}
+                      />
                     </div>
                   </div>
                   
