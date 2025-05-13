@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { fetchJob, deleteJob } from '@/redux/slices/jobsSlice';
 import { ApplicationStatus, JobSource } from '@/types';
-import { getStatusStyle, getStatusIcon } from '@/utils/jobStatusUtils';
+import { getStatusStyle, getStatusIcon, getStatusLabel } from '@/utils/jobStatusUtils';
 import { 
   ChevronLeft, 
   Building2, 
@@ -174,7 +174,7 @@ const JobDetailPage: React.FC = () => {
                 const Icon = (LucideIcons as any)[iconName] || LucideIcons.HelpCircle;
                 return <Icon className="w-4 h-4" />;
               })()}
-              {job.status}
+              {getStatusLabel(job.status)}
             </span>
           </div>
           

@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { JobSource, JobType } from '@/types';
-import { getStatusStyle, getStatusIcon, JOB_STATUS_OPTIONS } from '@/utils/jobStatusUtils';
+import { getStatusStyle, getStatusIcon, JOB_STATUS_OPTIONS, getStatusLabel } from '@/utils/jobStatusUtils';
 import StatusSelect from '@/components/common/StatusSelect';
 
 /**
@@ -406,7 +406,7 @@ const JobsPage: React.FC = () => {
                           const Icon = (LucideIcons as any)[iconName] || LucideIcons.HelpCircle;
                           return <Icon className="w-3.5 h-3.5" />;
                         })()}
-                        {job.status}
+                        {getStatusLabel(job.status)}
                       </span>
                     </div>
                   </div>
