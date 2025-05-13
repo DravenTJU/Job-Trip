@@ -17,11 +17,14 @@ import {
   Building2,
   MapPin,
   DollarSign,
-  Briefcase
+  Briefcase,
+  Tag
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { JobSource, JobType } from '@/types';
-import { getStatusStyle, getStatusIcon, JOB_STATUS_OPTIONS } from '@/utils/jobStatusUtils';
+import { getStatusStyle, getStatusIcon, JOB_STATUS_OPTIONS, getStatusLabel } from '@/utils/jobStatusUtils';
+import StatusSelect from '@/components/common/StatusSelect';
+import StatusBadge from '@/components/common/StatusBadge';
 
 /**
  * 职位列表页面组件
@@ -248,20 +251,14 @@ const JobsPage: React.FC = () => {
                   {/* 状态筛选 */}
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 ring-1 ring-gray-900/5 dark:ring-gray-100/5"></div>
+                      <Tag className="w-4 h-4 text-gray-400" />
                       职位状态
                     </label>
-                    <select
+                    <StatusSelect
                       value={filters.status}
-                      onChange={(e) => handleFilterChange('status', e.target.value)}
-                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                    >
-                      {statusOptions.map(option => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(value) => handleFilterChange('status', value)}
+                      includeAllOption={true}
+                    />
                   </div>
                   
                   {/* 工作类型筛选 */}
@@ -405,14 +402,16 @@ const JobsPage: React.FC = () => {
                           {job.salary}
                         </span>
                       )}
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium badge ${getStatusStyle(job.status)}`}>
-                        {(() => {
-                          const iconName = getStatusIcon(job.status);
-                          const Icon = (LucideIcons as any)[iconName] || LucideIcons.HelpCircle;
-                          return <Icon className="w-3.5 h-3.5" />;
-                        })()}
-                        {job.status}
-                      </span>
+                      <StatusBadge 
+                        jobId={job._id} 
+                        status={job.status} 
+                        size="sm"
+                        onStatusChange={(jobId, newStatus) => {
+                          // 可选：在后台同步Redux，但UI已由组件自己更新
+                          // 我们不依赖这个回调来更新UI
+                          console.log('列表中状态已更新:', jobId, newStatus);
+                        }}
+                      />
                     </div>
                   </div>
                   

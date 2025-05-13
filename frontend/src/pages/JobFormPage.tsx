@@ -5,6 +5,7 @@ import { AppDispatch, RootState } from '@/redux/store';
 import { createJob, updateJob, fetchJob } from '@/redux/slices/jobsSlice';
 import { Job, CreateJobData, JobStatus, JobType, JobSource } from '@/types';
 import { JOB_STATUS_OPTIONS, getStatusIcon } from '@/utils/jobStatusUtils';
+import StatusSelect from '@/components/common/StatusSelect';
 import { Link } from 'react-router-dom';
 import { 
   Search, 
@@ -396,30 +397,23 @@ const JobFormPage: React.FC = () => {
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     职位状态
                   </label>
-                  <select
+                  <StatusSelect
                     name="status"
                     value={formData.status}
-                    onChange={handleSelectChange}
-                    className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
-                      formErrors.status 
-                        ? 'ring-red-500 focus:ring-red-500' 
-                        : 'ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500'
-                    } transition-shadow`}
-                  >
-                    {JOB_STATUS_OPTIONS.map(option => {
-                      const IconComponent = (LucideIcons as any)[option.icon] || LucideIcons.HelpCircle;
-                      return (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      );
-                    })}
-                  </select>
-                  {formErrors.status && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                      {formErrors.status}
-                    </p>
-                  )}
+                    onChange={(value) => {
+                      setFormData(prev => ({
+                        ...prev,
+                        status: value
+                      }));
+                      if (formErrors.status) {
+                        setFormErrors(prev => ({
+                          ...prev,
+                          status: '',
+                        }));
+                      }
+                    }}
+                    error={formErrors.status}
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

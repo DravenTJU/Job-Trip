@@ -216,3 +216,50 @@
 .welcome-banner-decoration {
   @apply absolute inset-0 overflow-hidden pointer-events-none;
 }
+
+/* 状态选择组件样式 */
+.status-select-button {
+  @apply relative w-full h-11 pl-4 pr-10 text-left bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow flex items-center;
+}
+
+.status-select-options {
+  @apply absolute z-10 w-full py-2 mt-1 overflow-auto text-base bg-white dark:bg-gray-800 rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60;
+}
+
+.status-select-option {
+  @apply cursor-pointer select-none py-2 pl-10 pr-4 relative;
+}
+
+.status-select-option-active {
+  @apply bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400;
+}
+
+.status-select-option-selected {
+  @apply font-medium;
+}
+
+.status-select-icon {
+  @apply flex-shrink-0 mr-2;
+}
+
+.status-select-transition-enter {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.status-select-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 150ms ease-out, transform 150ms ease-out;
+}
+
+.status-select-transition-leave {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.status-select-transition-leave-active {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 150ms ease-in, transform 150ms ease-in;
+}

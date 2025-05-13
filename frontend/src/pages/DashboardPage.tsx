@@ -3,6 +3,7 @@ import { DndProvider, useDragLayer } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { BriefcaseIcon, Search, BellIcon, CalendarIcon, Plus, X, TrendingUpIcon, AwardIcon } from 'lucide-react';
 import DroppableColumn, { Interview } from '@/components/dashboard/DroppableColumn';
+import { useNavigate } from 'react-router-dom';
 
 // 定义本地Job接口
 interface Job {
@@ -68,138 +69,13 @@ const CustomDragLayer: React.FC = () => {
   );
 };
 
-interface EditModalProps {
-  job: Job | null;
-  onClose: () => void;
-  onSave: (job: Job) => void;
-}
-
-const EditModal: React.FC<EditModalProps> = ({ job, onClose, onSave }) => {
-  const [editedJob, setEditedJob] = useState(job || {
-    id: '',
-    title: '',
-    company: '',
-    type: '',
-    salary: '',
-    offerDate: ''
-  });
-
-  // 添加薪资处理函数
-  const handleSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
-    
-    // 移除非数字字符
-    value = value.replace(/[^0-9-]/g, '');
-    
-    // 如果输入不为空，添加"K/月"后缀
-    if (value) {
-      // 检查是否包含范围（使用-分隔）
-      if (value.includes('-')) {
-        const [min, max] = value.split('-');
-        if (max) {
-          value = `${min}-${max}K/月`;
-        } else {
-          value = `${min}-K/月`;
-        }
-      } else {
-        value = `${value}K/月`;
-      }
-    }
-    
-    setEditedJob({ ...editedJob, salary: value });
-  };
-
-  if (!job) return null;
-
-  return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-2xl shadow-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 p-6 w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">编辑职位信息</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">职位名称</label>
-            <input
-              type="text"
-              value={editedJob.title}
-              onChange={(e) => setEditedJob({ ...editedJob, title: e.target.value })}
-              className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">公司</label>
-            <input
-              type="text"
-              value={editedJob.company}
-              onChange={(e) => setEditedJob({ ...editedJob, company: e.target.value })}
-              className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">类型</label>
-            <input
-              type="text"
-              value={editedJob.type}
-              onChange={(e) => setEditedJob({ ...editedJob, type: e.target.value })}
-              className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">薪资</label>
-            <input
-              type="text"
-              value={editedJob.salary}
-              onChange={handleSalaryChange}
-              placeholder="例如：15-20"
-              className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-            />
-          </div>
-          {/* 录用日期字段，仅在已录用状态下显示 */}
-          {job.offerDate !== undefined && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">录用日期</label>
-              <input
-                type="date"
-                value={editedJob.offerDate || ''}
-                onChange={(e) => setEditedJob({ ...editedJob, offerDate: e.target.value })}
-                className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-              />
-            </div>
-          )}
-        </div>
-        <div className="mt-6 flex justify-end space-x-3">
-          <button
-            onClick={onClose}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
-          >
-            取消
-          </button>
-          <button
-            onClick={() => {
-              onSave(editedJob);
-              onClose();
-            }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
-          >
-            保存
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 /**
  * 仪表盘页面组件
  */
 const DashboardPage: React.FC = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [interviews, setInterviews] = useState<Interview[]>([]);
-  const [editingJob, setEditingJob] = useState<Job | null>(null);
   
   const [jobs, setJobs] = useState<{
     pending: Job[];
@@ -372,7 +248,11 @@ const DashboardPage: React.FC = () => {
   };
 
   const handleEdit = (job: Job) => {
-    setEditingJob(job);
+    navigate(`/jobs/edit/${job.id}`);
+  };
+
+  const handleAddJob = () => {
+    navigate('/jobs/new');
   };
 
   const handleDelete = (jobId: string) => {
@@ -381,23 +261,6 @@ const DashboardPage: React.FC = () => {
       newJobs[status] = jobs[status].filter(job => job.id !== jobId);
     }
     setJobs(newJobs);
-  };
-
-  const handleSaveEdit = (editedJob: Job) => {
-    const newJobs = { ...jobs };
-    if (editedJob.id.startsWith('new_')) {
-      // 如果是新增的职位，添加到待申请列表
-      newJobs.pending = [...jobs.pending, { ...editedJob, id: `job_${Date.now()}` }];
-    } else {
-      // 如果是编辑现有职位
-      for (const status of ['pending', 'applied', 'interviewing', 'hired'] as const) {
-        newJobs[status] = jobs[status].map(job => 
-          job.id === editedJob.id ? editedJob : job
-        );
-      }
-    }
-    setJobs(newJobs);
-    setEditingJob(null); // 关闭模态框
   };
 
   // 添加搜索过滤函数
@@ -514,11 +377,11 @@ const DashboardPage: React.FC = () => {
           </div>
           <div className="flex space-x-3">
             <button 
-              onClick={() => setEditingJob({ id: `new_${Date.now()}`, title: '', company: '', type: '', salary: '' })}
+              onClick={handleAddJob}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
             >
               <Plus className="h-5 w-5" />
-              添加职位
+              手动添加职位
             </button>
           </div>
         </div>
@@ -674,14 +537,6 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {editingJob && (
-        <EditModal
-          job={editingJob}
-          onClose={() => setEditingJob(null)}
-          onSave={handleSaveEdit}
-        />
-      )}
     </DndProvider>
   );
 };
