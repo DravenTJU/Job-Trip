@@ -126,6 +126,24 @@ The extension attempts to extract the following details (availability may vary b
 3.  Load the extension in Chrome using "Load unpacked" as described in the Installation section.
 4.  Make changes to the code. Reload the extension in `chrome://extensions/` to see updates (content scripts might require refreshing the target page).
 
+### Testing
+
+This project uses [Jest](https://jestjs.io/) for unit testing. Tests are located in the `JobTrip_Extention/tests/` directory.
+
+To run the tests, use the following command in your terminal:
+
+```bash
+npm test
+```
+
+The tests cover various parts of the extension, including:
+- Service modules (`src/services/`)
+- Background script logic (`background.js`)
+- Content script message handling and specific functionalities (`content.js`)
+- Panel script logic and UI interactions (`panel.js`)
+
+Ensure that all tests pass before committing changes or creating a pull request.
+
 ### Release Process
 
 To publish a new version of the extension, follow these steps:
@@ -280,6 +298,24 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 2.  克隆存储库：`git clone <repository-url>`
 3.  按照安装部分所述，使用"加载未打包"在 Chrome 中加载扩展。
 4.  修改代码。在 `chrome://extensions/` 中重新加载扩展以查看更新（内容脚本可能需要刷新目标页面）。
+
+### 测试
+
+本项目使用 [Jest](https://jestjs.io/) 进行单元测试。测试文件位于 `JobTrip_Extention/tests/` 目录下。
+
+要运行测试，请在终端中使用以下命令：
+
+```bash
+npm test
+```
+
+测试覆盖了扩展的多个部分，包括：
+- 服务模块 (`src/services/`)
+- 后台脚本逻辑 (`background.js`)
+- 内容脚本的消息处理和特定功能 (`content.js`)
+- 面板脚本逻辑和用户界面交互 (`panel.js`)
+
+在提交更改或创建拉取请求之前，请确保所有测试都通过。
 
 ### 发布流程
 
