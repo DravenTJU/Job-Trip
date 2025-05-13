@@ -132,7 +132,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCa
 
       <div>
         <label htmlFor="headline" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          个人标题 *
+          职位名称 *
         </label>
         <input
           type="text"

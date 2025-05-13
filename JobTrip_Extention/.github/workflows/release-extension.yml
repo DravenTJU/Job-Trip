@@ -1,0 +1,46 @@
+name: Release Extension
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build extension
+        run: npm run build
+        
+      - name: Create ZIP file
+        run: |
+          cd dist || exit
+          zip -r ../jobtrip-extension-${{ github.ref_name }}.zip *
+          cd ..
+          
+      - name: Extract manifest version
+        id: manifest
+        run: |
+          VERSION=$(node -p "require('./manifest.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: jobtrip-extension-${{ github.ref_name }}.zip
+          name: JobTrip Extension v${{ steps.manifest.outputs.version }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true 

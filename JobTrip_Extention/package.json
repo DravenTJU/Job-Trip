@@ -1,0 +1,32 @@
+{
+  "name": "jobtrip-extension",
+  "version": "1.0.1",
+  "description": "JobTrip浏览器扩展 - 自动收集多平台职位信息并集中管理",
+  "main": "background.js",
+  "scripts": {
+    "build": "mkdir -p dist && cp -r *.js *.html *.css manifest.json icons/ helpers/ src/ dist/",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "version:patch": "npm version patch && node scripts/update-manifest-version.js",
+    "version:minor": "npm version minor && node scripts/update-manifest-version.js",
+    "version:major": "npm version major && node scripts/update-manifest-version.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DravenTJU/Job-Trip.git"
+  },
+  "keywords": [
+    "chrome-extension",
+    "job-search",
+    "job-tracking",
+    "jobtrip"
+  ],
+  "author": "JobTrip Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DravenTJU/Job-Trip/issues"
+  },
+  "homepage": "https://github.com/DravenTJU/Job-Trip/tree/main/JobTrip_Extention#readme",
+  "devDependencies": {
+    "semver": "^7.5.4"
+  }
+} 

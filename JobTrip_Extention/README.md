@@ -126,6 +126,26 @@ The extension attempts to extract the following details (availability may vary b
 3.  Load the extension in Chrome using "Load unpacked" as described in the Installation section.
 4.  Make changes to the code. Reload the extension in `chrome://extensions/` to see updates (content scripts might require refreshing the target page).
 
+### Release Process
+
+To publish a new version of the extension, follow these steps:
+
+1. Ensure all changes have been committed to the main branch
+2. Use one of the version update commands to update the version number:
+   ```bash
+   npm run version:patch  # For bug fixes or small changes (1.0.0 -> 1.0.1)
+   npm run version:minor  # For new features with backward compatibility (1.0.0 -> 1.1.0)
+   npm run version:major  # For major changes or breaking updates (1.0.0 -> 2.0.0)
+   ```
+3. Push the code and tags to GitHub:
+   ```bash
+   git tag -a <tag-name> -m 'Release version'
+   git push origin <tag-name>
+   ```
+4. GitHub Actions will automatically build the extension and create a new Release
+
+Note: The version number will automatically be synchronized between package.json and manifest.json.
+
 ### Contribution
 
 (Standard contribution steps - kept from original)
@@ -252,14 +272,34 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 -   Google Chrome 浏览器
 -   JavaScript、HTML、CSS 和 Chrome 扩展 API（Manifest V3）的基本知识。
--   如果有构建步骤或通过包管理器管理的依赖项，可能需要 Node.js 和 npm/yarn（检查 `package.json`）。
+-   如果有构建步骤或通过包管理器管理的依赖项，可能需要 Node.js 和 npm/yarn（查看是否有 `package.json`）。
 
 ### 本地开发设置
 
-1.  确保已安装前提条件。
-2.  克隆仓库：`git clone <repository-url>`
-3.  使用"加载已解压的扩展程序"在 Chrome 中加载扩展，如安装部分所述。
+1.  确保您已安装所有前提条件。
+2.  克隆存储库：`git clone <repository-url>`
+3.  按照安装部分所述，使用"加载未打包"在 Chrome 中加载扩展。
 4.  修改代码。在 `chrome://extensions/` 中重新加载扩展以查看更新（内容脚本可能需要刷新目标页面）。
+
+### 发布流程
+
+要发布扩展程序的新版本，请按照以下步骤操作：
+
+1. 确保所有更改已提交到主分支
+2. 使用版本更新命令之一来更新版本号：
+   ```bash
+   npm run version:patch  # 修复bug或小改动 (1.0.0 -> 1.0.1)
+   npm run version:minor  # 添加新功能但向后兼容 (1.0.0 -> 1.1.0)
+   npm run version:major  # 重大更改或不兼容更新 (1.0.0 -> 2.0.0)
+   ```
+3. 推送代码和标签到GitHub：
+   ```bash
+   git tag -a <tag-name> -m '发布版本'
+   git push origin <tag-name>
+   ```
+4. GitHub Actions将自动构建扩展并创建新的Release
+
+注意：版本号会自动同步到manifest.json文件中。
 
 ### 贡献
 

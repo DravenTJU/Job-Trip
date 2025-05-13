@@ -21,7 +21,6 @@ const ProfileWizard: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [profileData, setProfileData] = useState({
     headline: '',
-    photo: '',
     biography: '',
     contactInfo: {
       email: '',
@@ -45,7 +44,7 @@ const ProfileWizard: React.FC = () => {
   });
   
   const steps = [
-    { title: '基本信息', description: '添加您的职业标题、照片和简介' },
+    { title: '基本信息', description: '添加您的职位名称和简介' },
     { title: '联系方式', description: '填写您的联系信息' },
     { title: '教育经历', description: '添加您的学历信息' },
     // 临时简化步骤，只保留已实现的组件

@@ -1,5 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Download, Chrome, Zap, Star, Bookmark, FileText, CheckCircle } from 'lucide-react';
+
+/**
+ * GitHub Release API 响应类型定义
+ */
+interface ReleaseAsset {
+  name: string;
+  browser_download_url: string;
+}
+
+interface GitHubRelease {
+  tag_name: string;
+  html_url: string;
+  assets: ReleaseAsset[];
+}
 
 /**
  * Chrome扩展页面组件
@@ -7,6 +21,36 @@ import { Download, Chrome, Zap, Star, Bookmark, FileText, CheckCircle } from 'lu
  * 基于项目核心功能：自动收集多平台职位信息并集中管理
  */
 const ChromeExtensionPage: React.FC = () => {
+  // 添加状态用于存储最新版本信息
+  const [latestVersion, setLatestVersion] = useState('1.0.0');
+  const [releaseUrl, setReleaseUrl] = useState('');
+  const [downloadUrl, setDownloadUrl] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // 获取最新release信息
+    fetch('https://api.github.com/repos/DravenTJU/Job-Trip/releases/latest')
+      .then(response => response.json())
+      .then((data: GitHubRelease) => {
+        setIsLoading(false);
+        if (data.tag_name) {
+          setLatestVersion(data.tag_name.replace('v', ''));
+          setReleaseUrl(data.html_url);
+          // 获取zip资源的下载URL
+          const zipAsset = data.assets.find(asset => asset.name.endsWith('.zip'));
+          if (zipAsset) {
+            setDownloadUrl(zipAsset.browser_download_url);
+          }
+        }
+      })
+      .catch(error => {
+        console.error('获取发布信息失败:', error);
+        setIsLoading(false);
+        // 设置默认下载链接，以防API请求失败
+        setDownloadUrl('https://github.com/DravenTJU/Job-Trip/releases/latest/download/jobtrip-extension.zip');
+      });
+  }, []);
+
   return (
     <div className="container-lg">
       <div className="section">
@@ -17,21 +61,35 @@ const ChromeExtensionPage: React.FC = () => {
       </div>
 
       {/* 下载区域 */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
-        <div className="flex flex-col md:flex-row items-center justify-between">
+      <div className="w-fit bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+        <div className="flex flex-col md:flex-row items-center justify-start">
           <div className="flex items-center mb-4 md:mb-0">
             <Chrome className="w-12 h-12 text-indigo-600 mr-4" />
             <div>
               <h2 className="title-sm">Chrome 浏览器扩展插件</h2>
-              <p className="text-description">版本 1.0.0</p>
+              <p className="text-description">版本 {latestVersion}</p>
+              {releaseUrl && (
+                <a 
+                  href={releaseUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-indigo-600 hover:text-indigo-800 mt-1 block"
+                >
+                  查看发布说明
+                </a>
+              )}
             </div>
           </div>
-            <a href="https://codeload.github.com/MagicDogGuo/JobTip_Extention/zip/refs/heads/main" download>
-                <button className="btn btn-primary">
-                    <Download className="w-4 h-4 mr-2" />
-                    下载扩展程序
-                </button>
-            </a>
+          <a 
+            href={downloadUrl || "https://github.com/DravenTJU/Job-Trip/releases/latest/download/jobtrip-extension.zip"} 
+            download 
+            className="md:ml-8"
+          >
+            <button className="btn btn-primary" disabled={isLoading}>
+              <Download className="w-4 h-4 mr-2" />
+              {isLoading ? '加载中...' : '下载扩展程序'}
+            </button>
+          </a>
         </div>
       </div>
 

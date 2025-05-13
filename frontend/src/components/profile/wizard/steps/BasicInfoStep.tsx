@@ -8,12 +8,15 @@ interface BasicInfoStepProps {
 
 const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, onUpdate, onNext }) => {
   const [formData, setFormData] = useState({
+    firstName: data.firstName || '',
+    lastName: data.lastName || '',
     headline: data.headline || '',
-    photo: data.photo || '',
     biography: data.biography || ''
   });
   
   const [errors, setErrors] = useState({
+    firstName: '',
+    lastName: '',
     headline: '',
     biography: ''
   });
@@ -36,17 +39,35 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, onUpdate, onNext })
 
   const validateForm = () => {
     const newErrors = {
+      firstName: '',
+      lastName: '',
       headline: '',
       biography: ''
     };
     
     let isValid = true;
     
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = '请输入您的名字';
+      isValid = false;
+    } else if (formData.firstName.length > 50) {
+      newErrors.firstName = '名字不能超过50个字符';
+      isValid = false;
+    }
+    
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = '请输入您的姓氏';
+      isValid = false;
+    } else if (formData.lastName.length > 50) {
+      newErrors.lastName = '姓氏不能超过50个字符';
+      isValid = false;
+    }
+    
     if (!formData.headline.trim()) {
-      newErrors.headline = '请输入您的职业标题';
+      newErrors.headline = '请输入您的职位名称';
       isValid = false;
     } else if (formData.headline.length > 100) {
-      newErrors.headline = '职业标题不能超过100个字符';
+      newErrors.headline = '职位名称不能超过100个字符';
       isValid = false;
     }
     
@@ -73,13 +94,55 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, onUpdate, onNext })
 
   return (
     <div>
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">基本信息</h2>
+      <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">基本信息</h2>
       
       <form onSubmit={handleSubmit}>
         <div className="space-y-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                姓氏 <span className="text-red-500">*</span>
+              </label>
+              <div className="mt-1">
+                <input
+                  type="text"
+                  name="lastName"
+                  id="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                    errors.lastName ? 'ring-red-500 dark:ring-red-500' : 'ring-gray-900/5 dark:ring-gray-100/5'
+                  } focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100`}
+                  placeholder="例如：张"
+                />
+                {errors.lastName && <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>}
+              </div>
+            </div>
+            
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                名字 <span className="text-red-500">*</span>
+              </label>
+              <div className="mt-1">
+                <input
+                  type="text"
+                  name="firstName"
+                  id="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                    errors.firstName ? 'ring-red-500 dark:ring-red-500' : 'ring-gray-900/5 dark:ring-gray-100/5'
+                  } focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100`}
+                  placeholder="例如：明"
+                />
+                {errors.firstName && <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>}
+              </div>
+            </div>
+          </div>
+
           <div>
             <label htmlFor="headline" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              职业标题 <span className="text-red-500">*</span>
+              职位名称 <span className="text-red-500">*</span>
             </label>
             <div className="mt-1">
               <input
@@ -88,31 +151,13 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, onUpdate, onNext })
                 id="headline"
                 value={formData.headline}
                 onChange={handleChange}
-                className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md ${
-                  errors.headline ? 'border-red-500' : ''
-                }`}
+                className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                  errors.headline ? 'ring-red-500 dark:ring-red-500' : 'ring-gray-900/5 dark:ring-gray-100/5'
+                } focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100`}
                 placeholder="例如：资深前端开发工程师"
               />
               {errors.headline && <p className="mt-1 text-sm text-red-500">{errors.headline}</p>}
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">您的职业称谓，会显示在您的档案顶部</p>
-            </div>
-          </div>
-          
-          <div>
-            <label htmlFor="photo" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              个人照片
-            </label>
-            <div className="mt-1">
-              <input
-                type="text"
-                name="photo"
-                id="photo"
-                value={formData.photo}
-                onChange={handleChange}
-                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md"
-                placeholder="输入照片URL地址"
-              />
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">输入您的照片网址(后续将支持直接上传)</p>
             </div>
           </div>
           
@@ -127,24 +172,13 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, onUpdate, onNext })
                 rows={4}
                 value={formData.biography}
                 onChange={handleChange}
-                className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md ${
-                  errors.biography ? 'border-red-500' : ''
-                }`}
+                className={`w-full bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                  errors.biography ? 'ring-red-500 dark:ring-red-500' : 'ring-gray-900/5 dark:ring-gray-100/5'
+                } focus:ring-2 focus:ring-indigo-500 transition-shadow px-4 py-3 dark:text-gray-100`}
                 placeholder="介绍您的专业背景、技能和经验..."
               />
               {errors.biography && <p className="mt-1 text-sm text-red-500">{errors.biography}</p>}
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">简要描述您的专业背景和优势</p>
-            </div>
-          </div>
-          
-          <div className="pt-5">
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-              >
-                下一步
-              </button>
             </div>
           </div>
         </div>

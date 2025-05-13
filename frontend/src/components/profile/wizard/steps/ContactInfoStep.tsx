@@ -89,7 +89,7 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
 
   return (
     <div>
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">联系信息</h2>
+      <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">联系信息</h2>
       
       <form onSubmit={handleSubmit}>
         <div className="space-y-6">
@@ -104,9 +104,9 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
                 id="email"
                 value={formData.contactInfo.email}
                 onChange={handleChange}
-                className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md ${
-                  errors.email ? 'border-red-500' : ''
-                }`}
+                className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                  errors.email ? 'ring-red-500 dark:ring-red-500' : 'ring-gray-900/5 dark:ring-gray-100/5'
+                } focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100`}
                 placeholder="example@email.com"
               />
               {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
@@ -124,7 +124,7 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
                 id="phone"
                 value={formData.contactInfo.phone}
                 onChange={handleChange}
-                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md"
+                className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100"
                 placeholder="+86 123 4567 8910"
               />
             </div>
@@ -141,7 +141,7 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
                 id="website"
                 value={formData.contactInfo.website}
                 onChange={handleChange}
-                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md"
+                className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100"
                 placeholder="https://example.com"
               />
             </div>
@@ -158,7 +158,7 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
                 id="address"
                 value={formData.contactInfo.address}
                 onChange={handleChange}
-                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md"
+                className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100"
                 placeholder="城市, 国家"
               />
             </div>
@@ -179,7 +179,7 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
                     id="socialMedia.linkedin"
                     value={formData.contactInfo.socialMedia.linkedin}
                     onChange={handleChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md"
+                    className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100"
                     placeholder="https://linkedin.com/in/username"
                   />
                 </div>
@@ -196,7 +196,7 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
                     id="socialMedia.github"
                     value={formData.contactInfo.socialMedia.github}
                     onChange={handleChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md"
+                    className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100"
                     placeholder="https://github.com/username"
                   />
                 </div>
@@ -213,30 +213,11 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
                     id="socialMedia.twitter"
                     value={formData.contactInfo.socialMedia.twitter}
                     onChange={handleChange}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md"
+                    className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100"
                     placeholder="https://twitter.com/username"
                   />
                 </div>
               </div>
-            </div>
-          </div>
-          
-          <div className="pt-5">
-            <div className="flex justify-between">
-              <button
-                type="button"
-                onClick={onPrevious}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-              >
-                上一步
-              </button>
-              
-              <button
-                type="submit"
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-              >
-                下一步
-              </button>
             </div>
           </div>
         </div>
