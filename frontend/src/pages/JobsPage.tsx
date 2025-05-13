@@ -17,7 +17,8 @@ import {
   Building2,
   MapPin,
   DollarSign,
-  Briefcase
+  Briefcase,
+  Tag
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { JobSource, JobType } from '@/types';
@@ -249,7 +250,7 @@ const JobsPage: React.FC = () => {
                   {/* 状态筛选 */}
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 ring-1 ring-gray-900/5 dark:ring-gray-100/5"></div>
+                      <Tag className="w-4 h-4 text-gray-400" />
                       职位状态
                     </label>
                     <StatusSelect
