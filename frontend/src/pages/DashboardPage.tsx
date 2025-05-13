@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { DndProvider, useDragLayer } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { BriefcaseIcon, Search, BellIcon, CalendarIcon, PieChartIcon, Plus, X } from 'lucide-react';
+import { BriefcaseIcon, Search, BellIcon, CalendarIcon, Plus, X, TrendingUpIcon, AwardIcon } from 'lucide-react';
 import DroppableColumn, { Interview } from '@/components/dashboard/DroppableColumn';
 
 // 定义本地Job接口
@@ -12,6 +12,7 @@ interface Job {
   type: string;
   salary: string;
   nextInterview?: string;
+  offerDate?: string; // 新增录用日期字段
 }
 
 // 自定义拖拽层组件
@@ -79,7 +80,8 @@ const EditModal: React.FC<EditModalProps> = ({ job, onClose, onSave }) => {
     title: '',
     company: '',
     type: '',
-    salary: ''
+    salary: '',
+    offerDate: ''
   });
 
   // 添加薪资处理函数
@@ -156,6 +158,18 @@ const EditModal: React.FC<EditModalProps> = ({ job, onClose, onSave }) => {
               className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
             />
           </div>
+          {/* 录用日期字段，仅在已录用状态下显示 */}
+          {job.offerDate !== undefined && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">录用日期</label>
+              <input
+                type="date"
+                value={editedJob.offerDate || ''}
+                onChange={(e) => setEditedJob({ ...editedJob, offerDate: e.target.value })}
+                className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+              />
+            </div>
+          )}
         </div>
         <div className="mt-6 flex justify-end space-x-3">
           <button
@@ -191,6 +205,7 @@ const DashboardPage: React.FC = () => {
     pending: Job[];
     applied: Job[];
     interviewing: Job[];
+    hired: Job[]; // 新增已录用状态
   }>({
     pending: [
       {
@@ -217,6 +232,7 @@ const DashboardPage: React.FC = () => {
     ],
     applied: [],
     interviewing: [],
+    hired: [] // 初始化为空数组
   });
 
   // 添加待处理任务状态
@@ -244,20 +260,30 @@ const DashboardPage: React.FC = () => {
 
   // 计算面试转化率
   const calculateInterviewRate = () => {
-    const totalJobs = jobs.pending.length + jobs.applied.length + jobs.interviewing.length;
+    const totalJobs = jobs.pending.length + jobs.applied.length + jobs.interviewing.length + jobs.hired.length;
     if (totalJobs === 0) return '0%';
     
-    const interviewingCount = jobs.interviewing.length;
+    const interviewingCount = jobs.interviewing.length + jobs.hired.length;
     const rate = Math.round((interviewingCount / totalJobs) * 100);
     return `${rate}%`;
   };
 
-  const handleDrop = (status: 'pending' | 'applied' | 'interviewing', item: Job) => {
+  // 计算录用率
+  const calculateHireRate = () => {
+    const totalJobs = jobs.pending.length + jobs.applied.length + jobs.interviewing.length + jobs.hired.length;
+    if (totalJobs === 0) return '0%';
+    
+    const hiredCount = jobs.hired.length;
+    const rate = Math.round((hiredCount / totalJobs) * 100);
+    return `${rate}%`;
+  };
+
+  const handleDrop = (status: 'pending' | 'applied' | 'interviewing' | 'hired', item: Job) => {
     // 找到当前拖动的职位所在的状态
-    let sourceStatus: 'pending' | 'applied' | 'interviewing' | undefined;
+    let sourceStatus: 'pending' | 'applied' | 'interviewing' | 'hired' | undefined;
     for (const [key, jobList] of Object.entries(jobs)) {
       if (jobList.some(job => job.id === item.id)) {
-        sourceStatus = key as 'pending' | 'applied' | 'interviewing';
+        sourceStatus = key as 'pending' | 'applied' | 'interviewing' | 'hired';
         break;
       }
     }
@@ -270,14 +296,17 @@ const DashboardPage: React.FC = () => {
     // 创建要移动的职位的副本
     const jobToMove = {
       ...item,
-      nextInterview: status === 'interviewing' ? '待安排面试时间' : undefined
+      nextInterview: status === 'interviewing' ? '待安排面试时间' : undefined,
+      // 如果状态变为hired，添加当前日期作为录用日期
+      offerDate: status === 'hired' ? new Date().toISOString().split('T')[0] : item.offerDate
     };
 
     // 更新状态
     const newJobs = {
       pending: [...jobs.pending],
       applied: [...jobs.applied],
-      interviewing: [...jobs.interviewing]
+      interviewing: [...jobs.interviewing],
+      hired: [...jobs.hired]
     };
 
     // 从源状态中移除职位
@@ -348,7 +377,7 @@ const DashboardPage: React.FC = () => {
 
   const handleDelete = (jobId: string) => {
     const newJobs = { ...jobs };
-    for (const status of ['pending', 'applied', 'interviewing'] as const) {
+    for (const status of ['pending', 'applied', 'interviewing', 'hired'] as const) {
       newJobs[status] = jobs[status].filter(job => job.id !== jobId);
     }
     setJobs(newJobs);
@@ -361,7 +390,7 @@ const DashboardPage: React.FC = () => {
       newJobs.pending = [...jobs.pending, { ...editedJob, id: `job_${Date.now()}` }];
     } else {
       // 如果是编辑现有职位
-      for (const status of ['pending', 'applied', 'interviewing'] as const) {
+      for (const status of ['pending', 'applied', 'interviewing', 'hired'] as const) {
         newJobs[status] = jobs[status].map(job => 
           job.id === editedJob.id ? editedJob : job
         );
@@ -400,8 +429,8 @@ const DashboardPage: React.FC = () => {
           </p>
         </div>
         
-        {/* 统计卡片 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* 统计卡片 - 修改为5个卡片 */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
           <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 p-4">
             <div className="flex items-center">
               <div className="bg-indigo-100 dark:bg-indigo-900/40 p-3 rounded-xl">
@@ -409,7 +438,7 @@ const DashboardPage: React.FC = () => {
               </div>
               <div className="ml-4">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  {jobs.pending.length + jobs.applied.length + jobs.interviewing.length}
+                  {jobs.pending.length + jobs.applied.length + jobs.interviewing.length + jobs.hired.length}
                 </h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400">总申请数</p>
               </div>
@@ -430,8 +459,21 @@ const DashboardPage: React.FC = () => {
           </div>
           <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 p-4">
             <div className="flex items-center">
-              <div className="bg-green-100 dark:bg-green-900/40 p-3 rounded-xl">
-                <PieChartIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
+              <div className="bg-orange-100 dark:bg-orange-900/40 p-3 rounded-xl">
+                <BellIcon className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+              </div>
+              <div className="ml-4">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  {todos.filter(todo => !todo.completed).length}
+                </h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">待处理任务</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 p-4">
+            <div className="flex items-center">
+              <div className="bg-purple-100 dark:bg-purple-900/40 p-3 rounded-xl">
+                <TrendingUpIcon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
               </div>
               <div className="ml-4">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -443,14 +485,14 @@ const DashboardPage: React.FC = () => {
           </div>
           <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 p-4">
             <div className="flex items-center">
-              <div className="bg-orange-100 dark:bg-orange-900/40 p-3 rounded-xl">
-                <BellIcon className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+              <div className="bg-green-100 dark:bg-green-900/40 p-3 rounded-xl">
+                <AwardIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
               <div className="ml-4">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  {todos.filter(todo => !todo.completed).length}
+                  {calculateHireRate()}
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">待处理任务</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">录用率</p>
               </div>
             </div>
           </div>
@@ -481,8 +523,8 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
         
-        {/* 看板视图 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* 看板视图 - 修改为4栏布局 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <DroppableColumn
             title="待申请"
             count={filterJobs(jobs.pending).length}
@@ -512,6 +554,18 @@ const DashboardPage: React.FC = () => {
             count={filterJobs(jobs.interviewing).length}
             jobs={filterJobs(jobs.interviewing)}
             onDrop={(item) => handleDrop('interviewing', item as Job)}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            todos={todos}
+            onAddTodo={addTodoForJob}
+            onToggleTodo={toggleTodoStatus}
+            onDeleteTodo={deleteTodo}
+          />
+          <DroppableColumn
+            title="已录用"
+            count={filterJobs(jobs.hired).length}
+            jobs={filterJobs(jobs.hired)}
+            onDrop={(item) => handleDrop('hired', item as Job)}
             onEdit={handleEdit}
             onDelete={handleDelete}
             todos={todos}
@@ -579,7 +633,7 @@ const DashboardPage: React.FC = () => {
           <div className="p-4">
             <div className="space-y-3">
               {todos.map(todo => {
-                const job = [...jobs.pending, ...jobs.applied, ...jobs.interviewing]
+                const job = [...jobs.pending, ...jobs.applied, ...jobs.interviewing, ...jobs.hired]
                   .find(j => j.id === todo.jobId);
                 
                 return (

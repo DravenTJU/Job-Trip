@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { createJob, updateJob, fetchJob } from '@/redux/slices/jobsSlice';
 import { Job, CreateJobData, JobStatus, JobType, JobSource } from '@/types';
-import { JOB_STATUS_OPTIONS } from '@/utils/jobStatusUtils';
+import { JOB_STATUS_OPTIONS, getStatusIcon } from '@/utils/jobStatusUtils';
 import { Link } from 'react-router-dom';
 import { 
   Search, 
@@ -26,6 +26,7 @@ import {
   Trash,
   HelpCircle
 } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 
 /**
  * 职位表单页面
@@ -52,7 +53,7 @@ const JobFormPage: React.FC = () => {
     sourceId: '',
     sourceUrl: '',
     requirements: [],
-    status: 'new',
+    status: JobStatus.PENDING,
     salary: ''
   });
   
@@ -393,7 +394,7 @@ const JobFormPage: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    状态
+                    职位状态
                   </label>
                   <select
                     name="status"
@@ -405,11 +406,14 @@ const JobFormPage: React.FC = () => {
                         : 'ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500'
                     } transition-shadow`}
                   >
-                    {statusOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
+                    {JOB_STATUS_OPTIONS.map(option => {
+                      const IconComponent = (LucideIcons as any)[option.icon] || LucideIcons.HelpCircle;
+                      return (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      );
+                    })}
                   </select>
                   {formErrors.status && (
                     <p className="mt-1 text-sm text-red-600 dark:text-red-400">

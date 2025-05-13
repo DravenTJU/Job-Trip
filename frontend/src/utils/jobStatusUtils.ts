@@ -2,15 +2,15 @@ import { JobStatus } from '@/types';
 
 // 状态选项数组 - 用于下拉菜单
 export const JOB_STATUS_OPTIONS = [
-  { value: JobStatus.NEW, label: '新添加' },
-  { value: JobStatus.NOT_INTERESTED, label: '不考虑' },
-  { value: JobStatus.PENDING, label: '待申请' },
-  { value: JobStatus.APPLIED, label: '已申请' },
-  { value: JobStatus.INTERVIEWING, label: '面试中' },
-  { value: JobStatus.OFFER, label: '已录用' },
-  { value: JobStatus.REJECTED, label: '已拒绝' },
-  { value: JobStatus.WITHDRAWN, label: '已撤回' },
-  { value: JobStatus.CLOSED, label: '已关闭' }
+  { value: JobStatus.NEW, label: '新添加', icon: 'PlusCircle' },
+  { value: JobStatus.NOT_INTERESTED, label: '不考虑', icon: 'ThumbsDown' },
+  { value: JobStatus.PENDING, label: '待申请', icon: 'Clock' },
+  { value: JobStatus.APPLIED, label: '已申请', icon: 'Send' },
+  { value: JobStatus.INTERVIEWING, label: '面试中', icon: 'Users' },
+  { value: JobStatus.OFFER, label: '已录用', icon: 'Award' },
+  { value: JobStatus.REJECTED, label: '已拒绝', icon: 'XCircle' },
+  { value: JobStatus.WITHDRAWN, label: '已撤回', icon: 'Undo' },
+  { value: JobStatus.CLOSED, label: '已关闭', icon: 'Archive' }
 ];
 
 /**
@@ -21,6 +21,16 @@ export const JOB_STATUS_OPTIONS = [
 export const getStatusLabel = (status: string): string => {
   const option = JOB_STATUS_OPTIONS.find(opt => opt.value === status);
   return option ? option.label : status;
+};
+
+/**
+ * 获取状态对应的图标名称
+ * @param status 状态值
+ * @returns 对应的Lucide图标名称
+ */
+export const getStatusIcon = (status: string): string => {
+  const option = JOB_STATUS_OPTIONS.find(opt => opt.value === status);
+  return option?.icon || 'HelpCircle';
 };
 
 /**

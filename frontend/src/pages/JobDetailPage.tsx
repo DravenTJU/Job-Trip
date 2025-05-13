@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { fetchJob, deleteJob } from '@/redux/slices/jobsSlice';
 import { ApplicationStatus, JobSource } from '@/types';
-import { getStatusStyle } from '@/utils/jobStatusUtils';
+import { getStatusStyle, getStatusIcon } from '@/utils/jobStatusUtils';
 import { 
-  ArrowLeft, 
+  ChevronLeft, 
   Building2, 
   MapPin, 
   DollarSign, 
@@ -17,9 +17,9 @@ import {
   Clock, 
   Edit3, 
   Trash2, 
-  ExternalLink,
-  X
+  ExternalLink
 } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 
 /**
  * 职位详情页面组件
@@ -40,7 +40,7 @@ const JobDetailPage: React.FC = () => {
   
   // 处理返回
   const handleBack = () => {
-    navigate(-1);
+    navigate('/jobs');
   };
   
   // 处理编辑
@@ -150,7 +150,7 @@ const JobDetailPage: React.FC = () => {
         onClick={handleBack}
         className="btn btn-outline mb-6 gap-2"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ChevronLeft className="w-4 h-4" />
         返回职位列表
       </button>
       
@@ -168,7 +168,12 @@ const JobDetailPage: React.FC = () => {
           {/* 职位标题和状态 */}
           <div className="flex items-center gap-3 mb-4">
             <h1 className="title-lg">{job.title}</h1>
-            <span className={`badge ${getStatusStyle(job.status)}`}>
+            <span className={`badge ${getStatusStyle(job.status)} flex items-center gap-1.5`}>
+              {(() => {
+                const iconName = getStatusIcon(job.status);
+                const Icon = (LucideIcons as any)[iconName] || LucideIcons.HelpCircle;
+                return <Icon className="w-4 h-4" />;
+              })()}
               {job.status}
             </span>
           </div>
