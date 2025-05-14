@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { AppDispatch, RootState } from '@/redux/store';
 import { updateProfile, updatePassword, clearError } from '@/redux/slices/authSlice';
 import { User, UpdatePasswordData } from '@/types';
-import { AlertCircle, Check, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { AlertCircle, Check, Mail, Lock, Eye, EyeOff, Globe } from 'lucide-react';
+import LanguageSelector from '@/components/common/LanguageSelector';
 
 /**
  * 账号设置页面组件
  * 允许用户修改账号信息和密码
  */
 const SettingsPage: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const { user, isLoading, error } = useSelector((state: RootState) => state.auth);
   
@@ -43,9 +46,11 @@ const SettingsPage: React.FC = () => {
     <div className="container-lg">
       <div className="section space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">账号设置</h1>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            {t('settings.title', '账号设置')}
+          </h1>
           <p className="text-gray-500 dark:text-gray-400">
-            管理您的账号信息和安全设置
+            {t('settings.subtitle', '管理您的账号信息和安全设置')}
           </p>
         </div>
 
@@ -55,6 +60,9 @@ const SettingsPage: React.FC = () => {
             <span>{error}</span>
           </div>
         )}
+
+        {/* 语言设置 */}
+        <LanguageSettingsForm />
 
         {/* 邮箱设置 */}
         <EmailSettingsForm 
@@ -68,6 +76,38 @@ const SettingsPage: React.FC = () => {
           isLoading={isLoading}
           onSuccess={() => setPasswordSuccess(true)}
         />
+      </div>
+    </div>
+  );
+};
+
+/**
+ * 语言设置表单组件
+ */
+const LanguageSettingsForm: React.FC = () => {
+  const { t } = useTranslation();
+  
+  return (
+    <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5">
+      <div className="p-6">
+        <h2 className="text-lg font-medium mb-4">
+          {t('settings.language', '语言设置')}
+        </h2>
+        
+        <div className="mb-4">
+          <label 
+            htmlFor="language" 
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          >
+            {t('settings.chooseLanguage', '选择您偏好的语言')}
+          </label>
+          <div className="relative">
+            <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <div className="pl-10">
+              <LanguageSelector variant="dropdown" size="md" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

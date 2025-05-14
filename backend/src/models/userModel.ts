@@ -71,8 +71,8 @@ const userSchema = new Schema<IUser>(
       },
       language: {
         type: String,
-        default: 'zh-CN',
-        enum: ['zh-CN', 'en-US'],
+        default: 'en-US',
+        enum: ['zh-CN', 'zh-TW', 'en-US'],
       },
     },
     status: {

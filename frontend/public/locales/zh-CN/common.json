@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "职途助手",
+    "description": "您的职业发展伙伴"
+  },
+  "nav": {
+    "home": "欢迎",
+    "jobs": "职位列表",
+    "profile": "个人资料",
+    "settings": "设置",
+    "chromeExtension": "Chrome扩展",
+    "jobTracking": "职位跟踪",
+    "resumeBuilder": "简历生成",
+    "coverLetter": "AI求职信"
+  },
+  "buttons": {
+    "save": "保存",
+    "cancel": "取消",
+    "update": "更新",
+    "submit": "提交",
+    "loading": "加载中..."
+  },
+  "languages": {
+    "en-US": "英文",
+    "zh-CN": "简体中文",
+    "zh-TW": "繁体中文"
+  },
+  "settings": {
+    "title": "账号设置",
+    "subtitle": "管理您的账号和偏好设置",
+    "language": "语言设置",
+    "chooseLanguage": "选择您偏好的语言",
+    "emailSettings": "邮箱设置",
+    "emailUpdated": "邮箱更新成功",
+    "passwordSettings": "密码设置",
+    "passwordUpdated": "密码修改成功",
+    "currentPassword": "当前密码",
+    "newPassword": "新密码",
+    "confirmPassword": "确认新密码",
+    "enterCurrentPassword": "输入当前密码",
+    "setNewPassword": "设置新密码",
+    "enterNewPasswordAgain": "再次输入新密码",
+    "accountSettings": "账号设置"
+  },
+  "validation": {
+    "passwordLength": "新密码长度至少8个字符",
+    "passwordMatch": "两次输入的密码不一致"
+  },
+  "theme": {
+    "switchToLight": "切换到浅色模式",
+    "switchToDark": "切换到深色模式"
+  },
+  "language": {
+    "switchLanguage": "切换语言"
+  },
+  "auth": {
+    "logout": "退出登录"
+  },
+  "common": {
+    "user": "用户"
+  },
+  "profile": {
+    "sections": {
+      "basic": "基本信息",
+      "education": "教育经历",
+      "work": "工作经历",
+      "skills": "技能",
+      "certifications": "证书",
+      "projects": "项目经历",
+      "languages": "语言能力",
+      "volunteer": "志愿者经历",
+      "awards": "荣誉与奖项",
+      "recommendations": "推荐信"
+    }
+  }
+} 

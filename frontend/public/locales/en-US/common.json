@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "JobTrip",
+    "description": "Your career assistant"
+  },
+  "nav": {
+    "home": "Welcome",
+    "jobs": "Jobs List",
+    "profile": "Profile",
+    "settings": "Settings",
+    "chromeExtension": "Chrome Extension",
+    "jobTracking": "Job Tracking",
+    "resumeBuilder": "Resume Builder",
+    "coverLetter": "AI Cover Letter"
+  },
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "update": "Update",
+    "submit": "Submit",
+    "loading": "Loading..."
+  },
+  "languages": {
+    "en-US": "English",
+    "zh-CN": "Simplified Chinese",
+    "zh-TW": "Traditional Chinese"
+  },
+  "settings": {
+    "title": "Account Settings",
+    "subtitle": "Manage your account and preferences",
+    "language": "Language",
+    "chooseLanguage": "Choose your preferred language",
+    "emailSettings": "Email Settings",
+    "emailUpdated": "Email updated successfully",
+    "passwordSettings": "Password Settings",
+    "passwordUpdated": "Password updated successfully",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "enterCurrentPassword": "Enter your current password",
+    "setNewPassword": "Set your new password",
+    "enterNewPasswordAgain": "Enter your new password again",
+    "accountSettings": "Account Settings"
+  },
+  "validation": {
+    "passwordLength": "New password must be at least 8 characters",
+    "passwordMatch": "Passwords do not match"
+  },
+  "theme": {
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
+  "language": {
+    "switchLanguage": "Switch language"
+  },
+  "auth": {
+    "logout": "Log out"
+  },
+  "common": {
+    "user": "User"
+  },
+  "profile": {
+    "sections": {
+      "basic": "Basic Information",
+      "education": "Education",
+      "work": "Work Experience",
+      "skills": "Skills",
+      "certifications": "Certifications",
+      "projects": "Projects",
+      "languages": "Languages",
+      "volunteer": "Volunteer Experience",
+      "awards": "Awards",
+      "recommendations": "Recommendations"
+    }
+  }
+} 

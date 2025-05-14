@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "職途助手",
+    "description": "您的職業發展夥伴"
+  },
+  "nav": {
+    "home": "歡迎",
+    "jobs": "職位列表",
+    "profile": "個人資料",
+    "settings": "設置",
+    "chromeExtension": "Chrome擴展",
+    "jobTracking": "職位跟蹤",
+    "resumeBuilder": "簡歷生成",
+    "coverLetter": "AI求職信"
+  },
+  "buttons": {
+    "save": "保存",
+    "cancel": "取消",
+    "update": "更新",
+    "submit": "提交",
+    "loading": "載入中..."
+  },
+  "languages": {
+    "en-US": "英文",
+    "zh-CN": "簡體中文",
+    "zh-TW": "繁體中文"
+  },
+  "settings": {
+    "title": "賬號設置",
+    "subtitle": "管理您的賬號和偏好設置",
+    "language": "語言設置",
+    "chooseLanguage": "選擇您偏好的語言",
+    "emailSettings": "郵箱設置",
+    "emailUpdated": "郵箱更新成功",
+    "passwordSettings": "密碼設置",
+    "passwordUpdated": "密碼修改成功",
+    "currentPassword": "當前密碼",
+    "newPassword": "新密碼",
+    "confirmPassword": "確認新密碼",
+    "enterCurrentPassword": "輸入當前密碼",
+    "setNewPassword": "設置新密碼",
+    "enterNewPasswordAgain": "再次輸入新密碼",
+    "accountSettings": "賬號設置"
+  },
+  "validation": {
+    "passwordLength": "新密碼長度至少8個字符",
+    "passwordMatch": "兩次輸入的密碼不一致"
+  },
+  "theme": {
+    "switchToLight": "切換到淺色模式",
+    "switchToDark": "切換到深色模式"
+  },
+  "language": {
+    "switchLanguage": "切換語言"
+  },
+  "auth": {
+    "logout": "退出登錄"
+  },
+  "common": {
+    "user": "用戶"
+  },
+  "profile": {
+    "sections": {
+      "basic": "基本信息",
+      "education": "教育經歷",
+      "work": "工作經歷",
+      "skills": "技能",
+      "certifications": "證書",
+      "projects": "項目經歷",
+      "languages": "語言能力",
+      "volunteer": "志願者經歷",
+      "awards": "榮譽與獎項",
+      "recommendations": "推薦信"
+    }
+  }
+} 

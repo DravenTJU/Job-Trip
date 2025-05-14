@@ -68,8 +68,8 @@ const router = express.Router();
  *                     default: true
  *                   language:
  *                     type: string
- *                     enum: [zh-CN, en-US]
- *                     default: zh-CN
+ *                     enum: [zh-CN, zh-TW, en-US]
+ *                     default: en-US
  *     responses:
  *       201:
  *         description: 用户注册成功，返回用户信息和JWT令牌

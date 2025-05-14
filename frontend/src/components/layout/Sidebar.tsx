@@ -22,19 +22,25 @@ import {
 } from 'lucide-react';
 import { useAppSelector, useAppDispatch } from '@/hooks/reduxHooks';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { logout } from '@/redux/slices/authSlice';
+import LanguageSelector from '@/components/common/LanguageSelector';
 
 /**
  * 侧边栏导航组件
  * 登录后显示
  */
 const Sidebar: React.FC = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const { user } = useAppSelector((state) => state.auth);
   const { mode, toggleTheme } = useTheme();
+  const { currentLanguage } = useLanguage();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
+  const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
 
   // 检查当前路径是否匹配给定的路径
   const isActive = (path: string) => {
@@ -51,37 +57,37 @@ const Sidebar: React.FC = () => {
   // 主菜单项
   const mainMenuItems = [
     { 
-      name: '欢迎', 
+      name: t('nav.home', '欢迎'), 
       path: '/welcome', 
       icon: <Home className="sidebar-menu-icon" /> 
     },
     { 
-      name: 'Chrome扩展', 
+      name: t('nav.chromeExtension', 'Chrome扩展'), 
       path: '/chrome-extension', 
       icon: <Chrome className="sidebar-menu-icon" /> 
     },
     {
-      name: '职位列表', 
+      name: t('nav.jobs', '职位列表'), 
       path: '/jobs', 
       icon: <Briefcase className="sidebar-menu-icon" /> 
     },
     { 
-      name: '职位跟踪', 
+      name: t('nav.jobTracking', '职位跟踪'), 
       path: '/dashboard', 
       icon: <PieChart className="sidebar-menu-icon" /> 
     },
     { 
-      name: '个人档案', 
+      name: t('nav.profile', '个人档案'), 
       path: '/profile', 
       icon: <User className="sidebar-menu-icon" /> 
     },
     { 
-      name: '简历生成', 
+      name: t('nav.resumeBuilder', '简历生成'), 
       path: '/resume-builder', 
       icon: <FileText className="sidebar-menu-icon" /> 
     },
     { 
-      name: 'AI求职信', 
+      name: t('nav.coverLetter', 'AI求职信'), 
       path: '/cover-letters', 
       icon: <Sparkles className="sidebar-menu-icon" /> 
     }
@@ -96,7 +102,7 @@ const Sidebar: React.FC = () => {
             <div className="p-1.5 bg-indigo-100 rounded dark:bg-indigo-900">
               <Star className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             </div>
-            <span className="ml-2 text-xl font-semibold text-gray-800 dark:text-white">JobTrip</span>
+            <span className="ml-2 text-xl font-semibold text-gray-800 dark:text-white">{t('app.name', 'JobTrip')}</span>
           </div>
         </div>
 
@@ -128,7 +134,7 @@ const Sidebar: React.FC = () => {
             </div>
             <div className="ml-3 min-w-0">
               <p className="text-sm font-medium text-gray-800 dark:text-white truncate" title={user?.username}>
-                {user?.username || '用户'}
+                {user?.username || t('common.user', '用户')}
               </p>
             </div>
           </div>
@@ -138,26 +144,38 @@ const Sidebar: React.FC = () => {
             {/* 主题切换按钮 */}
             <button 
               onClick={toggleTheme} 
-              title={mode === 'dark' ? "切换到浅色模式" : "切换到深色模式"}
+              title={mode === 'dark' ? t('theme.switchToLight', "切换到浅色模式") : t('theme.switchToDark', "切换到深色模式")}
               className="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
             >
               {mode === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
 
-            {/* 语言切换占位符按钮 */}
-            <button 
-              title="切换语言 (开发中)"
-              onClick={() => console.log('Language switch clicked')} 
-              className="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
-            >
-              <Languages size={18} />
-            </button>
+            {/* 语言切换按钮 */}
+            <div className="relative">
+              <button 
+                title={t('language.switchLanguage', "切换语言")}
+                onClick={() => setLanguageMenuOpen(!languageMenuOpen)} 
+                className="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
+              >
+                <Languages size={18} />
+              </button>
+              {languageMenuOpen && (
+                <div 
+                  className="absolute right-0 bottom-full mb-2 w-40 bg-white shadow-lg rounded-md ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-800 dark:ring-gray-700 z-20"
+                  onMouseLeave={() => setLanguageMenuOpen(false)}
+                >
+                  <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="language-menu">
+                    <LanguageSelector variant="buttons" size="sm" />
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* 设置按钮和弹出菜单 */}
             <div className="relative">
               <button 
                 onClick={() => setSettingsMenuOpen(!settingsMenuOpen)}
-                title="设置"
+                title={t('settings.title', "设置")}
                 className="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
               >
                 <Settings size={18} />
@@ -175,7 +193,7 @@ const Sidebar: React.FC = () => {
                       onClick={() => setSettingsMenuOpen(false)}
                     >
                       <User size={16} className="mr-2" />
-                      账号设置
+                      {t('settings.accountSettings', "账号设置")}
                     </Link>
                     <button 
                       onClick={handleLogout}
@@ -183,7 +201,7 @@ const Sidebar: React.FC = () => {
                       role="menuitem"
                     >
                       <LogOut size={16} className="mr-2" />
-                      退出登录
+                      {t('auth.logout', "退出登录")}
                     </button>
                   </div>
                 </div>
