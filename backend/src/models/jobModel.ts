@@ -10,7 +10,6 @@ export interface IJob extends Document {
   requirements?: string[];
   salary?: string;
   jobType?: string;
-  status: string;
   source: string;
   sourceId: string;
   sourceUrl: string;
@@ -19,19 +18,6 @@ export interface IJob extends Document {
   notes?: string;
   createdAt: Date;
   updatedAt: Date;
-}
-
-// 职位状态枚举
-export enum JobStatus {
-  NEW = 'new',
-  NOT_INTERESTED = 'not_interested',
-  PENDING = 'pending',
-  APPLIED = 'applied',
-  INTERVIEWING = 'interviewing',
-  OFFER = 'offer',
-  REJECTED = 'rejected',
-  WITHDRAWN = 'withdrawn',
-  CLOSED = 'closed',
 }
 
 // 工作类型枚举
@@ -80,11 +66,6 @@ const jobSchema = new Schema<IJob>(
       enum: Object.values(JobType),
       default: JobType.FULL_TIME,
     },
-    status: {
-      type: String,
-      enum: Object.values(JobStatus),
-      default: JobStatus.NEW,
-    },
     source: {
       type: String,
       required: true,
@@ -114,7 +95,6 @@ jobSchema.index({ sourceId: 1, platform: 1 }, { unique: true });
 jobSchema.index({ company: 1 });
 jobSchema.index({ title: 1 });
 jobSchema.index({ createdAt: 1 });
-jobSchema.index({ status: 1 });
 jobSchema.index({ platform: 1 });
 
 // 创建模型

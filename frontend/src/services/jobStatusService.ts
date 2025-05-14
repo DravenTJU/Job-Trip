@@ -1,5 +1,5 @@
 import api from './api';
-import { Job } from '@/types';
+import { Job, UserJob } from '@/types';
 
 /**
  * 职位状态服务
@@ -18,6 +18,26 @@ const jobStatusService = {
     } catch (error) {
       console.error(`更新职位状态失败(ID: ${jobId}, 状态: ${status}):`, error);
       throw error;
+    }
+  },
+  
+  /**
+   * 获取用户对特定职位的状态
+   * @param jobId 职位ID
+   * @returns 用户-职位关联对象
+   */
+  getUserJobStatus: async (jobId: string): Promise<UserJob | null> => {
+    try {
+      // 查询参数限定查询特定jobId
+      const response = await api.get<{data: UserJob[]}>(`/userjobs`, { jobId });
+      // 如果有结果，返回第一条
+      if (response.data && response.data.length > 0) {
+        return response.data[0];
+      }
+      return null;
+    } catch (error) {
+      console.error(`获取职位状态失败(ID: ${jobId}):`, error);
+      return null;
     }
   }
 };

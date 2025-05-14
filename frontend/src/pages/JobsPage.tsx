@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
-import { fetchJobs } from '@/redux/slices/jobsSlice';
+import { fetchUserRelatedJobs } from '@/redux/slices/jobsSlice';
 import { 
   Search, 
   Plus, 
@@ -101,11 +101,11 @@ const JobsPage: React.FC = () => {
       
       console.log('Fetching jobs with params:', queryParams);
       
-      // 获取职位列表
-      const result = await dispatch(fetchJobs(queryParams));
+      // 获取与用户关联的职位列表，而不是所有职位
+      const result = await dispatch(fetchUserRelatedJobs(queryParams));
       
       // 处理响应
-      if (fetchJobs.fulfilled.match(result)) {
+      if (fetchUserRelatedJobs.fulfilled.match(result)) {
         // 如果当前页没有数据，且不是第一页，回到第一页
         if (result.payload.data.length === 0 && page > 1) {
           setPage(1);

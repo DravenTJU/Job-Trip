@@ -19,6 +19,22 @@ const jobService = {
     }
   },
 
+  // 获取用户关联的职位列表
+  getUserRelatedJobs: async (params?: { 
+    page?: number; 
+    limit?: number;
+    status?: string;
+    search?: string;
+    sort?: string;
+  }): Promise<PaginatedResponse<Job>> => {
+    try {
+      return await api.get<PaginatedResponse<Job>>('/jobs/user', params);
+    } catch (error) {
+      console.error('获取用户关联职位列表失败:', error);
+      throw error;
+    }
+  },
+
   // 获取单个职位
   getJob: async (id: string): Promise<Job> => {
     try {

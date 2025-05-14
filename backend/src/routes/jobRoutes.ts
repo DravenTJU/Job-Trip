@@ -6,9 +6,15 @@ import {
   updateJob,
   deleteJob,
   createJobFromExtension,
-  createJobsBatch
+  createJobsBatch,
+  getUserRelatedJobs
 } from '../controllers/jobController';
 import { protect } from '../middleware/authMiddleware';
+import UserJob from '../models/userJobModel';
+import ApplicationHistory from '../models/applicationHistoryModel';
+import { AppError } from '../utils/AppError';
+import { createApiResponse } from '../middleware/errorHandler';
+import Job from '../models/jobModel';
 
 const router = express.Router();
 
@@ -24,6 +30,9 @@ router.post('/', createJob);
 
 // 其余路由继续用 protect
 router.use(protect);
+
+// 获取用户关联的职位列表
+router.get('/user', getUserRelatedJobs);
 
 /**
  * @swagger
@@ -215,6 +224,79 @@ router.post('/extension', createJobFromExtension);
 
 // 批量导入职位
 router.post('/batch', createJobsBatch);
+
+// 更新职位状态 - 实际上是更新用户-职位关联的状态
+router.put('/:id/status', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const userId = req.user?._id;
+
+    if (!userId) {
+      return next(new AppError('未认证，无法访问', 401));
+    }
+
+    // 查找或创建用户-职位关联
+    let userJob = await UserJob.findOne({ userId, jobId: id });
+    
+    if (!userJob) {
+      // 如果不存在关联，创建新关联
+      userJob = await UserJob.create({
+        userId,
+        jobId: id,
+        status,
+        isFavorite: false
+      });
+      
+      // 创建状态历史记录
+      await ApplicationHistory.create({
+        userJobId: userJob._id,
+        previousStatus: '',
+        newStatus: status,
+        notes: '初始状态',
+        updatedBy: userId
+      });
+    } else {
+      // 记录之前的状态
+      const previousStatus = userJob.status;
+      
+      // 更新状态
+      userJob.status = status;
+      await userJob.save();
+      
+      // 创建状态变更历史
+      if (previousStatus !== status) {
+        await ApplicationHistory.create({
+          userJobId: userJob._id,
+          previousStatus,
+          newStatus: status,
+          notes: req.body.notes || '',
+          updatedBy: userId
+        });
+      }
+    }
+
+    // 获取完整的职位信息
+    const job = await Job.findById(id);
+    
+    if (!job) {
+      return next(new AppError('职位不存在', 404));
+    }
+
+    // 返回结果
+    res.status(200).json(createApiResponse(
+      200,
+      '更新职位状态成功',
+      {
+        ...job.toObject(),
+        status: userJob.status,
+        userJobId: userJob._id
+      }
+    ));
+  } catch (error) {
+    next(error);
+  }
+});
 
 /**
  * @swagger

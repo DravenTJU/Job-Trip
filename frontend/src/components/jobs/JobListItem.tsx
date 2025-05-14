@@ -12,9 +12,14 @@ import {
 import { Link as RouterLink } from 'react-router-dom';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { Job } from '@/types';
+import StatusBadge from '../common/StatusBadge';
 
 interface JobListItemProps {
-  job: Job;
+  job: Job & {
+    status?: string;
+    userJobId?: string;
+    isFavorite?: boolean;
+  };
 }
 
 /**
@@ -81,6 +86,19 @@ const JobListItem: React.FC<JobListItemProps> = ({ job }) => {
                   color="secondary"
                 />
               )}
+              {/* 显示职位状态 */}
+              {job.status && (
+                <Box sx={{ mt: 1 }}>
+                  <StatusBadge
+                    jobId={job._id}
+                    status={job.status}
+                    size="sm"
+                    onStatusChange={(jobId, newStatus) => {
+                      console.log('状态已更新:', jobId, newStatus);
+                    }}
+                  />
+                </Box>
+              )}
             </Box>
           </Box>
         </Grid>
@@ -107,11 +125,11 @@ const JobListItem: React.FC<JobListItemProps> = ({ job }) => {
               跟踪申请
             </Button>
             
-            {job.link && (
+            {job.sourceUrl && (
               <Tooltip title="打开职位链接">
                 <IconButton 
                   component="a" 
-                  href={job.link} 
+                  href={job.sourceUrl} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   onClick={handleExternalLinkClick}

@@ -20,6 +20,24 @@ export const fetchJobs = createAsyncThunk(
   }
 );
 
+export const fetchUserRelatedJobs = createAsyncThunk(
+  'jobs/fetchUserRelatedJobs',
+  async (params: { 
+    page?: number; 
+    limit?: number;
+    search?: string;
+    sort?: string;
+    status?: string;
+  } = {}, { rejectWithValue }) => {
+    try {
+      const response = await jobService.getUserRelatedJobs(params);
+      return response;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
+
 export const fetchJob = createAsyncThunk(
   'jobs/fetchJob',
   async (id: string, { rejectWithValue }) => {
@@ -113,10 +131,36 @@ const jobsSlice = createSlice({
       .addCase(fetchJobs.fulfilled, (state, action) => {
         state.isLoading = false;
         state.jobs = action.payload.data;
-        state.pagination = action.payload.pagination;
+        state.pagination = {
+          total: action.payload.total,
+          page: action.payload.page,
+          limit: action.payload.size,
+          pages: action.payload.totalPages
+        };
         state.error = null;
       })
       .addCase(fetchJobs.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      
+      // 获取用户关联职位列表
+      .addCase(fetchUserRelatedJobs.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserRelatedJobs.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.jobs = action.payload.data;
+        state.pagination = {
+          total: action.payload.total,
+          page: action.payload.page,
+          limit: action.payload.size,
+          pages: action.payload.totalPages
+        };
+        state.error = null;
+      })
+      .addCase(fetchUserRelatedJobs.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       })
