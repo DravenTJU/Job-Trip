@@ -120,6 +120,15 @@ const jobsSlice = createSlice({
     clearJob: (state) => {
       state.job = null;
     },
+    setJobStatus: (state, action: PayloadAction<{ jobId: string; newStatus: string }>) => {
+      const { jobId, newStatus } = action.payload;
+      state.jobs = state.jobs.map(job =>
+        job._id === jobId ? { ...job, status: newStatus } : job
+      );
+      if (state.job && state.job._id === jobId) {
+        state.job.status = newStatus;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -235,5 +244,5 @@ const jobsSlice = createSlice({
   },
 });
 
-export const { clearError, clearJob } = jobsSlice.actions;
+export const { clearError, clearJob, setJobStatus } = jobsSlice.actions;
 export default jobsSlice.reducer; 
