@@ -42,6 +42,8 @@ jobs:
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
+        env:
+            GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           files: jobtrip-extension-${{ github.ref_name }}.zip
           name: JobTrip Extension v${{ steps.manifest.outputs.version }}
