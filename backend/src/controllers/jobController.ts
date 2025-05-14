@@ -289,9 +289,10 @@ export const createJob = async (
   next: NextFunction
 ) => {
   try {
-    let jobData = req.body;
-    
-    // 检查是否包含userToken
+    // 确保 req.body 是一个对象，以避免扩展运算符错误
+    const rawJobData = req.body && typeof req.body === 'object' ? req.body : {};
+    let jobData = { ...rawJobData }; // 使用副本进行操作
+
     const userToken = jobData.userToken;
     if (userToken) {
       // 从token中提取用户ID
@@ -309,32 +310,35 @@ export const createJob = async (
         // 创建职位
         const job = await Job.create(jobData);
 
-        // 自动创建用户-职位关联
-        await UserJob.create({
+        const createdUserJob = await UserJob.create({
           userId,
           jobId: job._id,
           status: jobData.status || 'new',
           isFavorite: jobData.isFavorite || false,
         });
 
-        // 创建应用历史记录
-        await ApplicationHistory.create({
-          userJobId: job._id,
-          previousStatus: '',
-          newStatus: 'new',
-          notes: '自动创建',
-          updatedBy: userId,
-        });
+        if (createdUserJob) {
+            await ApplicationHistory.create({
+                userJobId: createdUserJob._id,
+                previousStatus: 'initial',
+                newStatus: createdUserJob.status,
+                notes: '职位通过令牌创建并关联',
+                updatedBy: userId,
+            });
+        }
 
         // 返回结果
         res.status(201).json(createApiResponse(
           201,
-          '创建职位成功',
+          '创建职位成功并已关联用户',
           job
         ));
       } catch (error) {
         // Token验证失败，继续以常规方式创建职位
         console.error('Token验证失败:', error);
+        const minimalJobData = { ...rawJobData };
+        delete minimalJobData.userToken;
+        const fixedMinimalData = fixJobFields(minimalJobData);
         
         // 修复字段
         jobData = fixJobFields(jobData);
@@ -343,19 +347,45 @@ export const createJob = async (
         const job = await Job.create(jobData);
         res.status(201).json(createApiResponse(
           201,
-          '创建职位成功',
+          '创建职位成功（Token验证失败，未关联用户）',
           job
         ));
       }
     } else {
-      // 修复字段
-      jobData = fixJobFields(jobData);
+      // 处理来自UI的请求 (无 userToken, req.user 应该由 protect 中间件提供)
+      if (!req.user || !req.user._id) {
+        return next(new AppError('用户未认证，无法创建职位并关联', 401));
+      }
+      const userId = req.user._id;
+
+      // 清理 jobData (已在函数开头从 req.body 创建和复制)
+      // delete jobData.userToken; // userToken 在此分支中应不存在
+      const finalJobData = fixJobFields(jobData); // 使用 fixJobFields 清理数据
       
-      // 创建职位
-      const job = await Job.create(jobData);
+      const job = await Job.create(finalJobData);
+
+      // 创建 UserJob 关联
+      const createdUserJob = await UserJob.create({
+        userId,
+        jobId: job._id,
+        status: finalJobData.status || 'new', // 使用清理后的 jobData 中的 status
+        isFavorite: finalJobData.isFavorite || false, // 使用清理后的 jobData 中的 isFavorite
+      });
+
+      // 创建 ApplicationHistory 记录
+      if (createdUserJob) {
+        await ApplicationHistory.create({
+          userJobId: createdUserJob._id,
+          previousStatus: 'initial',
+          newStatus: createdUserJob.status,
+          notes: '职位通过UI创建并关联',
+          updatedBy: userId,
+        });
+      }
+
       res.status(201).json(createApiResponse(
         201,
-        '创建职位成功',
+        '创建职位成功并已关联用户',
         job
       ));
     }

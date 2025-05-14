@@ -26,10 +26,13 @@ const router = express.Router();
  */
 
 // POST / 不加 protect，兼容插件 body 传 userToken
-router.post('/', createJob);
+// router.post('/', createJob);
 
 // 其余路由继续用 protect
 router.use(protect);
+
+// POST / 现在受 protect 保护
+router.post('/', createJob); // 新位置
 
 // 获取用户关联的职位列表
 router.get('/user', getUserRelatedJobs);
