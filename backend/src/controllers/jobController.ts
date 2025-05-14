@@ -233,10 +233,49 @@ export const getJob = async (
       return next(new AppError('未找到该职位', 404));
     }
 
+    let jobData = job.toObject();
+
+    // Get current user information
+    if (req.user && req.user._id) {
+      const userId = req.user._id;
+
+      // Query UserJob record
+      const userJob = await UserJob.findOne({ userId: userId, jobId: job._id });
+
+      // If UserJob found, merge data
+      if (userJob) {
+        jobData.status = userJob.status;
+        jobData.isFavorite = userJob.isFavorite;
+        jobData.notes = userJob.notes || null;
+        jobData.customTags = userJob.customTags || [];
+        jobData.reminderDate = userJob.reminderDate || null;
+        jobData.userJobId = userJob._id;
+      } else {
+        // If UserJob not found, set defaults for user-specific fields
+        jobData.status = jobData.status || 'new';
+        jobData.isFavorite = false;
+        jobData.notes = null;
+        jobData.customTags = [];
+        jobData.reminderDate = null;
+        jobData.userJobId = null;
+      }
+    } else {
+      // User not available from req.user, potentially log this unexpected situation
+      // For now, set default user-specific fields as if no UserJob was found
+      console.warn(`User information not available in getJob for job ID: ${job._id}`);
+      jobData.status = jobData.status || 'new';
+      jobData.isFavorite = false;
+      jobData.notes = null;
+      jobData.customTags = [];
+      jobData.reminderDate = null;
+      jobData.userJobId = null;
+    }
+
+    // Return response with merged jobData
     res.status(200).json(createApiResponse(
       200,
       '获取职位详情成功',
-      job
+      jobData
     ));
   } catch (error) {
     next(error);
