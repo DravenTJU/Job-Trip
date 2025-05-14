@@ -160,6 +160,7 @@ To publish a new version of the extension, follow these steps:
    git tag -a <tag-name> -m 'Release version'
    git push origin <tag-name>
    ```
+   **注意**: 标签必须以 'v' 开头，后跟版本号（例如：v1.0.1），才能触发自动构建流程。
 4. GitHub Actions will automatically build the extension and create a new Release
 
 Note: The version number will automatically be synchronized between package.json and manifest.json.
@@ -333,6 +334,7 @@ npm test
    git tag -a <tag-name> -m '发布版本'
    git push origin <tag-name>
    ```
+   **注意**: 标签必须以 'v' 开头，后跟版本号（例如：v1.0.1），才能触发自动构建流程。
 4. GitHub Actions将自动构建扩展并创建新的Release
 
 注意：版本号会自动同步到manifest.json文件中。

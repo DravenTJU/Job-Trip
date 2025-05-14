@@ -18,21 +18,25 @@ jobs:
           node-version: '18'
           
       - name: Install dependencies
-        run: npm ci
+        run: |
+          cd JobTrip_Extention
+          npm ci
         
       - name: Build extension
-        run: npm run build
+        run: |
+          cd JobTrip_Extention
+          npm run build
         
       - name: Create ZIP file
         run: |
-          cd dist || exit
-          zip -r ../jobtrip-extension-${{ github.ref_name }}.zip *
-          cd ..
+          cd JobTrip_Extention/dist || exit
+          zip -r ../../jobtrip-extension-${{ github.ref_name }}.zip *
+          cd ../..
           
       - name: Extract manifest version
         id: manifest
         run: |
-          VERSION=$(node -p "require('./manifest.json').version")
+          VERSION=$(node -p "require('./JobTrip_Extention/manifest.json').version")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           
       - name: Create Release
