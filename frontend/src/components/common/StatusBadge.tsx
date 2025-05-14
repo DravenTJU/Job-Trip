@@ -168,7 +168,7 @@ const StatusBadgeComponent: React.FC<StatusBadgeProps> = ({
           leaveTo="transform opacity-0 scale-95"
         >
           <div 
-            ref={el => portalRef.current = el}
+            ref={el => { portalRef.current = el; }}
             className="fixed z-[9999] py-2 mt-1 overflow-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-[300px]"
             style={{
               width: badgeRef.current ? Math.max(badgeRef.current.offsetWidth, 180) + 'px' : '180px',

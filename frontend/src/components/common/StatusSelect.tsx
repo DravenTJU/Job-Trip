@@ -62,7 +62,7 @@ const StatusSelect: React.FC<StatusSelectProps> = ({
     <div className={`relative ${className}`}>
       <Listbox value={value} onChange={onChange} name={name}>
         {({ open }: ListboxRenderPropArg) => (
-          <>
+          <div>
             <Listbox.Button 
               className={`relative w-full h-11 pl-4 pr-10 text-left bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
                 error 
@@ -116,7 +116,7 @@ const StatusSelect: React.FC<StatusSelectProps> = ({
                       value={option.value}
                     >
                       {({ selected, active }: OptionRenderPropArg) => (
-                        <>
+                        <div>
                           <span className={`inline-flex items-center rounded-full pl-1 pr-3 py-1 ${getOptionStyleClass(option.value)}`}>
                             <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 mr-1.5">
                               {getIconComponent(option.icon)}
@@ -130,7 +130,7 @@ const StatusSelect: React.FC<StatusSelectProps> = ({
                               <Check className="w-5 h-5" aria-hidden="true" />
                             </span>
                           ) : null}
-                        </>
+                        </div>
                       )}
                     </Listbox.Option>
                   ))}
@@ -138,7 +138,7 @@ const StatusSelect: React.FC<StatusSelectProps> = ({
               </Transition>,
               document.body
             )}
-          </>
+          </div>
         )}
       </Listbox>
       {error && (
