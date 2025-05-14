@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
-import { fetchUserRelatedJobs } from '@/redux/slices/jobsSlice';
+import { fetchUserRelatedJobs, setJobStatus } from '@/redux/slices/jobsSlice';
 import { 
   Search, 
   Plus, 
@@ -406,10 +406,9 @@ const JobsPage: React.FC = () => {
                         jobId={job._id} 
                         status={job.status} 
                         size="sm"
-                        onStatusChange={(jobId, newStatus) => {
-                          // 可选：在后台同步Redux，但UI已由组件自己更新
-                          // 我们不依赖这个回调来更新UI
-                          console.log('列表中状态已更新:', jobId, newStatus);
+                        onStatusChange={(updatedJobId, newStatus) => {
+                          dispatch(setJobStatus({ jobId: updatedJobId, newStatus }));
+                          console.log('列表 Redux store 状态已通过 setJobStatus 更新:', updatedJobId, newStatus);
                         }}
                       />
                     </div>

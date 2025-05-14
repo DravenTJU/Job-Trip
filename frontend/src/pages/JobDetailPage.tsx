@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
-import { fetchJob, deleteJob } from '@/redux/slices/jobsSlice';
+import { fetchJob, deleteJob, setJobStatus } from '@/redux/slices/jobsSlice';
 import { ApplicationStatus, JobSource } from '@/types';
 import { getStatusStyle, getStatusIcon, getStatusLabel } from '@/utils/jobStatusUtils';
 import { 
@@ -172,10 +172,9 @@ const JobDetailPage: React.FC = () => {
             <StatusBadge 
               jobId={job._id} 
               status={job.status} 
-              onStatusChange={(jobId, newStatus) => {
-                // 可选：在后台同步Redux，但UI已由组件自己更新
-                // 我们不依赖这个回调来更新UI
-                console.log('状态已更新:', jobId, newStatus);
+              onStatusChange={(updatedJobId, newStatus) => {
+                dispatch(setJobStatus({ jobId: updatedJobId, newStatus }));
+                console.log('Redux store 状态已通过 setJobStatus 更新:', updatedJobId, newStatus);
               }}
             />
           </div>
