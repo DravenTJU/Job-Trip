@@ -11,7 +11,7 @@ const path = require('path');
 const fs = require('fs');
 
 // 加载环境变量
-dotenv.config({ path: path.join(__dirname, '../../.env') });
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 // MongoDB连接配置
 const MONGODB_URI = process.env.MONGODB_URI_TEST || 'mongodb://localhost:27017/jobtrip';
@@ -52,7 +52,6 @@ async function setupCollections(db) {
       { key: { company: 1 }, name: 'company_index' },
       { key: { title: 1 }, name: 'title_index' },
       { key: { createdAt: 1 }, name: 'createdAt_index' },
-      { key: { status: 1 }, name: 'status_index' },
       { key: { platform: 1 }, name: 'platform_index' }
     ]);
     console.log('✅ 职位集合和索引创建成功');
@@ -204,7 +203,6 @@ async function insertTestData(db) {
         ],
         salary: '100k-130k NZD',
         jobType: 'full-time',
-        status: 'new',
         source: 'linkedin',
         sourceId: 'linkedin-job-123',
         sourceUrl: 'https://linkedin.com/jobs/view/linkedin-job-123',
@@ -228,7 +226,6 @@ async function insertTestData(db) {
         ],
         salary: '90k-120k NZD',
         jobType: 'full-time',
-        status: 'new',
         source: 'seek',
         sourceId: 'seek-job-456',
         sourceUrl: 'https://seek.com/jobs/seek-job-456',
@@ -252,7 +249,6 @@ async function insertTestData(db) {
         ],
         salary: '85k-105k NZD',
         jobType: 'full-time',
-        status: 'new',
         source: 'indeed',
         sourceId: 'indeed-job-789',
         sourceUrl: 'https://indeed.com/jobs/indeed-job-789',
@@ -276,7 +272,6 @@ async function insertTestData(db) {
         ],
         salary: '80k-100k NZD',
         jobType: 'full-time',
-        status: 'new',
         source: 'seek',
         sourceId: 'seek-job-101',
         sourceUrl: 'https://seek.com/jobs/seek-job-101',
@@ -300,7 +295,6 @@ async function insertTestData(db) {
         ],
         salary: '120k-150k NZD',
         jobType: 'full-time',
-        status: 'new',
         source: 'linkedin',
         sourceId: 'linkedin-job-202',
         sourceUrl: 'https://linkedin.com/jobs/view/linkedin-job-202',

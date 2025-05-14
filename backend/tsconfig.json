@@ -16,6 +16,6 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "scripts/initdb.js"],
   "exclude": ["node_modules", "**/*.test.ts"]
 } 

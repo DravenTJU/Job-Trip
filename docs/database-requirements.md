@@ -153,7 +153,6 @@
   requirements: [String], // 职位要求
   salary: String,         // 薪资范围
   jobType: String,       // 工作类型
-  status: String,        // 申请状态
   source: String,        // 数据来源
   sourceId: String,      // 平台职位原始ID
   sourceUrl: String,     // 原始链接
@@ -277,7 +276,6 @@
 - company (索引)
 - title (索引)
 - createdAt (索引)
-- status (索引)
 - platform (索引)
 
 ### 3.4 用户-职位关联集合索引
