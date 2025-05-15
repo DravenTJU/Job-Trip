@@ -28,6 +28,7 @@ import {
   HelpCircle
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 /**
  * 职位表单页面
@@ -38,6 +39,7 @@ const JobFormPage: React.FC = () => {
   const isEdit = !!id;
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { t } = useTranslation('jobs');
   
   // Redux状态
   const { job, isLoading: isJobLoading, error: jobError } = useSelector((state: RootState) => state.jobs);
@@ -98,7 +100,7 @@ const JobFormPage: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    console.log(`输入框 ${name} 变化，值为: ${value}`);
+    console.log(t('input_change_log', '输入框 {{name}} 变化，值为: {{value}}', { name, value }));
     setFormData(prev => ({
       ...prev,
       [name!]: value,
@@ -132,19 +134,19 @@ const JobFormPage: React.FC = () => {
   
   // 处理表单提交
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log('表单提交事件触发');
+    console.log(t('form_submit_log', '表单提交事件触发'));
     e.preventDefault();
     
     if (!validateForm()) {
-      console.log('表单校验未通过');
+      console.log(t('form_validation_failed', '表单校验未通过'));
       setSnackbar({
         open: true,
-        message: '请检查表单错误并重试',
+        message: t('check_form_errors', '请检查表单错误并重试'),
         severity: 'error'
       });
       return;
     }
-    console.log('表单校验通过，开始提交');
+    console.log(t('form_validation_passed', '表单校验通过，开始提交'));
     setIsSubmitting(true);
     
     try {
@@ -152,21 +154,21 @@ const JobFormPage: React.FC = () => {
         ...formData,
         sourceId: formData.sourceId || generateSourceId()
       };
-      console.log('提交数据:', submitData);
+      console.log(t('submit_data_log', '提交数据:'), submitData);
       
       if (isEdit && id) {
         await dispatch(updateJob({ id, data: submitData })).unwrap();
         setSnackbar({
           open: true,
-          message: '职位更新成功',
+          message: t('job_update_success', '职位更新成功'),
           severity: 'success'
         });
       } else {
         await dispatch(createJob(submitData)).unwrap();
-        console.log('提交成功');
+        console.log(t('submit_success', '提交成功'));
         setSnackbar({
           open: true,
-          message: '职位创建成功',
+          message: t('job_create_success', '职位创建成功'),
           severity: 'success'
         });
       }
@@ -176,10 +178,10 @@ const JobFormPage: React.FC = () => {
         navigate('/jobs');
       }, 1500);
     } catch (error) {
-      console.log('提交失败:', error);
+      console.log(t('submit_failed', '提交失败:'), error);
       setSnackbar({
         open: true,
-        message: '保存失败，请重试',
+        message: t('save_failed', '保存失败，请重试'),
         severity: 'error'
       });
     } finally {
@@ -189,36 +191,36 @@ const JobFormPage: React.FC = () => {
   
   // 表单验证
   const validateForm = (): boolean => {
-    console.log('开始表单校验');
+    console.log(t('start_form_validation', '开始表单校验'));
     const errors: Record<string, string> = {};
     
     // 验证标题
     if (!formData.title.trim()) {
-      errors.title = '请输入职位名称';
+      errors.title = t('enter_job_title', '请输入职位名称');
     }
     
     // 验证公司
     if (!formData.company.trim()) {
-      errors.company = '请输入公司名称';
+      errors.company = t('enter_company_name', '请输入公司名称');
     }
 
     // 验证工作地点
     if (!formData.location.trim()) {
-      errors.location = '请输入工作地点';
+      errors.location = t('enter_work_location', '请输入工作地点');
     }
 
     // 验证工作类型
     if (!formData.jobType) {
-      errors.jobType = '请选择工作类型';
+      errors.jobType = t('select_job_type', '请选择工作类型');
     } else if (!Object.values(JobType).includes(formData.jobType as JobType)) {
-      errors.jobType = '无效的工作类型';
+      errors.jobType = t('invalid_job_type', '无效的工作类型');
     }
 
     // 验证平台
     if (!formData.platform) {
-      errors.platform = '请选择平台';
+      errors.platform = t('select_platform', '请选择平台');
     } else if (!platformOptions.some(option => option.value === formData.platform)) {
-      errors.platform = '无效的平台';
+      errors.platform = t('invalid_platform', '无效的平台');
     }
 
     // 验证来源
@@ -229,9 +231,9 @@ const JobFormPage: React.FC = () => {
     // 验证职位链接
     if (formData.platform !== 'manual') {
       if (!formData.sourceUrl) {
-        errors.sourceUrl = '请输入职位链接';
+        errors.sourceUrl = t('enter_job_link', '请输入职位链接');
       } else if (!formData.sourceUrl.startsWith('http://') && !formData.sourceUrl.startsWith('https://')) {
-        errors.sourceUrl = '请输入有效的职位链接';
+        errors.sourceUrl = t('enter_valid_job_link', '请输入有效的职位链接');
       }
     }
 
@@ -241,7 +243,7 @@ const JobFormPage: React.FC = () => {
     }
     
     setFormErrors(errors);
-    console.log('表单校验错误详情:', errors);
+    console.log(t('form_validation_errors', '表单校验错误详情:'), errors);
     return Object.keys(errors).length === 0;
   };
   
@@ -250,11 +252,11 @@ const JobFormPage: React.FC = () => {
 
   // 工作类型选项
   const jobTypeOptions = [
-    { value: JobType.FULL_TIME, label: '全职' },
-    { value: JobType.PART_TIME, label: '兼职' },
-    { value: JobType.CONTRACT, label: '合同工' },
-    { value: JobType.FREELANCE, label: '自由职业' },
-    { value: JobType.INTERNSHIP, label: '实习' }
+    { value: JobType.FULL_TIME, label: t('full_time', '全职') },
+    { value: JobType.PART_TIME, label: t('part_time', '兼职') },
+    { value: JobType.CONTRACT, label: t('contract', '合同工') },
+    { value: JobType.FREELANCE, label: t('freelance', '自由职业') },
+    { value: JobType.INTERNSHIP, label: t('internship', '实习') }
   ];
 
   // 平台选项
@@ -262,7 +264,7 @@ const JobFormPage: React.FC = () => {
     { value: JobSource.SEEK, label: 'Seek' },
     { value: JobSource.LINKEDIN, label: 'LinkedIn' },
     { value: JobSource.INDEED, label: 'Indeed' },
-    { value: JobSource.OTHER, label: '其他' }
+    { value: JobSource.OTHER, label: t('other', '其他') }
   ];
 
   // 生成唯一的sourceId
@@ -305,7 +307,7 @@ const JobFormPage: React.FC = () => {
                 <ArrowLeft className="w-5 h-5" />
               </button>
               <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                {isEdit ? '编辑职位' : '添加职位'}
+                {isEdit ? t('edit_job', '编辑职位') : t('add_job', '添加职位')}
               </h1>
             </div>
           </div>
@@ -324,12 +326,12 @@ const JobFormPage: React.FC = () => {
             {/* 基本信息 */}
             <div className="space-y-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                基本信息
+                {t('basic_info', '基本信息')}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    职位名称
+                    {t('job_title', '职位名称')}
                   </label>
                   <input
                     type="text"
@@ -351,7 +353,7 @@ const JobFormPage: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    公司名称
+                    {t('company_name', '公司名称')}
                   </label>
                   <input
                     type="text"
@@ -373,7 +375,7 @@ const JobFormPage: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    工作地点
+                    {t('work_location', '工作地点')}
                   </label>
                   <input
                     type="text"
@@ -395,7 +397,7 @@ const JobFormPage: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    职位状态
+                    {t('job_status', '职位状态')}
                   </label>
                   <StatusSelect
                     name="status"
@@ -417,7 +419,7 @@ const JobFormPage: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    职位类型
+                    {t('job_type', '职位类型')}
                   </label>
                   <select
                     name="jobType"
@@ -429,7 +431,7 @@ const JobFormPage: React.FC = () => {
                         : 'ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500'
                     } transition-shadow`}
                   >
-                    <option value="">请选择职位类型</option>
+                    <option value="">{t('select_job_type_placeholder', '请选择职位类型')}</option>
                     {jobTypeOptions.map(option => (
                       <option key={option.value} value={option.value}>
                         {option.label}
@@ -451,12 +453,12 @@ const JobFormPage: React.FC = () => {
             <div className="space-y-6">
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                  职位来源
+                  {t('job_source', '职位来源')}
                 </h2>
                 <button
                   type="button"
                   className="p-1 rounded-lg text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
-                  title="选择职位的来源平台，如果是手动添加则无需填写职位链接"
+                  title={t('source_help_tooltip', '选择职位的来源平台，如果是手动添加则无需填写职位链接')}
                 >
                   <HelpCircle className="w-4 h-4" />
                 </button>
@@ -464,7 +466,7 @@ const JobFormPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    来源平台
+                    {t('source_platform', '来源平台')}
                   </label>
                   <select
                     name="platform"
@@ -485,7 +487,7 @@ const JobFormPage: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    职位链接
+                    {t('job_link', '职位链接')}
                   </label>
                   <input
                     type="url"
@@ -502,7 +504,7 @@ const JobFormPage: React.FC = () => {
             {/* 职位描述 */}
             <div className="space-y-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                职位描述
+                {t('job_description', '职位描述')}
               </h2>
               <div>
                 <textarea
@@ -511,7 +513,7 @@ const JobFormPage: React.FC = () => {
                   onChange={handleChange}
                   rows={6}
                   className="w-full p-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                  placeholder="请输入职位描述、要求等信息..."
+                  placeholder={t('job_description_placeholder', '请输入职位描述、要求等信息...')}
                 />
               </div>
             </div>
@@ -524,7 +526,7 @@ const JobFormPage: React.FC = () => {
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors disabled:bg-gray-200 disabled:text-gray-500 disabled:shadow-none"
               >
                 <Save className="w-4 h-4" />
-                {isSubmitting ? '保存中...' : '保存'}
+                {isSubmitting ? t('saving', '保存中...') : t('save', '保存')}
               </button>
             </div>
           </form>
