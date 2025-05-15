@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import Header from './Header';
-import Footer from './Footer';
+// import Header from './Header';
+// import Footer from './Footer';
 import Sidebar from './Sidebar';
 import { useAppSelector } from '@/hooks/reduxHooks';
 
@@ -20,11 +20,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   if (!isAuthenticated) {
     return (
       <div className="layout">
-        <Header />
+        {/* <Header /> */}
         <main className="main-content">
           {children}
         </main>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     );
   }

@@ -14,7 +14,7 @@ const lazyWithLanguageUpdates = (importFunc: () => Promise<any>) => {
 };
 
 // 懒加载组件
-const HomePage = lazyWithLanguageUpdates(() => import('@/pages/HomePage'));
+const LandingPage = lazyWithLanguageUpdates(() => import('@/pages/LandingPage'));
 const DashboardPage = lazyWithLanguageUpdates(() => import('@/pages/DashboardPage'));
 const WelcomePage = lazyWithLanguageUpdates(() => import('@/pages/WelcomePage'));
 const ResumeBuilderPage = lazyWithLanguageUpdates(() => import('@/pages/ResumeBuilderPage'));
@@ -72,7 +72,7 @@ const AppRoutes = () => {
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         
         {/* 带布局的公开路由 */}
-        <Route path="/" element={<LayoutRoute element={<HomePage />} />} />
+        <Route path="/" element={<LayoutRoute element={<LandingPage />} />} />
         
         {/* 需要认证的路由 */}
         <Route path="/dashboard" element={<ProtectedLayoutRoute element={<DashboardPage />} />} />

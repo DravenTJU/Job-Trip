@@ -1,0 +1,81 @@
+{
+  "meta": {
+    "title": "JobTrip - Your AI-Powered Job Application Assistant",
+    "description": "Simplify your job hunt with Chrome automation, intelligent resume builder, and one-click tracking"
+  },
+  "nav": {
+    "features": "Features",
+    "about": "About",
+    "pricing": "Pricing",
+    "login": "Log in",
+    "signup": "Sign up"
+  },
+  "hero": {
+    "title": "Your One-Stop AI-Powered Job Application Assistant",
+    "subtitle": "Simplify your job hunt with Chrome automation, intelligent resume builder, and one-click tracking.",
+    "primaryButton": "Try JobTrip Now",
+    "secondaryButton": "Install Chrome Extension"
+  },
+  "clientLogos": {
+    "title": "Trusted by job seekers across top companies"
+  },
+  "features": {
+    "extension": {
+      "title": "Install Chrome Extension",
+      "description": "Automatically capture job information from LinkedIn, Seek, and Indeed to boost efficiency.",
+      "button": "Download Extension"
+    },
+    "jobList": {
+      "title": "Browse Job Listings",
+      "description": "View jobs captured automatically or added manually in one centralized location.",
+      "button": "View Job List"
+    },
+    "tracking": {
+      "title": "Track Application Status",
+      "description": "Drag-and-drop kanban board to manage your application progress from applied to hired.",
+      "button": "Track Jobs"
+    },
+    "profile": {
+      "title": "Complete Your Profile",
+      "description": "Maintain education, work experience, and skills in one place to power other features.",
+      "button": "Edit Profile"
+    },
+    "resume": {
+      "title": "Generate Targeted Resumes",
+      "description": "One-click resume templates tailored to specific positions to increase interview chances.",
+      "button": "Create Resume"
+    },
+    "coverLetter": {
+      "title": "AI Personalized Cover Letters",
+      "description": "Paste job details, and AI generates high-quality cover letters in English and Chinese.",
+      "button": "Generate Cover Letter"
+    }
+  },
+  "testimonial": {
+    "text": "I was amazed at how quickly and efficiently this tool organized my job search. It's saved me countless hours tracking applications and following up with companies. I can't imagine my job search without it!",
+    "author": "Sarah Johnson",
+    "position": "Software Engineer"
+  },
+  "cta": {
+    "title": "Start Your Job Search Journey Today",
+    "subtitle": "Join thousands of job seekers who have simplified their application process",
+    "button": "Get Started For Free",
+    "secondaryButton": "Learn More"
+  },
+  "footer": {
+    "copyright": "© 2025 JobTrip. All rights reserved.",
+    "rights": "All rights reserved.",
+    "company": "Company",
+    "about": "About Us",
+    "careers": "Careers",
+    "blog": "Blog",
+    "resources": "Resources",
+    "help": "Help Center",
+    "faq": "FAQ",
+    "contact": "Contact Us",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "cookies": "Cookie Policy"
+  }
+} 

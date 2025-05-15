@@ -1,0 +1,81 @@
+{
+  "meta": {
+    "title": "职途助手 - 你的AI驱动求职应用助手",
+    "description": "通过Chrome自动化、智能简历生成器和一键跟踪简化您的求职过程"
+  },
+  "nav": {
+    "features": "功能",
+    "about": "关于我们",
+    "pricing": "价格",
+    "login": "登录",
+    "signup": "注册"
+  },
+  "hero": {
+    "title": "你的一站式AI驱动求职应用助手",
+    "subtitle": "通过Chrome自动化、智能简历生成器和一键跟踪简化您的求职过程。",
+    "primaryButton": "立即试用",
+    "secondaryButton": "安装Chrome扩展"
+  },
+  "clientLogos": {
+    "title": "受到各大公司求职者的信赖"
+  },
+  "features": {
+    "extension": {
+      "title": "一键安装，便捷抓取",
+      "description": "自动从LinkedIn、Seek和Indeed抓取职位信息，提升效率。",
+      "button": "立即安装"
+    },
+    "jobList": {
+      "title": "统一管理，一目了然",
+      "description": "在一个集中的位置查看自动抓取或手动添加的职位信息。",
+      "button": "查看职位"
+    },
+    "tracking": {
+      "title": "看板追踪，进度清晰",
+      "description": "使用拖拽式看板管理您的申请进展，从申请到入职一目了然。",
+      "button": "开始追踪"
+    },
+    "profile": {
+      "title": "个人档案，一次维护",
+      "description": "在一处维护教育、工作经验和技能信息，支持其他功能使用。",
+      "button": "完善资料"
+    },
+    "resume": {
+      "title": "智能简历，一键生成",
+      "description": "一键生成针对特定职位的简历模板，提高面试机会。",
+      "button": "制作简历"
+    },
+    "coverLetter": {
+      "title": "AI求职信，多语言支持",
+      "description": "粘贴职位信息，AI自动生成高质量中英文求职信。",
+      "button": "生成求职信"
+    }
+  },
+  "testimonial": {
+    "text": "我惊讶于这个工具如何快速高效地组织我的求职过程。它帮我节省了无数小时来追踪申请和跟进公司。我无法想象没有它的求职过程！",
+    "author": "张明",
+    "position": "软件工程师"
+  },
+  "cta": {
+    "title": "今天开始您的求职之旅",
+    "subtitle": "加入成千上万简化申请流程的求职者",
+    "button": "免费开始使用",
+    "secondaryButton": "了解更多"
+  },
+  "footer": {
+    "copyright": "© 2025 职途助手。保留所有权利。",
+    "rights": "保留所有权利。",
+    "company": "公司",
+    "about": "关于我们",
+    "careers": "招贤纳士",
+    "blog": "博客",
+    "resources": "资源",
+    "help": "帮助中心",
+    "faq": "常见问题",
+    "contact": "联系我们",
+    "legal": "法律",
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "cookies": "Cookie政策"
+  }
+} 

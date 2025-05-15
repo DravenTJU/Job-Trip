@@ -1,0 +1,81 @@
+{
+  "meta": {
+    "title": "職途助手 - 你的AI驅動求職應用助手",
+    "description": "通過Chrome自動化、智能履歷生成器和一鍵追蹤簡化您的求職過程"
+  },
+  "nav": {
+    "features": "功能",
+    "about": "關於我們",
+    "pricing": "價格",
+    "login": "登入",
+    "signup": "註冊"
+  },
+  "hero": {
+    "title": "你的一站式AI驅動求職應用助手",
+    "subtitle": "通過Chrome自動化、智能履歷生成器和一鍵追蹤簡化您的求職過程。",
+    "primaryButton": "立即試用",
+    "secondaryButton": "安裝Chrome擴充功能"
+  },
+  "clientLogos": {
+    "title": "受到各大公司求職者的信賴"
+  },
+  "features": {
+    "extension": {
+      "title": "一鍵安裝，便捷抓取",
+      "description": "自動從LinkedIn、Seek和Indeed抓取職位信息，提升效率。",
+      "button": "立即安裝"
+    },
+    "jobList": {
+      "title": "統一管理，一目瞭然",
+      "description": "在一個集中的位置查看自動抓取或手動添加的職位信息。",
+      "button": "查看職位"
+    },
+    "tracking": {
+      "title": "看板追蹤，進度清晰",
+      "description": "使用拖拽式看板管理您的申請進展，從申請到入職一目瞭然。",
+      "button": "開始追蹤"
+    },
+    "profile": {
+      "title": "個人檔案，一次維護",
+      "description": "在一處維護教育、工作經驗和技能信息，支持其他功能使用。",
+      "button": "完善資料"
+    },
+    "resume": {
+      "title": "智能履歷，一鍵生成",
+      "description": "一鍵生成針對特定職位的履歷模板，提高面試機會。",
+      "button": "製作履歷"
+    },
+    "coverLetter": {
+      "title": "AI求職信，多語言支持",
+      "description": "貼上職位信息，AI自動生成高質量中英文求職信。",
+      "button": "生成求職信"
+    }
+  },
+  "testimonial": {
+    "text": "我驚訝於這個工具如何快速高效地組織我的求職過程。它幫我節省了無數小時來追蹤申請和跟進公司。我無法想像沒有它的求職過程！",
+    "author": "張明",
+    "position": "軟體工程師"
+  },
+  "cta": {
+    "title": "今天開始您的求職之旅",
+    "subtitle": "加入成千上萬簡化申請流程的求職者",
+    "button": "免費開始使用",
+    "secondaryButton": "瞭解更多"
+  },
+  "footer": {
+    "copyright": "© 2025 職途助手。保留所有權利。",
+    "rights": "保留所有權利。",
+    "company": "公司",
+    "about": "關於我們",
+    "careers": "招賢納士",
+    "blog": "部落格",
+    "resources": "資源",
+    "help": "幫助中心",
+    "faq": "常見問題",
+    "contact": "聯繫我們",
+    "legal": "法律",
+    "privacy": "隱私政策",
+    "terms": "服務條款",
+    "cookies": "Cookie政策"
+  }
+} 

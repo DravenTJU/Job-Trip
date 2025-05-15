@@ -9,7 +9,7 @@ import {
   Users, 
   File, 
   Plus,
-  Star,
+  BriefcaseBusiness,
   PieChart,
   Briefcase,
   UserCircle,
@@ -100,7 +100,7 @@ const Sidebar: React.FC = () => {
         <div className="sidebar-logo">
           <div className="flex items-center">
             <div className="p-1.5 bg-indigo-100 rounded dark:bg-indigo-900">
-              <Star className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+              <BriefcaseBusiness className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             </div>
             <span className="ml-2 text-xl font-semibold text-gray-800 dark:text-white">{t('app.name', 'JobTrip')}</span>
           </div>
