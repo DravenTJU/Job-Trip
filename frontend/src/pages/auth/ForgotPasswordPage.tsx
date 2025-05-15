@@ -3,6 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, SendIcon } from 'lucide-react';
 import DecorationBlocks from '@/components/common/DecorationBlocks';
+import SettingsToggle from '@/components/common/SettingsToggle';
 
 /**
  * 忘记密码页面组件
@@ -44,21 +45,26 @@ const ForgotPasswordPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* 装饰方块 */}
       <DecorationBlocks count={6} />
       
       <div className="sm:mx-auto sm:w-full sm:max-w-md z-10">
-        <h2 className="text-center text-3xl font-bold text-gray-900 mb-2">
+        <h2 className="text-center text-3xl font-bold text-gray-900 dark:text-white mb-2">
           {t('auth:forgotPassword.title', '忘记密码')}
         </h2>
-        <p className="text-center text-sm text-gray-600 mb-6">
+        <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">
           {t('auth:forgotPassword.subtitle', '请输入您的邮箱，我们将发送重置密码的链接')}
         </p>
       </div>
 
       <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-md z-10">
-        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 px-6 py-8">
+        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 px-6 py-8 relative">
+          {/* 设置切换按钮 */}
+          <div className="absolute top-3 right-3">
+            <SettingsToggle />
+          </div>
+          
           {success ? (
             <div className="text-center">
               <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">

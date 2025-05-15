@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import { login, clearError } from '@/redux/slices/authSlice';
 import Loader from '@/components/common/Loader';
 import DecorationBlocks from '@/components/common/DecorationBlocks';
+import SettingsToggle from '@/components/common/SettingsToggle';
 
 /**
  * 登录页面组件
@@ -114,16 +115,21 @@ const LoginPage: React.FC = () => {
       <DecorationBlocks count={15} />
       
       <div className="sm:mx-auto sm:w-full sm:max-w-md z-10">
-        <h2 className="text-center text-3xl font-bold text-gray-900 mb-2">
+        <h2 className="text-center text-3xl font-bold text-gray-900 dark:text-white mb-2">
           {t('auth:login.title', '登录')}
         </h2>
-        <p className="text-center text-sm text-gray-600 mb-6">
+        <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">
           {t('auth:login.subtitle', '欢迎回来！请输入您的信息')}
         </p>
       </div>
 
       <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-md z-10">
-        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 px-6 py-8">
+        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 px-6 py-8 relative">
+          {/* 设置切换按钮 */}
+          <div className="absolute top-3 right-3">
+            <SettingsToggle />
+          </div>
+          
           {/* 错误提示 */}
           {error && (
             <div className="mb-4 rounded-xl bg-red-50 dark:bg-red-500/10 p-4 text-red-600 dark:text-red-400">
@@ -218,7 +224,7 @@ const LoginPage: React.FC = () => {
                 <div className="w-full border-t border-gray-300"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">
+                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">
                   {t('auth:login.or', '或者')}
                 </span>
               </div>
@@ -229,23 +235,12 @@ const LoginPage: React.FC = () => {
                 href="#"
                 className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
               >
-                <svg className="h-5 w-5" aria-hidden="true" viewBox="0 0 24 24">
-                  <path
-                    d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                    fill="#4285F4"
-                  />
-                  <path
-                    d="M6.44 14.08l7.227-7.227 2.587 2.58-7.227 7.227z"
-                    fill="#34A853"
-                  />
-                  <path
-                    d="M14.08 17.613l2.584-2.587-2.587-2.587-2.584 2.587z"
-                    fill="#FBBC05"
-                  />
-                  <path
-                    d="M12.48 7.173l7.88 7.88-7.88 7.88-7.88-7.88z"
-                    fill="#EA4335"
-                  />
+                <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                  <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                  <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                  <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                  <path fill="none" d="M0 0h48v48H0z"/>
                 </svg>
                 {t('auth:login.continueWithGoogle', '使用Google账号登录')}
               </a>

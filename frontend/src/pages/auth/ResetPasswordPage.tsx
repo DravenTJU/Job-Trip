@@ -3,6 +3,7 @@ import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import DecorationBlocks from '@/components/common/DecorationBlocks';
+import SettingsToggle from '@/components/common/SettingsToggle';
 
 /**
  * 重置密码页面组件
@@ -154,7 +155,12 @@ const ResetPasswordPage: React.FC = () => {
       </div>
 
       <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-md z-10">
-        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 px-6 py-8">
+        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 px-6 py-8 relative">
+          {/* 设置切换按钮 */}
+          <div className="absolute top-3 right-3">
+            <SettingsToggle />
+          </div>
+          
           {!isSuccess ? (
             <>
               {/* 错误提示 */}
