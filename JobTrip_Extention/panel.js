@@ -178,7 +178,6 @@ let scrapedJobs = []
 const JOB_DATA_STRUCTURE = {
   totalJobs: 0,
   timestamp: '',
-  userToken: '',
   jobs: [{
     title: '',
     company: '',
@@ -201,12 +200,11 @@ const JOB_DATA_STRUCTURE = {
 };
 
 // 格式化工作數據的函數
-export const formatJobData = (jobs, userToken) => {
+export const formatJobData = (jobs) => {
   return {
     ...JOB_DATA_STRUCTURE,
     totalJobs: jobs.length,
     timestamp: new Date().toISOString(),
-    userToken: userToken,
     jobs: jobs.map(job => {
       // 从 sourceUrl 提取 ID
       let sourceId = '';
@@ -296,14 +294,16 @@ const apiExporter = {
           return;
         }
 
-        const exportData = formatJobData(scrapedJobs, userToken);
-        console.log('Exporting jobs:', exportData)
+        // 将 userToken 从请求体中移除，因为它将通过 Authorization header 发送
+        const exportData = formatJobData(scrapedJobs); 
+        console.log('Exporting jobs (without token in body):', exportData)
         console.log('API_ENDPOINT:', API_ENDPOINT)
         const apiResponse = await fetch(API_ENDPOINT, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${userToken}` // 在这里添加 Authorization header
           },
           body: JSON.stringify(exportData)
         });
@@ -448,7 +448,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
-      const jsonData = formatJobData(scrapedJobs, userToken);
+      const jsonData = formatJobData(scrapedJobs);
       
       const jsonString = JSON.stringify(jsonData, null, 2)
       const blob = new Blob([jsonString], { type: 'application/json' })

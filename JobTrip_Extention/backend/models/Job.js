@@ -69,10 +69,6 @@ const jobSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
-  userToken: {
-    type: String,
-    default: ''
-  },
   createdAt: {
     type: Date,
     default: Date.now
