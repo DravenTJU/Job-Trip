@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface Step {
   title: string;
@@ -11,10 +12,12 @@ interface WizardStepsProps {
 }
 
 const WizardSteps: React.FC<WizardStepsProps> = ({ steps, currentStep }) => {
+  const { t } = useTranslation('profile');
+  
   return (
     <div className="overflow-hidden">
       <div className="border-b border-gray-200 dark:border-gray-700">
-        <nav className="-mb-px flex space-x-6 overflow-x-auto" aria-label="步骤导航">
+        <nav className="-mb-px flex space-x-6 overflow-x-auto" aria-label={t('steps_navigation', '步骤导航')}>
           {steps.map((step, index) => (
             <div
               key={index}

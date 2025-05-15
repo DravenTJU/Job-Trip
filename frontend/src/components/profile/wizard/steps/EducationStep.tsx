@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface EducationStepProps {
   data: any;
@@ -19,6 +20,7 @@ interface Education {
 }
 
 const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, onPrevious, onSkip }) => {
+  const { t } = useTranslation('profile');
   const [educations, setEducations] = useState<Education[]>(data.educations || []);
   const [currentEducation, setCurrentEducation] = useState<Education>({
     institution: '',
@@ -54,22 +56,22 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
     let isValid = true;
 
     if (!currentEducation.institution.trim()) {
-      newErrors.institution = '请输入学校/机构名称';
+      newErrors.institution = t('please_enter_institution', '请输入学校/机构名称');
       isValid = false;
     }
 
     if (!currentEducation.degree.trim()) {
-      newErrors.degree = '请输入学位/证书名称';
+      newErrors.degree = t('please_enter_degree', '请输入学位/证书名称');
       isValid = false;
     }
 
     if (!currentEducation.field.trim()) {
-      newErrors.field = '请输入专业/领域';
+      newErrors.field = t('please_enter_field', '请输入专业/领域');
       isValid = false;
     }
 
     if (!currentEducation.startDate.trim()) {
-      newErrors.startDate = '请选择开始日期';
+      newErrors.startDate = t('please_select_start_date', '请选择开始日期');
       isValid = false;
     }
 
@@ -142,12 +144,12 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">教育经历</h2>
+      <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">{t('education', '教育经历')}</h2>
       
       {/* 已添加的教育经历列表 */}
       {educations.length > 0 ? (
         <div className="mb-6">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-3">已添加的教育经历</h3>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-3">{t('added_education', '已添加的教育经历')}</h3>
           <div className="space-y-4">
             {educations.map((education, index) => (
               <div key={index} className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 overflow-hidden hover:shadow-lg transition-all duration-200">
@@ -158,7 +160,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
                       {education.degree} • {education.field}
                     </p>
                     <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">
-                      {education.startDate} - {education.endDate || '至今'}
+                      {education.startDate} - {education.endDate || t('present', '至今')}
                     </p>
                     {education.location && (
                       <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">{education.location}</p>
@@ -173,14 +175,14 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
                       onClick={() => handleEditEducation(index)}
                       className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                     >
-                      编辑
+                      {t('edit', '编辑')}
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDeleteEducation(index)}
                       className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium bg-red-50/50 dark:bg-red-900/50 backdrop-blur-lg ring-2 ring-red-600/10 dark:ring-red-500/10 hover:bg-red-100/50 dark:hover:bg-red-800/50 text-red-600 dark:text-red-400 transition-colors"
                     >
-                      删除
+                      {t('delete', '删除')}
                     </button>
                   </div>
                 </div>
@@ -204,8 +206,8 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
               d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
             />
           </svg>
-          <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">没有教育经历</h3>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">添加您的教育背景信息以增强您的档案</p>
+          <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">{t('no_education', '没有教育经历')}</h3>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{t('add_education_prompt', '添加您的教育背景信息以增强您的档案')}</p>
         </div>
       )}
 
@@ -215,7 +217,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
           <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
             <div className="sm:col-span-3">
               <label htmlFor="institution" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                学校/机构 <span className="text-red-500">*</span>
+                {t('school', '学校/机构')} <span className="text-red-500">*</span>
               </label>
               <div className="mt-1">
                 <input
@@ -234,7 +236,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
 
             <div className="sm:col-span-3">
               <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                地点
+                {t('location', '地点')}
               </label>
               <div className="mt-1">
                 <input
@@ -250,7 +252,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
 
             <div className="sm:col-span-3">
               <label htmlFor="degree" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                学位/证书 <span className="text-red-500">*</span>
+                {t('degree', '学位/证书')} <span className="text-red-500">*</span>
               </label>
               <div className="mt-1">
                 <input
@@ -269,7 +271,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
 
             <div className="sm:col-span-3">
               <label htmlFor="field" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                专业/领域 <span className="text-red-500">*</span>
+                {t('major', '专业/领域')} <span className="text-red-500">*</span>
               </label>
               <div className="mt-1">
                 <input
@@ -288,7 +290,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
 
             <div className="sm:col-span-3">
               <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                开始日期 <span className="text-red-500">*</span>
+                {t('start_date', '开始日期')} <span className="text-red-500">*</span>
               </label>
               <div className="mt-1">
                 <input
@@ -307,7 +309,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
 
             <div className="sm:col-span-3">
               <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                结束日期
+                {t('end_date', '结束日期')}
               </label>
               <div className="mt-1">
                 <input
@@ -323,7 +325,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
 
             <div className="sm:col-span-6">
               <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                描述
+                {t('description', '描述')}
               </label>
               <div className="mt-1">
                 <textarea
@@ -333,7 +335,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
                   value={currentEducation.description}
                   onChange={handleChange}
                   className="w-full bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow px-4 py-3 dark:text-gray-100"
-                  placeholder="您可以描述学习成果、课程、活动或其他相关信息"
+                  placeholder={t('education_description_placeholder', '您可以描述学习成果、课程、活动或其他相关信息')}
                 />
               </div>
             </div>
@@ -345,13 +347,13 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
               onClick={handleCancelEdit}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
             >
-              取消
+              {t('cancel', '取消')}
             </button>
             <button
               type="submit"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
             >
-              {editIndex >= 0 ? '更新' : '添加'}
+              {editIndex >= 0 ? t('update', '更新') : t('add', '添加')}
             </button>
           </div>
         </form>
@@ -371,7 +373,7 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
-            添加教育经历
+            {t('add_education', '添加教育经历')}
           </button>
         </div>
       )}

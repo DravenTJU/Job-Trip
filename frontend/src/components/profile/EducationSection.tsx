@@ -3,6 +3,7 @@ import { useAppDispatch } from '@/hooks/reduxHooks';
 import { Education } from '../../types/profile';
 import ProfileSection from './ProfileSection';
 import EducationForm from './forms/EducationForm';
+import { useTranslation } from 'react-i18next';
 import { 
   addEducation, 
   updateEducation,
@@ -15,6 +16,7 @@ interface EducationSectionProps {
 
 const EducationSection: React.FC<EducationSectionProps> = ({ educations }) => {
   const dispatch = useAppDispatch();
+  const { t, i18n } = useTranslation('profile');
   const [editingItem, setEditingItem] = useState<Education | null>(null);
   const [isAdding, setIsAdding] = useState(false);
 
@@ -40,7 +42,7 @@ const EducationSection: React.FC<EducationSectionProps> = ({ educations }) => {
   };
 
   const handleDelete = (educationId: string) => {
-    if (window.confirm('确定要删除此教育经历吗？')) {
+    if (window.confirm(t('confirm_delete_education', '确定要删除此教育经历吗？'))) {
       dispatch(deleteEducation(educationId));
     }
   };
@@ -62,10 +64,10 @@ const EducationSection: React.FC<EducationSectionProps> = ({ educations }) => {
 
   return (
     <ProfileSection
-      title="教育经历"
+      title={t('education', '教育经历')}
       onAddNew={handleAddNew}
       isEmpty={educations.length === 0}
-      emptyMessage="添加你的教育经历，包括学校、学位和专业"
+      emptyMessage={t('add_education_prompt', '添加你的教育经历，包括学校、学位和专业')}
     >
       <div className="space-y-6">
         {educations.map((education) => (
@@ -107,7 +109,7 @@ const EducationSection: React.FC<EducationSectionProps> = ({ educations }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
               </svg>
               <span>
-                {new Date(education.startDate).getFullYear()} - {education.endDate ? new Date(education.endDate).getFullYear() : '至今'}
+                {new Date(education.startDate).getFullYear()} - {education.endDate ? new Date(education.endDate).getFullYear() : t('present', '至今')}
               </span>
             </div>
             

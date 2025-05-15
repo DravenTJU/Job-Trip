@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ContactInfoStepProps {
   data: any;
@@ -8,6 +9,7 @@ interface ContactInfoStepProps {
 }
 
 const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNext, onPrevious }) => {
+  const { t } = useTranslation('profile');
   const [formData, setFormData] = useState({
     contactInfo: {
       email: data.contactInfo?.email || '',
@@ -70,7 +72,7 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
     
     // 验证邮箱格式（如果填写了）
     if (formData.contactInfo.email && !/^\S+@\S+\.\S+$/.test(formData.contactInfo.email)) {
-      newErrors.email = '请输入有效的电子邮箱地址';
+      newErrors.email = t('invalid_email', '请输入有效的电子邮箱地址');
       isValid = false;
     }
     
@@ -89,13 +91,13 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">联系信息</h2>
+      <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">{t('contact_info', '联系信息')}</h2>
       
       <form onSubmit={handleSubmit}>
         <div className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              电子邮箱
+              {t('email', '电子邮箱')}
             </label>
             <div className="mt-1">
               <input
@@ -115,7 +117,7 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
           
           <div>
             <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              电话号码
+              {t('phone', '电话号码')}
             </label>
             <div className="mt-1">
               <input
@@ -132,7 +134,7 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
           
           <div>
             <label htmlFor="website" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              个人网站
+              {t('personal_website', '个人网站')}
             </label>
             <div className="mt-1">
               <input
@@ -149,7 +151,7 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
           
           <div>
             <label htmlFor="address" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              地址
+              {t('location', '地址')}
             </label>
             <div className="mt-1">
               <input
@@ -159,13 +161,13 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
                 value={formData.contactInfo.address}
                 onChange={handleChange}
                 className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow dark:text-gray-100"
-                placeholder="城市, 国家"
+                placeholder={t('location_placeholder', '城市, 国家')}
               />
             </div>
           </div>
           
           <div className="border-t border-gray-200 dark:border-gray-700 pt-5">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">社交媒体</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{t('social_media', '社交媒体')}</h3>
             
             <div className="mt-4 space-y-4">
               <div>

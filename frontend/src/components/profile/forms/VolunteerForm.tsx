@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { VolunteerExperience } from '../../../types/profile';
+import { useTranslation } from 'react-i18next';
 
 interface VolunteerFormProps {
   initialData?: VolunteerExperience;
@@ -8,6 +9,7 @@ interface VolunteerFormProps {
 }
 
 const VolunteerForm: React.FC<VolunteerFormProps> = ({ initialData, onSave, onCancel }) => {
+  const { t } = useTranslation('profile');
   const [formData, setFormData] = useState<VolunteerExperience>(
     initialData || {
       organization: '',
@@ -42,12 +44,12 @@ const VolunteerForm: React.FC<VolunteerFormProps> = ({ initialData, onSave, onCa
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-        {initialData ? '编辑志愿者经历' : '添加志愿者经历'}
+        {initialData ? t('edit_volunteer', '编辑志愿者经历') : t('add_volunteer', '添加志愿者经历')}
       </h2>
       
       <div>
         <label htmlFor="organization" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          组织名称 *
+          {t('organization_name', '组织名称')} *
         </label>
         <input
           type="text"
@@ -56,14 +58,14 @@ const VolunteerForm: React.FC<VolunteerFormProps> = ({ initialData, onSave, onCa
           value={formData.organization}
           onChange={handleChange}
           required
-          placeholder="例如：红十字会"
+          placeholder={t('organization_name_placeholder', '例如：红十字会')}
           className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
         />
       </div>
       
       <div>
         <label htmlFor="role" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          担任角色 *
+          {t('volunteer_role', '担任角色')} *
         </label>
         <input
           type="text"
@@ -72,7 +74,7 @@ const VolunteerForm: React.FC<VolunteerFormProps> = ({ initialData, onSave, onCa
           value={formData.role}
           onChange={handleChange}
           required
-          placeholder="例如：志愿者协调员"
+          placeholder={t('volunteer_role_placeholder', '例如：志愿者协调员')}
           className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
         />
       </div>
@@ -80,7 +82,7 @@ const VolunteerForm: React.FC<VolunteerFormProps> = ({ initialData, onSave, onCa
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            开始日期 *
+            {t('start_date', '开始日期')} *
           </label>
           <input
             type="date"
@@ -96,7 +98,7 @@ const VolunteerForm: React.FC<VolunteerFormProps> = ({ initialData, onSave, onCa
         <div>
           <div className="flex items-center justify-between">
             <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              结束日期 {isOngoing ? '' : '*'}
+              {t('end_date', '结束日期')} {isOngoing ? '' : '*'}
             </label>
             <div className="flex items-center">
               <input
@@ -107,7 +109,7 @@ const VolunteerForm: React.FC<VolunteerFormProps> = ({ initialData, onSave, onCa
                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
               <label htmlFor="isOngoing" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                仍在进行
+                {t('ongoing', '仍在进行')}
               </label>
             </div>
           </div>
@@ -126,7 +128,7 @@ const VolunteerForm: React.FC<VolunteerFormProps> = ({ initialData, onSave, onCa
       
       <div>
         <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          经历描述 *
+          {t('volunteer_description', '经历描述')} *
         </label>
         <textarea
           id="description"
@@ -135,7 +137,7 @@ const VolunteerForm: React.FC<VolunteerFormProps> = ({ initialData, onSave, onCa
           onChange={handleChange}
           required
           rows={4}
-          placeholder="描述你的志愿者工作内容、责任和成就"
+          placeholder={t('volunteer_description_placeholder', '描述你的志愿者工作内容、责任和成就')}
           className="w-full px-4 py-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
         />
       </div>
@@ -146,13 +148,13 @@ const VolunteerForm: React.FC<VolunteerFormProps> = ({ initialData, onSave, onCa
           onClick={onCancel}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
         >
-          取消
+          {t('cancel', '取消')}
         </button>
         <button
           type="submit"
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
         >
-          保存
+          {t('save', '保存')}
         </button>
       </div>
     </form>

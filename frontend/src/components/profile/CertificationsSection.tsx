@@ -3,6 +3,7 @@ import { useAppDispatch } from '@/hooks/reduxHooks';
 import { Certification } from '../../types/profile';
 import ProfileSection from './ProfileSection';
 import CertificationForm from './forms/CertificationForm';
+import { useTranslation } from 'react-i18next';
 import { 
   addCertification, 
   updateCertification,
@@ -15,6 +16,7 @@ interface CertificationsSectionProps {
 
 const CertificationsSection: React.FC<CertificationsSectionProps> = ({ certifications }) => {
   const dispatch = useAppDispatch();
+  const { t, i18n } = useTranslation('profile');
   const [editingItem, setEditingItem] = useState<Certification | null>(null);
   const [isAdding, setIsAdding] = useState(false);
 
@@ -40,7 +42,7 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({ certifica
   };
 
   const handleDelete = (certificationId: string) => {
-    if (window.confirm('确定要删除此证书吗？')) {
+    if (window.confirm(t('confirm_delete_certification', '确定要删除此证书吗？'))) {
       dispatch(deleteCertification(certificationId));
     }
   };
@@ -62,10 +64,10 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({ certifica
 
   return (
     <ProfileSection
-      title="证书与认证"
+      title={t('certifications', '证书与认证')}
       onAddNew={handleAddNew}
       isEmpty={certifications.length === 0}
-      emptyMessage="添加你获得的专业证书和认证"
+      emptyMessage={t('add_certifications_prompt', '添加你获得的专业证书和认证')}
     >
       <div className="space-y-6">
         {certifications.map((certification) => (
@@ -107,9 +109,9 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({ certifica
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
               </svg>
               <span>
-                颁发于 {new Date(certification.issueDate).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long' })}
-                {certification.expirationDate && ` · 有效期至 ${new Date(certification.expirationDate).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long' })}`}
-                {!certification.expirationDate && ' · 永久有效'}
+                {t('issued_on', '颁发于')} {new Date(certification.issueDate).toLocaleDateString(i18n.language === 'zh-CN' ? 'zh-CN' : 'en-US', { year: 'numeric', month: 'long' })}
+                {certification.expirationDate && ` · ${t('valid_until', '有效期至')} ${new Date(certification.expirationDate).toLocaleDateString(i18n.language === 'zh-CN' ? 'zh-CN' : 'en-US', { year: 'numeric', month: 'long' })}`}
+                {!certification.expirationDate && ` · ${t('never_expires', '永久有效')}`}
               </span>
             </div>
             
@@ -118,7 +120,7 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({ certifica
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-1">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" />
                 </svg>
-                <span>证书编号: {certification.credentialId}</span>
+                <span>{t('credential_id', '证书编号')}: {certification.credentialId}</span>
               </div>
             )}
             
@@ -133,7 +135,7 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({ certifica
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
                   </svg>
-                  查看证书
+                  {t('view_credential', '查看证书')}
                 </a>
               </div>
             )}

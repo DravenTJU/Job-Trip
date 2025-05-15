@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Project } from '../../../types/profile';
+import { useTranslation } from 'react-i18next';
 
 interface ProjectFormProps {
   initialData?: Project;
@@ -8,6 +9,7 @@ interface ProjectFormProps {
 }
 
 const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSave, onCancel }) => {
+  const { t } = useTranslation('profile');
   const [formData, setFormData] = useState<Project>(
     initialData || {
       name: '',
@@ -68,12 +70,12 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSave, onCancel
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-        {initialData ? '编辑项目' : '添加项目'}
+        {initialData ? t('edit_project', '编辑项目') : t('add_project', '添加项目')}
       </h2>
       
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          项目名称 *
+          {t('project_name', '项目名称')} *
         </label>
         <input
           type="text"
@@ -82,7 +84,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSave, onCancel
           value={formData.name}
           onChange={handleChange}
           required
-          placeholder="例如：电商平台重构"
+          placeholder={t('project_name_placeholder', '例如：电商平台重构')}
           className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
         />
       </div>
@@ -90,7 +92,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSave, onCancel
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            开始日期 *
+            {t('start_date', '开始日期')} *
           </label>
           <input
             type="date"
@@ -106,7 +108,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSave, onCancel
         <div>
           <div className="flex items-center justify-between">
             <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              结束日期 {isOngoing ? '' : '*'}
+              {t('end_date', '结束日期')} {isOngoing ? '' : '*'}
             </label>
             <div className="flex items-center">
               <input
@@ -117,7 +119,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSave, onCancel
                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
               <label htmlFor="isOngoing" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                正在进行
+                {t('ongoing', '正在进行')}
               </label>
             </div>
           </div>
@@ -136,7 +138,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSave, onCancel
       
       <div>
         <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          项目描述 *
+          {t('project_description', '项目描述')} *
         </label>
         <textarea
           id="description"
@@ -145,14 +147,14 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSave, onCancel
           onChange={handleChange}
           required
           rows={4}
-          placeholder="描述项目的目标、你的角色和主要职责"
+          placeholder={t('project_description_placeholder', '描述项目的目标、你的角色和主要职责')}
           className="w-full px-4 py-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
         />
       </div>
       
       <div>
         <label htmlFor="url" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          项目链接
+          {t('project_url', '项目链接')}
         </label>
         <input
           type="url"
@@ -164,13 +166,13 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSave, onCancel
           className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
         />
         <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          项目的网站、仓库或演示链接（如有）
+          {t('project_url_help', '项目的网站、仓库或演示链接（如有）')}
         </p>
       </div>
       
       <div>
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          使用技术
+          {t('technologies_used', '使用技术')}
         </label>
         
         <div className="space-y-3">
@@ -180,7 +182,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSave, onCancel
               value={newTechnology}
               onChange={(e) => setNewTechnology(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="添加技术或工具（按Enter添加）"
+              placeholder={t('technologies_placeholder', '添加技术或工具（按Enter添加）')}
               className="flex-1 h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
             />
             <button
@@ -191,7 +193,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSave, onCancel
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
-              添加
+              {t('add', '添加')}
             </button>
           </div>
           
@@ -225,13 +227,13 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSave, onCancel
           onClick={onCancel}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
         >
-          取消
+          {t('cancel', '取消')}
         </button>
         <button
           type="submit"
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
         >
-          保存
+          {t('save', '保存')}
         </button>
       </div>
     </form>

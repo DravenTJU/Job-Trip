@@ -3,6 +3,7 @@ import { useAppDispatch } from '@/hooks/reduxHooks';
 import { Language } from '../../types/profile';
 import ProfileSection from './ProfileSection';
 import LanguageForm from './forms/LanguageForm';
+import { useTranslation } from 'react-i18next';
 import { 
   addLanguage, 
   updateLanguage,
@@ -15,6 +16,7 @@ interface LanguagesSectionProps {
 
 const LanguagesSection: React.FC<LanguagesSectionProps> = ({ languages }) => {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation('profile');
   const [editingItem, setEditingItem] = useState<Language | null>(null);
   const [isAdding, setIsAdding] = useState(false);
 
@@ -40,7 +42,7 @@ const LanguagesSection: React.FC<LanguagesSectionProps> = ({ languages }) => {
   };
 
   const handleDelete = (languageId: string) => {
-    if (window.confirm('确定要删除此语言能力吗？')) {
+    if (window.confirm(t('confirm_delete_language', '确定要删除此语言能力吗？'))) {
       dispatch(deleteLanguage(languageId));
     }
   };
@@ -53,15 +55,15 @@ const LanguagesSection: React.FC<LanguagesSectionProps> = ({ languages }) => {
   const getProficiencyIndicator = (proficiency: string) => {
     switch (proficiency) {
       case 'beginner':
-        return { label: '入门', color: 'bg-blue-200 dark:bg-blue-900', width: 'w-1/4' };
+        return { label: t('skill_level_beginner', '入门'), color: 'bg-blue-200 dark:bg-blue-900', width: 'w-1/4' };
       case 'intermediate':
-        return { label: '中级', color: 'bg-green-200 dark:bg-green-900', width: 'w-2/4' };
+        return { label: t('skill_level_intermediate', '中级'), color: 'bg-green-200 dark:bg-green-900', width: 'w-2/4' };
       case 'advanced':
-        return { label: '高级', color: 'bg-orange-200 dark:bg-orange-900', width: 'w-3/4' };
+        return { label: t('skill_level_advanced', '高级'), color: 'bg-orange-200 dark:bg-orange-900', width: 'w-3/4' };
       case 'native':
-        return { label: '母语', color: 'bg-red-200 dark:bg-red-900', width: 'w-full' };
+        return { label: t('language_level_native', '母语'), color: 'bg-red-200 dark:bg-red-900', width: 'w-full' };
       default:
-        return { label: '未知', color: 'bg-gray-200 dark:bg-gray-800', width: 'w-1/4' };
+        return { label: t('unknown', '未知'), color: 'bg-gray-200 dark:bg-gray-800', width: 'w-1/4' };
     }
   };
 
@@ -77,10 +79,10 @@ const LanguagesSection: React.FC<LanguagesSectionProps> = ({ languages }) => {
 
   return (
     <ProfileSection
-      title="语言能力"
+      title={t('languages', '语言能力')}
       onAddNew={handleAddNew}
       isEmpty={languages.length === 0}
-      emptyMessage="添加你的语言能力展示沟通技能"
+      emptyMessage={t('add_languages_prompt', '添加你的语言能力展示沟通技能')}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {languages.map((language) => {

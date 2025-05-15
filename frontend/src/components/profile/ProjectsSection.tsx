@@ -3,6 +3,7 @@ import { useAppDispatch } from '@/hooks/reduxHooks';
 import { Project } from '../../types/profile';
 import ProfileSection from './ProfileSection';
 import ProjectForm from './forms/ProjectForm';
+import { useTranslation } from 'react-i18next';
 import { 
   addProject, 
   updateProject,
@@ -15,6 +16,7 @@ interface ProjectsSectionProps {
 
 const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) => {
   const dispatch = useAppDispatch();
+  const { t, i18n } = useTranslation('profile');
   const [editingItem, setEditingItem] = useState<Project | null>(null);
   const [isAdding, setIsAdding] = useState(false);
 
@@ -40,7 +42,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) => {
   };
 
   const handleDelete = (projectId: string) => {
-    if (window.confirm('确定要删除此项目经历吗？')) {
+    if (window.confirm(t('confirm_delete_project', '确定要删除此项目经历吗？'))) {
       dispatch(deleteProject(projectId));
     }
   };
@@ -62,10 +64,10 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) => {
 
   return (
     <ProfileSection
-      title="项目经历"
+      title={t('projects', '项目经历')}
       onAddNew={handleAddNew}
       isEmpty={projects.length === 0}
-      emptyMessage="添加你参与的关键项目展示实战经验"
+      emptyMessage={t('add_projects_prompt', '添加你参与的关键项目展示实战经验')}
     >
       <div className="space-y-6">
         {projects.map((project) => (
@@ -104,10 +106,10 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
               </svg>
               <span>
-                {new Date(project.startDate).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short' })} - {
+                {new Date(project.startDate).toLocaleDateString(i18n.language === 'zh-CN' ? 'zh-CN' : 'en-US', { year: 'numeric', month: 'short' })} - {
                   project.endDate 
-                    ? new Date(project.endDate).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short' })
-                    : '至今'
+                    ? new Date(project.endDate).toLocaleDateString(i18n.language === 'zh-CN' ? 'zh-CN' : 'en-US', { year: 'numeric', month: 'short' })
+                    : t('present', '至今')
                 }
               </span>
             </div>
@@ -129,7 +131,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) => {
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
                   </svg>
-                  项目链接
+                  {t('project_url', '项目链接')}
                 </a>
               </div>
             )}

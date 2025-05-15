@@ -3,6 +3,7 @@ import { useAppDispatch } from '@/hooks/reduxHooks';
 import { HonorAward } from '../../types/profile';
 import ProfileSection from './ProfileSection';
 import AwardForm from './forms/AwardForm';
+import { useTranslation } from 'react-i18next';
 import { 
   addHonorAward, 
   updateHonorAward,
@@ -15,6 +16,7 @@ interface AwardsSectionProps {
 
 const AwardsSection: React.FC<AwardsSectionProps> = ({ honorsAwards }) => {
   const dispatch = useAppDispatch();
+  const { t, i18n } = useTranslation('profile');
   const [editingItem, setEditingItem] = useState<HonorAward | null>(null);
   const [isAdding, setIsAdding] = useState(false);
 
@@ -40,7 +42,7 @@ const AwardsSection: React.FC<AwardsSectionProps> = ({ honorsAwards }) => {
   };
 
   const handleDelete = (awardId: string) => {
-    if (window.confirm('确定要删除此荣誉奖项吗？')) {
+    if (window.confirm(t('confirm_delete_award', '确定要删除此荣誉奖项吗？'))) {
       dispatch(deleteHonorAward(awardId));
     }
   };
@@ -62,10 +64,10 @@ const AwardsSection: React.FC<AwardsSectionProps> = ({ honorsAwards }) => {
 
   return (
     <ProfileSection
-      title="荣誉与奖项"
+      title={t('honors_awards', '荣誉与奖项')}
       onAddNew={handleAddNew}
       isEmpty={honorsAwards.length === 0}
-      emptyMessage="添加你获得的荣誉和奖项"
+      emptyMessage={t('add_honors_awards_prompt', '添加你获得的荣誉和奖项')}
     >
       <div className="space-y-6">
         {honorsAwards.map((award) => (
@@ -107,7 +109,7 @@ const AwardsSection: React.FC<AwardsSectionProps> = ({ honorsAwards }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
               </svg>
               <span>
-                {new Date(award.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long' })}
+                {new Date(award.date).toLocaleDateString(i18n.language === 'zh-CN' ? 'zh-CN' : 'en-US', { year: 'numeric', month: 'long' })}
               </span>
             </div>
             

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface BasicInfoFormProps {
   initialData: {
@@ -26,6 +27,7 @@ interface BasicInfoFormProps {
 const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCancel }) => {
   const [formData, setFormData] = useState(initialData);
   const [newSocialMedia, setNewSocialMedia] = useState({ name: '', url: '' });
+  const { t } = useTranslation('profile');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -99,7 +101,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCa
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            名 *
+            {t('first_name', '名')} *
           </label>
           <input
             type="text"
@@ -108,14 +110,14 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCa
             value={formData.firstName}
             onChange={handleChange}
             required
-            placeholder="例如：三"
+            placeholder={t('first_name_placeholder', '例如：三')}
             className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
           />
         </div>
         
         <div>
           <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            姓 *
+            {t('last_name', '姓')} *
           </label>
           <input
             type="text"
@@ -124,7 +126,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCa
             value={formData.lastName}
             onChange={handleChange}
             required
-            placeholder="例如：张"
+            placeholder={t('last_name_placeholder', '例如：张')}
             className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
           />
         </div>
@@ -132,7 +134,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCa
 
       <div>
         <label htmlFor="headline" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          职位名称 *
+          {t('job_title', '职位名称')} *
         </label>
         <input
           type="text"
@@ -141,14 +143,14 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCa
           value={formData.headline}
           onChange={handleChange}
           required
-          placeholder="例如：资深前端工程师 | React专家"
+          placeholder={t('job_title_placeholder', '例如：资深前端工程师 | React专家')}
           className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
         />
       </div>
 
       <div>
         <label htmlFor="biography" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          个人简介 *
+          {t('personal_bio', '个人简介')} *
         </label>
         <textarea
           id="biography"
@@ -157,18 +159,18 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCa
           onChange={handleChange}
           required
           rows={4}
-          placeholder="简单介绍一下自己的专业背景、兴趣和目标"
+          placeholder={t('personal_bio_placeholder', '简单介绍一下自己的专业背景、兴趣和目标')}
           className="w-full px-4 py-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
         />
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">联系方式</h3>
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{t('contact_info', '联系方式')}</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              电子邮箱 *
+              {t('email', '电子邮箱')} *
             </label>
             <input
               type="email"
@@ -183,7 +185,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCa
           
           <div>
             <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              电话号码
+              {t('phone', '电话号码')}
             </label>
             <input
               type="tel"
@@ -198,7 +200,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCa
         
         <div>
           <label htmlFor="website" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            个人网站
+            {t('personal_website', '个人网站')}
           </label>
           <input
             type="url"
@@ -213,7 +215,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCa
         
         <div>
           <label htmlFor="address" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            所在地
+            {t('location', '所在地')}
           </label>
           <input
             type="text"
@@ -221,14 +223,14 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCa
             name="address"
             value={formData.contactInfo.address}
             onChange={handleContactInfoChange}
-            placeholder="例如：北京市海淀区"
+            placeholder={t('location_placeholder', '例如：北京市海淀区')}
             className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
           />
         </div>
       </div>
       
       <div className="space-y-4">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">社交媒体</h3>
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{t('social_media', '社交媒体')}</h3>
         
         <div>
           <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -277,7 +279,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCa
         
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            其他社交媒体
+            {t('other_social_media', '其他社交媒体')}
           </label>
           
           <div className="space-y-3">
@@ -286,14 +288,14 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCa
                 type="text"
                 value={newSocialMedia.name}
                 onChange={(e) => setNewSocialMedia({ ...newSocialMedia, name: e.target.value })}
-                placeholder="平台名称"
+                placeholder={t('platform_name', '平台名称')}
                 className="w-1/3 h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
               />
               <input
                 type="url"
                 value={newSocialMedia.url}
                 onChange={(e) => setNewSocialMedia({ ...newSocialMedia, url: e.target.value })}
-                placeholder="链接"
+                placeholder={t('link', '链接')}
                 className="flex-1 h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
               />
               <button
@@ -304,7 +306,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCa
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
-                添加
+                {t('add', '添加')}
               </button>
             </div>
             
@@ -339,13 +341,13 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ initialData, onSave, onCa
           onClick={onCancel}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
         >
-          取消
+          {t('cancel', '取消')}
         </button>
         <button
           type="submit"
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
         >
-          保存
+          {t('save', '保存')}
         </button>
       </div>
     </form>

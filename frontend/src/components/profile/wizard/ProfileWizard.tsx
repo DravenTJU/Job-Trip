@@ -14,8 +14,10 @@ import EducationStep from './steps/EducationStep';
 // import LanguagesStep from './steps/LanguagesStep';
 // import HonorsAwardsStep from './steps/HonorsAwardsStep';
 import SummaryStep from './steps/SummaryStep';
+import { useTranslation } from 'react-i18next';
 
 const ProfileWizard: React.FC = () => {
+  const { t } = useTranslation('profile');
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
@@ -44,9 +46,9 @@ const ProfileWizard: React.FC = () => {
   });
   
   const steps = [
-    { title: '基本信息', description: '添加您的职位名称和简介' },
-    { title: '联系方式', description: '填写您的联系信息' },
-    { title: '教育经历', description: '添加您的学历信息' },
+    { title: t('basic_info', '基本信息'), description: t('add_basic_info_desc', '添加您的职位名称和简介') },
+    { title: t('contact_info', '联系方式'), description: t('add_contact_info_desc', '填写您的联系信息') },
+    { title: t('education', '教育经历'), description: t('add_education_desc', '添加您的学历信息') },
     // 临时简化步骤，只保留已实现的组件
     /* 
     { title: '工作经验', description: '添加您的工作经验' },
@@ -56,7 +58,7 @@ const ProfileWizard: React.FC = () => {
     { title: '语言能力', description: '添加您的语言技能' },
     { title: '荣誉奖项', description: '添加您获得的奖项和荣誉' },
     */
-    { title: '完成创建', description: '提交并创建您的档案' }
+    { title: t('complete_profile', '完成创建'), description: t('submit_profile_desc', '提交并创建您的档案') }
   ];
 
   const handleNext = () => {
@@ -90,7 +92,7 @@ const ProfileWizard: React.FC = () => {
       await dispatch(createUserProfile(profileData)).unwrap();
       navigate('/profile');
     } catch (error) {
-      console.error('创建用户档案失败:', error);
+      console.error(t('profile_create_error', '创建用户档案失败:'), error);
     }
   };
 
@@ -186,7 +188,7 @@ const ProfileWizard: React.FC = () => {
   return (
     <div className="container-lg mx-auto px-4 py-8">
       <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 p-6">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">创建您的个人档案</h1>
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">{t('create_profile', '创建您的个人档案')}</h1>
         
         <WizardSteps steps={steps} currentStep={currentStep} />
         

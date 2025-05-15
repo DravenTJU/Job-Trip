@@ -15,6 +15,7 @@ import VolunteerSection from './VolunteerSection';
 import AwardsSection from './AwardsSection';
 // import RecommendationsSection from './RecommendationsSection';
 import { RootState } from '../../redux/store';
+import { useTranslation } from 'react-i18next';
 
 interface ProfilePageProps {
   profile: UserProfile | null;
@@ -23,13 +24,14 @@ interface ProfilePageProps {
 const ProfilePage: React.FC<ProfilePageProps> = ({ profile }) => {
   const dispatch = useAppDispatch();
   const { activeSection } = useAppSelector((state: RootState) => state.profile);
+  const { t } = useTranslation('profile');
 
   if (!profile) {
     return (
       <div className="container-lg mx-auto px-4 py-8">
         <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 p-6 text-center">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">档案未创建</h2>
-          <p className="text-gray-600 dark:text-gray-400">请完善您的个人档案以提高求职匹配度</p>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{t('profile_not_created', '档案未创建')}</h2>
+          <p className="text-gray-600 dark:text-gray-400">{t('complete_profile_prompt', '请完善您的个人档案以提高求职匹配度')}</p>
         </div>
       </div>
     );
@@ -59,8 +61,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ profile }) => {
         // 暂时返回一个提示信息，等待RecommendationsSection组件实现
         return (
           <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
-            <h3 className="text-lg font-medium mb-2">推荐功能即将上线</h3>
-            <p>我们正在开发用户推荐功能，敬请期待！</p>
+            <h3 className="text-lg font-medium mb-2">{t('recommendations_coming_soon', '推荐功能即将上线')}</h3>
+            <p>{t('recommendations_development_message', '我们正在开发用户推荐功能，敬请期待！')}</p>
           </div>
         );
       default:
