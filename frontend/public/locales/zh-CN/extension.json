@@ -1,0 +1,69 @@
+{
+  "title": "Chrome 浏览器扩展插件",
+  "description": "安装我们的开源浏览器扩展，自动从 LinkedIn、Seek 和 Indeed 等热门求职平台收集职位信息，将所有机会集中到一处，简化您的求职流程。",
+  "download": {
+    "title": "Chrome 浏览器扩展插件",
+    "version": "版本 {{version}}",
+    "releaseNotes": "查看发布说明",
+    "button": "下载扩展程序",
+    "loading": "加载中..."
+  },
+  "installation": {
+    "title": "快速安装指南",
+    "steps": {
+      "1": {
+        "title": "下载扩展文件",
+        "description": "点击上方的\"下载扩展程序\"按钮，获取JobTrip职途助手扩展文件包。"
+      },
+      "2": {
+        "title": "打开 Chrome 扩展管理页面",
+        "description": "在 Chrome 浏览器地址栏输入以下地址："
+      },
+      "3": {
+        "title": "启用开发者模式",
+        "description": "在扩展页面右上角找到开发者模式开关："
+      },
+      "4": {
+        "title": "安装扩展",
+        "description": "将下载的扩展文件拖放到扩展页面，完成安装。"
+      },
+      "5": {
+        "title": "固定扩展程序",
+        "description": "点击 Chrome 工具栏上的拼图图标，固定 JobTrip 扩展程序以方便访问。"
+      },
+      "6": {
+        "title": "开始自动化您的求职过程",
+        "description": "点击工具栏中的 JobTrip 图标，输入您的求职条件（职位、地点），选择目标平台（LinkedIn、Seek、Indeed等），点击\"开始搜索\"。扩展程序会自动收集职位信息并同步到 JobTrip 系统中，为您提供一站式管理体验。"
+      }
+    },
+    "loginTip": "为确保最佳体验，请先登录您要搜索的招聘平台（LinkedIn、Seek、Indeed等），这样扩展才能访问完整的职位信息。"
+  },
+  "privacy": {
+    "title": "隐私与安全",
+    "content": "我们的扩展程序需要访问招聘网站的权限才能抓取职位信息。JobTrip 是完全开源的，您可以随时查看源代码以确保数据安全。我们只收集您明确授权的职位相关信息，如职位标题、公司名称、地点等。"
+  },
+  "faq": {
+    "title": "常见问题",
+    "questions": {
+      "platforms": {
+        "title": "扩展支持哪些招聘平台？",
+        "answer": "目前支持 LinkedIn、Seek 和 Indeed 等主要新西兰求职平台。我们正在开发对更多平台的支持，未来版本将不断扩展覆盖范围。"
+      },
+      "pricing": {
+        "title": "扩展需要付费吗？",
+        "answer": "JobTrip 职途助手完全免费且开源，符合我们简化求职流程、让所有人都能轻松获取职位信息的使命。"
+      },
+      "sync": {
+        "title": "如何同步数据到 JobTrip 系统？",
+        "answer": "当您使用扩展收集职位信息后，点击导出按钮，数据会自动同步到您的 JobTrip 账户。您可在 JobTrip 平台上查看、管理和跟踪所有收集的职位。"
+      },
+      "updates": {
+        "title": "遇到网站变更导致扩展无法工作怎么办？",
+        "answer": "我们采用模块化设计，会定期更新扩展以适应招聘网站的变化。可重新下载扩展程序，并按照安装步骤重新安装。如遇问题，请联系我们的支持团队，我们会尽快解决。"
+      }
+    }
+  },
+  "errors": {
+    "fetchReleaseFailed": "获取发布信息失败:"
+  }
+} 

@@ -1,0 +1,63 @@
+{
+  "title": "职位列表",
+  "subtitle": "查看和管理您的所有职位信息",
+  "addJob": "手动添加职位",
+  "searchPlaceholder": "搜索职位名称、公司或地点...",
+  "filter": "筛选",
+  "filterConditions": "筛选条件",
+  "reset": "重置",
+  "noData": "暂无职位数据",
+  "viewDetails": "查看详情",
+  "trackApplication": "跟踪申请",
+  "originalLink": "原始链接",
+  "errors": {
+    "loadFailed": "加载数据时出错:",
+    "loadingFailed": "加载失败，请重试"
+  },
+  "sort": {
+    "newest": "最新添加",
+    "oldest": "最早添加",
+    "titleAsc": "职位名称（A-Z）",
+    "titleDesc": "职位名称（Z-A）",
+    "companyAsc": "公司名称（A-Z）",
+    "companyDesc": "公司名称（Z-A）"
+  },
+  "filters": {
+    "status": "职位状态",
+    "jobType": "工作类型",
+    "platform": "平台来源",
+    "addedDate": "添加时间",
+    "location": "工作地点",
+    "locationPlaceholder": "输入城市名称",
+    "dateRanges": {
+      "all": "所有时间",
+      "today": "今天",
+      "threeDays": "最近3天",
+      "oneWeek": "最近一周",
+      "oneMonth": "最近一月",
+      "threeMonths": "最近三月"
+    },
+    "jobTypes": {
+      "all": "所有类型",
+      "fullTime": "全职",
+      "partTime": "兼职",
+      "internship": "实习",
+      "contract": "合同工",
+      "freelance": "自由职业"
+    },
+    "platforms": {
+      "all": "所有来源",
+      "other": "其他"
+    },
+    "statuses": {
+      "all": "所有状态"
+    }
+  },
+  "pagination": {
+    "page": "第 {{page}} 页",
+    "perPage": "每页 {{limit}} 条",
+    "total": "共 {{total}} 条",
+    "prev": "上一页",
+    "next": "下一页"
+  }
+} 

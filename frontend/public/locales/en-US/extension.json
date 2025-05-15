@@ -1,0 +1,69 @@
+{
+  "title": "Chrome Browser Extension",
+  "description": "Install our open-source browser extension to automatically collect job information from popular job platforms like LinkedIn, Seek, and Indeed, centralizing all opportunities in one place and simplifying your job search process.",
+  "download": {
+    "title": "Chrome Browser Extension",
+    "version": "Version {{version}}",
+    "releaseNotes": "View Release Notes",
+    "button": "Download Extension",
+    "loading": "Loading..."
+  },
+  "installation": {
+    "title": "Quick Installation Guide",
+    "steps": {
+      "1": {
+        "title": "Download Extension File",
+        "description": "Click the \"Download Extension\" button above to get the JobTrip extension package."
+      },
+      "2": {
+        "title": "Open Chrome Extensions Page",
+        "description": "Enter the following address in your Chrome browser address bar:"
+      },
+      "3": {
+        "title": "Enable Developer Mode",
+        "description": "Find the developer mode toggle in the top right corner of the extensions page:"
+      },
+      "4": {
+        "title": "Install Extension",
+        "description": "Drag and drop the downloaded extension file onto the extensions page to complete installation."
+      },
+      "5": {
+        "title": "Pin Extension",
+        "description": "Click the puzzle icon on the Chrome toolbar to pin the JobTrip extension for easy access."
+      },
+      "6": {
+        "title": "Start Automating Your Job Search",
+        "description": "Click the JobTrip icon in the toolbar, enter your job search criteria (position, location), select target platforms (LinkedIn, Seek, Indeed, etc.), and click \"Start Search\". The extension will automatically collect job information and sync it to the JobTrip system, providing you with a one-stop management experience."
+      }
+    },
+    "loginTip": "For the best experience, please log in to the job platforms you want to search (LinkedIn, Seek, Indeed, etc.) so the extension can access complete job information."
+  },
+  "privacy": {
+    "title": "Privacy and Security",
+    "content": "Our extension needs permission to access job websites to scrape job information. JobTrip is completely open source, and you can view the source code at any time to ensure data security. We only collect job-related information that you explicitly authorize, such as job title, company name, location, etc."
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "questions": {
+      "platforms": {
+        "title": "Which job platforms does the extension support?",
+        "answer": "Currently supports major New Zealand job platforms including LinkedIn, Seek, and Indeed. We are developing support for more platforms, and future versions will continuously expand coverage."
+      },
+      "pricing": {
+        "title": "Is the extension paid?",
+        "answer": "JobTrip Assistant is completely free and open source, in line with our mission to simplify the job search process and make job information easily accessible to everyone."
+      },
+      "sync": {
+        "title": "How to sync data to the JobTrip system?",
+        "answer": "After collecting job information using the extension, click the export button to automatically sync the data to your JobTrip account. You can view, manage, and track all collected jobs on the JobTrip platform."
+      },
+      "updates": {
+        "title": "What if website changes cause the extension to stop working?",
+        "answer": "We use a modular design and regularly update the extension to adapt to changes in job websites. You can re-download the extension and reinstall it following the installation steps. If you encounter any issues, please contact our support team and we will resolve them as soon as possible."
+      }
+    }
+  },
+  "errors": {
+    "fetchReleaseFailed": "Failed to fetch release information:"
+  }
+} 

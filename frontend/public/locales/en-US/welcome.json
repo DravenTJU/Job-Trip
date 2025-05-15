@@ -1,0 +1,35 @@
+{
+  "defaultUser": "Job Seeker",
+  "greeting": "Welcome back,",
+  "intro": "JobTrip Assistant simplifies your job search process by automatically collecting job information from multiple platforms and providing unified management. Complete the following steps to easily organize your job search process, reduce manual tracking work, and focus on getting your ideal position.",
+  "sectionTitle": "Start Using Your One-Stop Job Search Assistant",
+  "downloadExtension": "Download Chrome Extension",
+  "viewInstructions": "View Instructions",
+  "start": "Start",
+  "steps": {
+    "installExtension": {
+      "title": "Install Chrome Extension",
+      "description": "Get and install the JobTrip browser extension to automatically collect job information from platforms like LinkedIn, Seek, and Indeed."
+    },
+    "browseJobs": {
+      "title": "Browse Your Jobs List",
+      "description": "View automatically scraped or manually added job information, all data centralized in one place for easy filtering and comparison."
+    },
+    "trackApplications": {
+      "title": "Track Application Status",
+      "description": "Easily track the application progress of each position (newly discovered, applied, interviewing, etc.), avoiding missing important opportunities."
+    },
+    "completeProfile": {
+      "title": "Complete Your Profile",
+      "description": "Create a professional profile including education background, work experience, and skills, laying the foundation for resume generation and job matching."
+    },
+    "generateResume": {
+      "title": "Generate Targeted Resumes",
+      "description": "Based on your profile and target positions, intelligently generate tailored resumes to increase your job search success rate."
+    },
+    "createCoverLetter": {
+      "title": "Create Personalized Cover Letters",
+      "description": "Automatically generate customized cover letters for specific positions, highlighting your matches with job requirements, saving valuable time."
+    }
+  }
+} 

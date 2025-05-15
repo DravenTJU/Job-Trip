@@ -1,0 +1,63 @@
+{
+  "title": "Jobs List",
+  "subtitle": "View and manage all your job positions",
+  "addJob": "Add Job Manually",
+  "searchPlaceholder": "Search job title, company or location...",
+  "filter": "Filter",
+  "filterConditions": "Filter Conditions",
+  "reset": "Reset",
+  "noData": "No job data available",
+  "viewDetails": "View Details",
+  "trackApplication": "Track Application",
+  "originalLink": "Original Link",
+  "errors": {
+    "loadFailed": "Error loading data:",
+    "loadingFailed": "Loading failed, please try again"
+  },
+  "sort": {
+    "newest": "Latest Added",
+    "oldest": "Earliest Added",
+    "titleAsc": "Job Title (A-Z)",
+    "titleDesc": "Job Title (Z-A)",
+    "companyAsc": "Company Name (A-Z)",
+    "companyDesc": "Company Name (Z-A)"
+  },
+  "filters": {
+    "status": "Job Status",
+    "jobType": "Job Type",
+    "platform": "Platform Source",
+    "addedDate": "Date Added",
+    "location": "Job Location",
+    "locationPlaceholder": "Enter city name",
+    "dateRanges": {
+      "all": "All Time",
+      "today": "Today",
+      "threeDays": "Last 3 Days",
+      "oneWeek": "Last Week",
+      "oneMonth": "Last Month",
+      "threeMonths": "Last 3 Months"
+    },
+    "jobTypes": {
+      "all": "All Types",
+      "fullTime": "Full Time",
+      "partTime": "Part Time",
+      "internship": "Internship",
+      "contract": "Contract",
+      "freelance": "Freelance"
+    },
+    "platforms": {
+      "all": "All Sources",
+      "other": "Other"
+    },
+    "statuses": {
+      "all": "All Statuses"
+    }
+  },
+  "pagination": {
+    "page": "Page {{page}}",
+    "perPage": "{{limit}} per page",
+    "total": "Total {{total}} items",
+    "prev": "Previous",
+    "next": "Next"
+  }
+} 

@@ -25,11 +25,13 @@ import { JobSource, JobType } from '@/types';
 import { getStatusStyle, getStatusIcon, JOB_STATUS_OPTIONS, getStatusLabel } from '@/utils/jobStatusUtils';
 import StatusSelect from '@/components/common/StatusSelect';
 import StatusBadge from '@/components/common/StatusBadge';
+import { useTranslation } from 'react-i18next';
 
 /**
  * 职位列表页面组件
  */
 const JobsPage: React.FC = () => {
+  const { t } = useTranslation(['common', 'jobs']);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { jobs, isLoading, error, pagination } = useSelector((state: RootState) => state.jobs);
@@ -52,36 +54,36 @@ const JobsPage: React.FC = () => {
   
   // 时间范围选项
   const dateRanges = [
-    { label: '所有时间', value: '' },
-    { label: '今天', value: 'today' },
-    { label: '最近3天', value: '3days' },
-    { label: '最近一周', value: '1week' },
-    { label: '最近一月', value: '1month' },
-    { label: '最近三月', value: '3months' }
+    { label: t('jobs:filters.dateRanges.all', '所有时间'), value: '' },
+    { label: t('jobs:filters.dateRanges.today', '今天'), value: 'today' },
+    { label: t('jobs:filters.dateRanges.threeDays', '最近3天'), value: '3days' },
+    { label: t('jobs:filters.dateRanges.oneWeek', '最近一周'), value: '1week' },
+    { label: t('jobs:filters.dateRanges.oneMonth', '最近一月'), value: '1month' },
+    { label: t('jobs:filters.dateRanges.threeMonths', '最近三月'), value: '3months' }
   ];
   
   // 工作类型选项
   const jobTypes = [
-    { label: '所有类型', value: '' },
-    { label: '全职', value: JobType.FULL_TIME },
-    { label: '兼职', value: JobType.PART_TIME },
-    { label: '实习', value: JobType.INTERNSHIP },
-    { label: '合同工', value: JobType.CONTRACT },
-    { label: '自由职业', value: JobType.FREELANCE }
+    { label: t('jobs:filters.jobTypes.all', '所有类型'), value: '' },
+    { label: t('jobs:filters.jobTypes.fullTime', '全职'), value: JobType.FULL_TIME },
+    { label: t('jobs:filters.jobTypes.partTime', '兼职'), value: JobType.PART_TIME },
+    { label: t('jobs:filters.jobTypes.internship', '实习'), value: JobType.INTERNSHIP },
+    { label: t('jobs:filters.jobTypes.contract', '合同工'), value: JobType.CONTRACT },
+    { label: t('jobs:filters.jobTypes.freelance', '自由职业'), value: JobType.FREELANCE }
   ];
   
   // 平台来源选项
   const platforms = [
-    { label: '所有来源', value: '' },
+    { label: t('jobs:filters.platforms.all', '所有来源'), value: '' },
     { label: 'LinkedIn', value: JobSource.LINKEDIN },
     { label: 'Seek', value: JobSource.SEEK },
     { label: 'Indeed', value: JobSource.INDEED },
-    { label: '其他', value: JobSource.OTHER }
+    { label: t('jobs:filters.platforms.other', '其他'), value: JobSource.OTHER }
   ];
   
   // 状态选项
   const statusOptions = [
-    { label: '所有状态', value: '' },
+    { label: t('jobs:filters.statuses.all', '所有状态'), value: '' },
     ...JOB_STATUS_OPTIONS
   ];
   
@@ -113,7 +115,7 @@ const JobsPage: React.FC = () => {
         }
       }
     } catch (error) {
-      console.error('加载数据时出错:', error);
+      console.error(t('jobs:errors.loadFailed', '加载数据时出错:'), error);
     }
   };
   
@@ -174,9 +176,9 @@ const JobsPage: React.FC = () => {
       <div className="section space-y-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">职位列表</h1>
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">{t('jobs:title', '职位列表')}</h1>
             <p className="text-gray-500 dark:text-gray-400">
-              查看和管理您的所有职位信息
+              {t('jobs:subtitle', '查看和管理您的所有职位信息')}
             </p>
           </div>
           <button 
@@ -184,7 +186,7 @@ const JobsPage: React.FC = () => {
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors mt-4 md:mt-0"
           >
             <Plus className="w-4 h-4" />
-            手动添加职位
+            {t('jobs:addJob', '手动添加职位')}
           </button>
         </div>
       
@@ -197,24 +199,24 @@ const JobsPage: React.FC = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
-              placeholder="搜索职位名称、公司或地点..."
-              value={searchTerm}
-              onChange={handleSearchChange}
+                  placeholder={t('jobs:searchPlaceholder', '搜索职位名称、公司或地点...')}
+                  value={searchTerm}
+                  onChange={handleSearchChange}
                   className="w-full h-11 pl-10 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                 />
               </div>
               <div className="flex gap-3">
                 <select
-              value={sortOption}
-              onChange={handleSortChange}
+                  value={sortOption}
+                  onChange={handleSortChange}
                   className="h-11 min-w-[160px] bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                 >
-                  <option value="-createdAt">最新添加</option>
-                  <option value="createdAt">最早添加</option>
-                  <option value="title">职位名称（A-Z）</option>
-                  <option value="-title">职位名称（Z-A）</option>
-                  <option value="company">公司名称（A-Z）</option>
-                  <option value="-company">公司名称（Z-A）</option>
+                  <option value="-createdAt">{t('jobs:sort.newest', '最新添加')}</option>
+                  <option value="createdAt">{t('jobs:sort.oldest', '最早添加')}</option>
+                  <option value="title">{t('jobs:sort.titleAsc', '职位名称（A-Z）')}</option>
+                  <option value="-title">{t('jobs:sort.titleDesc', '职位名称（Z-A）')}</option>
+                  <option value="company">{t('jobs:sort.companyAsc', '公司名称（A-Z）')}</option>
+                  <option value="-company">{t('jobs:sort.companyDesc', '公司名称（Z-A）')}</option>
                 </select>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
@@ -225,7 +227,7 @@ const JobsPage: React.FC = () => {
                   }`}
                 >
                   <Filter className="w-4 h-4" />
-                  筛选
+                  {t('jobs:filter', '筛选')}
                 </button>
               </div>
             </div>
@@ -236,14 +238,14 @@ const JobsPage: React.FC = () => {
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
                     <Filter className="w-4 h-4 text-gray-400" />
-                    <h3 className="text-base font-medium">筛选条件</h3>
+                    <h3 className="text-base font-medium">{t('jobs:filterConditions', '筛选条件')}</h3>
                   </div>
                   <button
                     onClick={resetFilters}
                     className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                   >
                     <X className="w-4 h-4" />
-                    重置
+                    {t('jobs:reset', '重置')}
                   </button>
                 </div>
                 
@@ -252,7 +254,7 @@ const JobsPage: React.FC = () => {
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
                       <Tag className="w-4 h-4 text-gray-400" />
-                      职位状态
+                      {t('jobs:filters.status', '职位状态')}
                     </label>
                     <StatusSelect
                       value={filters.status}
@@ -265,7 +267,7 @@ const JobsPage: React.FC = () => {
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
                       <Briefcase className="w-4 h-4 text-gray-400" />
-                      工作类型
+                      {t('jobs:filters.jobType', '工作类型')}
                     </label>
                     <select
                       value={filters.jobType}
@@ -284,7 +286,7 @@ const JobsPage: React.FC = () => {
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
                       <Building2 className="w-4 h-4 text-gray-400" />
-                      平台来源
+                      {t('jobs:filters.platform', '平台来源')}
                     </label>
                     <select
                       value={filters.platform}
@@ -303,7 +305,7 @@ const JobsPage: React.FC = () => {
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-gray-400" />
-                      添加时间
+                      {t('jobs:filters.addedDate', '添加时间')}
                     </label>
                     <select
                       value={filters.dateRange}
@@ -322,13 +324,13 @@ const JobsPage: React.FC = () => {
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
                       <MapPin className="w-4 h-4 text-gray-400" />
-                      工作地点
+                      {t('jobs:filters.location', '工作地点')}
                     </label>
                     <input
                       type="text"
                       value={filters.location}
                       onChange={(e) => handleFilterChange('location', e.target.value)}
-                      placeholder="输入城市名称"
+                      placeholder={t('jobs:filters.locationPlaceholder', '输入城市名称')}
                       className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     />
                   </div>
@@ -352,11 +354,11 @@ const JobsPage: React.FC = () => {
         </div>
       ) : error ? (
         <div className="text-center py-12">
-          <p className="text-red-500">加载失败，请重试</p>
+          <p className="text-red-500">{t('jobs:errors.loadingFailed', '加载失败，请重试')}</p>
         </div>
       ) : jobs.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500">暂无职位数据</p>
+          <p className="text-gray-500">{t('jobs:noData', '暂无职位数据')}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -419,7 +421,7 @@ const JobsPage: React.FC = () => {
                       onClick={() => navigate(`/jobs/${job._id}`)}
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                           >
-                            查看详情
+                            {t('jobs:viewDetails', '查看详情')}
                   </button>
                     <button 
                       onClick={() => {
@@ -427,7 +429,7 @@ const JobsPage: React.FC = () => {
                       }}
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
                     >
-                      跟踪申请
+                      {t('jobs:trackApplication', '跟踪申请')}
                     </button>
                     {job.sourceUrl && (
                       <a 
@@ -438,7 +440,7 @@ const JobsPage: React.FC = () => {
                         onClick={(e) => e.stopPropagation()}
                       >
                         <ExternalLink className="w-4 h-4" />
-                        原始链接
+                        {t('jobs:originalLink', '原始链接')}
                       </a>
                     )}
                   </div>
@@ -450,13 +452,13 @@ const JobsPage: React.FC = () => {
           {/* 分页控件 */}
           <div className="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 px-4 py-3 sm:px-6 mt-4">
             <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-              <span>第 {page} 页</span>
+              <span>{t('jobs:pagination.page', '第 {{page}} 页', { page })}</span>
               <span className="mx-2">·</span>
-              <span>每页 {limit} 条</span>
+              <span>{t('jobs:pagination.perPage', '每页 {{limit}} 条', { limit })}</span>
               {pagination && (
                 <>
                   <span className="mx-2">·</span>
-                  <span>共 {pagination.total} 条</span>
+                  <span>{t('jobs:pagination.total', '共 {{total}} 条', { total: pagination.total })}</span>
                 </>
               )}
             </div>
@@ -471,7 +473,7 @@ const JobsPage: React.FC = () => {
                   }`}
               >
                 <ChevronLeft className="w-5 h-5" />
-                上一页
+                {t('jobs:pagination.prev', '上一页')}
               </button>
               {pagination && (
                 <div className="flex items-center space-x-1">
@@ -499,7 +501,7 @@ const JobsPage: React.FC = () => {
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                   }`}
               >
-                下一页
+                {t('jobs:pagination.next', '下一页')}
                 <ChevronRight className="w-5 h-5" />
               </button>
             </div>
