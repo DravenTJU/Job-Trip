@@ -165,7 +165,7 @@ const Sidebar: React.FC = () => {
                   onMouseLeave={() => setLanguageMenuOpen(false)}
                 >
                   <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="language-menu">
-                    <LanguageSelector variant="buttons" size="sm" />
+                    <LanguageSelector variant="popup" size="md" />
                   </div>
                 </div>
               )}

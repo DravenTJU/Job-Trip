@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/context/LanguageContext';
 
 interface LanguageSelectorProps {
-  variant?: 'dropdown' | 'buttons';
+  variant?: 'dropdown' | 'popup';
   size?: 'sm' | 'md' | 'lg';
 }
 
@@ -30,14 +30,30 @@ const LanguageSelector: FC<LanguageSelectorProps> = ({
     border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow
     ${sizeClasses[size]}`;
   
-  // 按钮样式
-  const buttonStyle = `px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700
-    hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors
-    ${sizeClasses[size]}`;
-  
-  // 按钮选中样式
-  const activeButtonStyle = `bg-indigo-500 text-white border-indigo-500
-    hover:bg-indigo-600 hover:border-indigo-600 dark:hover:bg-indigo-600`;
+  // 弹出菜单风格
+  if (variant === 'popup') {
+    return (
+      <div className="relative">
+        <div className="py-1" role="menu" aria-orientation="vertical">
+          {Object.entries(supportedLanguages).map(([code, name]) => (
+            <button
+              key={code}
+              onClick={() => {
+                changeLanguage(code);
+              }}
+              className={`flex items-center w-full px-4 py-2 text-left ${sizeClasses[size]} 
+                    ${currentLanguage === code
+                  ? 'text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-indigo-900/20'
+                  : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'}`}
+              role="menuitem"
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
   
   if (variant === 'dropdown') {
     return (
@@ -55,21 +71,6 @@ const LanguageSelector: FC<LanguageSelectorProps> = ({
       </select>
     );
   }
-  
-  // 按钮组风格
-  return (
-    <div className="flex space-x-2">
-      {Object.entries(supportedLanguages).map(([code, name]) => (
-        <button
-          key={code}
-          onClick={() => changeLanguage(code)}
-          className={`${buttonStyle} ${currentLanguage === code ? activeButtonStyle : ''}`}
-        >
-          {name}
-        </button>
-      ))}
-    </div>
-  );
 };
 
 export default LanguageSelector; 
