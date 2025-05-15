@@ -1,0 +1,13 @@
+{
+  "title": "Career Navigation System Cannot Locate This Page",
+  "subtitle": "You seem to have strayed from your job search journey",
+  "description": "Our career GPS cannot find the destination you are trying to access. Please try returning to the homepage to navigate again, or contact us for help.",
+  "homeButton": "Back to Home",
+  "backButton": "Go Back",
+  "compass": {
+    "north": "N",
+    "east": "E",
+    "south": "S",
+    "west": "W"
+  }
+} 
