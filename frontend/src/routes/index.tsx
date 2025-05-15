@@ -5,25 +5,32 @@ import { CircularProgress, Box } from '@mui/material';
 // 布局
 import Layout from '@/components/layout/Layout';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { withLanguageUpdates } from '@/context/LanguageContext';
+
+// 创建一个包装懒加载组件的函数，自动应用语言更新
+const lazyWithLanguageUpdates = (importFunc: () => Promise<any>) => {
+  const LazyComponent = lazy(importFunc);
+  return withLanguageUpdates(LazyComponent);
+};
 
 // 懒加载组件
-const HomePage = lazy(() => import('@/pages/HomePage'));
-const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
-const WelcomePage = lazy(() => import('@/pages/WelcomePage'));
-const ResumeBuilderPage = lazy(() => import('@/pages/ResumeBuilderPage'));
-const ResumeFormPage = lazy(() => import('@/pages/ResumeFormPage'));
-const JobsPage = lazy(() => import('@/pages/JobsPage'));
-const JobDetailPage = lazy(() => import('@/pages/JobDetailPage'));
-const JobFormPage = lazy(() => import('@/pages/JobFormPage'));
-const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
-const ChromeExtensionPage = lazy(() => import('@/pages/ChromeExtensionPage'));
-const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
-const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'));
-const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage'));
-const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
-const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
-const CoverLetterPage = lazy(() => import('@/pages/CoverLetterPage'));
-const ProfilePage = lazy(() => import('@/pages/profile'));
+const HomePage = lazyWithLanguageUpdates(() => import('@/pages/HomePage'));
+const DashboardPage = lazyWithLanguageUpdates(() => import('@/pages/DashboardPage'));
+const WelcomePage = lazyWithLanguageUpdates(() => import('@/pages/WelcomePage'));
+const ResumeBuilderPage = lazyWithLanguageUpdates(() => import('@/pages/ResumeBuilderPage'));
+const ResumeFormPage = lazyWithLanguageUpdates(() => import('@/pages/ResumeFormPage'));
+const JobsPage = lazyWithLanguageUpdates(() => import('@/pages/JobsPage'));
+const JobDetailPage = lazyWithLanguageUpdates(() => import('@/pages/JobDetailPage'));
+const JobFormPage = lazyWithLanguageUpdates(() => import('@/pages/JobFormPage'));
+const SettingsPage = lazyWithLanguageUpdates(() => import('@/pages/SettingsPage'));
+const ChromeExtensionPage = lazyWithLanguageUpdates(() => import('@/pages/ChromeExtensionPage'));
+const LoginPage = lazyWithLanguageUpdates(() => import('@/pages/auth/LoginPage'));
+const RegisterPage = lazyWithLanguageUpdates(() => import('@/pages/auth/RegisterPage'));
+const ForgotPasswordPage = lazyWithLanguageUpdates(() => import('@/pages/auth/ForgotPasswordPage'));
+const ResetPasswordPage = lazyWithLanguageUpdates(() => import('@/pages/auth/ResetPasswordPage'));
+const NotFoundPage = lazyWithLanguageUpdates(() => import('@/pages/NotFoundPage'));
+const CoverLetterPage = lazyWithLanguageUpdates(() => import('@/pages/CoverLetterPage'));
+const ProfilePage = lazyWithLanguageUpdates(() => import('@/pages/profile'));
 
 // 加载指示器
 const LoadingFallback = () => (
@@ -44,7 +51,7 @@ const LayoutRoute = ({ element }: { element: React.ReactNode }) => (
   <Layout>{element}</Layout>
 );
 
-// 包装需要认证的路由
+// 包装带布局和保护的路由
 const ProtectedLayoutRoute = ({ element }: { element: React.ReactNode }) => (
   <ProtectedRoute>
     <Layout>{element}</Layout>
@@ -93,7 +100,6 @@ const AppRoutes = () => {
     </Suspense>
   );
 };
-
 
 export default AppRoutes; 
 

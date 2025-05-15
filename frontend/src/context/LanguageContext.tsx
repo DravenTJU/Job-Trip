@@ -11,6 +11,7 @@ interface LanguageContextType {
   currentLanguage: string;
   changeLanguage: (lang: string) => void;
   supportedLanguages: Record<string, string>;
+  languageVersion: number; // 添加语言版本号，用于触发重新渲染
 }
 
 // 创建上下文
@@ -37,6 +38,8 @@ export const LanguageProvider: FC<LanguageProviderProps> = ({ children }) => {
   
   // 初始化语言状态
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language || defaultLanguage);
+  // 添加语言版本状态，用于强制组件重新渲染
+  const [languageVersion, setLanguageVersion] = useState(0);
   
   // 同步用户语言偏好
   useEffect(() => {
@@ -53,6 +56,8 @@ export const LanguageProvider: FC<LanguageProviderProps> = ({ children }) => {
     // 切换i18n语言
     await i18n.changeLanguage(lang);
     setCurrentLanguage(lang);
+    // 增加语言版本号，触发使用该上下文的组件重新渲染
+    setLanguageVersion(prev => prev + 1);
     
     // 如果用户已登录，更新用户语言偏好
     if (isAuthenticated && user && user.preferences) {
@@ -75,7 +80,8 @@ export const LanguageProvider: FC<LanguageProviderProps> = ({ children }) => {
   const contextValue: LanguageContextType = {
     currentLanguage,
     changeLanguage,
-    supportedLanguages
+    supportedLanguages,
+    languageVersion // 添加到上下文中
   };
 
   return (
@@ -83,4 +89,21 @@ export const LanguageProvider: FC<LanguageProviderProps> = ({ children }) => {
       {children}
     </LanguageContext.Provider>
   );
+};
+
+// 创建一个高阶组件，使组件在语言变化时重新渲染
+export const withLanguageUpdates = <P extends object>(Component: React.ComponentType<P>): React.FC<P> => {
+  const WrappedComponent: React.FC<P> = (props) => {
+    // 使用语言版本号作为依赖，当语言变化时重新渲染
+    const { languageVersion } = useLanguage();
+    
+    // 组件的key会随着languageVersion变化，强制React重新挂载组件
+    return <Component key={languageVersion} {...props} />;
+  };
+  
+  // 设置显示名称，方便调试
+  const displayName = Component.displayName || Component.name || 'Component';
+  WrappedComponent.displayName = `withLanguageUpdates(${displayName})`;
+  
+  return WrappedComponent;
 }; 

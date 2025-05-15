@@ -13,6 +13,9 @@ export const supportedLanguages = {
 // 默认语言
 export const defaultLanguage = 'en-US';
 
+// 所有使用的命名空间
+export const namespaces = ['common', 'auth', 'profile', 'jobs', 'extension', 'welcome'];
+
 // 初始化i18next
 i18n
   // 加载翻译文件的后端
@@ -37,7 +40,7 @@ i18n
     // 默认命名空间
     defaultNS: 'common',
     // 使用的命名空间
-    ns: ['common', 'auth', 'profile', 'jobs'],
+    ns: namespaces,
     // 插值配置
     interpolation: {
       // 转义输出，防止XSS攻击
@@ -50,11 +53,22 @@ i18n
       // 缓存用户语言选择
       caches: ['localStorage', 'cookie'],
     },
-    // 用于在开发中禁用暂未翻译的文本
+    // React 特定配置
     react: { 
-      useSuspense: true 
+      useSuspense: true,
+      bindI18n: 'languageChanged loaded', // 监听这些事件以触发重新渲染
+      bindI18nStore: 'added removed', // 监听存储事件
+      transEmptyNodeValue: '', // 空值的处理
     }
   });
+
+// 添加语言加载完成事件监听器
+i18n.on('languageChanged', (lng) => {
+  // 确保所有命名空间都已加载
+  i18n.loadNamespaces(namespaces, () => {
+    console.log(`Language changed to ${lng}, all namespaces loaded`);
+  });
+});
 
 // 导出i18n实例
 export default i18n; 
