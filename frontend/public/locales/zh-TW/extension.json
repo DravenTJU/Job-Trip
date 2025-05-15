@@ -1,0 +1,69 @@
+{
+  "title": "Chrome 瀏覽器擴充功能",
+  "description": "安裝我們的開源瀏覽器擴充功能，自動從 LinkedIn、Seek 和 Indeed 等熱門求職平台收集職位資訊，將所有機會集中到一處，簡化您的求職流程。",
+  "download": {
+    "title": "Chrome 瀏覽器擴充功能",
+    "version": "版本 {{version}}",
+    "releaseNotes": "查看發布說明",
+    "button": "下載擴充程序",
+    "loading": "載入中..."
+  },
+  "installation": {
+    "title": "快速安裝指南",
+    "steps": {
+      "1": {
+        "title": "下載擴充檔案",
+        "description": "點擊上方的\"下載擴充程序\"按鈕，獲取JobTrip職途助手擴充檔案包。"
+      },
+      "2": {
+        "title": "打開 Chrome 擴充管理頁面",
+        "description": "在 Chrome 瀏覽器地址欄輸入以下地址："
+      },
+      "3": {
+        "title": "啟用開發者模式",
+        "description": "在擴充頁面右上角找到開發者模式開關："
+      },
+      "4": {
+        "title": "安裝擴充",
+        "description": "將下載的擴充檔案拖放到擴充頁面，完成安裝。"
+      },
+      "5": {
+        "title": "固定擴充程序",
+        "description": "點擊 Chrome 工具欄上的拼圖圖標，固定 JobTrip 擴充程序以方便訪問。"
+      },
+      "6": {
+        "title": "開始自動化您的求職過程",
+        "description": "點擊工具欄中的 JobTrip 圖標，輸入您的求職條件（職位、地點），選擇目標平台（LinkedIn、Seek、Indeed等），點擊\"開始搜索\"。擴充程序會自動收集職位資訊並同步到 JobTrip 系統中，為您提供一站式管理體驗。"
+      }
+    },
+    "loginTip": "為確保最佳體驗，請先登入您要搜索的招聘平台（LinkedIn、Seek、Indeed等），這樣擴充才能訪問完整的職位資訊。"
+  },
+  "privacy": {
+    "title": "隱私與安全",
+    "content": "我們的擴充程序需要訪問招聘網站的權限才能抓取職位資訊。JobTrip 是完全開源的，您可以隨時查看源代碼以確保數據安全。我們只收集您明確授權的職位相關資訊，如職位標題、公司名稱、地點等。"
+  },
+  "faq": {
+    "title": "常見問題",
+    "questions": {
+      "platforms": {
+        "title": "擴充支持哪些招聘平台？",
+        "answer": "目前支持 LinkedIn、Seek 和 Indeed 等主要紐西蘭求職平台。我們正在開發對更多平台的支持，未來版本將不斷擴展覆蓋範圍。"
+      },
+      "pricing": {
+        "title": "擴充需要付費嗎？",
+        "answer": "JobTrip 職途助手完全免費且開源，符合我們簡化求職流程、讓所有人都能輕鬆獲取職位資訊的使命。"
+      },
+      "sync": {
+        "title": "如何同步數據到 JobTrip 系統？",
+        "answer": "當您使用擴充收集職位資訊後，點擊導出按鈕，數據會自動同步到您的 JobTrip 帳戶。您可在 JobTrip 平台上查看、管理和跟蹤所有收集的職位。"
+      },
+      "updates": {
+        "title": "遇到網站變更導致擴充無法工作怎麼辦？",
+        "answer": "我們採用模塊化設計，會定期更新擴充以適應招聘網站的變化。可重新下載擴充程序，並按照安裝步驟重新安裝。如遇問題，請聯繫我們的支持團隊，我們會盡快解決。"
+      }
+    }
+  },
+  "errors": {
+    "fetchReleaseFailed": "獲取發布資訊失敗:"
+  }
+} 

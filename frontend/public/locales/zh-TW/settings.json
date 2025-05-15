@@ -1,0 +1,22 @@
+{
+  "title": "帳號設置",
+  "subtitle": "管理您的帳號資訊和安全設置",
+  "language": "語言設置",
+  "chooseLanguage": "選擇您偏好的語言",
+  "email": "電子郵箱",
+  "emailSettings": "郵箱設置",
+  "emailUpdated": "郵箱更新成功",
+  "updateEmail": "更新郵箱",
+  "updating": "更新中...",
+  "passwordSettings": "密碼設置",
+  "passwordUpdated": "密碼修改成功",
+  "currentPassword": "當前密碼",
+  "currentPasswordPlaceholder": "輸入當前密碼",
+  "newPassword": "新密碼",
+  "newPasswordPlaceholder": "設置新密碼",
+  "confirmPassword": "確認新密碼",
+  "confirmPasswordPlaceholder": "再次輸入新密碼",
+  "updatePassword": "更新密碼",
+  "passwordTooShort": "新密碼長度至少8個字符",
+  "passwordMismatch": "兩次輸入的密碼不一致"
+} 

@@ -1,0 +1,13 @@
+{
+  "title": "職業導航系統無法定位此頁面",
+  "subtitle": "您似乎偏離了求職旅途",
+  "description": "我們的職涯GPS無法找到您要訪問的目的地。請嘗試返回首頁重新導航，或聯繫我們獲取幫助。",
+  "homeButton": "返回首頁",
+  "backButton": "返回上一頁",
+  "compass": {
+    "north": "北",
+    "east": "東",
+    "south": "南",
+    "west": "西"
+  }
+} 

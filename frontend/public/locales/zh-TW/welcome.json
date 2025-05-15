@@ -1,0 +1,35 @@
+{
+  "defaultUser": "求職者",
+  "greeting": "歡迎回來，",
+  "intro": "JobTrip 職途助手為您簡化求職流程，自動收集多平台職位資訊並提供統一管理。完成以下步驟，輕鬆組織您的求職過程，減少手動追蹤工作，讓您專注於獲得理想職位。",
+  "sectionTitle": "開始使用您的一站式求職助手",
+  "downloadExtension": "下載 Chrome 擴充功能",
+  "viewInstructions": "查看安裝說明",
+  "start": "開始",
+  "steps": {
+    "installExtension": {
+      "title": "安裝 Chrome 擴充功能",
+      "description": "獲取並安裝 JobTrip 的瀏覽器擴充功能，自動從 LinkedIn、Seek 和 Indeed 等平台收集職位資訊。"
+    },
+    "browseJobs": {
+      "title": "瀏覽您的職位列表",
+      "description": "查看自動抓取或手動添加的職位資訊，所有數據都集中在一處，方便您快速篩選和比較。"
+    },
+    "trackApplications": {
+      "title": "跟蹤申請狀態",
+      "description": "輕鬆跟蹤每個職位的申請進度（新發現、已申請、面試中等），避免錯過重要機會。"
+    },
+    "completeProfile": {
+      "title": "完善您的個人檔案",
+      "description": "創建專業的個人檔案，包括教育背景、工作經驗和技能，為履歷生成和職位匹配奠定基礎。"
+    },
+    "generateResume": {
+      "title": "生成針對性履歷",
+      "description": "基於您的檔案和目標職位，智能生成量身定制的履歷，提高求職成功率。"
+    },
+    "createCoverLetter": {
+      "title": "創建個性化求職信",
+      "description": "為特定職位自動生成定制求職信，突出您與職位要求的匹配點，節省寶貴時間。"
+    }
+  }
+} 

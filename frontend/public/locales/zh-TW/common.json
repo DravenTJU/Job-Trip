@@ -8,9 +8,9 @@
     "jobs": "職位列表",
     "profile": "個人資料",
     "settings": "設置",
-    "chromeExtension": "Chrome擴展",
-    "jobTracking": "職位跟蹤",
-    "resumeBuilder": "簡歷生成",
+    "chromeExtension": "Chrome擴充功能",
+    "jobTracking": "職位追蹤",
+    "resumeBuilder": "履歷生成",
     "coverLetter": "AI求職信"
   },
   "buttons": {
@@ -26,8 +26,8 @@
     "zh-TW": "繁體中文"
   },
   "settings": {
-    "title": "賬號設置",
-    "subtitle": "管理您的賬號和偏好設置",
+    "title": "帳號設置",
+    "subtitle": "管理您的帳號和偏好設置",
     "language": "語言設置",
     "chooseLanguage": "選擇您偏好的語言",
     "emailSettings": "郵箱設置",
@@ -40,7 +40,7 @@
     "enterCurrentPassword": "輸入當前密碼",
     "setNewPassword": "設置新密碼",
     "enterNewPasswordAgain": "再次輸入新密碼",
-    "accountSettings": "賬號設置"
+    "accountSettings": "帳號設置"
   },
   "validation": {
     "passwordLength": "新密碼長度至少8個字符",
@@ -61,7 +61,7 @@
   },
   "profile": {
     "sections": {
-      "basic": "基本信息",
+      "basic": "基本資訊",
       "education": "教育經歷",
       "work": "工作經歷",
       "skills": "技能",
