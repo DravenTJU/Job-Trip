@@ -8,7 +8,13 @@
     "about": "关于我们",
     "pricing": "价格",
     "login": "登录",
-    "signup": "注册"
+    "signup": "注册",
+    "chromeExtension": "Chrome扩展",
+    "jobList": "职位列表",
+    "tracking": "职位跟踪",
+    "profile": "个人资料",
+    "resume": "简历生成",
+    "coverLetter": "AI求职信"
   },
   "hero": {
     "title": "你的一站式AI驱动求职应用助手",

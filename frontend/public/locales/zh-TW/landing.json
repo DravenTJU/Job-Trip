@@ -1,14 +1,20 @@
 {
   "meta": {
     "title": "職途助手 - 你的AI驅動求職應用助手",
-    "description": "通過Chrome自動化、智能履歷生成器和一鍵追蹤簡化您的求職過程"
+    "description": "通過Chrome自動化、智能履歷生成器和一鍵跟蹤簡化您的求職過程"
   },
   "nav": {
     "features": "功能",
     "about": "關於我們",
     "pricing": "價格",
     "login": "登入",
-    "signup": "註冊"
+    "signup": "註冊",
+    "chromeExtension": "Chrome擴充功能",
+    "jobList": "職位列表",
+    "tracking": "職位追蹤",
+    "profile": "個人資料",
+    "resume": "履歷生成",
+    "coverLetter": "AI求職信"
   },
   "hero": {
     "title": "你的一站式AI驅動求職應用助手",
@@ -22,12 +28,12 @@
   "features": {
     "extension": {
       "title": "一鍵安裝，便捷抓取",
-      "description": "自動從LinkedIn、Seek和Indeed抓取職位信息，提升效率。",
+      "description": "自動從LinkedIn、Seek和Indeed抓取職位資訊，提升效率。",
       "button": "立即安裝"
     },
     "jobList": {
       "title": "統一管理，一目瞭然",
-      "description": "在一個集中的位置查看自動抓取或手動添加的職位信息。",
+      "description": "在一個集中的位置查看自動抓取或手動添加的職位資訊。",
       "button": "查看職位"
     },
     "tracking": {
@@ -37,7 +43,7 @@
     },
     "profile": {
       "title": "個人檔案，一次維護",
-      "description": "在一處維護教育、工作經驗和技能信息，支持其他功能使用。",
+      "description": "在一處維護教育、工作經驗和技能資訊，支持其他功能使用。",
       "button": "完善資料"
     },
     "resume": {
@@ -47,7 +53,7 @@
     },
     "coverLetter": {
       "title": "AI求職信，多語言支持",
-      "description": "貼上職位信息，AI自動生成高質量中英文求職信。",
+      "description": "貼上職位資訊，AI自動生成高質量中英文求職信。",
       "button": "生成求職信"
     }
   },

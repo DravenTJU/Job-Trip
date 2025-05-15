@@ -8,7 +8,13 @@
     "about": "About",
     "pricing": "Pricing",
     "login": "Log in",
-    "signup": "Sign up"
+    "signup": "Sign up",
+    "chromeExtension": "Chrome Extension",
+    "jobList": "Job Listings",
+    "tracking": "Job Tracking",
+    "profile": "Profile",
+    "resume": "Resume Builder",
+    "coverLetter": "AI Cover Letter"
   },
   "hero": {
     "title": "Your One-Stop AI-Powered Job Application Assistant",

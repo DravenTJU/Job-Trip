@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 interface FeatureSectionProps {
+  id: string;
   title: string;
   description: string;
   imageUrl: string;
@@ -11,6 +12,7 @@ interface FeatureSectionProps {
 }
 
 const FeatureSection: React.FC<FeatureSectionProps> = ({
+  id,
   title,
   description,
   imageUrl,
@@ -19,7 +21,7 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
   imagePosition
 }) => {
   return (
-    <div className="py-16 container-lg">
+    <div id={id} className="py-16 container-lg">
       <div className={`flex flex-col ${imagePosition === 'right' ? 'md:flex-row' : 'md:flex-row-reverse'} md:items-center gap-12`}>
         <div className="flex-1">
           <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
