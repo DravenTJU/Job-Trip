@@ -1,27 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  Paper, 
-  Typography, 
-  TextField, 
-  Button, 
-  Link, 
-  Grid,
-  InputAdornment,
-  IconButton,
-  Divider,
-  Alert
-} from '@mui/material';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
-import { Visibility, VisibilityOff, Google, Apple } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import { login, clearError } from '@/redux/slices/authSlice';
 import Loader from '@/components/common/Loader';
+import DecorationBlocks from '@/components/common/DecorationBlocks';
 
 /**
  * 登录页面组件
  */
 const LoginPage: React.FC = () => {
+  const { t } = useTranslation(['auth', 'common']);
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -84,16 +74,16 @@ const LoginPage: React.FC = () => {
 
     // 验证邮箱
     if (!formData.email) {
-      errors.email = '请输入邮箱';
+      errors.email = t('auth:validation.emailRequired', '请输入邮箱');
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = '请输入有效的邮箱地址';
+      errors.email = t('auth:validation.emailInvalid', '请输入有效的邮箱地址');
       isValid = false;
     }
 
     // 验证密码
     if (!formData.password) {
-      errors.password = '请输入密码';
+      errors.password = t('auth:validation.passwordRequired', '请输入密码');
       isValid = false;
     }
 
@@ -114,218 +104,168 @@ const LoginPage: React.FC = () => {
     dispatch(login(formData));
   };
 
-  // 处理第三方登录
-  const handleSocialLogin = (provider: string) => {
-    // 实现社交媒体登录逻辑
-    console.log(`登录方式: ${provider}`);
-  };
+  if (isLoading) {
+    return <Loader fullScreen message={t('common:buttons.loading', '加载中...')} />;
+  }
 
   return (
-    <Box 
-      sx={{ 
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        p: 2,
-        backgroundColor: 'background.default',
-        backgroundImage: 'linear-gradient(to bottom right, rgba(63, 81, 181, 0.05), rgba(63, 81, 181, 0.1))'
-      }}
-    >
-      <Paper 
-        elevation={3} 
-        sx={{ 
-          p: 4, 
-          maxWidth: 450, 
-          width: '100%',
-          borderRadius: '16px',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)'
-        }}
-      >
-        <Typography 
-          variant="h4" 
-          component="h1" 
-          align="center" 
-          gutterBottom
-          sx={{ 
-            fontWeight: 'bold',
-            color: 'primary.main',
-            mb: 1
-          }}
-        >
-          登录
-        </Typography>
-        <Typography 
-          variant="body1" 
-          align="center" 
-          color="text.secondary" 
-          sx={{ mb: 4 }}
-        >
-          登录到您的账户
-        </Typography>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* 装饰方块 */}
+      <DecorationBlocks count={15} />
+      
+      <div className="sm:mx-auto sm:w-full sm:max-w-md z-10">
+        <h2 className="text-center text-3xl font-bold text-gray-900 mb-2">
+          {t('auth:login.title', '登录')}
+        </h2>
+        <p className="text-center text-sm text-gray-600 mb-6">
+          {t('auth:login.subtitle', '欢迎回来！请输入您的信息')}
+        </p>
+      </div>
 
-        {/* 错误提示 */}
-        {error && (
-          <Alert severity="error" sx={{ mb: 3, borderRadius: '8px' }}>
-            {error}
-          </Alert>
-        )}
+      <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-md z-10">
+        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 px-6 py-8">
+          {/* 错误提示 */}
+          {error && (
+            <div className="mb-4 rounded-xl bg-red-50 dark:bg-red-500/10 p-4 text-red-600 dark:text-red-400">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm">{error}</p>
+                </div>
+              </div>
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="邮箱"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            error={!!fieldErrors.email}
-            helperText={fieldErrors.email}
-            disabled={isLoading}
-            required
-            sx={{ 
-              mb: 2,
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '8px'
-              }
-            }}
-          />
-          <TextField
-            label="密码"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            name="password"
-            type={showPassword ? 'text' : 'password'}
-            value={formData.password}
-            onChange={handleChange}
-            error={!!fieldErrors.password}
-            helperText={fieldErrors.password}
-            disabled={isLoading}
-            required
-            sx={{ 
-              mb: 1,
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '8px'
-              }
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="切换密码可见性"
-                    onClick={handleTogglePasswordVisibility}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-          
-          <Box sx={{ textAlign: 'right', mb: 3 }}>
-            <Link 
-              component={RouterLink} 
-              to="/forgot-password" 
-              variant="body2"
-              sx={{
-                color: 'primary.main',
-                textDecoration: 'none',
-                '&:hover': {
-                  textDecoration: 'underline'
-                }
-              }}
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {t('auth:login.email', '电子邮箱')}
+              </label>
+              <div className="relative">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full h-11 pl-3 pr-10 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                  placeholder={t('auth:login.emailPlaceholder', 'name@example.com')}
+                />
+                {fieldErrors.email && (
+                  <p className="mt-1 text-xs text-red-600">{fieldErrors.email}</p>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t('auth:login.password', '密码')}
+                </label>
+                <div className="text-sm">
+                  <RouterLink to="/forgot-password" className="text-indigo-600 hover:text-indigo-500">
+                    {t('auth:login.forgotPassword', '忘记密码？')}
+                  </RouterLink>
+                </div>
+              </div>
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full h-11 pl-3 pr-10 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  onClick={handleTogglePasswordVisibility}
+                >
+                  {showPassword ? (
+                    <EyeOffIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                  ) : (
+                    <EyeIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                  )}
+                </button>
+                {fieldErrors.password && (
+                  <p className="mt-1 text-xs text-red-600">{fieldErrors.password}</p>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
+              >
+                {t('auth:login.signIn', '登录')}
+              </button>
+            </div>
+          </form>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">
+                  {t('auth:login.or', '或者')}
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <a
+                href="#"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
+              >
+                <svg className="h-5 w-5" aria-hidden="true" viewBox="0 0 24 24">
+                  <path
+                    d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M6.44 14.08l7.227-7.227 2.587 2.58-7.227 7.227z"
+                    fill="#34A853"
+                  />
+                  <path
+                    d="M14.08 17.613l2.584-2.587-2.587-2.587-2.584 2.587z"
+                    fill="#FBBC05"
+                  />
+                  <path
+                    d="M12.48 7.173l7.88 7.88-7.88 7.88-7.88-7.88z"
+                    fill="#EA4335"
+                  />
+                </svg>
+                {t('auth:login.continueWithGoogle', '使用Google账号登录')}
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-6 text-center text-sm">
+            <span className="text-gray-600">
+              {t('auth:login.dontHaveAccount', '没有账号？')}
+            </span>
+            <RouterLink
+              to="/register"
+              className="font-medium text-indigo-600 hover:text-indigo-500 ml-1"
             >
-              忘记密码？
-            </Link>
-          </Box>
-          
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            size="large"
-            sx={{ 
-              mb: 3,
-              py: 1.5,
-              borderRadius: '8px',
-              textTransform: 'none',
-              fontSize: '1rem',
-              fontWeight: 500,
-              boxShadow: '0 4px 12px rgba(63, 81, 181, 0.2)'
-            }}
-            disabled={isLoading}
-          >
-            {isLoading ? <Loader size={24} /> : '登录'}
-          </Button>
-          
-          <Divider sx={{ my: 2 }}>
-            <Typography color="text.secondary" variant="body2">
-              或
-            </Typography>
-          </Divider>
-          
-          <Grid container spacing={2} sx={{ mb: 3 }}>
-            <Grid item xs={12} sm={6}>
-              <Button
-                variant="outlined"
-                fullWidth
-                startIcon={<Google />}
-                onClick={() => handleSocialLogin('google')}
-                sx={{ 
-                  py: 1.2,
-                  borderRadius: '8px',
-                  textTransform: 'none',
-                  borderColor: 'divider'
-                }}
-              >
-                Continue with Google
-              </Button>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Button
-                variant="outlined"
-                fullWidth
-                startIcon={<Apple />}
-                onClick={() => handleSocialLogin('apple')}
-                sx={{ 
-                  py: 1.2,
-                  borderRadius: '8px',
-                  textTransform: 'none',
-                  borderColor: 'divider'
-                }}
-              >
-                Continue with Apple
-              </Button>
-            </Grid>
-          </Grid>
-          
-          <Box sx={{ textAlign: 'center', mt: 2 }}>
-            <Typography variant="body2" color="text.secondary">
-              还没有账号？{' '}
-              <Link 
-                component={RouterLink} 
-                to="/register" 
-                sx={{
-                  color: 'primary.main',
-                  textDecoration: 'none',
-                  fontWeight: 500,
-                  '&:hover': {
-                    textDecoration: 'underline'
-                  }
-                }}
-              >
-                立即注册
-              </Link>
-            </Typography>
-          </Box>
-        </form>
-      </Paper>
-    </Box>
+              {t('auth:login.signUp', '注册')}
+            </RouterLink>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
