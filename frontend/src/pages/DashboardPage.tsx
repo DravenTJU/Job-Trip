@@ -4,6 +4,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { BriefcaseIcon, Search, BellIcon, CalendarIcon, Plus, X, TrendingUpIcon, AwardIcon } from 'lucide-react';
 import DroppableColumn, { Interview } from '@/components/dashboard/DroppableColumn';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 // 定义本地Job接口
 interface Job {
@@ -74,6 +75,7 @@ const CustomDragLayer: React.FC = () => {
  */
 const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
   const [interviews, setInterviews] = useState<Interview[]>([]);
   
@@ -86,24 +88,24 @@ const DashboardPage: React.FC = () => {
     pending: [
       {
         id: '1',
-        title: '高级前端工程师',
-        company: '腾讯',
-        type: '远程',
-        salary: '¥30-45K/月',
+        title: t('senior_frontend_engineer', '高级前端工程师'),
+        company: t('tencent', '腾讯'),
+        type: t('remote', '远程'),
+        salary: t('salary_range_1', '¥30-45K/月'),
       },
       {
         id: '2',
-        title: '全栈开发工程师',
-        company: '阿里巴巴',
-        type: '混合办公',
-        salary: '¥25-40K/月',
+        title: t('fullstack_developer', '全栈开发工程师'),
+        company: t('alibaba', '阿里巴巴'),
+        type: t('hybrid', '混合办公'),
+        salary: t('salary_range_2', '¥25-40K/月'),
       },
       {
         id: '3',
-        title: '产品经理',
-        company: '字节跳动',
-        type: '全职',
-        salary: '¥35-50K/月',
+        title: t('product_manager', '产品经理'),
+        company: t('bytedance', '字节跳动'),
+        type: t('fulltime', '全职'),
+        salary: t('salary_range_3', '¥35-50K/月'),
       }
     ],
     applied: [],
@@ -286,9 +288,9 @@ const DashboardPage: React.FC = () => {
       <CustomDragLayer />
       <div className="container-lg px-4">
         <div className="section space-y-6 mb-8">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">职位追踪</h1>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">{t('job_tracking', '职位追踪')}</h1>
           <p className="text-gray-500 dark:text-gray-400">
-            跟踪每个职位的申请状态和进度
+            {t('job_tracking_description', '跟踪每个职位的申请状态和进度')}
           </p>
         </div>
         
@@ -303,7 +305,7 @@ const DashboardPage: React.FC = () => {
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                   {jobs.pending.length + jobs.applied.length + jobs.interviewing.length + jobs.hired.length}
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">总申请数</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{t('total_applications', '总申请数')}</p>
               </div>
             </div>
           </div>
@@ -316,7 +318,7 @@ const DashboardPage: React.FC = () => {
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                   {jobs.interviewing.length}
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">本周面试</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{t('weekly_interviews', '本周面试')}</p>
               </div>
             </div>
           </div>
@@ -329,7 +331,7 @@ const DashboardPage: React.FC = () => {
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                   {todos.filter(todo => !todo.completed).length}
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">待处理任务</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{t('pending_tasks', '待处理任务')}</p>
               </div>
             </div>
           </div>
@@ -342,7 +344,7 @@ const DashboardPage: React.FC = () => {
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                   {calculateInterviewRate()}
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">面试转化率</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{t('interview_conversion_rate', '面试转化率')}</p>
               </div>
             </div>
           </div>
@@ -355,7 +357,7 @@ const DashboardPage: React.FC = () => {
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                   {calculateHireRate()}
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">录用率</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{t('hire_rate', '录用率')}</p>
               </div>
             </div>
           </div>
@@ -370,7 +372,7 @@ const DashboardPage: React.FC = () => {
             <input
               type="text"
               className="w-full h-11 pl-10 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-              placeholder="搜索职位..."
+              placeholder={t('search_jobs', '搜索职位...')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -381,7 +383,7 @@ const DashboardPage: React.FC = () => {
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
             >
               <Plus className="h-5 w-5" />
-              手动添加职位
+              {t('add_job_manually', '手动添加职位')}
             </button>
           </div>
         </div>
@@ -389,7 +391,7 @@ const DashboardPage: React.FC = () => {
         {/* 看板视图 - 修改为4栏布局 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <DroppableColumn
-            title="待申请"
+            title={t('to_apply', '待申请')}
             count={filterJobs(jobs.pending).length}
             jobs={filterJobs(jobs.pending)}
             onDrop={(item) => handleDrop('pending', item as Job)}
@@ -401,7 +403,7 @@ const DashboardPage: React.FC = () => {
             onDeleteTodo={deleteTodo}
           />
           <DroppableColumn
-            title="已申请"
+            title={t('applied', '已申请')}
             count={filterJobs(jobs.applied).length}
             jobs={filterJobs(jobs.applied)}
             onDrop={(item) => handleDrop('applied', item as Job)}
@@ -413,7 +415,7 @@ const DashboardPage: React.FC = () => {
             onDeleteTodo={deleteTodo}
           />
           <DroppableColumn
-            title="面试中"
+            title={t('interviewing', '面试中')}
             count={filterJobs(jobs.interviewing).length}
             jobs={filterJobs(jobs.interviewing)}
             onDrop={(item) => handleDrop('interviewing', item as Job)}
@@ -425,7 +427,7 @@ const DashboardPage: React.FC = () => {
             onDeleteTodo={deleteTodo}
           />
           <DroppableColumn
-            title="已录用"
+            title={t('hired', '已录用')}
             count={filterJobs(jobs.hired).length}
             jobs={filterJobs(jobs.hired)}
             onDrop={(item) => handleDrop('hired', item as Job)}
@@ -441,7 +443,7 @@ const DashboardPage: React.FC = () => {
         {/* 近期面试提醒 */}
         <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 mb-8">
           <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-            <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">近期面试安排</h2>
+            <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">{t('recent_interviews', '近期面试安排')}</h2>
           </div>
           <div className="p-4">
             <div className="space-y-4">
@@ -468,7 +470,7 @@ const DashboardPage: React.FC = () => {
                           : 'bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-400'
                       }`}
                     >
-                      {interview.status === 'confirmed' ? '已确认' : '待确认'}
+                      {interview.status === 'confirmed' ? t('confirmed', '已确认') : t('to_be_confirmed', '待确认')}
                     </button>
                     <button
                       onClick={() => handleDeleteInterview(interview.id)}
@@ -481,7 +483,7 @@ const DashboardPage: React.FC = () => {
               ))}
               {interviews.length === 0 && (
                 <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-                  暂无面试安排
+                  {t('no_interviews', '暂无面试安排')}
                 </p>
               )}
             </div>
@@ -491,7 +493,7 @@ const DashboardPage: React.FC = () => {
         {/* 待处理任务列表 */}
         <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 mb-8">
           <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-            <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">待处理任务</h2>
+            <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">{t('pending_tasks', '待处理任务')}</h2>
           </div>
           <div className="p-4">
             <div className="space-y-3">
@@ -530,7 +532,7 @@ const DashboardPage: React.FC = () => {
               })}
               {todos.length === 0 && (
                 <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-                  暂无待处理任务
+                  {t('no_pending_tasks', '暂无待处理任务')}
                 </p>
               )}
             </div>

@@ -9,6 +9,7 @@ import Loader from '@/components/common/Loader';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
 import ResumeOptimizePreview from '@/components/resume/ResumeOptimizePreview';
 import resumeOptimizeService from '@/services/resumeOptimizeService';
+import { useTranslation } from 'react-i18next';
 
 /**
  * 简历生成器页面组件
@@ -17,6 +18,7 @@ import resumeOptimizeService from '@/services/resumeOptimizeService';
 const ResumeBuilderPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { t } = useTranslation('resume');
   const { resumes, isLoading, error } = useAppSelector((state) => state.resumes);
   
   const [expandedResume, setExpandedResume] = useState<string | null>(null);
@@ -93,7 +95,7 @@ const ResumeBuilderPage: React.FC = () => {
       );
       
       if (!response.ok) {
-        throw new Error('下载简历失败');
+        throw new Error(t('download_resume_failed', '下载简历失败'));
       }
       
       // 将响应转换为blob
@@ -123,7 +125,7 @@ const ResumeBuilderPage: React.FC = () => {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (error) {
-      console.error('下载简历时出错:', error);
+      console.error(t('download_resume_error', '下载简历时出错:'), error);
       // 可以在这里添加错误提示
     }
   };
@@ -131,30 +133,30 @@ const ResumeBuilderPage: React.FC = () => {
   // 处理AI优化简历
   const handleOptimizeResume = async (resume: Resume) => {
     try {
-      console.log('开始优化简历:', resume._id);
+      console.log(t('start_optimizing_resume', '开始优化简历:'), resume._id);
       setIsOptimizing(true);
       setOptimizationError(null);
       setResumeToOptimize(resume);
       
       // 验证简历内容是否有效
       if (!resume.content) {
-        throw new Error('简历内容为空，无法进行优化');
+        throw new Error(t('empty_resume_content', '简历内容为空，无法进行优化'));
       }
       
-      console.log('调用AI服务优化简历...');
+      console.log(t('calling_ai_service', '调用AI服务优化简历...'));
       // 假设 optimizeResume 需要 resumeId 和 targetPosition
       // (如果需要的参数不同，需要调整)
       const optimized = await resumeOptimizeService.optimizeResume(resume._id, resume.targetPosition || '', resume.content); 
-      console.log('AI优化完成，准备显示预览');
+      console.log(t('ai_optimization_complete', 'AI优化完成，准备显示预览'));
       
       setOptimizedContent(optimized);
       setShowOptimizePreview(true);
     } catch (error) {
-      console.error('简历优化失败:', error);
+      console.error(t('resume_optimization_failed', '简历优化失败:'), error);
       // 提供更具体的错误信息
       const errorMessage = error instanceof Error 
         ? error.message 
-        : '简历优化失败，请稍后重试';
+        : t('optimization_retry_later', '简历优化失败，请稍后重试');
       setOptimizationError(errorMessage);
     } finally {
       setIsOptimizing(false);
@@ -171,9 +173,9 @@ const ResumeBuilderPage: React.FC = () => {
   return (
     <div className="container-lg px-4">
       <div className="section space-y-6 mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">简历生成器</h1>
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">{t('resume_builder', '简历生成器')}</h1>
         <p className="text-gray-500 dark:text-gray-400">
-          根据您的个人档案生成简历
+          {t('resume_builder_description', '根据您的个人档案生成简历')}
         </p>
       </div>
 
@@ -248,7 +250,7 @@ const ResumeBuilderPage: React.FC = () => {
                       }`}>
                         {resume.type === ResumeType.TAILORED ? '定制' : '基础'}
                       </span> */}
-                      创建于{new Date(resume.createdAt).toLocaleDateString()} • 更新于 {new Date(resume.updatedAt).toLocaleDateString()} • 目标职位: {resume.targetPosition || '未指定'}
+                      {t('created_at', '创建于')}{new Date(resume.createdAt).toLocaleDateString()} • {t('updated_at', '更新于')} {new Date(resume.updatedAt).toLocaleDateString()} • {t('target_position', '目标职位')}: {resume.targetPosition || t('not_specified', '未指定')}
                     </p>
                   </div>
                 </div>
@@ -269,7 +271,7 @@ const ResumeBuilderPage: React.FC = () => {
                       onClick={() => handleEditResume(resume._id)}
                     >
                       <Edit className="w-4 h-4" />
-                      编辑
+                      {t('edit', '编辑')}
                     </button>
                     <button 
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
@@ -279,7 +281,7 @@ const ResumeBuilderPage: React.FC = () => {
                       }}
                     >
                       <Download className="w-4 h-4" />
-                      下载
+                      {t('download', '下载')}
                     </button>
                     <button 
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
@@ -289,14 +291,14 @@ const ResumeBuilderPage: React.FC = () => {
                       }}
                     >
                       <Copy className="w-4 h-4" />
-                      复制
+                      {t('copy', '复制')}
                     </button>
                     <button 
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-red-50/50 dark:bg-red-900/50 backdrop-blur-lg ring-2 ring-red-900/5 dark:ring-red-100/5 hover:bg-red-100/50 dark:hover:bg-red-800/50 transition-colors text-red-600 dark:text-red-400"
                       onClick={() => handleDeleteResume(resume._id)}
                     >
                       <Trash className="w-4 h-4" />
-                      删除
+                      {t('delete', '删除')}
                     </button>
                   </div>
                 </div>
@@ -310,7 +312,7 @@ const ResumeBuilderPage: React.FC = () => {
             onClick={handleCreateResume}
           >
             <Plus className="w-5 h-5 mr-2" />
-            <span className="text-lg font-medium">创建新的简历</span>
+            <span className="text-lg font-medium">{t('create_new_resume', '创建新的简历')}</span>
           </button>
         </div>
       </div>
@@ -318,10 +320,10 @@ const ResumeBuilderPage: React.FC = () => {
       {/* 删除确认对话框 */}
       <ConfirmDialog
         open={showDeleteConfirm}
-        title="删除简历"
-        message="您确定要删除这份简历吗？此操作无法撤销。"
-        confirmText="删除"
-        cancelText="取消"
+        title={t('delete_resume', '删除简历')}
+        message={t('delete_resume_confirm', '您确定要删除这份简历吗？此操作无法撤销。')}
+        confirmText={t('delete', '删除')}
+        cancelText={t('cancel', '取消')}
         onConfirm={confirmDeleteResume}
         onCancel={() => setShowDeleteConfirm(false)}
       />

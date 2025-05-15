@@ -3,6 +3,7 @@ import { Sparkles, Copy, Download, RefreshCw } from 'lucide-react';
 import { useAppSelector, useAppDispatch } from '@/hooks/reduxHooks';
 import { fetchResumes } from '@/redux/slices/resumesSlice';
 import { Resume } from '@/types';
+import { useTranslation } from 'react-i18next';
 
 const CoverLetterPage: React.FC = () => {
   const [jobDescription, setJobDescription] = useState('');
@@ -15,20 +16,21 @@ const CoverLetterPage: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
   const { resumes } = useAppSelector((state) => state.resumes);
   const dispatch = useAppDispatch();
+  const { t } = useTranslation('coverLetter');
 
   // 加载用户的简历列表
   useEffect(() => {
-    dispatch(fetchResumes());
+    dispatch(fetchResumes({}));
   }, [dispatch]);
 
   const handleGenerate = async () => {
     if (!jobDescription.trim()) {
-      setError('请输入职位描述');
+      setError(t('enter_job_description', '请输入职位描述'));
       return;
     }
 
     if (!user) {
-      setError('请先登录');
+      setError(t('login_required', '请先登录'));
       return;
     }
 
@@ -38,12 +40,12 @@ const CoverLetterPage: React.FC = () => {
       const userData = {
         firstName: user.firstName || '',
         lastName: user.lastName || '',
-        experience: '未提供',
-        education: '未提供',
+        experience: t('not_provided', '未提供'),
+        education: t('not_provided', '未提供'),
         skills: [],
       };
 
-      console.log('Sending request with data:', {
+      console.log(t('sending_request_data', '发送请求数据:'), {
         jobDescription,
         tone,
         language,
@@ -66,18 +68,18 @@ const CoverLetterPage: React.FC = () => {
         }),
       });
 
-      console.log('Response status:', response.status);
+      console.log(t('response_status', '响应状态:'), response.status);
       const data = await response.json();
-      console.log('Response data:', data);
+      console.log(t('response_data', '响应数据:'), data);
 
       if (data.code === 200) {
         setCoverLetter(data.data.coverLetter);
       } else {
-        setError(data.message || '生成求职信失败');
+        setError(data.message || t('generate_cover_letter_failed', '生成求职信失败'));
       }
     } catch (error) {
-      console.error('生成求职信时出错:', error);
-      setError('生成求职信时发生错误，请稍后重试');
+      console.error(t('generate_cover_letter_error', '生成求职信时出错:'), error);
+      setError(t('generate_cover_letter_error_retry', '生成求职信时发生错误，请稍后重试'));
     } finally {
       setIsGenerating(false);
     }
@@ -91,7 +93,7 @@ const CoverLetterPage: React.FC = () => {
     const element = document.createElement('a');
     const file = new Blob([coverLetter], { type: 'text/plain' });
     element.href = URL.createObjectURL(file);
-    element.download = '求职信.txt';
+    element.download = t('cover_letter_filename', '求职信.txt');
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
@@ -100,7 +102,7 @@ const CoverLetterPage: React.FC = () => {
   return (
     <div className="container-lg">
       <div className="section">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">AI求职信生成器</h1>
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">{t('ai_cover_letter_generator', 'AI求职信生成器')}</h1>
         
         {error && (
           <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -111,43 +113,43 @@ const CoverLetterPage: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-6">
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              职位描述
+              {t('job_description', '职位描述')}
             </label>
             <textarea
               className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
-              placeholder="请粘贴职位描述..."
+              placeholder={t('paste_job_description', '请粘贴职位描述...')}
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                语气风格
+                {t('tone_style', '语气风格')}
               </label>
               <select
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 value={tone}
                 onChange={(e) => setTone(e.target.value)}
               >
-                <option value="professional">专业正式</option>
-                <option value="friendly">友好亲切</option>
-                <option value="confident">自信积极</option>
-                <option value="creative">创新独特</option>
+                <option value="professional">{t('professional_formal', '专业正式')}</option>
+                <option value="friendly">{t('friendly_warm', '友好亲切')}</option>
+                <option value="confident">{t('confident_positive', '自信积极')}</option>
+                <option value="creative">{t('creative_unique', '创新独特')}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                语言
+                {t('language', '语言')}
               </label>
               <select
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
               >
-                <option value="chinese">中文</option>
+                <option value="chinese">{t('chinese', '中文')}</option>
                 <option value="english">English</option>
               </select>
             </div>
@@ -155,14 +157,14 @@ const CoverLetterPage: React.FC = () => {
 
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              选择简历（可选）
+              {t('select_resume_optional', '选择简历（可选）')}
             </label>
             <select
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               value={selectedResumeId}
               onChange={(e) => setSelectedResumeId(e.target.value)}
             >
-              <option value="">不使用简历</option>
+              <option value="">{t('dont_use_resume', '不使用简历')}</option>
               {resumes.map((resume: Resume) => (
                 <option key={resume._id} value={resume._id}>
                   {resume.name}
@@ -170,7 +172,7 @@ const CoverLetterPage: React.FC = () => {
               ))}
             </select>
             <p className="text-sm text-gray-500 mt-2">
-              选择简历可以帮助AI生成更符合您背景的求职信
+              {t('resume_helps_ai', '选择简历可以帮助AI生成更符合您背景的求职信')}
             </p>
           </div>
 
@@ -182,12 +184,12 @@ const CoverLetterPage: React.FC = () => {
             {isGenerating ? (
               <>
                 <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
-                正在生成...
+                {t('generating', '正在生成...')}
               </>
             ) : (
               <>
                 <Sparkles className="w-5 h-5 mr-2" />
-                生成求职信
+                {t('generate_cover_letter', '生成求职信')}
               </>
             )}
           </button>
@@ -196,7 +198,7 @@ const CoverLetterPage: React.FC = () => {
         {coverLetter && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">生成的求职信</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('generated_cover_letter', '生成的求职信')}</h2>
               <div className="flex space-x-2">
                 <button
                   className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"

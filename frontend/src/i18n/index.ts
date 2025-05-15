@@ -14,7 +14,7 @@ export const supportedLanguages = {
 export const defaultLanguage = 'en-US';
 
 // 所有使用的命名空间
-export const namespaces = ['common', 'auth', 'profile', 'jobs', 'extension', 'welcome'];
+export const namespaces = ['common', 'auth', 'profile', 'jobs', 'extension', 'welcome', 'dashboard', 'resume', 'coverLetter'];
 
 // 初始化i18next
 i18n
