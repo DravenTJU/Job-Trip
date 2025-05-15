@@ -3,6 +3,7 @@ import { PencilLine, Check, AlertCircle } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { Transition } from '@headlessui/react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { JOB_STATUS_OPTIONS, getStatusStyle, getStatusIcon, getStatusLabel } from '@/utils/jobStatusUtils';
 import jobStatusService from '@/services/jobStatusService';
 
@@ -25,6 +26,7 @@ const StatusBadgeComponent: React.FC<StatusBadgeProps> = ({
   className = '',
   onStatusChange
 }) => {
+  const { t } = useTranslation('jobs');
   // 本地状态
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -177,7 +179,7 @@ const StatusBadgeComponent: React.FC<StatusBadgeProps> = ({
             }}
           >
             <div className="px-3 py-2 text-xs text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
-              选择新状态
+              {t('selectNewStatus', '选择新状态')}
             </div>
             {JOB_STATUS_OPTIONS.map((option) => (
               <div
@@ -191,7 +193,7 @@ const StatusBadgeComponent: React.FC<StatusBadgeProps> = ({
                   <span className="flex items-center justify-center w-4 h-4 rounded-full bg-white/20 mr-1">
                     {getIconComponent(option.icon)}
                   </span>
-                  <span className="text-xs">{option.label}</span>
+                  <span className="text-xs">{t(option.label)}</span>
                 </span>
                 {currentStatus === option.value && (
                   <Check className="w-4 h-4 ml-auto text-indigo-600 dark:text-indigo-400" />

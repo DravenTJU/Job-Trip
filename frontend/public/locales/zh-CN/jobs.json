@@ -126,5 +126,19 @@
   "job_link": "职位链接",
   "job_description_placeholder": "请输入职位描述、要求等信息...",
   "saving": "保存中...",
-  "save": "保存"
+  "save": "保存",
+  
+  "selectNewStatus": "选择新状态",
+  "status": {
+    "all": "所有状态",
+    "new": "新添加",
+    "not_interested": "不考虑",
+    "pending": "待申请",
+    "applied": "已申请",
+    "interviewing": "面试中",
+    "offer": "已录用",
+    "rejected": "已拒绝",
+    "withdrawn": "已撤回",
+    "closed": "已关闭"
+  }
 } 

@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { Check, ChevronDown } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { JOB_STATUS_OPTIONS, getStatusStyle, getStatusIcon } from '@/utils/jobStatusUtils';
 import { createPortal } from 'react-dom';
 
@@ -35,9 +36,11 @@ const StatusSelect: React.FC<StatusSelectProps> = ({
   error,
   includeAllOption = false
 }) => {
+  const { t } = useTranslation('jobs');
+  
   // 构建选项列表，包括可选的"所有状态"选项
   const options = includeAllOption 
-    ? [{ value: '', label: '所有状态', icon: 'Filter' }, ...JOB_STATUS_OPTIONS]
+    ? [{ value: '', label: 'status.all', icon: 'Filter' }, ...JOB_STATUS_OPTIONS]
     : JOB_STATUS_OPTIONS;
   
   // 查找当前选中的选项
@@ -69,7 +72,7 @@ const StatusSelect: React.FC<StatusSelectProps> = ({
                   ? 'ring-red-500 focus:ring-red-500' 
                   : 'ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500'
               } transition-shadow flex items-center`}
-              aria-label="选择职位状态"
+              aria-label={t('filters.status', '选择职位状态')}
               aria-haspopup="listbox"
             >
               <span className={`inline-flex items-center rounded-full pl-1 pr-3 py-1 ${getOptionStyleClass(selectedOption.value)}`}>
@@ -77,7 +80,7 @@ const StatusSelect: React.FC<StatusSelectProps> = ({
                   {getIconComponent(selectedOption.icon)}
                 </span>
                 <span className="truncate font-medium">
-                  {selectedOption.label}
+                  {t(selectedOption.label)}
                 </span>
               </span>
               <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
@@ -99,9 +102,9 @@ const StatusSelect: React.FC<StatusSelectProps> = ({
                 <Listbox.Options 
                   className="fixed z-[9999] py-2 mt-1 overflow-auto text-base bg-white dark:bg-gray-800 rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60"
                   style={{
-                    width: document.querySelector('[aria-label="选择职位状态"]')?.getBoundingClientRect().width + 'px',
-                    top: (document.querySelector('[aria-label="选择职位状态"]')?.getBoundingClientRect().bottom || 0) + 4 + 'px',
-                    left: document.querySelector('[aria-label="选择职位状态"]')?.getBoundingClientRect().left + 'px'
+                    width: document.querySelector(`[aria-label="${t('filters.status', '选择职位状态')}"]`)?.getBoundingClientRect().width + 'px',
+                    top: (document.querySelector(`[aria-label="${t('filters.status', '选择职位状态')}"]`)?.getBoundingClientRect().bottom || 0) + 4 + 'px',
+                    left: document.querySelector(`[aria-label="${t('filters.status', '选择职位状态')}"]`)?.getBoundingClientRect().left + 'px'
                   }}
                 >
                   {options.map((option) => (
@@ -122,7 +125,7 @@ const StatusSelect: React.FC<StatusSelectProps> = ({
                               {getIconComponent(option.icon)}
                             </span>
                             <span className={`truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                              {option.label}
+                              {t(option.label)}
                             </span>
                           </span>
                           {selected ? (

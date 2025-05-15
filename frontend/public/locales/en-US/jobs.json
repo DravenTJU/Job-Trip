@@ -126,5 +126,19 @@
   "job_link": "Job Link",
   "job_description_placeholder": "Please enter job description, requirements, etc...",
   "saving": "Saving...",
-  "save": "Save"
+  "save": "Save",
+  
+  "selectNewStatus": "Select New Status",
+  "status": {
+    "all": "All Statuses",
+    "new": "New",
+    "not_interested": "Not Interested",
+    "pending": "Pending",
+    "applied": "Applied",
+    "interviewing": "Interviewing",
+    "offer": "Offer Received",
+    "rejected": "Rejected",
+    "withdrawn": "Withdrawn",
+    "closed": "Closed"
+  }
 } 

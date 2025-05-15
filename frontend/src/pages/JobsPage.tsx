@@ -83,7 +83,7 @@ const JobsPage: React.FC = () => {
   
   // 状态选项
   const statusOptions = [
-    { label: t('jobs:filters.statuses.all', '所有状态'), value: '' },
+    { label: t('jobs:statuses.all', '所有状态'), value: '' },
     ...JOB_STATUS_OPTIONS
   ];
   

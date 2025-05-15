@@ -1,16 +1,17 @@
 import { JobStatus } from '@/types';
+import i18next from 'i18next';
 
 // 状态选项数组 - 用于下拉菜单
 export const JOB_STATUS_OPTIONS = [
-  { value: JobStatus.NEW, label: '新添加', icon: 'PlusCircle' },
-  { value: JobStatus.NOT_INTERESTED, label: '不考虑', icon: 'ThumbsDown' },
-  { value: JobStatus.PENDING, label: '待申请', icon: 'Clock' },
-  { value: JobStatus.APPLIED, label: '已申请', icon: 'Send' },
-  { value: JobStatus.INTERVIEWING, label: '面试中', icon: 'Users' },
-  { value: JobStatus.OFFER, label: '已录用', icon: 'Award' },
-  { value: JobStatus.REJECTED, label: '已拒绝', icon: 'XCircle' },
-  { value: JobStatus.WITHDRAWN, label: '已撤回', icon: 'Undo' },
-  { value: JobStatus.CLOSED, label: '已关闭', icon: 'Archive' }
+  { value: JobStatus.NEW, label: 'status.new', icon: 'PlusCircle' },
+  { value: JobStatus.NOT_INTERESTED, label: 'status.not_interested', icon: 'ThumbsDown' },
+  { value: JobStatus.PENDING, label: 'status.pending', icon: 'Clock' },
+  { value: JobStatus.APPLIED, label: 'status.applied', icon: 'Send' },
+  { value: JobStatus.INTERVIEWING, label: 'status.interviewing', icon: 'Users' },
+  { value: JobStatus.OFFER, label: 'status.offer', icon: 'Award' },
+  { value: JobStatus.REJECTED, label: 'status.rejected', icon: 'XCircle' },
+  { value: JobStatus.WITHDRAWN, label: 'status.withdrawn', icon: 'Undo' },
+  { value: JobStatus.CLOSED, label: 'status.closed', icon: 'Archive' }
 ];
 
 /**
@@ -20,7 +21,10 @@ export const JOB_STATUS_OPTIONS = [
  */
 export const getStatusLabel = (status: string): string => {
   const option = JOB_STATUS_OPTIONS.find(opt => opt.value === status);
-  return option ? option.label : status;
+  if (!option) return status;
+  
+  // 使用翻译
+  return i18next.t(`jobs:${option.label}`, option.label);
 };
 
 /**
