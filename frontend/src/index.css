@@ -54,4 +54,53 @@
   .transition-slow {
     @apply transition-all duration-500 ease-in-out;
   }
+  
+  /* 浮动动画 */
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  @keyframes float-slow {
+    0% {
+      transform: translateY(0px) rotate(-3deg);
+    }
+    50% {
+      transform: translateY(-10px) rotate(3deg);
+    }
+    100% {
+      transform: translateY(0px) rotate(-3deg);
+    }
+  }
+
+  @keyframes float-slower {
+    0% {
+      transform: translateY(0px) rotate(3deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(-3deg);
+    }
+    100% {
+      transform: translateY(0px) rotate(3deg);
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-float-slow {
+    animation: float-slow 6s ease-in-out infinite;
+  }
+
+  .animate-float-slower {
+    animation: float-slower 8s ease-in-out infinite;
+  }
 }
