@@ -1,0 +1,22 @@
+{
+  "title": "Account Settings",
+  "subtitle": "Manage your account information and security settings",
+  "language": "Language Settings",
+  "chooseLanguage": "Choose your preferred language",
+  "email": "Email",
+  "emailSettings": "Email Settings",
+  "emailUpdated": "Email updated successfully",
+  "updateEmail": "Update Email",
+  "updating": "Updating...",
+  "passwordSettings": "Password Settings",
+  "passwordUpdated": "Password changed successfully",
+  "currentPassword": "Current Password",
+  "currentPasswordPlaceholder": "Enter your current password",
+  "newPassword": "New Password",
+  "newPasswordPlaceholder": "Set a new password",
+  "confirmPassword": "Confirm New Password",
+  "confirmPasswordPlaceholder": "Re-enter your new password",
+  "updatePassword": "Update Password",
+  "passwordTooShort": "New password must be at least 8 characters",
+  "passwordMismatch": "Passwords do not match"
+} 

@@ -12,7 +12,7 @@ import LanguageSelector from '@/components/common/LanguageSelector';
  * 允许用户修改账号信息和密码
  */
 const SettingsPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('settings');
   const dispatch = useDispatch<AppDispatch>();
   const { user, isLoading, error } = useSelector((state: RootState) => state.auth);
   
@@ -47,10 +47,10 @@ const SettingsPage: React.FC = () => {
       <div className="section space-y-6">
         <div>
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            {t('settings.title', '账号设置')}
+            {t('title', '账号设置')}
           </h1>
           <p className="text-gray-500 dark:text-gray-400">
-            {t('settings.subtitle', '管理您的账号信息和安全设置')}
+            {t('subtitle', '管理您的账号信息和安全设置')}
           </p>
         </div>
 
@@ -85,13 +85,13 @@ const SettingsPage: React.FC = () => {
  * 语言设置表单组件
  */
 const LanguageSettingsForm: React.FC = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('settings');
   
   return (
     <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5">
       <div className="p-6">
         <h2 className="text-lg font-medium mb-4">
-          {t('settings.language', '语言设置')}
+          {t('language', '语言设置')}
         </h2>
         
         <div className="mb-4">
@@ -99,7 +99,7 @@ const LanguageSettingsForm: React.FC = () => {
             htmlFor="language" 
             className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
           >
-            {t('settings.chooseLanguage', '选择您偏好的语言')}
+            {t('chooseLanguage', '选择您偏好的语言')}
           </label>
           <div className="relative">
             <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -121,6 +121,7 @@ const EmailSettingsForm: React.FC<{
   isLoading: boolean;
   onSuccess: () => void;
 }> = ({ user, isLoading, onSuccess }) => {
+  const { t } = useTranslation('settings');
   const dispatch = useDispatch<AppDispatch>();
   const [email, setEmail] = useState('');
   const [success, setSuccess] = useState(false);
@@ -149,12 +150,12 @@ const EmailSettingsForm: React.FC<{
   return (
     <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5">
       <div className="p-6">
-        <h2 className="text-lg font-medium mb-4">邮箱设置</h2>
+        <h2 className="text-lg font-medium mb-4">{t('emailSettings', '邮箱设置')}</h2>
         
         {success && (
           <div className="mb-4 rounded-xl bg-green-50 dark:bg-green-500/10 p-4 text-green-600 dark:text-green-400 flex items-start gap-3">
             <Check className="w-5 h-5 mt-0.5" />
-            <span>邮箱更新成功</span>
+            <span>{t('emailUpdated', '邮箱更新成功')}</span>
           </div>
         )}
         
@@ -164,7 +165,7 @@ const EmailSettingsForm: React.FC<{
               htmlFor="email" 
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
-              电子邮箱
+              {t('email', '电子邮箱')}
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -190,9 +191,9 @@ const EmailSettingsForm: React.FC<{
             {isLoading ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                更新中...
+                {t('updating', '更新中...')}
               </>
-            ) : '更新邮箱'}
+            ) : t('updateEmail', '更新邮箱')}
           </button>
         </form>
       </div>
@@ -207,6 +208,7 @@ const PasswordChangeForm: React.FC<{
   isLoading: boolean;
   onSuccess: () => void;
 }> = ({ isLoading, onSuccess }) => {
+  const { t } = useTranslation('settings');
   const dispatch = useDispatch<AppDispatch>();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -224,12 +226,12 @@ const PasswordChangeForm: React.FC<{
     
     // 验证密码
     if (newPassword.length < 8) {
-      setValidationError('新密码长度至少8个字符');
+      setValidationError(t('passwordTooShort', '新密码长度至少8个字符'));
       return;
     }
     
     if (newPassword !== confirmPassword) {
-      setValidationError('两次输入的密码不一致');
+      setValidationError(t('passwordMismatch', '两次输入的密码不一致'));
       return;
     }
     
@@ -252,12 +254,12 @@ const PasswordChangeForm: React.FC<{
   return (
     <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5">
       <div className="p-6">
-        <h2 className="text-lg font-medium mb-4">密码设置</h2>
+        <h2 className="text-lg font-medium mb-4">{t('passwordSettings', '密码设置')}</h2>
         
         {success && (
           <div className="mb-4 rounded-xl bg-green-50 dark:bg-green-500/10 p-4 text-green-600 dark:text-green-400 flex items-start gap-3">
             <Check className="w-5 h-5 mt-0.5" />
-            <span>密码修改成功</span>
+            <span>{t('passwordUpdated', '密码修改成功')}</span>
           </div>
         )}
         
@@ -274,7 +276,7 @@ const PasswordChangeForm: React.FC<{
               htmlFor="currentPassword" 
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
-              当前密码
+              {t('currentPassword', '当前密码')}
             </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -284,7 +286,7 @@ const PasswordChangeForm: React.FC<{
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 className="w-full h-11 pl-10 pr-10 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                placeholder="输入当前密码"
+                placeholder={t('currentPasswordPlaceholder', '输入当前密码')}
                 required
               />
               <button
@@ -302,7 +304,7 @@ const PasswordChangeForm: React.FC<{
               htmlFor="newPassword" 
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
-              新密码
+              {t('newPassword', '新密码')}
             </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -312,7 +314,7 @@ const PasswordChangeForm: React.FC<{
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 className="w-full h-11 pl-10 pr-10 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                placeholder="设置新密码"
+                placeholder={t('newPasswordPlaceholder', '设置新密码')}
                 required
               />
               <button
@@ -330,7 +332,7 @@ const PasswordChangeForm: React.FC<{
               htmlFor="confirmPassword" 
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
-              确认新密码
+              {t('confirmPassword', '确认新密码')}
             </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -340,7 +342,7 @@ const PasswordChangeForm: React.FC<{
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full h-11 pl-10 pr-10 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                placeholder="再次输入新密码"
+                placeholder={t('confirmPasswordPlaceholder', '再次输入新密码')}
                 required
               />
               <button
@@ -363,9 +365,9 @@ const PasswordChangeForm: React.FC<{
             {isLoading ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                更新中...
+                {t('updating', '更新中...')}
               </>
-            ) : '更新密码'}
+            ) : t('updatePassword', '更新密码')}
           </button>
         </form>
       </div>
