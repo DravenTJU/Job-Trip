@@ -3,13 +3,16 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/context/LanguageContext';
 import ThemeToggle from '@/components/common/ThemeToggle';
-import { Menu, X, BriefcaseBusiness, Globe } from 'lucide-react';
+import { Menu, X, BriefcaseBusiness, Languages } from 'lucide-react';
+import LanguageSelector from '@/components/common/LanguageSelector';
 
 const Navbar: React.FC = () => {
   const { t } = useTranslation('landing');
   const { currentLanguage, changeLanguage, supportedLanguages } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [desktopLangMenuOpen, setDesktopLangMenuOpen] = useState(false);
+  const [mobileLangMenuOpen, setMobileLangMenuOpen] = useState(false);
   
   // 监听滚动事件，用于改变导航栏背景
   useEffect(() => {
@@ -39,6 +42,18 @@ const Navbar: React.FC = () => {
     { name: t('nav.resume'), href: '#resume' },
     { name: t('nav.coverLetter'), href: '#coverLetter' }
   ];
+  
+  // 处理桌面版语言菜单开关
+  const toggleDesktopLangMenu = () => {
+    setDesktopLangMenuOpen(!desktopLangMenuOpen);
+    if (mobileLangMenuOpen) setMobileLangMenuOpen(false);
+  };
+
+  // 处理移动版语言菜单开关
+  const toggleMobileLangMenu = () => {
+    setMobileLangMenuOpen(!mobileLangMenuOpen);
+    if (desktopLangMenuOpen) setDesktopLangMenuOpen(false);
+  };
   
   return (
     <nav 
@@ -82,25 +97,24 @@ const Navbar: React.FC = () => {
           
           {/* 右侧操作区 */}
           <div className="hidden xl:flex items-center ml-auto space-x-2 md:space-x-3">
-            {/* 语言切换下拉框 */}
+            {/* 语言切换按钮 */}
             <div className="relative">
-              <Globe className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-indigo-500 dark:text-indigo-400" />
-              <select
-                value={currentLanguage}
-                onChange={(e) => changeLanguage(e.target.value)}
-                className="h-8 pl-8 pr-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg rounded-lg border-0 ring-1 ring-indigo-200 dark:ring-indigo-800/30 focus:ring-2 focus:ring-indigo-500 text-xs md:text-sm text-indigo-600 dark:text-indigo-400 appearance-none transition-shadow"
+              <button 
+                title={t('language.switchLanguage', "切换语言")}
+                onClick={toggleDesktopLangMenu} 
+                className="h-8 flex items-center px-3 rounded-lg bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg text-indigo-600 dark:text-indigo-400 ring-1 ring-indigo-200 dark:ring-indigo-800/30 hover:ring-2 hover:ring-indigo-500 transition-all"
               >
-                {Object.entries(supportedLanguages).map(([code, name]) => (
-                  <option key={code} value={code}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                <svg className="w-4 h-4 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
+                <Languages className="w-4 h-4 mr-2" />
+                <span className="text-xs md:text-sm">{supportedLanguages[currentLanguage]}</span>
+              </button>
+              {desktopLangMenuOpen && (
+                <div 
+                  className="absolute right-0 top-full mt-2 w-40 bg-white shadow-lg rounded-md ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-800 dark:ring-gray-700 z-20"
+                  onMouseLeave={() => setDesktopLangMenuOpen(false)}
+                >
+                  <LanguageSelector variant="popup" size="md" />
+                </div>
+              )}
             </div>
             
             {/* 主题切换 */}
@@ -153,23 +167,22 @@ const Navbar: React.FC = () => {
             ))}
             <div className="flex items-center justify-between px-3 py-2">
               <div className="relative flex-1 max-w-[180px]">
-                <Globe className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-indigo-500 dark:text-indigo-400" />
-                <select
-                  value={currentLanguage}
-                  onChange={(e) => changeLanguage(e.target.value)}
-                  className="w-full h-9 pl-8 pr-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg rounded-lg border-0 ring-1 ring-indigo-200 dark:ring-indigo-800/30 focus:ring-2 focus:ring-indigo-500 text-sm text-indigo-600 dark:text-indigo-400 appearance-none transition-shadow"
+                <button 
+                  title={t('language.switchLanguage', "切换语言")}
+                  onClick={toggleMobileLangMenu} 
+                  className="w-full h-9 flex items-center px-3 rounded-lg bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg text-indigo-600 dark:text-indigo-400 ring-1 ring-indigo-200 dark:ring-indigo-800/30 hover:ring-2 hover:ring-indigo-500 transition-all"
                 >
-                  {Object.entries(supportedLanguages).map(([code, name]) => (
-                    <option key={code} value={code}>
-                      {name}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                  <svg className="w-4 h-4 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
+                  <Languages className="w-4 h-4 mr-2" />
+                  <span className="text-sm">{supportedLanguages[currentLanguage]}</span>
+                </button>
+                {mobileLangMenuOpen && (
+                  <div 
+                    className="absolute left-0 top-full mt-2 w-40 bg-white shadow-lg rounded-md ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-800 dark:ring-gray-700 z-20"
+                    onMouseLeave={() => setMobileLangMenuOpen(false)}
+                  >
+                    <LanguageSelector variant="popup" size="md" />
+                  </div>
+                )}
               </div>
               <ThemeToggle />
             </div>
