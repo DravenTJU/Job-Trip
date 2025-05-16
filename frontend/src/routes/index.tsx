@@ -6,6 +6,7 @@ import { CircularProgress, Box } from '@mui/material';
 import Layout from '@/components/layout/Layout';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { withLanguageUpdates } from '@/context/LanguageContext';
+import { useAppSelector } from '@/hooks/reduxHooks';
 
 // 创建一个包装懒加载组件的函数，自动应用语言更新
 const lazyWithLanguageUpdates = (importFunc: () => Promise<any>) => {
@@ -58,6 +59,18 @@ const ProtectedLayoutRoute = ({ element }: { element: React.ReactNode }) => (
   </ProtectedRoute>
 );
 
+// 根路径重定向组件 - 根据认证状态决定重定向到哪里
+const HomeRedirect = () => {
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  
+  // 已登录用户重定向到welcome页面，未登录用户显示landing page
+  if (isAuthenticated) {
+    return <Navigate to="/welcome" replace />;
+  } else {
+    return <LayoutRoute element={<LandingPage />} />;
+  }
+};
+
 /**
  * 应用程序路由配置组件
  */
@@ -71,8 +84,8 @@ const AppRoutes = () => {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         
-        {/* 带布局的公开路由 */}
-        <Route path="/" element={<LayoutRoute element={<LandingPage />} />} />
+        {/* 根路径 - 根据认证状态重定向 */}
+        <Route path="/" element={<HomeRedirect />} />
         
         {/* 需要认证的路由 */}
         <Route path="/dashboard" element={<ProtectedLayoutRoute element={<DashboardPage />} />} />
