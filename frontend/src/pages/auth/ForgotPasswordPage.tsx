@@ -47,7 +47,7 @@ const ForgotPasswordPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* 装饰方块 */}
-      <DecorationBlocks count={6} />
+      <DecorationBlocks count={20} />
       
       <div className="sm:mx-auto sm:w-full sm:max-w-md z-10">
         <h2 className="text-center text-3xl font-bold text-gray-900 dark:text-white mb-2">

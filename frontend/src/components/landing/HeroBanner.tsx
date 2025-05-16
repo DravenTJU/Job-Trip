@@ -9,7 +9,7 @@ const HeroBanner: React.FC = () => {
   return (
     <div className="relative overflow-hidden bg-white dark:bg-gray-900 transition-colors duration-200">
       {/* 装饰性方块背景 */}
-      <DecorationBlocks count={15} />
+      <DecorationBlocks count={30} fadeOnScroll={true} />
       
       <div className="container-lg relative z-10 pt-20 pb-16 md:py-28">
         <div className="flex flex-col md:flex-row md:items-center">
