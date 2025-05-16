@@ -25,6 +25,7 @@ import { JobSource, JobType } from '@/types';
 import { getStatusStyle, getStatusIcon, JOB_STATUS_OPTIONS, getStatusLabel } from '@/utils/jobStatusUtils';
 import StatusSelect from '@/components/common/StatusSelect';
 import StatusBadge from '@/components/common/StatusBadge';
+import GenericListbox, { SelectOption } from '@/components/common/GenericListbox';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -54,31 +55,41 @@ const JobsPage: React.FC = () => {
   
   // 时间范围选项
   const dateRanges = [
-    { label: t('jobs:filters.dateRanges.all', '所有时间'), value: '' },
-    { label: t('jobs:filters.dateRanges.today', '今天'), value: 'today' },
-    { label: t('jobs:filters.dateRanges.threeDays', '最近3天'), value: '3days' },
-    { label: t('jobs:filters.dateRanges.oneWeek', '最近一周'), value: '1week' },
-    { label: t('jobs:filters.dateRanges.oneMonth', '最近一月'), value: '1month' },
-    { label: t('jobs:filters.dateRanges.threeMonths', '最近三月'), value: '3months' }
+    { id: '', label: t('jobs:filters.dateRanges.all', '所有时间'), value: '' },
+    { id: 'today', label: t('jobs:filters.dateRanges.today', '今天'), value: 'today' },
+    { id: '3days', label: t('jobs:filters.dateRanges.threeDays', '最近3天'), value: '3days' },
+    { id: '1week', label: t('jobs:filters.dateRanges.oneWeek', '最近一周'), value: '1week' },
+    { id: '1month', label: t('jobs:filters.dateRanges.oneMonth', '最近一月'), value: '1month' },
+    { id: '3months', label: t('jobs:filters.dateRanges.threeMonths', '最近三月'), value: '3months' }
   ];
   
   // 工作类型选项
   const jobTypes = [
-    { label: t('jobs:filters.jobTypes.all', '所有类型'), value: '' },
-    { label: t('jobs:filters.jobTypes.fullTime', '全职'), value: JobType.FULL_TIME },
-    { label: t('jobs:filters.jobTypes.partTime', '兼职'), value: JobType.PART_TIME },
-    { label: t('jobs:filters.jobTypes.internship', '实习'), value: JobType.INTERNSHIP },
-    { label: t('jobs:filters.jobTypes.contract', '合同工'), value: JobType.CONTRACT },
-    { label: t('jobs:filters.jobTypes.freelance', '自由职业'), value: JobType.FREELANCE }
+    { id: '', label: t('jobs:filters.jobTypes.all', '所有类型'), value: '' },
+    { id: JobType.FULL_TIME, label: t('jobs:filters.jobTypes.fullTime', '全职'), value: JobType.FULL_TIME },
+    { id: JobType.PART_TIME, label: t('jobs:filters.jobTypes.partTime', '兼职'), value: JobType.PART_TIME },
+    { id: JobType.INTERNSHIP, label: t('jobs:filters.jobTypes.internship', '实习'), value: JobType.INTERNSHIP },
+    { id: JobType.CONTRACT, label: t('jobs:filters.jobTypes.contract', '合同工'), value: JobType.CONTRACT },
+    { id: JobType.FREELANCE, label: t('jobs:filters.jobTypes.freelance', '自由职业'), value: JobType.FREELANCE }
   ];
   
   // 平台来源选项
   const platforms = [
-    { label: t('jobs:filters.platforms.all', '所有来源'), value: '' },
-    { label: 'LinkedIn', value: JobSource.LINKEDIN },
-    { label: 'Seek', value: JobSource.SEEK },
-    { label: 'Indeed', value: JobSource.INDEED },
-    { label: t('jobs:filters.platforms.other', '其他'), value: JobSource.OTHER }
+    { id: '', label: t('jobs:filters.platforms.all', '所有来源'), value: '' },
+    { id: JobSource.LINKEDIN, label: 'LinkedIn', value: JobSource.LINKEDIN },
+    { id: JobSource.SEEK, label: 'Seek', value: JobSource.SEEK },
+    { id: JobSource.INDEED, label: 'Indeed', value: JobSource.INDEED },
+    { id: JobSource.OTHER, label: t('jobs:filters.platforms.other', '其他'), value: JobSource.OTHER }
+  ];
+
+  // 排序选项
+  const sortOptions = [
+    { id: '-createdAt', label: t('jobs:sort.newest', '最新添加'), value: '-createdAt' },
+    { id: 'createdAt', label: t('jobs:sort.oldest', '最早添加'), value: 'createdAt' },
+    { id: 'title', label: t('jobs:sort.titleAsc', '职位名称（A-Z）'), value: 'title' },
+    { id: '-title', label: t('jobs:sort.titleDesc', '职位名称（Z-A）'), value: '-title' },
+    { id: 'company', label: t('jobs:sort.companyAsc', '公司名称（A-Z）'), value: 'company' },
+    { id: '-company', label: t('jobs:sort.companyDesc', '公司名称（Z-A）'), value: '-company' }
   ];
   
   // 状态选项
@@ -135,9 +146,11 @@ const JobsPage: React.FC = () => {
   };
   
   // 处理排序变更
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSortOption(e.target.value);
-    setPage(1); // 重置页码
+  const handleSortChange = (selected: SelectOption | null) => {
+    if (selected) {
+      setSortOption(selected.value);
+      setPage(1); // 重置页码
+    }
   };
   
   // 处理筛选变更
@@ -147,6 +160,13 @@ const JobsPage: React.FC = () => {
       [field]: value
     }));
     setPage(1); // 重置页码
+  };
+  
+  // 处理下拉选择框变更
+  const handleSelectChange = (field: string) => (selected: SelectOption | null) => {
+    if (selected) {
+      handleFilterChange(field, selected.value);
+    }
   };
   
   // 重置筛选条件
@@ -206,18 +226,14 @@ const JobsPage: React.FC = () => {
                 />
               </div>
               <div className="flex gap-3">
-                <select
-                  value={sortOption}
+                <GenericListbox
+                  options={sortOptions}
+                  value={sortOptions.find(option => option.value === sortOption) || null}
                   onChange={handleSortChange}
-                  className="h-11 min-w-[160px] bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                >
-                  <option value="-createdAt">{t('jobs:sort.newest', '最新添加')}</option>
-                  <option value="createdAt">{t('jobs:sort.oldest', '最早添加')}</option>
-                  <option value="title">{t('jobs:sort.titleAsc', '职位名称（A-Z）')}</option>
-                  <option value="-title">{t('jobs:sort.titleDesc', '职位名称（Z-A）')}</option>
-                  <option value="company">{t('jobs:sort.companyAsc', '公司名称（A-Z）')}</option>
-                  <option value="-company">{t('jobs:sort.companyDesc', '公司名称（Z-A）')}</option>
-                </select>
+                  placeholder={t('jobs:sort.placeholder', '排序方式')}
+                  ariaLabel={t('jobs:sort.ariaLabel', '选择排序方式')}
+                  className="min-w-[160px]"
+                />
                 <button
                   onClick={() => setShowFilters(!showFilters)}
                   className={`h-11 px-5 rounded-xl flex items-center gap-2 font-medium transition-all duration-200 ${
@@ -269,17 +285,13 @@ const JobsPage: React.FC = () => {
                       <Briefcase className="w-4 h-4 text-gray-400" />
                       {t('jobs:filters.jobType', '工作类型')}
                     </label>
-                    <select
-                      value={filters.jobType}
-                      onChange={(e) => handleFilterChange('jobType', e.target.value)}
-                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                    >
-                      {jobTypes.map(option => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
+                    <GenericListbox
+                      options={jobTypes}
+                      value={jobTypes.find(option => option.value === filters.jobType) || null}
+                      onChange={handleSelectChange('jobType')}
+                      placeholder={t('jobs:filters.jobTypePlaceholder', '选择工作类型')}
+                      ariaLabel={t('jobs:filters.jobType', '工作类型')}
+                    />
                   </div>
                   
                   {/* 平台来源筛选 */}
@@ -288,17 +300,13 @@ const JobsPage: React.FC = () => {
                       <Building2 className="w-4 h-4 text-gray-400" />
                       {t('jobs:filters.platform', '平台来源')}
                     </label>
-                    <select
-                      value={filters.platform}
-                      onChange={(e) => handleFilterChange('platform', e.target.value)}
-                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                    >
-                      {platforms.map(option => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
+                    <GenericListbox
+                      options={platforms}
+                      value={platforms.find(option => option.value === filters.platform) || null}
+                      onChange={handleSelectChange('platform')}
+                      placeholder={t('jobs:filters.platformPlaceholder', '选择平台来源')}
+                      ariaLabel={t('jobs:filters.platform', '平台来源')}
+                    />
                   </div>
                   
                   {/* 添加时间筛选 */}
@@ -307,17 +315,13 @@ const JobsPage: React.FC = () => {
                       <Calendar className="w-4 h-4 text-gray-400" />
                       {t('jobs:filters.addedDate', '添加时间')}
                     </label>
-                    <select
-                      value={filters.dateRange}
-                      onChange={(e) => handleFilterChange('dateRange', e.target.value)}
-                      className="w-full h-11 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                    >
-                      {dateRanges.map(option => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
+                    <GenericListbox
+                      options={dateRanges}
+                      value={dateRanges.find(option => option.value === filters.dateRange) || null}
+                      onChange={handleSelectChange('dateRange')}
+                      placeholder={t('jobs:filters.dateRangePlaceholder', '选择时间范围')}
+                      ariaLabel={t('jobs:filters.addedDate', '添加时间')}
+                    />
                   </div>
                   
                   {/* 地点筛选 */}
