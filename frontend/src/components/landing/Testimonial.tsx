@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { User } from 'lucide-react';
 
 const Testimonial: React.FC = () => {
   const { t } = useTranslation('landing');
@@ -17,11 +18,9 @@ const Testimonial: React.FC = () => {
                 {t('testimonial.text')}
               </p>
               <div className="flex items-center">
-                <img 
-                  src="/assets/images/landing/testimonial-avatar.jpg" 
-                  alt={t('testimonial.author')} 
-                  className="h-12 w-12 rounded-full object-cover mr-4 ring-2 ring-indigo-500"
-                />
+                <div className="h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-800/40 flex items-center justify-center mr-4 ring-2 ring-indigo-500">
+                  <User className="h-6 w-6 text-indigo-600 dark:text-indigo-300" />
+                </div>
                 <div>
                   <h4 className="font-medium text-gray-900 dark:text-white">
                     {t('testimonial.author')}
