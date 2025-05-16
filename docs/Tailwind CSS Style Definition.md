@@ -1,5 +1,8 @@
 
-# 以 JobsPage.tsx 文件中使用的样式定义，以便为其他页面开发提供参考
+# 以 JobsPage.tsx 文件中使用的 Tailwind CSS 样式定义，以便为其他页面开发提供参考
+
+## 图标
+- 图标采用 Lucide React 图标库
 
 ## 布局样式
 - `container-lg`: 容器宽度控制
