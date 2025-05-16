@@ -18,7 +18,8 @@
     "cancel": "取消",
     "update": "更新",
     "submit": "提交",
-    "loading": "載入中..."
+    "loading": "載入中...",
+    "backToHome": "返回首頁"
   },
   "languages": {
     "en-US": "英文",

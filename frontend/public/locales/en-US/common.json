@@ -18,7 +18,8 @@
     "cancel": "Cancel",
     "update": "Update",
     "submit": "Submit",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "backToHome": "Back to Home"
   },
   "languages": {
     "en-US": "English",

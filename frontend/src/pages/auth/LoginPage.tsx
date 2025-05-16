@@ -216,6 +216,15 @@ const LoginPage: React.FC = () => {
                 {t('auth:login.signIn', '登录')}
               </button>
             </div>
+            
+            <div>
+              <RouterLink 
+                to="/"
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors"
+              >
+                {t('common:buttons.backToHome', '返回首页')}
+              </RouterLink>
+            </div>
           </form>
 
           <div className="mt-6">
