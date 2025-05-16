@@ -28,7 +28,7 @@ const HeroBanner: React.FC = () => {
                 {t('hero.primaryButton')}
               </Link>
               <Link 
-                to="/download" 
+                to="/chrome-extension" 
                 className="inline-flex items-center justify-center px-6 py-3 rounded-xl text-base font-medium bg-gray-50/50 dark:bg-gray-800/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors"
               >
                 {t('hero.secondaryButton')}

@@ -90,7 +90,7 @@ const LandingPage: React.FC = () => {
       description: t('features.extension.description'),
       imageUrl: '/assets/images/landing/chrome-extension.png',
       buttonText: t('features.extension.button'),
-      buttonLink: '/download',
+      buttonLink: '/chrome-extension',
       imagePosition: 'right'
     },
     {
@@ -126,7 +126,7 @@ const LandingPage: React.FC = () => {
       description: t('features.resume.description'),
       imageUrl: '/assets/images/landing/resume-builder.png',
       buttonText: t('features.resume.button'),
-      buttonLink: '/resume',
+      buttonLink: '/resume-builder',
       imagePosition: 'right'
     },
     {
@@ -135,7 +135,7 @@ const LandingPage: React.FC = () => {
       description: t('features.coverLetter.description'),
       imageUrl: '/assets/images/landing/cover-letter.png',
       buttonText: t('features.coverLetter.button'),
-      buttonLink: '/cover-letter',
+      buttonLink: '/cover-letters',
       imagePosition: 'left'
     }
   ];

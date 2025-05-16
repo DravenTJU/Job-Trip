@@ -20,16 +20,16 @@
     "title": "你的一站式AI驅動求職應用助手",
     "subtitle": "通過Chrome自動化、智能履歷生成器和一鍵追蹤簡化您的求職過程。",
     "primaryButton": "立即試用",
-    "secondaryButton": "安裝Chrome擴充功能"
+    "secondaryButton": "下載Chrome擴充功能"
   },
   "clientLogos": {
     "title": "受到各大公司求職者的信賴"
   },
   "features": {
     "extension": {
-      "title": "一鍵安裝，便捷抓取",
+      "title": "便捷安裝，一鍵抓取",
       "description": "自動從LinkedIn、Seek和Indeed抓取職位資訊，提升效率。",
-      "button": "立即安裝"
+      "button": "立即下載"
     },
     "jobList": {
       "title": "統一管理，一目瞭然",
