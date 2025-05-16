@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Download, ChevronRight, CheckCircle } from 'lucide-react';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import { useTranslation } from 'react-i18next';
+import { useExtensionDownload } from '@/services/extensionService';
 
 /**
  * 欢迎页面组件
@@ -13,6 +14,7 @@ const WelcomePage: React.FC = () => {
   const { t } = useTranslation(['common', 'welcome']);
   const { user } = useAppSelector((state) => state.auth);
   const userName = user?.username || t('welcome:defaultUser', '求职者');
+  const { downloadUrl, isLoading } = useExtensionDownload(t);
 
   // 入门步骤数据
   const onboardingSteps = [
@@ -117,10 +119,19 @@ const WelcomePage: React.FC = () => {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {step.id === 1 && (
-                      <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors">
+                      <a 
+                        href={isLoading ? '#' : downloadUrl} 
+                        download 
+                        className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium ${
+                          isLoading 
+                            ? 'bg-indigo-400 cursor-not-allowed' 
+                            : 'bg-indigo-500 hover:bg-indigo-600 cursor-pointer'
+                        } text-white shadow-lg shadow-indigo-500/25 transition-colors`}
+                        onClick={e => isLoading && e.preventDefault()}
+                      >
                         <Download className="w-4 h-4" />
-                        {t('welcome:downloadExtension', '下载 Chrome 扩展')}
-                      </button>
+                        {isLoading ? t('welcome:loadingExtension', '加载中...') : t('welcome:downloadExtension', '下载 Chrome 扩展')}
+                      </a>
                     )}
                     <Link 
                       to={step.path} 

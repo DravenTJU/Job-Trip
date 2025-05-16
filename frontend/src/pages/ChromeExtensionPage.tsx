@@ -1,20 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Download, Chrome, Zap, Star, Bookmark, FileText, CheckCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-
-/**
- * GitHub Release API 响应类型定义
- */
-interface ReleaseAsset {
-  name: string;
-  browser_download_url: string;
-}
-
-interface GitHubRelease {
-  tag_name: string;
-  html_url: string;
-  assets: ReleaseAsset[];
-}
+import { useExtensionDownload } from '@/services/extensionService';
 
 /**
  * Chrome扩展页面组件
@@ -23,35 +10,7 @@ interface GitHubRelease {
  */
 const ChromeExtensionPage: React.FC = () => {
   const { t } = useTranslation(['common', 'extension']);
-  // 添加状态用于存储最新版本信息
-  const [latestVersion, setLatestVersion] = useState('1.0.0');
-  const [releaseUrl, setReleaseUrl] = useState('');
-  const [downloadUrl, setDownloadUrl] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // 获取最新release信息
-    fetch('https://api.github.com/repos/DravenTJU/Job-Trip/releases/latest')
-      .then(response => response.json())
-      .then((data: GitHubRelease) => {
-        setIsLoading(false);
-        if (data.tag_name) {
-          setLatestVersion(data.tag_name.replace('v', ''));
-          setReleaseUrl(data.html_url);
-          // 获取zip资源的下载URL
-          const zipAsset = data.assets.find(asset => asset.name.endsWith('.zip'));
-          if (zipAsset) {
-            setDownloadUrl(zipAsset.browser_download_url);
-          }
-        }
-      })
-      .catch(error => {
-        console.error(t('extension:errors.fetchReleaseFailed', '获取发布信息失败:'), error);
-        setIsLoading(false);
-        // 设置默认下载链接，以防API请求失败
-        setDownloadUrl('https://github.com/DravenTJU/Job-Trip/releases/latest/download/jobtrip-extension.zip');
-      });
-  }, [t]);
+  const { latestVersion, releaseUrl, downloadUrl, isLoading } = useExtensionDownload(t);
 
   return (
     <div className="container-lg">
@@ -83,7 +42,7 @@ const ChromeExtensionPage: React.FC = () => {
             </div>
           </div>
           <a 
-            href={downloadUrl || "https://github.com/DravenTJU/Job-Trip/releases/latest/download/jobtrip-extension.zip"} 
+            href={downloadUrl} 
             download 
             className="md:ml-8"
           >
