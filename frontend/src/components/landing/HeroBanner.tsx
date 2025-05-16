@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import DecorationBlocks from '@/components/common/DecorationBlocks';
 
 const HeroBanner: React.FC = () => {
   const { t } = useTranslation('landing');
@@ -8,14 +9,7 @@ const HeroBanner: React.FC = () => {
   return (
     <div className="relative overflow-hidden bg-white dark:bg-gray-900 transition-colors duration-200">
       {/* 装饰性方块背景 */}
-      <div className="absolute top-0 left-0 right-0 h-64 overflow-hidden z-0">
-        {[...Array(15)].map((_, i) => (
-          <div 
-            key={i}
-            className={`absolute rounded-lg opacity-80 ${getRandomColorClass()} ${getRandomSize()} ${getRandomPosition()}`}
-          />
-        ))}
-      </div>
+      <DecorationBlocks count={15} />
       
       <div className="container-lg relative z-10 pt-20 pb-16 md:py-28">
         <div className="flex flex-col md:flex-row md:items-center">
@@ -54,29 +48,6 @@ const HeroBanner: React.FC = () => {
       </div>
     </div>
   );
-};
-
-// 生成随机样式的辅助函数
-const getRandomColorClass = () => {
-  const colors = [
-    'bg-blue-200 dark:bg-blue-900/40',
-    'bg-indigo-200 dark:bg-indigo-900/40',
-    'bg-purple-200 dark:bg-purple-900/40',
-    'bg-pink-200 dark:bg-pink-900/40',
-    'bg-green-200 dark:bg-green-900/40',
-  ];
-  return colors[Math.floor(Math.random() * colors.length)];
-};
-
-const getRandomSize = () => {
-  const sizes = ['w-20 h-20', 'w-24 h-24', 'w-16 h-16', 'w-32 h-32'];
-  return sizes[Math.floor(Math.random() * sizes.length)];
-};
-
-const getRandomPosition = () => {
-  const top = Math.floor(Math.random() * 40);
-  const left = Math.floor(Math.random() * 80);
-  return `top-[${top}px] left-[${left}%]`;
 };
 
 export default HeroBanner; 
