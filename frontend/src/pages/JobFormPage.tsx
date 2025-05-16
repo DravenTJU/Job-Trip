@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import GenericListbox, { SelectOption } from '@/components/common/GenericListbox';
 
 /**
  * 职位表单页面
@@ -114,6 +115,61 @@ const JobFormPage: React.FC = () => {
       }));
     }
   };
+  
+  // 工作类型选项
+  const jobTypeOptions: SelectOption[] = [
+    { id: JobType.FULL_TIME, label: t('full_time', '全职') },
+    { id: JobType.PART_TIME, label: t('part_time', '兼职') },
+    { id: JobType.CONTRACT, label: t('contract', '合同工') },
+    { id: JobType.FREELANCE, label: t('freelance', '自由职业') },
+    { id: JobType.INTERNSHIP, label: t('internship', '实习') }
+  ];
+
+  // 平台选项
+  const platformOptions: SelectOption[] = [
+    { id: JobSource.SEEK, label: 'Seek' },
+    { id: JobSource.LINKEDIN, label: 'LinkedIn' },
+    { id: JobSource.INDEED, label: 'Indeed' },
+    { id: JobSource.OTHER, label: t('other', '其他') }
+  ];
+  
+  // 处理JobType选择变化
+  const handleJobTypeChange = (option: SelectOption | null) => {
+    if (option) {
+      setFormData(prev => ({
+        ...prev,
+        jobType: option.id as JobType
+      }));
+      if (formErrors.jobType) {
+        setFormErrors(prev => ({
+          ...prev,
+          jobType: '',
+        }));
+      }
+    }
+  };
+  
+  // 处理Platform选择变化
+  const handlePlatformChange = (option: SelectOption | null) => {
+    if (option) {
+      setFormData(prev => ({
+        ...prev,
+        platform: option.id as JobSource
+      }));
+      if (formErrors.platform) {
+        setFormErrors(prev => ({
+          ...prev,
+          platform: '',
+        }));
+      }
+    }
+  };
+  
+  // 查找当前选中的工作类型选项
+  const selectedJobType = jobTypeOptions.find(option => option.id === formData.jobType) || null;
+  
+  // 查找当前选中的平台选项
+  const selectedPlatform = platformOptions.find(option => option.id === formData.platform) || null;
   
   // 处理 select 组件变更
   const handleSelectChange = (
@@ -219,7 +275,7 @@ const JobFormPage: React.FC = () => {
     // 验证平台
     if (!formData.platform) {
       errors.platform = t('select_platform', '请选择平台');
-    } else if (!platformOptions.some(option => option.value === formData.platform)) {
+    } else if (!platformOptions.some(option => option.id === formData.platform)) {
       errors.platform = t('invalid_platform', '无效的平台');
     }
 
@@ -249,23 +305,6 @@ const JobFormPage: React.FC = () => {
   
   // 状态选项
   const statusOptions = JOB_STATUS_OPTIONS;
-
-  // 工作类型选项
-  const jobTypeOptions = [
-    { value: JobType.FULL_TIME, label: t('full_time', '全职') },
-    { value: JobType.PART_TIME, label: t('part_time', '兼职') },
-    { value: JobType.CONTRACT, label: t('contract', '合同工') },
-    { value: JobType.FREELANCE, label: t('freelance', '自由职业') },
-    { value: JobType.INTERNSHIP, label: t('internship', '实习') }
-  ];
-
-  // 平台选项
-  const platformOptions = [
-    { value: JobSource.SEEK, label: 'Seek' },
-    { value: JobSource.LINKEDIN, label: 'LinkedIn' },
-    { value: JobSource.INDEED, label: 'Indeed' },
-    { value: JobSource.OTHER, label: t('other', '其他') }
-  ];
 
   // 生成唯一的sourceId
   const generateSourceId = (): string => {
@@ -418,31 +457,15 @@ const JobFormPage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    {t('job_type', '职位类型')}
-                  </label>
-                  <select
+                  <GenericListbox
+                    options={jobTypeOptions}
+                    value={selectedJobType}
+                    onChange={handleJobTypeChange}
+                    label={t('job_type', '职位类型')}
+                    placeholder={t('select_job_type_placeholder', '请选择职位类型')}
                     name="jobType"
-                    value={formData.jobType}
-                    onChange={handleSelectChange}
-                    className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
-                      formErrors.jobType 
-                        ? 'ring-red-500 focus:ring-red-500' 
-                        : 'ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500'
-                    } transition-shadow`}
-                  >
-                    <option value="">{t('select_job_type_placeholder', '请选择职位类型')}</option>
-                    {jobTypeOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                  {formErrors.jobType && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                      {formErrors.jobType}
-                    </p>
-                  )}
+                    error={formErrors.jobType}
+                  />
                 </div>
               </div>
             </div>
@@ -465,25 +488,14 @@ const JobFormPage: React.FC = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    {t('source_platform', '来源平台')}
-                  </label>
-                  <select
+                  <GenericListbox
+                    options={platformOptions}
+                    value={selectedPlatform}
+                    onChange={handlePlatformChange}
+                    label={t('source_platform', '来源平台')}
                     name="platform"
-                    value={formData.platform}
-                    onChange={handleSelectChange}
-                    className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
-                      formErrors.platform 
-                        ? 'ring-red-500 focus:ring-red-500' 
-                        : 'ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500'
-                    } transition-shadow"
-                  >
-                    {platformOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                    error={formErrors.platform}
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

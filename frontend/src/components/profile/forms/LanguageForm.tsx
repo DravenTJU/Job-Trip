@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Language } from '../../../types/profile';
 import { useTranslation } from 'react-i18next';
+import GenericListbox, { SelectOption } from '@/components/common/GenericListbox';
 
 interface LanguageFormProps {
   initialData?: Language;
@@ -41,6 +42,26 @@ const LanguageForm: React.FC<LanguageFormProps> = ({ initialData, onSave, onCanc
     t('language_portuguese', '葡萄牙语'),
     t('language_italian', '意大利语')
   ];
+  
+  // 定义熟练程度选项
+  const proficiencyOptions: SelectOption[] = [
+    { id: 'beginner', label: t('skill_level_beginner', '入门') },
+    { id: 'intermediate', label: t('skill_level_intermediate', '中级') },
+    { id: 'advanced', label: t('skill_level_advanced', '高级') },
+    { id: 'native', label: t('language_level_native', '母语') }
+  ];
+  
+  // 处理熟练程度选择变化
+  const handleProficiencyChange = (option: SelectOption | null) => {
+    if (option) {
+      // 确保转换为Language.proficiency允许的联合类型
+      const proficiency = option.id.toString() as 'beginner' | 'intermediate' | 'advanced' | 'native';
+      setFormData(prev => ({ ...prev, proficiency }));
+    }
+  };
+  
+  // 查找当前选中的熟练程度选项
+  const selectedProficiency = proficiencyOptions.find(option => option.id === formData.proficiency) || null;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -71,22 +92,14 @@ const LanguageForm: React.FC<LanguageFormProps> = ({ initialData, onSave, onCanc
       </div>
       
       <div>
-        <label htmlFor="proficiency" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          {t('language_proficiency', '熟练程度')} *
-        </label>
-        <select
-          id="proficiency"
+        <GenericListbox
+          options={proficiencyOptions}
+          value={selectedProficiency}
+          onChange={handleProficiencyChange}
+          label={t('language_proficiency', '熟练程度')}
+          required={true}
           name="proficiency"
-          value={formData.proficiency}
-          onChange={handleChange}
-          required
-          className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-        >
-          <option value="beginner">{t('skill_level_beginner', '入门')}</option>
-          <option value="intermediate">{t('skill_level_intermediate', '中级')}</option>
-          <option value="advanced">{t('skill_level_advanced', '高级')}</option>
-          <option value="native">{t('language_level_native', '母语')}</option>
-        </select>
+        />
         <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
           {t('language_proficiency_explanation', '入门：基本交流、中级：日常会话、高级：流利交流、母语：母语水平')}
         </p>

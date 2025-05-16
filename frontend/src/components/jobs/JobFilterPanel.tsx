@@ -8,8 +8,6 @@ import {
   TextField,
   FormControl,
   InputLabel,
-  Select,
-  MenuItem,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -19,6 +17,8 @@ import {
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
+import GenericListbox, { SelectOption } from '@/components/common/GenericListbox';
+import { useTranslation } from 'react-i18next';
 
 interface JobFilterPanelProps {
   onFilter: (filters: JobFilters) => void;
@@ -36,15 +36,47 @@ export interface JobFilters {
  * 提供高级筛选功能
  */
 const JobFilterPanel: React.FC<JobFilterPanelProps> = ({ onFilter }) => {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const [filters, setFilters] = useState<JobFilters>({});
   const [activeFilters, setActiveFilters] = useState<JobFilters>({});
+
+  // 定义选项列表
+  const jobTypeOptions: SelectOption[] = [
+    { id: '', label: '全部' },
+    { id: '全职', label: '全职' },
+    { id: '兼职', label: '兼职' },
+    { id: '实习', label: '实习' },
+    { id: '合同', label: '合同' },
+    { id: '自由职业', label: '自由职业' }
+  ];
+
+  const salaryOptions: SelectOption[] = [
+    { id: '', label: '全部' },
+    { id: '低于10k NZD', label: '低于10k NZD' },
+    { id: '10k-20k NZD', label: '10k-20k NZD' },
+    { id: '20k-30k NZD', label: '20k-30k NZD' },
+    { id: '30k以上 NZD', label: '30k以上 NZD' }
+  ];
+
+  const datePostedOptions: SelectOption[] = [
+    { id: '', label: '全部' },
+    { id: '今天', label: '今天' },
+    { id: '过去3天', label: '过去3天' },
+    { id: '过去一周', label: '过去一周' },
+    { id: '过去一个月', label: '过去一个月' }
+  ];
 
   // 处理输入变更
   const handleFilterChange = (field: keyof JobFilters) => (
     e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
   ) => {
     setFilters({ ...filters, [field]: e.target.value });
+  };
+
+  // 处理选择变更
+  const handleSelectChange = (field: keyof JobFilters) => (option: SelectOption | null) => {
+    setFilters({ ...filters, [field]: option ? option.id.toString() : '' });
   };
 
   // 应用筛选
@@ -69,6 +101,11 @@ const JobFilterPanel: React.FC<JobFilterPanelProps> = ({ onFilter }) => {
     setFilters(newFilters);
     setActiveFilters(newFilters);
     onFilter(newFilters);
+  };
+
+  // 获取当前选项
+  const getSelectedOption = (options: SelectOption[], field: keyof JobFilters) => {
+    return options.find(option => option.id.toString() === filters[field]) || options[0];
   };
 
   // 获取激活的筛选器标签
@@ -139,20 +176,18 @@ const JobFilterPanel: React.FC<JobFilterPanelProps> = ({ onFilter }) => {
         <AccordionDetails>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6} md={3}>
-              <FormControl fullWidth variant="outlined" size="small">
-                <InputLabel>工作类型</InputLabel>
-                <Select
-                  value={filters.jobType || ''}
-                  onChange={handleFilterChange('jobType') as any}
+              <FormControl fullWidth size="small">
+                <InputLabel id="job-type-label" shrink={false} sx={{ opacity: 0 }}>工作类型</InputLabel>
+                <GenericListbox
+                  options={jobTypeOptions}
+                  value={getSelectedOption(jobTypeOptions, 'jobType')}
+                  onChange={handleSelectChange('jobType')}
                   label="工作类型"
-                >
-                  <MenuItem value="">全部</MenuItem>
-                  <MenuItem value="全职">全职</MenuItem>
-                  <MenuItem value="兼职">兼职</MenuItem>
-                  <MenuItem value="实习">实习</MenuItem>
-                  <MenuItem value="合同">合同</MenuItem>
-                  <MenuItem value="自由职业">自由职业</MenuItem>
-                </Select>
+                  name="jobType"
+                  ariaLabel="工作类型选择"
+                  className="!mt-0"
+                  buttonClassName="!rounded-md !bg-white dark:!bg-gray-900"
+                />
               </FormControl>
             </Grid>
             
@@ -169,36 +204,34 @@ const JobFilterPanel: React.FC<JobFilterPanelProps> = ({ onFilter }) => {
             </Grid>
             
             <Grid item xs={12} sm={6} md={3}>
-              <FormControl fullWidth variant="outlined" size="small">
-                <InputLabel>薪资范围</InputLabel>
-                <Select
-                  value={filters.salary || ''}
-                  onChange={handleFilterChange('salary') as any}
+              <FormControl fullWidth size="small">
+                <InputLabel id="salary-label" shrink={false} sx={{ opacity: 0 }}>薪资范围</InputLabel>
+                <GenericListbox
+                  options={salaryOptions}
+                  value={getSelectedOption(salaryOptions, 'salary')}
+                  onChange={handleSelectChange('salary')}
                   label="薪资范围"
-                >
-                  <MenuItem value="">全部</MenuItem>
-                  <MenuItem value="低于10k NZD">低于10k NZD</MenuItem>
-                  <MenuItem value="10k-20k NZD">10k-20k NZD</MenuItem>
-                  <MenuItem value="20k-30k NZD">20k-30k NZD</MenuItem>
-                  <MenuItem value="30k以上 NZD">30k以上 NZD</MenuItem>
-                </Select>
+                  name="salary"
+                  ariaLabel="薪资范围选择"
+                  className="!mt-0"
+                  buttonClassName="!rounded-md !bg-white dark:!bg-gray-900"
+                />
               </FormControl>
             </Grid>
             
             <Grid item xs={12} sm={6} md={3}>
-              <FormControl fullWidth variant="outlined" size="small">
-                <InputLabel>添加时间</InputLabel>
-                <Select
-                  value={filters.datePosted || ''}
-                  onChange={handleFilterChange('datePosted') as any}
+              <FormControl fullWidth size="small">
+                <InputLabel id="date-posted-label" shrink={false} sx={{ opacity: 0 }}>添加时间</InputLabel>
+                <GenericListbox
+                  options={datePostedOptions}
+                  value={getSelectedOption(datePostedOptions, 'datePosted')}
+                  onChange={handleSelectChange('datePosted')}
                   label="添加时间"
-                >
-                  <MenuItem value="">全部</MenuItem>
-                  <MenuItem value="今天">今天</MenuItem>
-                  <MenuItem value="过去3天">过去3天</MenuItem>
-                  <MenuItem value="过去一周">过去一周</MenuItem>
-                  <MenuItem value="过去一个月">过去一个月</MenuItem>
-                </Select>
+                  name="datePosted"
+                  ariaLabel="添加时间选择"
+                  className="!mt-0"
+                  buttonClassName="!rounded-md !bg-white dark:!bg-gray-900"
+                />
               </FormControl>
             </Grid>
           </Grid>

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useRef, useEffect, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { Check, ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -70,9 +70,23 @@ function GenericListbox<T extends SelectOption>({
   ariaLabel,
 }: GenericListboxProps<T>) {
   const { t } = useTranslation();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [buttonPosition, setButtonPosition] = useState<{width: number; top: number; left: number} | null>(null);
   
   // 查找当前选中的选项
   const selectedOption = value || null;
+  
+  // 更新按钮位置
+  const updateButtonPosition = () => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setButtonPosition({
+        width: rect.width,
+        top: rect.bottom + window.scrollY + 4, // 添加4px的间距
+        left: rect.left + window.scrollX
+      });
+    }
+  };
   
   // 渲染下拉选项列表
   const renderListboxOptions = () => (
@@ -81,15 +95,16 @@ function GenericListbox<T extends SelectOption>({
       leave="transition ease-in duration-100"
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
+      afterEnter={updateButtonPosition} // 动画完成后再次更新位置，确保位置准确
     >
       <Listbox.Options 
         className={`z-[9999] py-2 mt-1 overflow-auto text-base bg-white dark:bg-gray-800 rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 ${
           usePortal ? 'fixed' : 'absolute'
         } ${optionsClassName}`}
-        style={usePortal && ariaLabel ? {
-          width: document.querySelector(`[aria-label="${ariaLabel}"]`)?.getBoundingClientRect().width + 'px',
-          top: (document.querySelector(`[aria-label="${ariaLabel}"]`)?.getBoundingClientRect().bottom || 0) + 4 + 'px',
-          left: document.querySelector(`[aria-label="${ariaLabel}"]`)?.getBoundingClientRect().left + 'px'
+        style={usePortal && buttonPosition ? {
+          width: buttonPosition.width + 'px',
+          top: buttonPosition.top + 'px',
+          left: buttonPosition.left + 'px'
         } : undefined}
       >
         {options.map((option) => (
@@ -139,37 +154,58 @@ function GenericListbox<T extends SelectOption>({
         name={name}
         disabled={disabled}
       >
-        {({ open }: ListboxRenderPropArg) => (
-          <div>
-            <Listbox.Button 
-              className={`relative w-full h-11 pl-4 pr-10 text-left bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
-                error 
-                  ? 'ring-red-500 focus:ring-red-500' 
-                  : 'ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500'
-              } transition-shadow flex items-center ${
-                disabled ? 'opacity-60 cursor-not-allowed' : ''
-              } ${buttonClassName}`}
-              aria-label={ariaLabel}
-              aria-haspopup="listbox"
-            >
-              {renderButtonLabel ? (
-                renderButtonLabel(selectedOption)
-              ) : (
-                <span className="block truncate">
-                  {selectedOption?.label || placeholder}
+        {({ open }: ListboxRenderPropArg) => {
+          // 打开时更新按钮位置
+          useEffect(() => {
+            if (open) {
+              updateButtonPosition();
+              
+              // 添加窗口大小改变监听
+              window.addEventListener('resize', updateButtonPosition);
+              window.addEventListener('scroll', updateButtonPosition, true);
+              
+              return () => {
+                window.removeEventListener('resize', updateButtonPosition);
+                window.removeEventListener('scroll', updateButtonPosition, true);
+              };
+            }
+          }, [open]);
+          
+          return (
+            <div>
+              <Listbox.Button 
+                ref={buttonRef}
+                className={`relative w-full h-11 pl-4 pr-10 text-left bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                  error 
+                    ? 'ring-red-500 focus:ring-red-500' 
+                    : 'ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500'
+                } transition-shadow flex items-center ${
+                  disabled ? 'opacity-60 cursor-not-allowed' : ''
+                } ${buttonClassName}`}
+                aria-label={ariaLabel}
+                aria-haspopup="listbox"
+              >
+                {renderButtonLabel ? (
+                  renderButtonLabel(selectedOption)
+                ) : (
+                  <span className="block truncate">
+                    {selectedOption?.label || placeholder}
+                  </span>
+                )}
+                <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                  <ChevronDown
+                    className="w-5 h-5 text-gray-400"
+                    aria-hidden="true"
+                  />
                 </span>
-              )}
-              <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                <ChevronDown
-                  className="w-5 h-5 text-gray-400"
-                  aria-hidden="true"
-                />
-              </span>
-            </Listbox.Button>
-            
-            {open && usePortal ? createPortal(renderListboxOptions(), document.body) : open ? renderListboxOptions() : null}
-          </div>
-        )}
+              </Listbox.Button>
+              
+              {open && usePortal && buttonPosition ? 
+                createPortal(renderListboxOptions(), document.body) : 
+                open ? renderListboxOptions() : null}
+            </div>
+          );
+        }}
       </Listbox>
       
       {error && (

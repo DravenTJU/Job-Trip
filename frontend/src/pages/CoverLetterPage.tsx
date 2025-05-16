@@ -4,6 +4,7 @@ import { useAppSelector, useAppDispatch } from '@/hooks/reduxHooks';
 import { fetchResumes } from '@/redux/slices/resumesSlice';
 import { Resume } from '@/types';
 import { useTranslation } from 'react-i18next';
+import GenericListbox, { SelectOption } from '@/components/common/GenericListbox';
 
 const CoverLetterPage: React.FC = () => {
   const [jobDescription, setJobDescription] = useState('');
@@ -99,6 +100,57 @@ const CoverLetterPage: React.FC = () => {
     document.body.removeChild(element);
   };
 
+  // 定义语气风格选项
+  const toneOptions: SelectOption[] = [
+    { id: 'professional', label: t('professional_formal', '专业正式') },
+    { id: 'friendly', label: t('friendly_warm', '友好亲切') },
+    { id: 'confident', label: t('confident_positive', '自信积极') },
+    { id: 'creative', label: t('creative_unique', '创新独特') }
+  ];
+
+  // 定义语言选项
+  const languageOptions: SelectOption[] = [
+    { id: 'chinese', label: t('chinese', '中文') },
+    { id: 'english', label: 'English' }
+  ];
+
+  // 构建简历选项
+  const resumeOptions: SelectOption[] = [
+    { id: '', label: t('dont_use_resume', '不使用简历') },
+    ...resumes.map((resume: Resume) => ({
+      id: resume._id,
+      label: resume.name
+    }))
+  ];
+
+  // 处理语气风格变更
+  const handleToneChange = (option: SelectOption | null) => {
+    if (option) {
+      setTone(option.id.toString());
+    }
+  };
+
+  // 处理语言变更
+  const handleLanguageChange = (option: SelectOption | null) => {
+    if (option) {
+      setLanguage(option.id.toString());
+    }
+  };
+
+  // 处理简历选择变更
+  const handleResumeChange = (option: SelectOption | null) => {
+    setSelectedResumeId(option ? option.id.toString() : '');
+  };
+
+  // 获取当前选中的语气选项
+  const selectedTone = toneOptions.find(option => option.id === tone) || null;
+  
+  // 获取当前选中的语言选项
+  const selectedLanguage = languageOptions.find(option => option.id === language) || null;
+  
+  // 获取当前选中的简历选项
+  const selectedResume = resumeOptions.find(option => option.id === selectedResumeId) || null;
+
   return (
     <div className="container-lg">
       <div className="section">
@@ -125,52 +177,34 @@ const CoverLetterPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('tone_style', '语气风格')}
-              </label>
-              <select
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                value={tone}
-                onChange={(e) => setTone(e.target.value)}
-              >
-                <option value="professional">{t('professional_formal', '专业正式')}</option>
-                <option value="friendly">{t('friendly_warm', '友好亲切')}</option>
-                <option value="confident">{t('confident_positive', '自信积极')}</option>
-                <option value="creative">{t('creative_unique', '创新独特')}</option>
-              </select>
+              <GenericListbox
+                options={toneOptions}
+                value={selectedTone}
+                onChange={handleToneChange}
+                label={t('tone_style', '语气风格')}
+                name="tone"
+              />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('language', '语言')}
-              </label>
-              <select
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-              >
-                <option value="chinese">{t('chinese', '中文')}</option>
-                <option value="english">English</option>
-              </select>
+              <GenericListbox
+                options={languageOptions}
+                value={selectedLanguage}
+                onChange={handleLanguageChange}
+                label={t('language', '语言')}
+                name="language"
+              />
             </div>
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {t('select_resume_optional', '选择简历（可选）')}
-            </label>
-            <select
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              value={selectedResumeId}
-              onChange={(e) => setSelectedResumeId(e.target.value)}
-            >
-              <option value="">{t('dont_use_resume', '不使用简历')}</option>
-              {resumes.map((resume: Resume) => (
-                <option key={resume._id} value={resume._id}>
-                  {resume.name}
-                </option>
-              ))}
-            </select>
+            <GenericListbox
+              options={resumeOptions}
+              value={selectedResume}
+              onChange={handleResumeChange}
+              label={t('select_resume_optional', '选择简历（可选）')}
+              name="resume"
+            />
             <p className="text-sm text-gray-500 mt-2">
               {t('resume_helps_ai', '选择简历可以帮助AI生成更符合您背景的求职信')}
             </p>

@@ -1,6 +1,7 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/context/LanguageContext';
+import GenericListbox, { SelectOption } from './GenericListbox';
 
 interface LanguageSelectorProps {
   variant?: 'dropdown' | 'popup';
@@ -26,9 +27,25 @@ const LanguageSelector: FC<LanguageSelectorProps> = ({
   };
   
   // 下拉菜单样式
-  const dropdownStyle = `h-10 pl-3 pr-10 py-2 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl 
-    border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow
-    ${sizeClasses[size]}`;
+  const dropdownStyle = `h-10 ${sizeClasses[size]}`;
+  
+  // 转换语言选项为GenericListbox所需格式
+  const languageOptions: SelectOption[] = useMemo(() => {
+    return Object.entries(supportedLanguages).map(([code, name]) => ({
+      id: code,
+      label: name,
+    }));
+  }, [supportedLanguages]);
+  
+  // 获取当前选择的语言选项
+  const selectedLanguage = languageOptions.find(option => option.id === currentLanguage) || null;
+  
+  // 处理语言变更
+  const handleLanguageChange = (option: SelectOption | null) => {
+    if (option) {
+      changeLanguage(option.id.toString());
+    }
+  };
   
   // 弹出菜单风格
   if (variant === 'popup') {
@@ -57,18 +74,15 @@ const LanguageSelector: FC<LanguageSelectorProps> = ({
   
   if (variant === 'dropdown') {
     return (
-      <select
-        value={currentLanguage}
-        onChange={(e) => changeLanguage(e.target.value)}
+      <GenericListbox
+        options={languageOptions}
+        value={selectedLanguage}
+        onChange={handleLanguageChange}
         className={dropdownStyle}
-        aria-label={t('settings.chooseLanguage')}
-      >
-        {Object.entries(supportedLanguages).map(([code, name]) => (
-          <option key={code} value={code}>
-            {name}
-          </option>
-        ))}
-      </select>
+        buttonClassName="!h-10"
+        ariaLabel={t('settings.chooseLanguage')}
+        name="language"
+      />
     );
   }
 };

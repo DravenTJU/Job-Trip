@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AppDispatch, RootState } from '@/redux/store';
 import { updateProfile, updatePassword, clearError } from '@/redux/slices/authSlice';
 import { User, UpdatePasswordData } from '@/types';
-import { AlertCircle, Check, Mail, Lock, Eye, EyeOff, Globe } from 'lucide-react';
+import { AlertCircle, Check, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import LanguageSelector from '@/components/common/LanguageSelector';
 
 /**
@@ -102,10 +102,7 @@ const LanguageSettingsForm: React.FC = () => {
             {t('chooseLanguage', '选择您偏好的语言')}
           </label>
           <div className="relative">
-            <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <div className="pl-10">
-              <LanguageSelector variant="dropdown" size="md" />
-            </div>
+            <LanguageSelector variant="dropdown" size="lg" />
           </div>
         </div>
       </div>
