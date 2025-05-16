@@ -21,6 +21,15 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
+  // 滚动到页面顶部
+  const scrollToTop = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+  
   // 导航链接列表
   const navLinks = [
     { name: t('nav.chromeExtension'), href: '#chrome-extension' },
@@ -42,7 +51,11 @@ const Navbar: React.FC = () => {
       <div className="max-w-[1400px] mx-auto px-4">
         <div className="flex h-16 md:h-20 items-center">
           {/* Logo */}
-          <Link to="/" className="flex items-center flex-shrink-0 mr-4">
+          <a 
+            href="/#" 
+            className="flex items-center flex-shrink-0 mr-4 cursor-pointer"
+            onClick={scrollToTop}
+          >
             <BriefcaseBusiness 
               className="h-8 w-auto text-indigo-500"
               aria-hidden="true"
@@ -50,7 +63,7 @@ const Navbar: React.FC = () => {
             <span className="ml-2 text-xl font-semibold text-indigo-500">
               JobTrip
             </span>
-          </Link>
+          </a>
           
           {/* 桌面端导航链接 */}
           <div className="hidden xl:flex items-center justify-center flex-1 mx-4">

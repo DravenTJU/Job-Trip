@@ -6,6 +6,15 @@ import { BriefcaseBusiness } from 'lucide-react';
 const Footer: React.FC = () => {
   const { t } = useTranslation('landing');
   
+  // 滚动到页面顶部
+  const scrollToTop = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+  
   // 页脚导航链接
   const footerNavs = [
     {
@@ -63,7 +72,11 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Logo和版权信息 */}
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="flex items-center">
+            <a 
+              href="/#" 
+              className="flex items-center cursor-pointer"
+              onClick={scrollToTop}
+            >
               <BriefcaseBusiness 
                 className="h-8 w-auto text-indigo-500"
                 aria-hidden="true"
@@ -71,7 +84,7 @@ const Footer: React.FC = () => {
               <span className="ml-2 text-xl font-semibold text-gray-900 dark:text-white">
                 Job<span className="text-indigo-500">Trip</span>
               </span>
-            </Link>
+            </a>
             <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
               {t('footer.copyright')}
             </p>
