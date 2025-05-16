@@ -23,7 +23,7 @@ const CTASection: React.FC = () => {
               {t('cta.button')}
             </Link>
             <a 
-              href="#features" 
+              href="/features" 
               className="inline-flex items-center justify-center px-6 py-3 rounded-xl text-base font-medium bg-transparent text-white border border-white hover:bg-white/10 transition-colors"
             >
               {t('cta.secondaryButton')}
