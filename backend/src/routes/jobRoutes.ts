@@ -2,11 +2,9 @@ import express from 'express';
 import {
   getJobs,
   getJob,
-  createJob,
+  createJobs,
   updateJob,
   deleteJob,
-  createJobFromExtension,
-  createJobsBatch,
   getUserRelatedJobs
 } from '../controllers/jobController';
 import { protect } from '../middleware/authMiddleware';
@@ -25,14 +23,11 @@ const router = express.Router();
  *   description: 职位管理API
  */
 
-// POST / 不加 protect，兼容插件 body 传 userToken
-// router.post('/', createJob);
-
-// 其余路由继续用 protect
+// 所有路由都受protect保护
 router.use(protect);
 
-// POST / 现在受 protect 保护
-router.post('/', createJob); // 新位置
+// POST / - 创建单个或批量职位
+router.post('/', createJobs); 
 
 // 获取用户关联的职位列表
 router.get('/user', getUserRelatedJobs);
@@ -121,7 +116,7 @@ router.get('/user', getUserRelatedJobs);
  *         $ref: '#/components/responses/ServerError'
  *
  *   post:
- *     summary: 创建新职位
+ *     summary: 创建新职位(单个或批量)
  *     tags: [职位]
  *     security:
  *       - bearerAuth: []
@@ -130,63 +125,72 @@ router.get('/user', getUserRelatedJobs);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - platform
- *               - title
- *               - company
- *               - location
- *               - source
- *               - sourceId
- *               - sourceUrl
- *             properties:
- *               platform:
- *                 type: string
- *                 description: 求职平台名称
- *               title:
- *                 type: string
- *                 description: 职位标题
- *               company:
- *                 type: string
- *                 description: 公司名称
- *               location:
- *                 type: string
- *                 description: 工作地点
- *               description:
- *                 type: string
- *                 description: 职位描述
- *               requirements:
- *                 type: array
+ *             oneOf:
+ *               - type: object
+ *                 required:
+ *                   - platform
+ *                   - title
+ *                   - company
+ *                   - location
+ *                   - source
+ *                   - sourceId
+ *                   - sourceUrl
+ *                 properties:
+ *                   platform:
+ *                     type: string
+ *                     description: 求职平台名称
+ *                   title:
+ *                     type: string
+ *                     description: 职位标题
+ *                   company:
+ *                     type: string
+ *                     description: 公司名称
+ *                   location:
+ *                     type: string
+ *                     description: 工作地点
+ *                   description:
+ *                     type: string
+ *                     description: 职位描述
+ *                   requirements:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                     description: 职位要求
+ *                   salary:
+ *                     type: string
+ *                     description: 薪资范围，例如："100k-130k NZD"
+ *                   jobType:
+ *                     type: string
+ *                     enum: [full-time, part-time, contract, freelance, internship]
+ *                     default: full-time
+ *                   status:
+ *                     type: string
+ *                     enum: [new, applied, interviewing, offer, rejected, withdrawn, closed]
+ *                     default: new
+ *                   source:
+ *                     type: string
+ *                     enum: [linkedin, seek, indeed, manual, other]
+ *                   sourceId:
+ *                     type: string
+ *                     description: 平台职位原始ID
+ *                   sourceUrl:
+ *                     type: string
+ *                     description: 原始链接
+ *                   deadline:
+ *                     type: string
+ *                     format: date-time
+ *                     description: 截止日期
+ *                   notes:
+ *                     type: string
+ *                     description: 备注
+ *               - type: array
  *                 items:
- *                   type: string
- *                 description: 职位要求
- *               salary:
- *                 type: string
- *                 description: 薪资范围，例如："100k-130k NZD"
- *               jobType:
- *                 type: string
- *                 enum: [full-time, part-time, contract, freelance, internship]
- *                 default: full-time
- *               status:
- *                 type: string
- *                 enum: [new, applied, interviewing, offer, rejected, withdrawn, closed]
- *                 default: new
- *               source:
- *                 type: string
- *                 enum: [linkedin, seek, indeed, manual, other]
- *               sourceId:
- *                 type: string
- *                 description: 平台职位原始ID
- *               sourceUrl:
- *                 type: string
- *                 description: 原始链接
- *               deadline:
- *                 type: string
- *                 format: date-time
- *                 description: 截止日期
- *               notes:
- *                 type: string
- *                 description: 备注
+ *                   type: object
+ *                   required:
+ *                     - platform
+ *                     - title
+ *                     - company
+ *                     - location
  *     responses:
  *       201:
  *         description: 职位创建成功
@@ -195,24 +199,68 @@ router.get('/user', getUserRelatedJobs);
  *             schema:
  *               $ref: '#/components/schemas/JobResponse'
  *             example:
- *               code: 200
+ *               code: 201
  *               message: "创建职位成功"
  *               data:
- *                 _id: "60d5f8b74c4ba52d4038a2c1"
- *                 platform: "seek"
- *                 title: "Web开发工程师"
- *                 company: "科技有限公司"
- *                 location: "奥克兰, 新西兰"
- *                 description: "负责公司网站的开发和维护"
- *                 jobType: "full-time"
- *                 status: "new"
- *                 source: "seek"
- *                 sourceId: "12345"
- *                 sourceUrl: "https://seek.co.nz/job/12345"
- *                 createdAt: "2021-06-25T14:55:34.567Z"
- *                 updatedAt: "2021-06-25T14:55:34.567Z"
- *               timestamp: 1629789258000
- *               traceId: "1629789258000-abc123"
+ *                 job:
+ *                   _id: "60d5f8b74c4ba52d4038a2c1"
+ *                   platform: "seek"
+ *                   title: "Web开发工程师"
+ *                   company: "科技有限公司"
+ *                   location: "奥克兰, 新西兰"
+ *                   description: "负责公司网站的开发和维护"
+ *                   jobType: "full-time"
+ *                   status: "new"
+ *                   source: "seek"
+ *                   sourceId: "12345"
+ *                   sourceUrl: "https://seek.co.nz/job/12345"
+ *                   createdAt: "2021-06-25T14:55:34.567Z"
+ *                   updatedAt: "2021-06-25T14:55:34.567Z"
+ *                 userJob:
+ *                   _id: "60d5f8b74c4ba52d4038a2c2"
+ *                   userId: "60d5f8b74c4ba52d4038a2c3"
+ *                   jobId: "60e5f8b74c4ba52d4038a2c1"
+ *                   status: "new"
+ *                   createdAt: "2021-06-25T14:55:34.567Z"
+ *                   updatedAt: "2021-06-25T14:55:34.567Z"
+ *       207:
+ *         description: 批量处理职位完成
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: number
+ *                   example: 207
+ *                 message:
+ *                   type: string
+ *                   example: "批量处理职位完成"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: number
+ *                       example: 5
+ *                     succeeded:
+ *                       type: number
+ *                       example: 4
+ *                     failed:
+ *                       type: number
+ *                       example: 1
+ *                     createdJobs:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Job'
+ *                     errors:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           error:
+ *                             type: string
+ *                           jobDetails:
+ *                             type: object
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *       401:
@@ -221,12 +269,6 @@ router.get('/user', getUserRelatedJobs);
  *         $ref: '#/components/responses/ServerError'
  */
 router.get('/', getJobs);
-
-// 从浏览器插件创建职位
-router.post('/extension', createJobFromExtension);
-
-// 批量导入职位
-router.post('/batch', createJobsBatch);
 
 // 更新职位状态 - 实际上是更新用户-职位关联的状态
 router.put('/:id/status', async (req, res, next) => {
@@ -286,15 +328,34 @@ router.put('/:id/status', async (req, res, next) => {
       return next(new AppError('职位不存在', 404));
     }
 
+    // 创建响应对象，使用明确的对象而非spread
+    const responseData = {
+      _id: job._id,
+      platform: job.platform,
+      title: job.title,
+      company: job.company,
+      location: job.location,
+      description: job.description,
+      requirements: job.requirements,
+      salary: job.salary,
+      jobType: job.jobType,
+      source: job.source,
+      sourceId: job.sourceId,
+      sourceUrl: job.sourceUrl,
+      deadline: job.deadline,
+      notes: job.notes,
+      createdAt: job.createdAt,
+      updatedAt: job.updatedAt,
+      // 添加UserJob特有字段
+      status: userJob.status,
+      userJobId: userJob._id
+    };
+
     // 返回结果
     res.status(200).json(createApiResponse(
       200,
       '更新职位状态成功',
-      {
-        ...job.toObject(),
-        status: userJob.status,
-        userJobId: userJob._id
-      }
+      responseData
     ));
   } catch (error) {
     next(error);

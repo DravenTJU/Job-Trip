@@ -270,12 +270,6 @@ const swaggerDefinition = {
             default: 'full-time',
             description: '工作类型',
           },
-          status: {
-            type: 'string',
-            enum: ['new', 'applied', 'interviewing', 'offer', 'rejected', 'withdrawn', 'closed'],
-            default: 'new',
-            description: '职位状态',
-          },
           source: {
             type: 'string',
             enum: ['linkedin', 'seek', 'indeed', 'manual', 'other'],
@@ -288,11 +282,6 @@ const swaggerDefinition = {
           sourceUrl: {
             type: 'string',
             description: '原始链接',
-          },
-          appliedDate: {
-            type: 'string',
-            format: 'date-time',
-            description: '申请日期',
           },
           deadline: {
             type: 'string',

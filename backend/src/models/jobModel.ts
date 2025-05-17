@@ -13,7 +13,6 @@ export interface IJob extends Document {
   source: string;
   sourceId: string;
   sourceUrl: string;
-  appliedDate?: Date;
   deadline?: Date;
   notes?: string;
   createdAt: Date;
@@ -79,8 +78,10 @@ const jobSchema = new Schema<IJob>(
       type: String,
       required: true,
     },
-    appliedDate: Date,
-    deadline: Date,
+    deadline: {
+      type: Date,
+      default: null,
+    },
     notes: String,
   },
   {

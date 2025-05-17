@@ -167,7 +167,6 @@ export interface UserJob {
   job: string | Job;
   status: ApplicationStatus;
   notes?: string;
-  appliedDate?: string;
   nextSteps?: string[];
   interviewDates?: string[];
   createdAt: string;
@@ -178,7 +177,6 @@ export interface CreateUserJobData {
   job: string;
   status: ApplicationStatus;
   notes?: string;
-  appliedDate?: string;
   nextSteps?: string[];
   interviewDates?: string[];
 }

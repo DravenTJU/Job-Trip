@@ -4,7 +4,7 @@ import UserJob from '../models/userJobModel';
 import { AppError } from '../utils/AppError';
 import { createApiResponse } from '../middleware/errorHandler';
 import ApplicationHistory from '../models/applicationHistoryModel';
-import jwt from 'jsonwebtoken';
+import Company from '../models/companyModel';
 
 /**
  * @desc    获取所有职位
@@ -233,7 +233,8 @@ export const getJob = async (
       return next(new AppError('未找到该职位', 404));
     }
 
-    let jobData = job.toObject();
+    // 转换为普通对象并扩展类型
+    let jobData = job.toObject() as any;
 
     // Get current user information
     if (req.user && req.user._id) {
@@ -282,150 +283,259 @@ export const getJob = async (
   }
 };
 
-// 字段映射表
-const jobTypeMap: Record<string, string> = {
-  'Contract': 'contract',
-  'Full-time': 'full-time',
-  'Part-time': 'part-time',
-  'Freelance': 'freelance',
-  'Internship': 'internship',
-};
-
-// 平台映射表
-const platformMap: Record<string, string> = {
-  'LinkedIn': 'linkedin',
-  'Seek': 'seek',
-  'Indeed': 'indeed',
-  'Manual': 'manual',
-};
-
 /**
- * 修复职位字段
- * 将平台提供的字段映射到系统字段
+ * 修复职位字段大小写
  */
 function fixJobFields(job: any) {
   // 修复工作类型
-  if (job.jobType && jobTypeMap[job.jobType]) {
-    job.jobType = jobTypeMap[job.jobType];
+  if (job.jobType) {
+    job.jobType = job.jobType.toLowerCase();
   }
 
   // 修复平台名称
-  if (job.platform && platformMap[job.platform]) {
-    job.platform = platformMap[job.platform];
+  if (job.platform) {
+    job.platform = job.platform.toLowerCase();
+  }
+
+  // 修复数据来源
+  if (job.source) {
+    job.source = job.source.toLowerCase();
   }
 
   return job;
 }
 
 /**
- * @desc    创建新职位
+ * 查找或创建公司记录
+ * @param companyName 公司名称
+ * @param companyInfo 可选的公司信息
+ * @param companyCache 可选的公司缓存，用于批量处理
+ * @returns 公司ID
+ */
+const _findOrCreateCompany = async (
+  companyName: string,
+  companyInfo?: any,
+  companyCache?: Map<string, string>
+): Promise<string> => {
+  // 如果有缓存，先从缓存中查找
+  if (companyCache && companyCache.has(companyName)) {
+    return companyCache.get(companyName) as string;
+  }
+
+  // 在数据库中查找公司
+  let company = await Company.findOne({ 
+    name: companyName,
+  });
+
+  // 如果不存在，则创建
+  if (!company) {
+    company = await Company.create({
+      name: companyName,
+      info: companyInfo || {},
+    });
+  }
+
+  // 将结果存入缓存
+  if (companyCache) {
+    companyCache.set(companyName, company._id.toString());
+  }
+
+  return company._id.toString();
+};
+
+/**
+ * 处理单个职位数据
+ * @param jobData 职位数据
+ * @param userId 用户ID
+ * @param companyCache 可选的公司缓存，用于批量处理
+ * @returns 处理结果
+ */
+const _processJobData = async (
+  jobData: any,
+  userId: string,
+  companyCache?: Map<string, string>
+): Promise<any> => {
+  try {
+    // 1. 数据提取与校验
+    if (!jobData) {
+      return { error: '职位数据不能为空', jobDetails: null };
+    }
+
+    // 修复和清理字段
+    const cleanedJobData = fixJobFields({ ...jobData });
+    
+    // 确保必要字段存在
+    if (!cleanedJobData.companyName && !cleanedJobData.company) {
+      return { error: '缺少公司名称', jobDetails: cleanedJobData };
+    }
+    
+    const companyName = cleanedJobData.companyName || cleanedJobData.company;
+    
+    // 确保有平台和sourceId
+    cleanedJobData.platform = cleanedJobData.platform || 'manual';
+    cleanedJobData.sourceId = cleanedJobData.sourceId || `manual-${Date.now()}`;
+    cleanedJobData.sourceUrl = cleanedJobData.sourceUrl || '';
+    cleanedJobData.source = cleanedJobData.source || cleanedJobData.platform.toLowerCase();
+    
+    // 2. 处理公司信息
+    const companyId = await _findOrCreateCompany(
+      companyName,
+      cleanedJobData.companyInfo,
+      companyCache
+    );
+    
+    // 3. 职位唯一性检查
+    let existingJob = null;
+    if (cleanedJobData.sourceId && cleanedJobData.platform) {
+      existingJob = await Job.findOne({
+        sourceId: cleanedJobData.sourceId,
+        platform: cleanedJobData.platform
+      });
+    }
+    
+    // 4. 创建或更新职位
+    let job;
+    if (existingJob) {
+      // 如果职位已存在，更新它
+      job = await Job.findByIdAndUpdate(
+        existingJob._id,
+        { ...cleanedJobData, companyId },
+        { new: true, runValidators: true }
+      );
+    } else {
+      // 创建新职位
+      job = await Job.create({
+        ...cleanedJobData,
+        companyId,
+      });
+    }
+    
+    // 确保job不为null
+    if (!job) {
+      return { error: '创建或更新职位失败', jobDetails: cleanedJobData };
+    }
+    
+    // 5. 创建/更新用户-职位关联
+    let userJob = await UserJob.findOne({
+      userId,
+      jobId: job._id
+    });
+    
+    if (!userJob) {
+      // 如果关联不存在，创建新关联
+      userJob = await UserJob.create({
+        userId,
+        jobId: job._id,
+        status: cleanedJobData.status || 'new',
+        isFavorite: cleanedJobData.isFavorite || false
+      });
+      
+      // 6. 创建应用历史记录
+      await ApplicationHistory.create({
+        userJobId: userJob._id,
+        previousStatus: 'initial',
+        newStatus: userJob.status,
+        notes: cleanedJobData.notes || '通过API创建职位',
+        updatedBy: userId
+      });
+    }
+    
+    // 返回处理结果
+    return {
+      success: true,
+      isNew: !existingJob,
+      job,
+      userJob
+    };
+  } catch (error) {
+    console.error('职位处理错误:', error);
+    return {
+      error: error instanceof Error ? error.message : '处理职位数据时发生未知错误',
+      jobDetails: jobData
+    };
+  }
+};
+
+/**
+ * @desc    创建单个或批量职位
  * @route   POST /api/v1/jobs
  * @access  私有
  */
-export const createJob = async (
+export const createJobs = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    // 确保 req.body 是一个对象，以避免扩展运算符错误
-    const rawJobData = req.body && typeof req.body === 'object' ? req.body : {};
-    let jobData = { ...rawJobData }; // 使用副本进行操作
+    // 获取用户ID
+    const userId = req.user?._id;
+    if (!userId) {
+      return next(new AppError('用户未认证，无法创建职位', 401));
+    }
 
-    const userToken = jobData.userToken;
-    if (userToken) {
-      // 从token中提取用户ID
-      try {
-        const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret_key_here';
-        const decoded = jwt.verify(userToken, jwtSecret) as { id: string };
-        const userId = decoded.id;
-        
-        // 删除userToken，不保存到职位中
-        delete jobData.userToken;
-        
-        // 修复字段
-        jobData = fixJobFields(jobData);
-        
-        // 创建职位
-        const job = await Job.create(jobData);
+    // 判断输入类型
+    let jobsData: any[] = [];
+    
+    if (Array.isArray(req.body)) {
+      // 请求体直接是数组
+      jobsData = req.body;
+    } else if (req.body.jobs && Array.isArray(req.body.jobs)) {
+      // 请求体中有jobs字段，且是数组
+      jobsData = req.body.jobs;
+    } else {
+      // 单个职位对象
+      jobsData = [req.body];
+    }
 
-        const createdUserJob = await UserJob.create({
-          userId,
-          jobId: job._id,
-          status: jobData.status || 'new',
-          isFavorite: jobData.isFavorite || false,
-        });
+    if (jobsData.length === 0) {
+      return next(new AppError('职位数据不能为空', 400));
+    }
 
-        if (createdUserJob) {
-            await ApplicationHistory.create({
-                userJobId: createdUserJob._id,
-                previousStatus: 'initial',
-                newStatus: createdUserJob.status,
-                notes: '职位通过令牌创建并关联',
-                updatedBy: userId,
-            });
-        }
-
-        // 返回结果
-        res.status(201).json(createApiResponse(
+    // 初始化结果收集器
+    const createdJobsResults: any[] = [];
+    const errors: any[] = [];
+    
+    // 初始化公司缓存
+    const companyCache = new Map<string, string>();
+    
+    // 处理每一个职位数据
+    for (const jobDataItem of jobsData) {
+      const result = await _processJobData(jobDataItem, userId.toString(), companyCache);
+      
+      if (result.error) {
+        errors.push(result);
+      } else {
+        createdJobsResults.push(result);
+      }
+    }
+    
+    // 构建响应
+    if (jobsData.length === 1) {
+      // 单个职位处理
+      if (errors.length > 0) {
+        return next(new AppError(errors[0].error, 400));
+      } else {
+        return res.status(201).json(createApiResponse(
           201,
-          '创建职位成功并已关联用户',
-          job
-        ));
-      } catch (error) {
-        // Token验证失败，继续以常规方式创建职位
-        console.error('Token验证失败:', error);
-        const minimalJobData = { ...rawJobData };
-        delete minimalJobData.userToken;
-        const fixedMinimalData = fixJobFields(minimalJobData);
-        
-        // 修复字段
-        jobData = fixJobFields(jobData);
-        
-        // 创建职位
-        const job = await Job.create(jobData);
-        res.status(201).json(createApiResponse(
-          201,
-          '创建职位成功（Token验证失败，未关联用户）',
-          job
+          createdJobsResults[0].isNew ? '创建职位成功' : '更新职位成功',
+          {
+            job: createdJobsResults[0].job,
+            userJob: createdJobsResults[0].userJob
+          }
         ));
       }
     } else {
-      // 处理来自UI的请求 (无 userToken, req.user 应该由 protect 中间件提供)
-      if (!req.user || !req.user._id) {
-        return next(new AppError('用户未认证，无法创建职位并关联', 401));
-      }
-      const userId = req.user._id;
-
-      // 清理 jobData (已在函数开头从 req.body 创建和复制)
-      // delete jobData.userToken; // userToken 在此分支中应不存在
-      const finalJobData = fixJobFields(jobData); // 使用 fixJobFields 清理数据
-      
-      const job = await Job.create(finalJobData);
-
-      // 创建 UserJob 关联
-      const createdUserJob = await UserJob.create({
-        userId,
-        jobId: job._id,
-        status: finalJobData.status || 'new', // 使用清理后的 jobData 中的 status
-        isFavorite: finalJobData.isFavorite || false, // 使用清理后的 jobData 中的 isFavorite
-      });
-
-      // 创建 ApplicationHistory 记录
-      if (createdUserJob) {
-        await ApplicationHistory.create({
-          userJobId: createdUserJob._id,
-          previousStatus: 'initial',
-          newStatus: createdUserJob.status,
-          notes: '职位通过UI创建并关联',
-          updatedBy: userId,
-        });
-      }
-
-      res.status(201).json(createApiResponse(
-        201,
-        '创建职位成功并已关联用户',
-        job
+      // 批量处理
+      res.status(207).json(createApiResponse(
+        207,
+        '批量处理职位完成',
+        {
+          total: jobsData.length,
+          succeeded: createdJobsResults.length,
+          failed: errors.length,
+          createdJobs: createdJobsResults.map(r => r.job),
+          errors: errors
+        }
       ));
     }
   } catch (error) {
@@ -494,159 +604,6 @@ export const deleteJob = async (
 };
 
 /**
- * @desc    从浏览器扩展创建职位
- * @route   POST /api/v1/jobs/extension
- * @access  私有
- */
-export const createJobFromExtension = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { job, userToken } = req.body;
-
-    if (!job) {
-      return next(new AppError('职位数据不能为空', 400));
-    }
-
-    if (!userToken) {
-      return next(new AppError('用户令牌不能为空', 400));
-    }
-
-    // 验证令牌并提取用户ID
-    const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret_key_here';
-    const decoded = jwt.verify(userToken, jwtSecret) as { id: string };
-    const userId = decoded.id;
-
-    // 修复字段
-    const jobData = {
-      ...job,
-      source: job.platform?.toLowerCase() || 'manual',
-      sourceId: job.sourceId || `manual-${Date.now()}`,
-      sourceUrl: job.sourceUrl || '',
-    };
-
-    // 检查该职位是否已存在
-    let existingJob = null;
-    if (jobData.sourceId && jobData.platform) {
-      existingJob = await Job.findOne({
-        sourceId: jobData.sourceId,
-        platform: jobData.platform
-      });
-    }
-
-    let createdJob;
-    if (existingJob) {
-      // 如果职位已存在，更新它
-      createdJob = await Job.findByIdAndUpdate(
-        existingJob._id,
-        jobData,
-        { new: true, runValidators: true }
-      );
-    } else {
-      // 否则创建新职位
-      createdJob = await Job.create(jobData);
-    }
-
-    // 创建或更新用户-职位关联
-    let userJob = await UserJob.findOne({
-      userId,
-      jobId: createdJob._id
-    });
-
-    if (!userJob) {
-      // 如果关联不存在，创建新关联
-      userJob = await UserJob.create({
-        userId,
-        jobId: createdJob._id,
-        status: 'new', // 默认状态为新职位
-        isFavorite: false
-      });
-
-      // 创建状态历史记录
-      await ApplicationHistory.create({
-        userJobId: userJob._id,
-        previousStatus: '',
-        newStatus: 'new',
-        notes: '从浏览器扩展创建',
-        updatedBy: userId
-      });
-    }
-
-    // 返回结果
-    res.status(201).json(createApiResponse(
-      201,
-      existingJob ? '更新职位成功' : '创建职位成功',
-      {
-        job: createdJob,
-        userJob
-      }
-    ));
-  } catch (error) {
-    if (error instanceof jwt.JsonWebTokenError) {
-      return next(new AppError('无效的用户令牌', 401));
-    }
-    next(error);
-  }
-};
-
-/**
- * @desc    批量导入职位
- * @route   POST /api/v1/jobs/batch
- * @access  私有
- */
-export const createJobsBatch = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { jobs, userToken } = req.body;
-
-    if (!jobs || !Array.isArray(jobs) || jobs.length === 0) {
-      return next(new AppError('职位列表不能为空', 400));
-    }
-
-    if (!userToken) {
-      return next(new AppError('用户令牌不能为空', 400));
-    }
-
-    // 验证用户令牌并获取用户ID
-    const decoded = jwt.verify(userToken, process.env.JWT_SECRET as string) as { id: string };
-    const userId = decoded.id;
-
-    // 批量创建职位
-    const createdJobs = await Job.insertMany(jobs);
-
-    // 创建用户职位关联
-    const userJobs = createdJobs.map(job => ({
-      userId,
-      jobId: job._id,
-      status: job.status || 'unapplied',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }));
-
-    await UserJob.insertMany(userJobs);
-
-    res.status(201).json(createApiResponse(
-      201,
-      '批量导入职位成功',
-      {
-        total: createdJobs.length,
-        jobs: createdJobs
-      }
-    ));
-  } catch (error) {
-    if (error instanceof jwt.JsonWebTokenError) {
-      return next(new AppError('无效的用户令牌', 401));
-    }
-    next(error);
-  }
-};
-
-/**
  * @desc    获取用户关联的职位列表
  * @route   GET /api/v1/jobs/user
  * @access  私有
@@ -681,16 +638,14 @@ export const getUserRelatedJobs = async (
     const skip = (page - 1) * limit;
 
     // 排序
-    const sortOption = {};
+    let sortOption: any = { createdAt: -1 }; // 默认按创建时间降序排序
     if (req.query.sort) {
       const sortStr = req.query.sort as string;
       if (sortStr.startsWith('-')) {
-        sortOption[sortStr.slice(1)] = -1;
+        sortOption = { [sortStr.slice(1)]: -1 };
       } else {
-        sortOption[sortStr] = 1;
+        sortOption = { [sortStr]: 1 };
       }
-    } else {
-      sortOption['createdAt'] = -1;
     }
 
     // 执行用户职位关联查询
