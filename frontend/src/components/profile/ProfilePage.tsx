@@ -71,7 +71,13 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ profile }) => {
   };
 
   return (
-    <div className="container-lg mx-auto px-4 py-8">
+    <div className="container-lg">
+      <div className="section">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">{t('profile:title', '个人资料')}</h1>
+        <p className="text-gray-500 dark:text-gray-400">
+          {t('profile:subtitle', '查看和管理您的所有个人资料')}
+        </p>
+      </div>
       <div className="flex flex-col md:flex-row gap-8">
         {/* 侧边栏 */}
         <div className="md:w-1/4">

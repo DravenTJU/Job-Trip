@@ -171,8 +171,8 @@ const ResumeBuilderPage: React.FC = () => {
   };
 
   return (
-    <div className="container-lg px-4">
-      <div className="section space-y-6 mb-8">
+    <div className="container-lg">
+      <div className="section">
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">{t('resume_builder', '简历生成器')}</h1>
         <p className="text-gray-500 dark:text-gray-400">
           {t('resume_builder_description', '根据您的个人档案生成简历')}

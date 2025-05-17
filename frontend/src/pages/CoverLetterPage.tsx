@@ -155,7 +155,9 @@ const CoverLetterPage: React.FC = () => {
     <div className="container-lg">
       <div className="section">
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">{t('ai_cover_letter_generator', 'AI求职信生成器')}</h1>
-        
+        <p className="text-gray-500 dark:text-gray-400">{t('ai_cover_letter_generator_description', '使用AI创建个性化求职信')}</p>
+      </div>
+      <div className="flex-1">
         {error && (
           <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
             {error}
