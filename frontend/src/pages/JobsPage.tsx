@@ -16,13 +16,11 @@ import {
   Calendar,
   Building2,
   MapPin,
-  DollarSign,
+  CircleDollarSign,
   Briefcase,
   Tag
 } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
 import { JobSource, JobType } from '@/types';
-import { getStatusStyle, getStatusIcon, JOB_STATUS_OPTIONS, getStatusLabel } from '@/utils/jobStatusUtils';
 import StatusSelect from '@/components/common/StatusSelect';
 import StatusBadge from '@/components/common/StatusBadge';
 import GenericListbox, { SelectOption } from '@/components/common/GenericListbox';
@@ -90,12 +88,6 @@ const JobsPage: React.FC = () => {
     { id: '-title', label: t('jobs:sort.titleDesc', '职位名称（Z-A）'), value: '-title' },
     { id: 'company', label: t('jobs:sort.companyAsc', '公司名称（A-Z）'), value: 'company' },
     { id: '-company', label: t('jobs:sort.companyDesc', '公司名称（Z-A）'), value: '-company' }
-  ];
-  
-  // 状态选项
-  const statusOptions = [
-    { label: t('jobs:statuses.all', '所有状态'), value: '' },
-    ...JOB_STATUS_OPTIONS
   ];
   
   // 加载职位列表数据
@@ -232,7 +224,7 @@ const JobsPage: React.FC = () => {
                   onChange={handleSortChange}
                   placeholder={t('jobs:sort.placeholder', '排序方式')}
                   ariaLabel={t('jobs:sort.ariaLabel', '选择排序方式')}
-                  className="min-w-[160px]"
+                  className="w-[240px]"
                 />
                 <button
                   onClick={() => setShowFilters(!showFilters)}
@@ -404,7 +396,7 @@ const JobsPage: React.FC = () => {
                             )}
                             {job.salary && (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400">
-                          <DollarSign className="w-3 h-3" />
+                          <CircleDollarSign className="w-3 h-3" />
                           {job.salary}
                         </span>
                       )}
