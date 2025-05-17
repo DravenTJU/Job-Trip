@@ -125,10 +125,8 @@ describe('Panel Logic', () => {
         url: 'https://www.linkedin.com/jobs/view/12345?currentJobId=56789&trk=public_jobs_topcard-title',
         platform: 'LinkedIn'
       }];
-      const userToken = 'test-token';
-      const formattedData = formatJobData(jobs, userToken); 
+      const formattedData = formatJobData(jobs); 
       expect(formattedData.totalJobs).toBe(1);
-      expect(formattedData.userToken).toBe(userToken);
       expect(formattedData.jobs[0].sourceId).toBe('56789');
       expect(formattedData.jobs[0].platform).toBe('LinkedIn');
     });
@@ -141,8 +139,7 @@ describe('Panel Logic', () => {
         url: 'https://uk.indeed.com/viewjob?jk=abcdef123456&from=serp',
         platform: 'Indeed'
       }];
-      const userToken = 'test-token-indeed';
-      const formattedData = formatJobData(jobs, userToken);
+      const formattedData = formatJobData(jobs);
       expect(formattedData.jobs[0].sourceId).toBe('abcdef123456');
       expect(formattedData.jobs[0].platform).toBe('Indeed');
     });
@@ -155,8 +152,7 @@ describe('Panel Logic', () => {
         url: 'https://www.seek.com.au/job/78901234?tracking=JCA-SAU-0-0-0-0-0',
         platform: 'SEEK'
       }];
-      const userToken = 'test-token-seek';
-      const formattedData = formatJobData(jobs, userToken);
+      const formattedData = formatJobData(jobs);
       expect(formattedData.jobs[0].sourceId).toBe('78901234');
       expect(formattedData.jobs[0].platform).toBe('SEEK');
     });
@@ -169,8 +165,7 @@ describe('Panel Logic', () => {
         url: 'https://www.linkedin.com/jobs/view/invalid-url',
         platform: 'LinkedIn'
       }];
-      const userToken = 'test-token-no-id';
-      const formattedData = formatJobData(jobs, userToken);
+      const formattedData = formatJobData(jobs);
       expect(formattedData.jobs[0].sourceId).toBe('');
     });
 

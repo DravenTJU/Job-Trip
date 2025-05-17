@@ -2,6 +2,7 @@ const enableLogFileDownload = false; // 设置为 true 以启用日志文件下�
 
 class Job {
   constructor({
+    platform,
     title,
     company,
     location,
@@ -9,17 +10,15 @@ class Job {
     requirements = [],
     salary = '',
     jobType = '',
-    status = 'unapplied',
     source = '',
     sourceId = '',
     sourceUrl = '',
-    appliedDate = null,
     deadline = null,
     notes = '',
-    platform,
     createdAt = new Date(),
     updatedAt = new Date()
   }) {
+    this.platform = platform || ''
     this.title = title?.trim() || ''
     this.company = company?.trim() || ''
     this.location = location?.trim() || ''
@@ -27,20 +26,18 @@ class Job {
     this.requirements = Array.isArray(requirements) ? requirements : []
     this.salary = salary?.trim() || ''
     this.jobType = jobType?.trim() || ''
-    this.status = status?.trim() || 'unapplied'
     this.source = source?.trim() || ''
     this.sourceId = sourceId?.trim() || ''
     this.sourceUrl = sourceUrl || ''
-    this.appliedDate = appliedDate || null
     this.deadline = deadline || null
     this.notes = notes?.trim() || ''
-    this.platform = platform || ''
     this.createdAt = createdAt
     this.updatedAt = updatedAt
   }
 
   static createFromLinkedIn(data) {
     return new Job({
+      platform: 'LinkedIn',
       title: data.title,
       company: data.company,
       location: data.location,
@@ -51,7 +48,6 @@ class Job {
       source: 'LinkedIn',
       sourceId: data.sourceId || '',
       sourceUrl: data.jobUrl,
-      platform: 'LinkedIn',
       createdAt: data.createdAt || new Date(),
       updatedAt: new Date()
     })
@@ -59,6 +55,7 @@ class Job {
 
   static createFromSEEK(data) {
     return new Job({
+      platform: 'SEEK',
       title: data.title,
       company: data.company,
       location: data.location,
@@ -69,7 +66,6 @@ class Job {
       source: 'SEEK',
       sourceId: data.sourceId || '',
       sourceUrl: data.jobUrl,
-      platform: 'SEEK',
       createdAt: data.createdAt || new Date(),
       updatedAt: new Date()
     })
@@ -77,6 +73,7 @@ class Job {
 
   static createFromIndeed(data) {
     return new Job({
+      platform: 'Indeed',
       title: data.title,
       company: data.company,
       location: data.location,
@@ -87,7 +84,6 @@ class Job {
       source: 'Indeed',
       sourceId: data.sourceId || '',
       sourceUrl: data.jobUrl,
-      platform: 'Indeed',
       createdAt: data.createdAt || new Date(),
       updatedAt: new Date()
     })

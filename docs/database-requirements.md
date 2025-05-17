@@ -156,7 +156,6 @@
   source: String,        // 数据来源
   sourceId: String,      // 平台职位原始ID
   sourceUrl: String,     // 原始链接
-  appliedDate: Date,     // 申请日期
   deadline: Date,        // 截止日期
   notes: String,         // 备注
   createdAt: Date,       // 创建时间

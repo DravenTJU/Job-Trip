@@ -62,23 +62,19 @@ router.post('/', async (req, res) => {
       const jobs = req.body.jobs.map(job => {
         // 確保所有必需字段都有值
         const jobData = {
+          platform: job.platform || 'LinkedIn',
           title: job.title || '',
           company: job.company || '',
           location: job.location || '',
-          url: job.sourceUrl || job.url || '',
           description: job.description || '',
           salary: job.salary || '',
           jobType: job.jobType || '',
-          platform: job.platform || 'LinkedIn',
           requirements: job.requirements || [],
-          status: job.status || 'unapplied',
           source: job.source || '',
           sourceId: job.sourceId || '',
           sourceUrl: job.sourceUrl || '',
-          appliedDate: job.appliedDate || null,
           deadline: job.deadline || null,
           notes: job.notes || '',
-          userToken: req.body.userToken || '',
           createdAt: job.createdAt || new Date(),
           updatedAt: job.updatedAt || new Date()
         };

@@ -179,6 +179,7 @@ const JOB_DATA_STRUCTURE = {
   totalJobs: 0,
   timestamp: '',
   jobs: [{
+    platform: '',
     title: '',
     company: '',
     location: '',
@@ -186,14 +187,11 @@ const JOB_DATA_STRUCTURE = {
     requirements: [],
     salary: '',
     jobType: '',
-    status: 'unapplied',
     source: '',
     sourceId: '',
     sourceUrl: '',
-    appliedDate: null,
     deadline: null,
     notes: '',
-    platform: '',
     createdAt: '',
     updatedAt: ''
   }]
@@ -225,6 +223,7 @@ export const formatJobData = (jobs) => {
       }
 
       return {
+        platform: job.platform,
         title: job.title,
         company: job.company,
         location: job.location,
@@ -232,14 +231,11 @@ export const formatJobData = (jobs) => {
         requirements: job.requirements || [],
         salary: job.salary || '',
         jobType: job.jobType || '',
-        status: 'unapplied',
         source: job.platform,
         sourceId: sourceId,
         sourceUrl: sourceUrl,
-        appliedDate: null,
         deadline: null,
         notes: '',
-        platform: job.platform,
         createdAt: job.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };

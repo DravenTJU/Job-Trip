@@ -5,6 +5,10 @@ const jobSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  platform: {
+    type: String,
+    required: true
+  },
   title: {
     type: String,
     required: true
@@ -33,17 +37,9 @@ const jobSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
-  platform: {
-    type: String,
-    required: true
-  },
   requirements: {
     type: [String],
     default: []
-  },
-  status: {
-    type: String,
-    default: 'pending'
   },
   source: {
     type: String,
@@ -56,10 +52,6 @@ const jobSchema = new mongoose.Schema({
   sourceUrl: {
     type: String,
     default: ''
-  },
-  appliedDate: {
-    type: Date,
-    default: null
   },
   deadline: {
     type: Date,
