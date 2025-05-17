@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "jobtrip Extention",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Help you search and track job applications across multiple platforms",
   "permissions": [
     "tabs",
