@@ -5,6 +5,7 @@ import {
   createUserJob,
   updateUserJob,
   deleteUserJob,
+  getStatusStats
 } from '../controllers/userJobController';
 import { protect } from '../middleware/authMiddleware';
 
@@ -256,5 +257,58 @@ router.route('/:id')
   .get(getUserJob)
   .put(updateUserJob)
   .delete(deleteUserJob);
+
+/**
+ * @swagger
+ * /userjobs/stats/status:
+ *   get:
+ *     summary: 获取用户职位状态统计
+ *     tags: [用户职位关联]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: 成功获取状态统计
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 code:
+ *                   type: number
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: 获取状态统计成功
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     new:
+ *                       type: number
+ *                       example: 5
+ *                     applied:
+ *                       type: number
+ *                       example: 3
+ *                     interviewing:
+ *                       type: number
+ *                       example: 2
+ *                     offer:
+ *                       type: number
+ *                       example: 1
+ *                     rejected:
+ *                       type: number
+ *                       example: 0
+ *                     withdrawn:
+ *                       type: number
+ *                       example: 0
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
+ */
+router.get('/stats/status', getStatusStats);
 
 export default router; 

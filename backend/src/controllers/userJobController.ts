@@ -3,6 +3,7 @@ import UserJob from '../models/userJobModel';
 import Job from '../models/jobModel';
 import { AppError } from '../utils/AppError';
 import { createApiResponse } from '../middleware/errorHandler';
+import ApplicationHistory from '../models/applicationHistoryModel';
 
 /**
  * @desc    获取用户的所有职位申请
@@ -240,6 +241,59 @@ export const deleteUserJob = async (
       success: true,
       data: {},
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    获取用户职位状态统计
+ * @route   GET /api/v1/userjobs/stats/status
+ * @access  私有
+ */
+export const getStatusStats = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.user?._id;
+
+    if (!userId) {
+      return next(new AppError('未认证，无法访问', 401));
+    }
+
+    // 使用MongoDB聚合管道获取各状态的数量
+    const stats = await UserJob.aggregate([
+      { $match: { userId: userId } },
+      { $group: { _id: "$status", count: { $sum: 1 } } }
+    ]);
+
+    // 初始化所有可能状态的计数为0
+    const result: Record<string, number> = {
+      new: 0,
+      not_interested: 0,
+      pending: 0,
+      applied: 0,
+      interviewing: 0,
+      offer: 0,
+      rejected: 0,
+      withdrawn: 0,
+      closed: 0
+    };
+
+    // 填充实际计数
+    stats.forEach((stat) => {
+      if (stat._id) {
+        result[stat._id] = stat.count;
+      }
+    });
+
+    res.status(200).json(createApiResponse(
+      200,
+      '获取状态统计成功',
+      result
+    ));
   } catch (error) {
     next(error);
   }
