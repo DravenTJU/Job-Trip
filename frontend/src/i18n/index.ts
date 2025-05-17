@@ -28,6 +28,8 @@ i18n
   .init({
     // 可用语言
     supportedLngs: Object.keys(supportedLanguages),
+    // 只加载当前语言的翻译文件
+    load: 'currentOnly',
     // 默认语言
     fallbackLng: defaultLanguage,
     // 调试模式
