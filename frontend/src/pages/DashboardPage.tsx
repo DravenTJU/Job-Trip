@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { fetchUserJobs, updateUserJob, fetchStatusStats } from '@/redux/slices/userJobsSlice';
-import { ApplicationStatus, UserJob } from '@/types';
+import { JobStatus, UserJob } from '@/types';
 
 // 接口以适配DroppableColumn和DraggableJobCard组件
 interface DashboardJob {
@@ -24,7 +24,7 @@ interface DashboardJob {
 
 // 类型安全的状态映射
 type JobStateMap = {
-  [key in ApplicationStatus]: DashboardJob[];
+  [key in JobStatus]: DashboardJob[];
 };
 
 // 自定义拖拽层组件
@@ -95,12 +95,15 @@ const DashboardPage: React.FC = () => {
   
   // 本地状态用于分类的职位列表
   const [jobs, setJobs] = useState<JobStateMap>({
-    [ApplicationStatus.WISHLIST]: [],
-    [ApplicationStatus.APPLIED]: [],
-    [ApplicationStatus.INTERVIEW]: [],
-    [ApplicationStatus.OFFER]: [],
-    [ApplicationStatus.REJECTED]: [],
-    [ApplicationStatus.WITHDRAWN]: []
+    [JobStatus.NEW]: [],
+    [JobStatus.NOT_INTERESTED]: [],
+    [JobStatus.PENDING]: [],
+    [JobStatus.APPLIED]: [],
+    [JobStatus.INTERVIEWING]: [],
+    [JobStatus.OFFER]: [],
+    [JobStatus.REJECTED]: [],
+    [JobStatus.WITHDRAWN]: [],
+    [JobStatus.CLOSED]: []
   });
 
   // 添加待处理任务状态
@@ -116,12 +119,15 @@ const DashboardPage: React.FC = () => {
   useEffect(() => {
     if (userJobs.length > 0) {
       const newJobs: JobStateMap = {
-        [ApplicationStatus.WISHLIST]: [],
-        [ApplicationStatus.APPLIED]: [],
-        [ApplicationStatus.INTERVIEW]: [],
-        [ApplicationStatus.OFFER]: [],
-        [ApplicationStatus.REJECTED]: [],
-        [ApplicationStatus.WITHDRAWN]: []
+        [JobStatus.NEW]: [],
+        [JobStatus.NOT_INTERESTED]: [],
+        [JobStatus.PENDING]: [],
+        [JobStatus.APPLIED]: [],
+        [JobStatus.INTERVIEWING]: [],
+        [JobStatus.OFFER]: [],
+        [JobStatus.REJECTED]: [],
+        [JobStatus.WITHDRAWN]: [],
+        [JobStatus.CLOSED]: []
       };
       
       // 处理面试列表
@@ -154,11 +160,12 @@ const DashboardPage: React.FC = () => {
           newJobs[userJob.status].push(dashboardJob);
         } else {
           // 默认放入待申请列表
-          newJobs[ApplicationStatus.WISHLIST].push(dashboardJob);
+          console.log('职位状态未匹配，放入待申请列表', userJob.status);
+          newJobs[JobStatus.NEW].push(dashboardJob);
         }
         
         // 如果状态是面试中，且有面试日期，添加到面试列表
-        if (userJob.status === ApplicationStatus.INTERVIEW && userJob.interviewDates && userJob.interviewDates.length > 0) {
+        if (userJob.status === JobStatus.INTERVIEWING && userJob.interviewDates && userJob.interviewDates.length > 0) {
           userJob.interviewDates.forEach((date, index) => {
             newInterviews.push({
               id: `${userJob._id}_${index}`,
@@ -303,7 +310,7 @@ const DashboardPage: React.FC = () => {
     const totalJobs = Object.values(jobs).reduce((sum, jobList) => sum + jobList.length, 0);
     if (totalJobs === 0) return '0%';
     
-    const interviewingCount = jobs[ApplicationStatus.INTERVIEW].length + jobs[ApplicationStatus.OFFER].length;
+    const interviewingCount = jobs[JobStatus.INTERVIEWING].length + jobs[JobStatus.OFFER].length;
     const rate = Math.round((interviewingCount / totalJobs) * 100);
     return `${rate}%`;
   };
@@ -313,18 +320,18 @@ const DashboardPage: React.FC = () => {
     const totalJobs = Object.values(jobs).reduce((sum, jobList) => sum + jobList.length, 0);
     if (totalJobs === 0) return '0%';
     
-    const hiredCount = jobs[ApplicationStatus.OFFER].length;
+    const hiredCount = jobs[JobStatus.OFFER].length;
     const rate = Math.round((hiredCount / totalJobs) * 100);
     return `${rate}%`;
   };
 
   // 处理拖拽（更新职位状态）
-  const handleDrop = async (status: ApplicationStatus, item: DashboardJob) => {
+  const handleDrop = async (status: JobStatus, item: DashboardJob) => {
     // 找到当前拖动的职位所在的状态
-    let sourceStatus: ApplicationStatus | undefined;
+    let sourceStatus: JobStatus | undefined;
     for (const [key, jobList] of Object.entries(jobs)) {
       if (jobList.some(job => job.id === item.id)) {
-        sourceStatus = key as ApplicationStatus;
+        sourceStatus = key as JobStatus;
         break;
       }
     }
@@ -338,8 +345,8 @@ const DashboardPage: React.FC = () => {
     const jobToMove = {
       ...item,
       // 更新额外信息
-      nextInterview: status === ApplicationStatus.INTERVIEW ? '待安排面试时间' : undefined,
-      offerDate: status === ApplicationStatus.OFFER ? new Date().toISOString().split('T')[0] : item.offerDate
+      nextInterview: status === JobStatus.INTERVIEWING ? '待安排面试时间' : undefined,
+      offerDate: status === JobStatus.OFFER ? new Date().toISOString().split('T')[0] : item.offerDate
     };
 
     // 乐观更新本地状态
@@ -358,7 +365,7 @@ const DashboardPage: React.FC = () => {
       }));
       
       // 处理面试相关的逻辑
-      if (status === ApplicationStatus.INTERVIEW) {
+      if (status === JobStatus.INTERVIEWING) {
         // 检查是否已经存在这个职位的面试记录
         const existingInterviewIndex = interviews.findIndex(interview => interview.jobId === item.id);
         
@@ -383,7 +390,7 @@ const DashboardPage: React.FC = () => {
               : interview
           ));
         }
-      } else if (sourceStatus === ApplicationStatus.INTERVIEW) {
+      } else if (sourceStatus === JobStatus.INTERVIEWING) {
         // 如果从面试中状态移出，标记面试记录为待确认而不是删除
         setInterviews(prev => prev.map(interview => 
           interview.jobId === item.id
@@ -408,7 +415,7 @@ const DashboardPage: React.FC = () => {
   };
 
   const handleEdit = (job: DashboardJob) => {
-    navigate(`/jobs/${job.originalData.job}`);
+    navigate(`/jobs/${job.originalData.jobId._id}`);
   };
 
   const handleAddJob = () => {
@@ -419,7 +426,7 @@ const DashboardPage: React.FC = () => {
     // 实际应用中可能需要调用API删除职位
     // 目前仅做本地状态更新示例
     const newJobs = { ...jobs };
-    for (const status of Object.values(ApplicationStatus)) {
+    for (const status of Object.values(JobStatus)) {
       newJobs[status] = jobs[status].filter(job => job.id !== jobId);
     }
     setJobs(newJobs);
@@ -463,7 +470,7 @@ const DashboardPage: React.FC = () => {
         data: { 
           interviewDates: updatedDates,
           // 如果不是面试状态，更新为面试状态
-          status: ApplicationStatus.INTERVIEW 
+          status: JobStatus.INTERVIEWING 
         }
       }));
       
@@ -482,8 +489,8 @@ const DashboardPage: React.FC = () => {
       setInterviews(prev => [...prev, newInterview]);
       
       // 如果作业不在面试中状态，将其移动到面试中列表
-      if (job.originalData.status !== ApplicationStatus.INTERVIEW) {
-        handleDrop(ApplicationStatus.INTERVIEW, job);
+      if (job.originalData.status !== JobStatus.INTERVIEWING) {
+        handleDrop(JobStatus.INTERVIEWING, job);
       }
     } catch (error) {
       console.error('添加面试日期失败:', error);
@@ -517,7 +524,7 @@ const DashboardPage: React.FC = () => {
               </div>
               <div className="ml-4">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  {Object.values(jobs).reduce((sum, jobList) => sum + jobList.length, 0)}
+                  {[JobStatus.PENDING, JobStatus.APPLIED, JobStatus.INTERVIEWING, JobStatus.OFFER].reduce((sum, status) => sum + jobs[status].length, 0)}
                 </h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400">{t('dashboard:total_applications', '总申请数')}</p>
               </div>
@@ -530,7 +537,7 @@ const DashboardPage: React.FC = () => {
               </div>
               <div className="ml-4">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  {jobs[ApplicationStatus.INTERVIEW].length}
+                  {jobs[JobStatus.INTERVIEWING].length}
                 </h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400">{t('dashboard:weekly_interviews', '本周面试')}</p>
               </div>
@@ -614,9 +621,9 @@ const DashboardPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <DroppableColumn
               title={t('dashboard:to_apply', '想要申请')}
-              count={filterJobs(jobs[ApplicationStatus.WISHLIST]).length}
-              jobs={filterJobs(jobs[ApplicationStatus.WISHLIST])}
-              onDrop={(item) => handleDrop(ApplicationStatus.WISHLIST, item as DashboardJob)}
+              count={filterJobs(jobs[JobStatus.PENDING]).length}
+              jobs={filterJobs(jobs[JobStatus.PENDING])}
+              onDrop={(item) => handleDrop(JobStatus.PENDING, item as DashboardJob)}
               onEdit={handleEdit}
               onDelete={handleDelete}
               todos={todos}
@@ -626,9 +633,9 @@ const DashboardPage: React.FC = () => {
             />
             <DroppableColumn
               title={t('dashboard:applied', '已申请')}
-              count={filterJobs(jobs[ApplicationStatus.APPLIED]).length}
-              jobs={filterJobs(jobs[ApplicationStatus.APPLIED])}
-              onDrop={(item) => handleDrop(ApplicationStatus.APPLIED, item as DashboardJob)}
+              count={filterJobs(jobs[JobStatus.APPLIED]).length}
+              jobs={filterJobs(jobs[JobStatus.APPLIED])}
+              onDrop={(item) => handleDrop(JobStatus.APPLIED, item as DashboardJob)}
               onEdit={handleEdit}
               onDelete={handleDelete}
               todos={todos}
@@ -638,9 +645,9 @@ const DashboardPage: React.FC = () => {
             />
             <DroppableColumn
               title={t('dashboard:interviewing', '面试中')}
-              count={filterJobs(jobs[ApplicationStatus.INTERVIEW]).length}
-              jobs={filterJobs(jobs[ApplicationStatus.INTERVIEW])}
-              onDrop={(item) => handleDrop(ApplicationStatus.INTERVIEW, item as DashboardJob)}
+              count={filterJobs(jobs[JobStatus.INTERVIEWING]).length}
+              jobs={filterJobs(jobs[JobStatus.INTERVIEWING])}
+              onDrop={(item) => handleDrop(JobStatus.INTERVIEWING, item as DashboardJob)}
               onEdit={handleEdit}
               onDelete={handleDelete}
               todos={todos}
@@ -650,9 +657,9 @@ const DashboardPage: React.FC = () => {
             />
             <DroppableColumn
               title={t('dashboard:hired', '已录用')}
-              count={filterJobs(jobs[ApplicationStatus.OFFER]).length}
-              jobs={filterJobs(jobs[ApplicationStatus.OFFER])}
-              onDrop={(item) => handleDrop(ApplicationStatus.OFFER, item as DashboardJob)}
+              count={filterJobs(jobs[JobStatus.OFFER]).length}
+              jobs={filterJobs(jobs[JobStatus.OFFER])}
+              onDrop={(item) => handleDrop(JobStatus.OFFER, item as DashboardJob)}
               onEdit={handleEdit}
               onDelete={handleDelete}
               todos={todos}
@@ -715,15 +722,15 @@ const DashboardPage: React.FC = () => {
                 <button
                   onClick={() => {
                     // 打开一个模态框或者跳转到添加面试的页面
-                    const jobId = jobs[ApplicationStatus.INTERVIEW][0]?.id;
+                    const jobId = jobs[JobStatus.INTERVIEWING][0]?.id;
                     if (jobId) {
                       // 简单演示：添加当前日期作为面试日期
                       handleAddInterviewDate(jobId, new Date().toISOString());
                     }
                   }}
-                  disabled={jobs[ApplicationStatus.INTERVIEW].length === 0}
+                  disabled={jobs[JobStatus.INTERVIEWING].length === 0}
                   className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${
-                    jobs[ApplicationStatus.INTERVIEW].length > 0
+                    jobs[JobStatus.INTERVIEWING].length > 0
                       ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-800/50'
                       : 'bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                   }`}
