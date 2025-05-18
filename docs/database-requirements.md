@@ -52,6 +52,7 @@
   
   // 教育经历（可多条）
   educations: [{
+    _id: ObjectId,            // 新增
     institution: String,      // 学校名称
     degree: String,           // 学位
     field: String,            // 专业领域
@@ -63,6 +64,7 @@
   
   // 工作经历（可多条）
   workExperiences: [{
+    _id: ObjectId,            // 新增
     company: String,          // 公司名称
     position: String,         // 职位
     startDate: Date,          // 开始日期
@@ -75,6 +77,7 @@
   
   // 技能（分组技能）
   skills: [{
+    _id: ObjectId,            // 新增
     name: String,             // 技能名称
     level: String,            // 熟练程度(初级/中级/高级/专家)
     endorsements: Number,     // 认可数
@@ -83,6 +86,7 @@
   
   // 证书
   certifications: [{
+    _id: ObjectId,            // 新增
     name: String,             // 证书名称
     issuer: String,           // 发证机构
     issueDate: Date,          // 发证日期
@@ -93,6 +97,7 @@
   
   // 项目经历
   projects: [{
+    _id: ObjectId,            // 新增
     name: String,             // 项目名称
     description: String,      // 项目描述
     startDate: Date,          // 开始日期
@@ -103,12 +108,14 @@
   
   // 语言能力
   languages: [{
+    _id: ObjectId,            // 新增
     language: String,         // 语言名称
     proficiency: String       // 熟练程度(初级/中级/高级/母语)
   }],
   
   // 志愿者经历
   volunteerExperiences: [{
+    _id: ObjectId,            // 新增
     organization: String,     // 组织名称
     role: String,             // 角色
     startDate: Date,          // 开始日期
@@ -118,6 +125,7 @@
   
   // 荣誉与奖项
   honorsAwards: [{
+    _id: ObjectId,            // 新增
     title: String,            // 奖项名称
     issuer: String,           // 颁发机构
     date: Date,               // 获得日期
@@ -126,6 +134,7 @@
   
   // 推荐信
   recommendations: [{
+    _id: ObjectId,            // 新增
     recommenderName: String,  // 推荐人姓名
     recommenderTitle: String, // 推荐人职位
     relationship: String,     // 与推荐人关系

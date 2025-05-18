@@ -41,6 +41,190 @@ router.use(protect);
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     SocialMedia:
+ *       type: object
+ *       properties:
+ *         linkedin: { type: string, format: url, description: 'LinkedIn个人资料URL' }
+ *         github: { type: string, format: url, description: 'GitHub个人资料URL' }
+ *         twitter: { type: string, format: url, description: 'Twitter个人资料URL' }
+ *         other: 
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               name: { type: string, description: '其他社交媒体名称' }
+ *               url: { type: string, format: url, description: '其他社交媒体URL' }
+ *     ContactInfo:
+ *       type: object
+ *       properties:
+ *         email: { type: string, format: email, description: '邮箱地址' }
+ *         phone: { type: string, description: '电话号码' }
+ *         website: { type: string, format: url, description: '个人网站URL' }
+ *         address: { type: string, description: '地址' }
+ *         socialMedia: { $ref: '#/components/schemas/SocialMedia' }
+ *     Education:
+ *       type: object
+ *       properties:
+ *         _id: { type: string, format: objectid, description: '教育经历的唯一ID' }
+ *         institution: { type: string, description: '学校名称' }
+ *         degree: { type: string, description: '学位' }
+ *         field: { type: string, description: '专业领域' }
+ *         startDate: { type: string, format: date, description: '开始日期' }
+ *         endDate: { type: string, format: date, description: '结束日期' }
+ *         description: { type: string, description: '描述/成就' }
+ *         location: { type: string, description: '地点' }
+ *     WorkExperience:
+ *       type: object
+ *       properties:
+ *         _id: { type: string, format: objectid, description: '工作经历的唯一ID' }
+ *         company: { type: string, description: '公司名称' }
+ *         position: { type: string, description: '职位' }
+ *         startDate: { type: string, format: date, description: '开始日期' }
+ *         endDate: { type: string, format: date, description: '结束日期' }
+ *         current: { type: boolean, description: '是否为当前工作' }
+ *         description: { type: string, description: '工作描述' }
+ *         location: { type: string, description: '地点' }
+ *         achievements: { type: array, items: { type: string }, description: '成就列表' }
+ *     Skill:
+ *       type: object
+ *       properties:
+ *         _id: { type: string, format: objectid, description: '技能的唯一ID' }
+ *         name: { type: string, description: '技能名称' }
+ *         level: { type: string, enum: ['beginner', 'intermediate', 'advanced', 'expert'], description: '熟练程度' }
+ *         endorsements: { type: number, description: '认可数' }
+ *         category: { type: string, description: '技能分类' }
+ *     Certification:
+ *       type: object
+ *       properties:
+ *         _id: { type: string, format: objectid, description: '证书的唯一ID' }
+ *         name: { type: string, description: '证书名称' }
+ *         issuer: { type: string, description: '发证机构' }
+ *         issueDate: { type: string, format: date, description: '发证日期' }
+ *         expirationDate: { type: string, format: date, description: '到期日期' }
+ *         credentialId: { type: string, description: '证书ID' }
+ *         credentialUrl: { type: string, format: url, description: '证书链接' }
+ *     Project:
+ *       type: object
+ *       properties:
+ *         _id: { type: string, format: objectid, description: '项目的唯一ID' }
+ *         name: { type: string, description: '项目名称' }
+ *         description: { type: string, description: '项目描述' }
+ *         startDate: { type: string, format: date, description: '开始日期' }
+ *         endDate: { type: string, format: date, description: '结束日期' }
+ *         url: { type: string, format: url, description: '项目链接' }
+ *         technologies: { type: array, items: { type: string }, description: '使用的技术' }
+ *     Language:
+ *       type: object
+ *       properties:
+ *         _id: { type: string, format: objectid, description: '语言能力的唯一ID' }
+ *         language: { type: string, description: '语言名称' }
+ *         proficiency: { type: string, enum: ['beginner', 'intermediate', 'advanced', 'native'], description: '熟练程度' }
+ *     VolunteerExperience:
+ *       type: object
+ *       properties:
+ *         _id: { type: string, format: objectid, description: '志愿者经历的唯一ID' }
+ *         organization: { type: string, description: '组织名称' }
+ *         role: { type: string, description: '角色' }
+ *         startDate: { type: string, format: date, description: '开始日期' }
+ *         endDate: { type: string, format: date, description: '结束日期' }
+ *         description: { type: string, description: '描述' }
+ *     HonorAward:
+ *       type: object
+ *       properties:
+ *         _id: { type: string, format: objectid, description: '荣誉与奖项的唯一ID' }
+ *         title: { type: string, description: '奖项名称' }
+ *         issuer: { type: string, description: '颁发机构' }
+ *         date: { type: string, format: date, description: '获得日期' }
+ *         description: { type: string, description: '描述' }
+ *     Recommendation:
+ *       type: object
+ *       properties:
+ *         _id: { type: string, format: objectid, description: '推荐信的唯一ID' }
+ *         recommenderName: { type: string, description: '推荐人姓名' }
+ *         recommenderTitle: { type: string, description: '推荐人职位' }
+ *         relationship: { type: string, description: '与推荐人关系' }
+ *         content: { type: string, description: '推荐内容' }
+ *         date: { type: string, format: date, description: '推荐日期' }
+ *     UserProfileResponse:
+ *       type: object
+ *       properties:
+ *         _id: { type: string, format: objectid, description: '用户档案的唯一ID' }
+ *         userId: { type: string, format: objectid, description: '关联用户的唯一ID' }
+ *         firstName: { type: string, description: '名' }
+ *         lastName: { type: string, description: '姓' }
+ *         headline: { type: string, description: '个人标题/职业概述' }
+ *         biography: { type: string, description: '个人简介' }
+ *         contactInfo: { $ref: '#/components/schemas/ContactInfo' }
+ *         educations: { type: array, items: { $ref: '#/components/schemas/Education' } }
+ *         workExperiences: { type: array, items: { $ref: '#/components/schemas/WorkExperience' } }
+ *         skills: { type: array, items: { $ref: '#/components/schemas/Skill' } }
+ *         certifications: { type: array, items: { $ref: '#/components/schemas/Certification' } }
+ *         projects: { type: array, items: { $ref: '#/components/schemas/Project' } }
+ *         languages: { type: array, items: { $ref: '#/components/schemas/Language' } }
+ *         volunteerExperiences: { type: array, items: { $ref: '#/components/schemas/VolunteerExperience' } }
+ *         honorsAwards: { type: array, items: { $ref: '#/components/schemas/HonorAward' } }
+ *         recommendations: { type: array, items: { $ref: '#/components/schemas/Recommendation' } }
+ *         profileCompleteness: { type: number, description: '档案完整度百分比 (0-100)' }
+ *         lastUpdated: { type: string, format: date-time, description: '最后更新时间' }
+ *         createdAt: { type: string, format: date-time, description: '创建时间' }
+ *         updatedAt: { type: string, format: date-time, description: '更新时间' }
+ *     UserProfileInput:
+ *       type: object
+ *       properties:
+ *         firstName: { type: string, description: '名', example: '三' }
+ *         lastName: { type: string, description: '姓', example: '张' }
+ *         headline: { type: string, description: '个人标题/职业概述', example: '资深软件工程师' }
+ *         biography: { type: string, description: '个人简介', example: '热爱编程与新技术探索' }
+ *         contactInfo: 
+ *           $ref: '#/components/schemas/ContactInfo'
+ *         # For arrays like educations, workExperiences, etc., the input schema might not require _id
+ *         # Mongoose will generate _id for new subdocuments if not provided
+ *         educations: 
+ *           type: array
+ *           items: 
+ *             $ref: '#/components/schemas/Education' # Ensure Education schema for input doesn't enforce _id
+ *         workExperiences:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/WorkExperience'
+ *         skills:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Skill'
+ *         certifications:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Certification'
+ *         projects:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Project'
+ *         languages:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Language'
+ *         volunteerExperiences:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/VolunteerExperience'
+ *         honorsAwards:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/HonorAward'
+ *         recommendations:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Recommendation'
+ * 
+ * securitySchemes:
+ *   bearerAuth:
+ *     type: http
+ *     scheme: bearer
+ *     bearerFormat: JWT
+ * 
+ * @swagger
  * /user-profiles/me:
  *   get:
  *     summary: 获取当前用户的档案
@@ -70,7 +254,7 @@ router.use(protect);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/UserProfile'
+ *             $ref: '#/components/schemas/UserProfileInput' # Changed to UserProfileInput
  *     responses:
  *       201:
  *         description: 成功创建用户档案
@@ -79,7 +263,7 @@ router.use(protect);
  *             schema:
  *               $ref: '#/components/schemas/UserProfileResponse'
  *       400:
- *         description: 用户档案已存在
+ *         description: 用户档案已存在或请求体无效
  *       401:
  *         description: 未授权
  *       500:
@@ -94,7 +278,7 @@ router.use(protect);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/UserProfile'
+ *             $ref: '#/components/schemas/UserProfileInput' # Changed to UserProfileInput
  *     responses:
  *       200:
  *         description: 成功更新用户档案
@@ -104,6 +288,8 @@ router.use(protect);
  *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
+ *       404:
+ *         description: 用户档案不存在
  *       500:
  *         description: 服务器错误
  *   delete:
@@ -133,7 +319,7 @@ router
  * /user-profiles/me/educations:
  *   post:
  *     summary: 添加教育经历
- *     tags: [用户档案]
+ *     tags: [用户档案 - 教育经历]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -141,27 +327,14 @@ router
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               institution:
- *                 type: string
- *               degree:
- *                 type: string
- *               field:
- *                 type: string
- *               startDate:
- *                 type: string
- *                 format: date
- *               endDate:
- *                 type: string
- *                 format: date
- *               description:
- *                 type: string
- *               location:
- *                 type: string
+ *             $ref: '#/components/schemas/Education' # Assuming Education schema for input
  *     responses:
  *       201:
  *         description: 成功添加教育经历
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -175,45 +348,33 @@ router
 
 /**
  * @swagger
- * /user-profiles/me/educations/{index}:
+ * /user-profiles/me/educations/{educationId}:
  *   put:
- *     summary: 更新教育经历
- *     tags: [用户档案]
+ *     summary: 更新指定的教育经历
+ *     tags: [用户档案 - 教育经历]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: educationId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 教育经历的索引
+ *         description: 要更新的教育经历的唯一ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               institution:
- *                 type: string
- *               degree:
- *                 type: string
- *               field:
- *                 type: string
- *               startDate:
- *                 type: string
- *                 format: date
- *               endDate:
- *                 type: string
- *                 format: date
- *               description:
- *                 type: string
- *               location:
- *                 type: string
+ *             $ref: '#/components/schemas/Education' # Assuming Education schema for input, _id in path overrides body _id
  *     responses:
  *       200:
  *         description: 成功更新教育经历
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -221,20 +382,25 @@ router
  *       500:
  *         description: 服务器错误
  *   delete:
- *     summary: 删除教育经历
- *     tags: [用户档案]
+ *     summary: 删除指定的教育经历
+ *     tags: [用户档案 - 教育经历]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: educationId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 教育经历的索引
+ *         description: 要删除的教育经历的唯一ID
  *     responses:
  *       200:
  *         description: 成功删除教育经历
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -243,7 +409,7 @@ router
  *         description: 服务器错误
  */
 router
-  .route('/me/educations/:index')
+  .route('/me/educations/:educationId')
   .put(updateEducation)
   .delete(deleteEducation);
 
@@ -252,7 +418,7 @@ router
  * /user-profiles/me/work-experiences:
  *   post:
  *     summary: 添加工作经历
- *     tags: [用户档案]
+ *     tags: [用户档案 - 工作经历]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -260,31 +426,14 @@ router
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               company:
- *                 type: string
- *               position:
- *                 type: string
- *               startDate:
- *                 type: string
- *                 format: date
- *               endDate:
- *                 type: string
- *                 format: date
- *               current:
- *                 type: boolean
- *               description:
- *                 type: string
- *               location:
- *                 type: string
- *               achievements:
- *                 type: array
- *                 items:
- *                   type: string
+ *             $ref: '#/components/schemas/WorkExperience'
  *     responses:
  *       201:
  *         description: 成功添加工作经历
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -298,49 +447,33 @@ router
 
 /**
  * @swagger
- * /user-profiles/me/work-experiences/{index}:
+ * /user-profiles/me/work-experiences/{workExperienceId}:
  *   put:
- *     summary: 更新工作经历
- *     tags: [用户档案]
+ *     summary: 更新指定的工作经历
+ *     tags: [用户档案 - 工作经历]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: workExperienceId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 工作经历的索引
+ *         description: 要更新的工作经历的唯一ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               company:
- *                 type: string
- *               position:
- *                 type: string
- *               startDate:
- *                 type: string
- *                 format: date
- *               endDate:
- *                 type: string
- *                 format: date
- *               current:
- *                 type: boolean
- *               description:
- *                 type: string
- *               location:
- *                 type: string
- *               achievements:
- *                 type: array
- *                 items:
- *                   type: string
+ *             $ref: '#/components/schemas/WorkExperience'
  *     responses:
  *       200:
  *         description: 成功更新工作经历
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -348,20 +481,25 @@ router
  *       500:
  *         description: 服务器错误
  *   delete:
- *     summary: 删除工作经历
- *     tags: [用户档案]
+ *     summary: 删除指定的工作经历
+ *     tags: [用户档案 - 工作经历]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: workExperienceId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 工作经历的索引
+ *         description: 要删除的工作经历的唯一ID
  *     responses:
  *       200:
  *         description: 成功删除工作经历
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -370,7 +508,7 @@ router
  *         description: 服务器错误
  */
 router
-  .route('/me/work-experiences/:index')
+  .route('/me/work-experiences/:workExperienceId')
   .put(updateWorkExperience)
   .delete(deleteWorkExperience);
 
@@ -379,7 +517,7 @@ router
  * /user-profiles/me/skills:
  *   post:
  *     summary: 添加技能
- *     tags: [用户档案]
+ *     tags: [用户档案 - 技能]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -387,21 +525,14 @@ router
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 required: true
- *               level:
- *                 type: string
- *                 enum: ['初级', '中级', '高级', '专家']
- *               endorsements:
- *                 type: integer
- *               category:
- *                 type: string
+ *             $ref: '#/components/schemas/Skill'
  *     responses:
  *       201:
  *         description: 成功添加技能
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -415,38 +546,33 @@ router
 
 /**
  * @swagger
- * /user-profiles/me/skills/{index}:
+ * /user-profiles/me/skills/{skillId}:
  *   put:
- *     summary: 更新技能
- *     tags: [用户档案]
+ *     summary: 更新指定的技能
+ *     tags: [用户档案 - 技能]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: skillId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 技能的索引
+ *         description: 要更新的技能的唯一ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               level:
- *                 type: string
- *                 enum: ['初级', '中级', '高级', '专家']
- *               endorsements:
- *                 type: integer
- *               category:
- *                 type: string
+ *             $ref: '#/components/schemas/Skill'
  *     responses:
  *       200:
  *         description: 成功更新技能
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -454,20 +580,25 @@ router
  *       500:
  *         description: 服务器错误
  *   delete:
- *     summary: 删除技能
- *     tags: [用户档案]
+ *     summary: 删除指定的技能
+ *     tags: [用户档案 - 技能]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: skillId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 技能的索引
+ *         description: 要删除的技能的唯一ID
  *     responses:
  *       200:
  *         description: 成功删除技能
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -476,7 +607,7 @@ router
  *         description: 服务器错误
  */
 router
-  .route('/me/skills/:index')
+  .route('/me/skills/:skillId')
   .put(updateSkill)
   .delete(deleteSkill);
 
@@ -485,7 +616,7 @@ router
  * /user-profiles/me/certifications:
  *   post:
  *     summary: 添加证书
- *     tags: [用户档案]
+ *     tags: [用户档案 - 证书]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -493,26 +624,14 @@ router
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 required: true
- *               issuer:
- *                 type: string
- *               issueDate:
- *                 type: string
- *                 format: date
- *               expirationDate:
- *                 type: string
- *                 format: date
- *               credentialId:
- *                 type: string
- *               credentialUrl:
- *                 type: string
+ *             $ref: '#/components/schemas/Certification'
  *     responses:
  *       201:
  *         description: 成功添加证书
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -526,43 +645,33 @@ router
 
 /**
  * @swagger
- * /user-profiles/me/certifications/{index}:
+ * /user-profiles/me/certifications/{certificationId}:
  *   put:
- *     summary: 更新证书
- *     tags: [用户档案]
+ *     summary: 更新指定的证书
+ *     tags: [用户档案 - 证书]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: certificationId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 证书的索引
+ *         description: 要更新的证书的唯一ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               issuer:
- *                 type: string
- *               issueDate:
- *                 type: string
- *                 format: date
- *               expirationDate:
- *                 type: string
- *                 format: date
- *               credentialId:
- *                 type: string
- *               credentialUrl:
- *                 type: string
+ *             $ref: '#/components/schemas/Certification'
  *     responses:
  *       200:
  *         description: 成功更新证书
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -570,20 +679,25 @@ router
  *       500:
  *         description: 服务器错误
  *   delete:
- *     summary: 删除证书
- *     tags: [用户档案]
+ *     summary: 删除指定的证书
+ *     tags: [用户档案 - 证书]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: certificationId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 证书的索引
+ *         description: 要删除的证书的唯一ID
  *     responses:
  *       200:
  *         description: 成功删除证书
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -592,7 +706,7 @@ router
  *         description: 服务器错误
  */
 router
-  .route('/me/certifications/:index')
+  .route('/me/certifications/:certificationId')
   .put(updateCertification)
   .delete(deleteCertification);
 
@@ -601,7 +715,7 @@ router
  * /user-profiles/me/projects:
  *   post:
  *     summary: 添加项目经历
- *     tags: [用户档案]
+ *     tags: [用户档案 - 项目经历]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -609,28 +723,14 @@ router
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 required: true
- *               description:
- *                 type: string
- *               startDate:
- *                 type: string
- *                 format: date
- *               endDate:
- *                 type: string
- *                 format: date
- *               url:
- *                 type: string
- *               technologies:
- *                 type: array
- *                 items:
- *                   type: string
+ *             $ref: '#/components/schemas/Project'
  *     responses:
  *       201:
  *         description: 成功添加项目经历
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -644,45 +744,33 @@ router
 
 /**
  * @swagger
- * /user-profiles/me/projects/{index}:
+ * /user-profiles/me/projects/{projectId}:
  *   put:
- *     summary: 更新项目经历
- *     tags: [用户档案]
+ *     summary: 更新指定的项目经历
+ *     tags: [用户档案 - 项目经历]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: projectId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 项目经历的索引
+ *         description: 要更新的项目经历的唯一ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               description:
- *                 type: string
- *               startDate:
- *                 type: string
- *                 format: date
- *               endDate:
- *                 type: string
- *                 format: date
- *               url:
- *                 type: string
- *               technologies:
- *                 type: array
- *                 items:
- *                   type: string
+ *             $ref: '#/components/schemas/Project'
  *     responses:
  *       200:
  *         description: 成功更新项目经历
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -690,20 +778,25 @@ router
  *       500:
  *         description: 服务器错误
  *   delete:
- *     summary: 删除项目经历
- *     tags: [用户档案]
+ *     summary: 删除指定的项目经历
+ *     tags: [用户档案 - 项目经历]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: projectId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 项目经历的索引
+ *         description: 要删除的项目经历的唯一ID
  *     responses:
  *       200:
  *         description: 成功删除项目经历
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -712,7 +805,7 @@ router
  *         description: 服务器错误
  */
 router
-  .route('/me/projects/:index')
+  .route('/me/projects/:projectId')
   .put(updateProject)
   .delete(deleteProject);
 
@@ -721,7 +814,7 @@ router
  * /user-profiles/me/languages:
  *   post:
  *     summary: 添加语言能力
- *     tags: [用户档案]
+ *     tags: [用户档案 - 语言能力]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -729,17 +822,14 @@ router
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               language:
- *                 type: string
- *                 required: true
- *               proficiency:
- *                 type: string
- *                 enum: ['初级', '中级', '高级', '母语']
+ *             $ref: '#/components/schemas/Language'
  *     responses:
  *       201:
  *         description: 成功添加语言能力
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -753,34 +843,33 @@ router
 
 /**
  * @swagger
- * /user-profiles/me/languages/{index}:
+ * /user-profiles/me/languages/{languageId}:
  *   put:
- *     summary: 更新语言能力
- *     tags: [用户档案]
+ *     summary: 更新指定的语言能力
+ *     tags: [用户档案 - 语言能力]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: languageId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 语言能力的索引
+ *         description: 要更新的语言能力的唯一ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               language:
- *                 type: string
- *               proficiency:
- *                 type: string
- *                 enum: ['初级', '中级', '高级', '母语']
+ *             $ref: '#/components/schemas/Language'
  *     responses:
  *       200:
  *         description: 成功更新语言能力
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -788,20 +877,25 @@ router
  *       500:
  *         description: 服务器错误
  *   delete:
- *     summary: 删除语言能力
- *     tags: [用户档案]
+ *     summary: 删除指定的语言能力
+ *     tags: [用户档案 - 语言能力]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: languageId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 语言能力的索引
+ *         description: 要删除的语言能力的唯一ID
  *     responses:
  *       200:
  *         description: 成功删除语言能力
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -810,7 +904,7 @@ router
  *         description: 服务器错误
  */
 router
-  .route('/me/languages/:index')
+  .route('/me/languages/:languageId')
   .put(updateLanguage)
   .delete(deleteLanguage);
 
@@ -819,7 +913,7 @@ router
  * /user-profiles/me/volunteer-experiences:
  *   post:
  *     summary: 添加志愿者经历
- *     tags: [用户档案]
+ *     tags: [用户档案 - 志愿者经历]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -827,24 +921,14 @@ router
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               organization:
- *                 type: string
- *                 required: true
- *               role:
- *                 type: string
- *               startDate:
- *                 type: string
- *                 format: date
- *               endDate:
- *                 type: string
- *                 format: date
- *               description:
- *                 type: string
+ *             $ref: '#/components/schemas/VolunteerExperience'
  *     responses:
  *       201:
  *         description: 成功添加志愿者经历
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -858,41 +942,33 @@ router
 
 /**
  * @swagger
- * /user-profiles/me/volunteer-experiences/{index}:
+ * /user-profiles/me/volunteer-experiences/{volunteerExperienceId}:
  *   put:
- *     summary: 更新志愿者经历
- *     tags: [用户档案]
+ *     summary: 更新指定的志愿者经历
+ *     tags: [用户档案 - 志愿者经历]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: volunteerExperienceId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 志愿者经历的索引
+ *         description: 要更新的志愿者经历的唯一ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               organization:
- *                 type: string
- *               role:
- *                 type: string
- *               startDate:
- *                 type: string
- *                 format: date
- *               endDate:
- *                 type: string
- *                 format: date
- *               description:
- *                 type: string
+ *             $ref: '#/components/schemas/VolunteerExperience'
  *     responses:
  *       200:
  *         description: 成功更新志愿者经历
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -900,20 +976,25 @@ router
  *       500:
  *         description: 服务器错误
  *   delete:
- *     summary: 删除志愿者经历
- *     tags: [用户档案]
+ *     summary: 删除指定的志愿者经历
+ *     tags: [用户档案 - 志愿者经历]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: volunteerExperienceId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 志愿者经历的索引
+ *         description: 要删除的志愿者经历的唯一ID
  *     responses:
  *       200:
  *         description: 成功删除志愿者经历
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -922,7 +1003,7 @@ router
  *         description: 服务器错误
  */
 router
-  .route('/me/volunteer-experiences/:index')
+  .route('/me/volunteer-experiences/:volunteerExperienceId')
   .put(updateVolunteerExperience)
   .delete(deleteVolunteerExperience);
 
@@ -931,7 +1012,7 @@ router
  * /user-profiles/me/honors-awards:
  *   post:
  *     summary: 添加荣誉奖项
- *     tags: [用户档案]
+ *     tags: [用户档案 - 荣誉奖项]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -939,21 +1020,14 @@ router
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *                 required: true
- *               issuer:
- *                 type: string
- *               date:
- *                 type: string
- *                 format: date
- *               description:
- *                 type: string
+ *             $ref: '#/components/schemas/HonorAward'
  *     responses:
  *       201:
  *         description: 成功添加荣誉奖项
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -967,38 +1041,33 @@ router
 
 /**
  * @swagger
- * /user-profiles/me/honors-awards/{index}:
+ * /user-profiles/me/honors-awards/{honorAwardId}:
  *   put:
- *     summary: 更新荣誉奖项
- *     tags: [用户档案]
+ *     summary: 更新指定的荣誉奖项
+ *     tags: [用户档案 - 荣誉奖项]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: honorAwardId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 荣誉奖项的索引
+ *         description: 要更新的荣誉奖项的唯一ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *               issuer:
- *                 type: string
- *               date:
- *                 type: string
- *                 format: date
- *               description:
- *                 type: string
+ *             $ref: '#/components/schemas/HonorAward'
  *     responses:
  *       200:
  *         description: 成功更新荣誉奖项
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -1006,20 +1075,25 @@ router
  *       500:
  *         description: 服务器错误
  *   delete:
- *     summary: 删除荣誉奖项
- *     tags: [用户档案]
+ *     summary: 删除指定的荣誉奖项
+ *     tags: [用户档案 - 荣誉奖项]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: honorAwardId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 荣誉奖项的索引
+ *         description: 要删除的荣誉奖项的唯一ID
  *     responses:
  *       200:
  *         description: 成功删除荣誉奖项
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -1028,7 +1102,7 @@ router
  *         description: 服务器错误
  */
 router
-  .route('/me/honors-awards/:index')
+  .route('/me/honors-awards/:honorAwardId')
   .put(updateHonorAward)
   .delete(deleteHonorAward);
 
@@ -1037,7 +1111,7 @@ router
  * /user-profiles/me/recommendations:
  *   post:
  *     summary: 添加推荐信
- *     tags: [用户档案]
+ *     tags: [用户档案 - 推荐信]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -1045,24 +1119,14 @@ router
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               recommenderName:
- *                 type: string
- *                 required: true
- *               recommenderTitle:
- *                 type: string
- *               relationship:
- *                 type: string
- *               content:
- *                 type: string
- *                 required: true
- *               date:
- *                 type: string
- *                 format: date
+ *             $ref: '#/components/schemas/Recommendation'
  *     responses:
  *       201:
  *         description: 成功添加推荐信
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -1076,40 +1140,33 @@ router
 
 /**
  * @swagger
- * /user-profiles/me/recommendations/{index}:
+ * /user-profiles/me/recommendations/{recommendationId}:
  *   put:
- *     summary: 更新推荐信
- *     tags: [用户档案]
+ *     summary: 更新指定的推荐信
+ *     tags: [用户档案 - 推荐信]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: recommendationId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 推荐信的索引
+ *         description: 要更新的推荐信的唯一ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               recommenderName:
- *                 type: string
- *               recommenderTitle:
- *                 type: string
- *               relationship:
- *                 type: string
- *               content:
- *                 type: string
- *               date:
- *                 type: string
- *                 format: date
+ *             $ref: '#/components/schemas/Recommendation'
  *     responses:
  *       200:
  *         description: 成功更新推荐信
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -1117,20 +1174,25 @@ router
  *       500:
  *         description: 服务器错误
  *   delete:
- *     summary: 删除推荐信
- *     tags: [用户档案]
+ *     summary: 删除指定的推荐信
+ *     tags: [用户档案 - 推荐信]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: index
+ *         name: recommendationId
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: objectid
  *         required: true
- *         description: 推荐信的索引
+ *         description: 要删除的推荐信的唯一ID
  *     responses:
  *       200:
  *         description: 成功删除推荐信
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
  *       401:
  *         description: 未授权
  *       404:
@@ -1139,8 +1201,8 @@ router
  *         description: 服务器错误
  */
 router
-  .route('/me/recommendations/:index')
+  .route('/me/recommendations/:recommendationId')
   .put(updateRecommendation)
   .delete(deleteRecommendation);
 
-export default router; 
+export default router;

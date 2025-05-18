@@ -211,7 +211,7 @@ export const addEducation = async (
 
 /**
  * @desc    更新教育经历
- * @route   PUT /api/v1/user-profiles/me/educations/:index
+ * @route   PUT /api/v1/user-profiles/me/educations/:educationId
  * @access  私有
  */
 export const updateEducation = async (
@@ -220,21 +220,21 @@ export const updateEducation = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { educationId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.educations || !userProfile.educations[Number(index)]) {
+    const education = userProfile.educations?.id(educationId);
+
+    if (!education) {
       return next(new AppError('教育经历不存在', 404));
     }
 
-    userProfile.educations[Number(index)] = {
-      ...userProfile.educations[Number(index)],
-      ...req.body
-    };
+    // 更新教育经历的字段
+    Object.assign(education, req.body);
 
     await userProfile.save();
 
@@ -250,7 +250,7 @@ export const updateEducation = async (
 
 /**
  * @desc    删除教育经历
- * @route   DELETE /api/v1/user-profiles/me/educations/:index
+ * @route   DELETE /api/v1/user-profiles/me/educations/:educationId
  * @access  私有
  */
 export const deleteEducation = async (
@@ -259,18 +259,23 @@ export const deleteEducation = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { educationId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.educations || !userProfile.educations[Number(index)]) {
+    const education = userProfile.educations?.id(educationId);
+
+    if (!education) {
       return next(new AppError('教育经历不存在', 404));
     }
 
-    userProfile.educations.splice(Number(index), 1);
+    // @ts-ignore TODO: Mongoose 子文档的 remove() 方法类型可能需要更精确的处理或确认
+    education.remove(); // Mongoose < 6 
+    // For Mongoose 5+ alternative: userProfile.educations.pull({ _id: educationId });
+
     await userProfile.save();
 
     res.status(200).json(createApiResponse(
@@ -316,7 +321,7 @@ export const addWorkExperience = async (
 
 /**
  * @desc    更新工作经历
- * @route   PUT /api/v1/user-profiles/me/work-experiences/:index
+ * @route   PUT /api/v1/user-profiles/me/work-experiences/:workExperienceId
  * @access  私有
  */
 export const updateWorkExperience = async (
@@ -325,21 +330,20 @@ export const updateWorkExperience = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { workExperienceId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.workExperiences || !userProfile.workExperiences[Number(index)]) {
+    const workExperience = userProfile.workExperiences?.id(workExperienceId);
+
+    if (!workExperience) {
       return next(new AppError('工作经历不存在', 404));
     }
 
-    userProfile.workExperiences[Number(index)] = {
-      ...userProfile.workExperiences[Number(index)],
-      ...req.body
-    };
+    Object.assign(workExperience, req.body);
 
     await userProfile.save();
 
@@ -355,7 +359,7 @@ export const updateWorkExperience = async (
 
 /**
  * @desc    删除工作经历
- * @route   DELETE /api/v1/user-profiles/me/work-experiences/:index
+ * @route   DELETE /api/v1/user-profiles/me/work-experiences/:workExperienceId
  * @access  私有
  */
 export const deleteWorkExperience = async (
@@ -364,18 +368,23 @@ export const deleteWorkExperience = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { workExperienceId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.workExperiences || !userProfile.workExperiences[Number(index)]) {
+    const workExperience = userProfile.workExperiences?.id(workExperienceId);
+
+    if (!workExperience) {
       return next(new AppError('工作经历不存在', 404));
     }
 
-    userProfile.workExperiences.splice(Number(index), 1);
+    // @ts-ignore
+    workExperience.remove();
+    // Alternative for Mongoose 5+: userProfile.workExperiences.pull({ _id: workExperienceId });
+
     await userProfile.save();
 
     res.status(200).json(createApiResponse(
@@ -421,7 +430,7 @@ export const addSkill = async (
 
 /**
  * @desc    更新技能
- * @route   PUT /api/v1/user-profiles/me/skills/:index
+ * @route   PUT /api/v1/user-profiles/me/skills/:skillId
  * @access  私有
  */
 export const updateSkill = async (
@@ -430,21 +439,20 @@ export const updateSkill = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { skillId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.skills || !userProfile.skills[Number(index)]) {
+    const skill = userProfile.skills?.id(skillId);
+
+    if (!skill) {
       return next(new AppError('技能不存在', 404));
     }
 
-    userProfile.skills[Number(index)] = {
-      ...userProfile.skills[Number(index)],
-      ...req.body
-    };
+    Object.assign(skill, req.body);
 
     await userProfile.save();
 
@@ -460,7 +468,7 @@ export const updateSkill = async (
 
 /**
  * @desc    删除技能
- * @route   DELETE /api/v1/user-profiles/me/skills/:index
+ * @route   DELETE /api/v1/user-profiles/me/skills/:skillId
  * @access  私有
  */
 export const deleteSkill = async (
@@ -469,18 +477,23 @@ export const deleteSkill = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { skillId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.skills || !userProfile.skills[Number(index)]) {
+    const skill = userProfile.skills?.id(skillId);
+
+    if (!skill) {
       return next(new AppError('技能不存在', 404));
     }
 
-    userProfile.skills.splice(Number(index), 1);
+    // @ts-ignore
+    skill.remove();
+    // Alternative for Mongoose 5+: userProfile.skills.pull({ _id: skillId });
+
     await userProfile.save();
 
     res.status(200).json(createApiResponse(
@@ -526,7 +539,7 @@ export const addCertification = async (
 
 /**
  * @desc    更新证书
- * @route   PUT /api/v1/user-profiles/me/certifications/:index
+ * @route   PUT /api/v1/user-profiles/me/certifications/:certificationId
  * @access  私有
  */
 export const updateCertification = async (
@@ -535,21 +548,20 @@ export const updateCertification = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { certificationId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.certifications || !userProfile.certifications[Number(index)]) {
+    const certification = userProfile.certifications?.id(certificationId);
+
+    if (!certification) {
       return next(new AppError('证书不存在', 404));
     }
 
-    userProfile.certifications[Number(index)] = {
-      ...userProfile.certifications[Number(index)],
-      ...req.body
-    };
+    Object.assign(certification, req.body);
 
     await userProfile.save();
 
@@ -565,7 +577,7 @@ export const updateCertification = async (
 
 /**
  * @desc    删除证书
- * @route   DELETE /api/v1/user-profiles/me/certifications/:index
+ * @route   DELETE /api/v1/user-profiles/me/certifications/:certificationId
  * @access  私有
  */
 export const deleteCertification = async (
@@ -574,18 +586,23 @@ export const deleteCertification = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { certificationId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.certifications || !userProfile.certifications[Number(index)]) {
+    const certification = userProfile.certifications?.id(certificationId);
+
+    if (!certification) {
       return next(new AppError('证书不存在', 404));
     }
 
-    userProfile.certifications.splice(Number(index), 1);
+    // @ts-ignore
+    certification.remove();
+    // Alternative for Mongoose 5+: userProfile.certifications.pull({ _id: certificationId });
+
     await userProfile.save();
 
     res.status(200).json(createApiResponse(
@@ -631,7 +648,7 @@ export const addProject = async (
 
 /**
  * @desc    更新项目经历
- * @route   PUT /api/v1/user-profiles/me/projects/:index
+ * @route   PUT /api/v1/user-profiles/me/projects/:projectId
  * @access  私有
  */
 export const updateProject = async (
@@ -640,21 +657,20 @@ export const updateProject = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { projectId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.projects || !userProfile.projects[Number(index)]) {
+    const project = userProfile.projects?.id(projectId);
+
+    if (!project) {
       return next(new AppError('项目经历不存在', 404));
     }
 
-    userProfile.projects[Number(index)] = {
-      ...userProfile.projects[Number(index)],
-      ...req.body
-    };
+    Object.assign(project, req.body);
 
     await userProfile.save();
 
@@ -670,7 +686,7 @@ export const updateProject = async (
 
 /**
  * @desc    删除项目经历
- * @route   DELETE /api/v1/user-profiles/me/projects/:index
+ * @route   DELETE /api/v1/user-profiles/me/projects/:projectId
  * @access  私有
  */
 export const deleteProject = async (
@@ -679,18 +695,23 @@ export const deleteProject = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { projectId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.projects || !userProfile.projects[Number(index)]) {
+    const project = userProfile.projects?.id(projectId);
+
+    if (!project) {
       return next(new AppError('项目经历不存在', 404));
     }
 
-    userProfile.projects.splice(Number(index), 1);
+    // @ts-ignore
+    project.remove();
+    // Alternative for Mongoose 5+: userProfile.projects.pull({ _id: projectId });
+
     await userProfile.save();
 
     res.status(200).json(createApiResponse(
@@ -736,7 +757,7 @@ export const addLanguage = async (
 
 /**
  * @desc    更新语言能力
- * @route   PUT /api/v1/user-profiles/me/languages/:index
+ * @route   PUT /api/v1/user-profiles/me/languages/:languageId
  * @access  私有
  */
 export const updateLanguage = async (
@@ -745,21 +766,20 @@ export const updateLanguage = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { languageId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.languages || !userProfile.languages[Number(index)]) {
+    const language = userProfile.languages?.id(languageId);
+
+    if (!language) {
       return next(new AppError('语言能力不存在', 404));
     }
 
-    userProfile.languages[Number(index)] = {
-      ...userProfile.languages[Number(index)],
-      ...req.body
-    };
+    Object.assign(language, req.body);
 
     await userProfile.save();
 
@@ -775,7 +795,7 @@ export const updateLanguage = async (
 
 /**
  * @desc    删除语言能力
- * @route   DELETE /api/v1/user-profiles/me/languages/:index
+ * @route   DELETE /api/v1/user-profiles/me/languages/:languageId
  * @access  私有
  */
 export const deleteLanguage = async (
@@ -784,18 +804,23 @@ export const deleteLanguage = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { languageId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.languages || !userProfile.languages[Number(index)]) {
+    const language = userProfile.languages?.id(languageId);
+
+    if (!language) {
       return next(new AppError('语言能力不存在', 404));
     }
 
-    userProfile.languages.splice(Number(index), 1);
+    // @ts-ignore
+    language.remove();
+    // Alternative for Mongoose 5+: userProfile.languages.pull({ _id: languageId });
+
     await userProfile.save();
 
     res.status(200).json(createApiResponse(
@@ -841,7 +866,7 @@ export const addVolunteerExperience = async (
 
 /**
  * @desc    更新志愿者经历
- * @route   PUT /api/v1/user-profiles/me/volunteer-experiences/:index
+ * @route   PUT /api/v1/user-profiles/me/volunteer-experiences/:volunteerExperienceId
  * @access  私有
  */
 export const updateVolunteerExperience = async (
@@ -850,21 +875,20 @@ export const updateVolunteerExperience = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { volunteerExperienceId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.volunteerExperiences || !userProfile.volunteerExperiences[Number(index)]) {
+    const volunteerExperience = userProfile.volunteerExperiences?.id(volunteerExperienceId);
+
+    if (!volunteerExperience) {
       return next(new AppError('志愿者经历不存在', 404));
     }
 
-    userProfile.volunteerExperiences[Number(index)] = {
-      ...userProfile.volunteerExperiences[Number(index)],
-      ...req.body
-    };
+    Object.assign(volunteerExperience, req.body);
 
     await userProfile.save();
 
@@ -880,7 +904,7 @@ export const updateVolunteerExperience = async (
 
 /**
  * @desc    删除志愿者经历
- * @route   DELETE /api/v1/user-profiles/me/volunteer-experiences/:index
+ * @route   DELETE /api/v1/user-profiles/me/volunteer-experiences/:volunteerExperienceId
  * @access  私有
  */
 export const deleteVolunteerExperience = async (
@@ -889,18 +913,23 @@ export const deleteVolunteerExperience = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { volunteerExperienceId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.volunteerExperiences || !userProfile.volunteerExperiences[Number(index)]) {
+    const volunteerExperience = userProfile.volunteerExperiences?.id(volunteerExperienceId);
+
+    if (!volunteerExperience) {
       return next(new AppError('志愿者经历不存在', 404));
     }
 
-    userProfile.volunteerExperiences.splice(Number(index), 1);
+    // @ts-ignore
+    volunteerExperience.remove();
+    // Alternative for Mongoose 5+: userProfile.volunteerExperiences.pull({ _id: volunteerExperienceId });
+
     await userProfile.save();
 
     res.status(200).json(createApiResponse(
@@ -946,7 +975,7 @@ export const addHonorAward = async (
 
 /**
  * @desc    更新荣誉奖项
- * @route   PUT /api/v1/user-profiles/me/honors-awards/:index
+ * @route   PUT /api/v1/user-profiles/me/honors-awards/:honorAwardId
  * @access  私有
  */
 export const updateHonorAward = async (
@@ -955,21 +984,20 @@ export const updateHonorAward = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { honorAwardId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.honorsAwards || !userProfile.honorsAwards[Number(index)]) {
+    const honorAward = userProfile.honorsAwards?.id(honorAwardId);
+
+    if (!honorAward) {
       return next(new AppError('荣誉奖项不存在', 404));
     }
 
-    userProfile.honorsAwards[Number(index)] = {
-      ...userProfile.honorsAwards[Number(index)],
-      ...req.body
-    };
+    Object.assign(honorAward, req.body);
 
     await userProfile.save();
 
@@ -985,7 +1013,7 @@ export const updateHonorAward = async (
 
 /**
  * @desc    删除荣誉奖项
- * @route   DELETE /api/v1/user-profiles/me/honors-awards/:index
+ * @route   DELETE /api/v1/user-profiles/me/honors-awards/:honorAwardId
  * @access  私有
  */
 export const deleteHonorAward = async (
@@ -994,18 +1022,23 @@ export const deleteHonorAward = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { honorAwardId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.honorsAwards || !userProfile.honorsAwards[Number(index)]) {
+    const honorAward = userProfile.honorsAwards?.id(honorAwardId);
+
+    if (!honorAward) {
       return next(new AppError('荣誉奖项不存在', 404));
     }
 
-    userProfile.honorsAwards.splice(Number(index), 1);
+    // @ts-ignore
+    honorAward.remove();
+    // Alternative for Mongoose 5+: userProfile.honorsAwards.pull({ _id: honorAwardId });
+
     await userProfile.save();
 
     res.status(200).json(createApiResponse(
@@ -1051,7 +1084,7 @@ export const addRecommendation = async (
 
 /**
  * @desc    更新推荐信
- * @route   PUT /api/v1/user-profiles/me/recommendations/:index
+ * @route   PUT /api/v1/user-profiles/me/recommendations/:recommendationId
  * @access  私有
  */
 export const updateRecommendation = async (
@@ -1060,21 +1093,20 @@ export const updateRecommendation = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { recommendationId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.recommendations || !userProfile.recommendations[Number(index)]) {
+    const recommendation = userProfile.recommendations?.id(recommendationId);
+
+    if (!recommendation) {
       return next(new AppError('推荐信不存在', 404));
     }
 
-    userProfile.recommendations[Number(index)] = {
-      ...userProfile.recommendations[Number(index)],
-      ...req.body
-    };
+    Object.assign(recommendation, req.body);
 
     await userProfile.save();
 
@@ -1090,7 +1122,7 @@ export const updateRecommendation = async (
 
 /**
  * @desc    删除推荐信
- * @route   DELETE /api/v1/user-profiles/me/recommendations/:index
+ * @route   DELETE /api/v1/user-profiles/me/recommendations/:recommendationId
  * @access  私有
  */
 export const deleteRecommendation = async (
@@ -1099,18 +1131,23 @@ export const deleteRecommendation = async (
   next: NextFunction
 ) => {
   try {
-    const { index } = req.params;
+    const { recommendationId } = req.params;
     const userProfile = await UserProfile.findOne({ userId: req.user?._id });
 
     if (!userProfile) {
       return next(new AppError('用户档案不存在', 404));
     }
 
-    if (!userProfile.recommendations || !userProfile.recommendations[Number(index)]) {
+    const recommendation = userProfile.recommendations?.id(recommendationId);
+
+    if (!recommendation) {
       return next(new AppError('推荐信不存在', 404));
     }
 
-    userProfile.recommendations.splice(Number(index), 1);
+    // @ts-ignore
+    recommendation.remove();
+    // Alternative for Mongoose 5+: userProfile.recommendations.pull({ _id: recommendationId });
+
     await userProfile.save();
 
     res.status(200).json(createApiResponse(

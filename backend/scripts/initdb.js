@@ -9,6 +9,8 @@ const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
 const path = require('path');
 const fs = require('fs');
+const mongoose = require('mongoose');
+const { ObjectId } = require('mongodb');
 
 // 加载环境变量
 dotenv.config({ path: path.join(__dirname, '../.env') });
@@ -451,6 +453,7 @@ async function insertTestData(db) {
         },
         educations: [
           {
+            _id: new ObjectId(),
             institution: "奥克兰大学",
             degree: "硕士",
             field: "计算机科学",
@@ -460,6 +463,7 @@ async function insertTestData(db) {
             location: "奥克兰, 新西兰"
           },
           {
+            _id: new ObjectId(),
             institution: "北京大学",
             degree: "学士",
             field: "软件工程",
@@ -471,6 +475,7 @@ async function insertTestData(db) {
         ],
         workExperiences: [
           {
+            _id: new ObjectId(),
             company: "科技云创有限公司",
             position: "高级前端开发工程师",
             startDate: new Date("2020-03-01"),
@@ -485,6 +490,7 @@ async function insertTestData(db) {
             ]
           },
           {
+            _id: new ObjectId(),
             company: "数字科技有限公司",
             position: "前端开发工程师",
             startDate: new Date("2017-07-01"),
@@ -501,32 +507,37 @@ async function insertTestData(db) {
         ],
         skills: [
           {
+            _id: new ObjectId(),
             name: "React",
-            level: "专家",
+            level: "expert",
             endorsements: 12,
             category: "前端框架"
           },
           {
+            _id: new ObjectId(),
             name: "Vue.js",
-            level: "高级",
+            level: "advanced",
             endorsements: 8,
             category: "前端框架"
           },
           {
+            _id: new ObjectId(),
             name: "JavaScript",
-            level: "专家",
+            level: "expert",
             endorsements: 15,
             category: "编程语言"
           },
           {
+            _id: new ObjectId(),
             name: "TypeScript",
-            level: "高级",
+            level: "advanced",
             endorsements: 10,
             category: "编程语言"
           }
         ],
         certifications: [
           {
+            _id: new ObjectId(),
             name: "AWS认证开发者 - 助理",
             issuer: "Amazon Web Services",
             issueDate: new Date("2019-05-15"),
@@ -537,6 +548,7 @@ async function insertTestData(db) {
         ],
         projects: [
           {
+            _id: new ObjectId(),
             name: "电子商务平台重构",
             description: "使用React和Node.js重构公司的电子商务平台，改善用户体验和性能。",
             startDate: new Date("2019-03-01"),
@@ -547,16 +559,19 @@ async function insertTestData(db) {
         ],
         languages: [
           {
+            _id: new ObjectId(),
             language: "中文",
-            proficiency: "母语"
+            proficiency: "native"
           },
           {
+            _id: new ObjectId(),
             language: "英语",
-            proficiency: "高级"
+            proficiency: "advanced"
           }
         ],
         volunteerExperiences: [
           {
+            _id: new ObjectId(),
             organization: "代码教育协会",
             role: "志愿讲师",
             startDate: new Date("2018-01-01"),
@@ -566,6 +581,7 @@ async function insertTestData(db) {
         ],
         honorsAwards: [
           {
+            _id: new ObjectId(),
             title: "优秀员工奖",
             issuer: "数字科技有限公司",
             date: new Date("2019-12-15"),
@@ -574,6 +590,7 @@ async function insertTestData(db) {
         ],
         recommendations: [
           {
+            _id: new ObjectId(),
             recommenderName: "王经理",
             recommenderTitle: "技术总监",
             relationship: "直属上级",
@@ -600,6 +617,7 @@ async function insertTestData(db) {
         },
         educations: [
           {
+            _id: new ObjectId(),
             institution: "维多利亚大学惠灵顿分校",
             degree: "学士",
             field: "设计学",
@@ -611,6 +629,7 @@ async function insertTestData(db) {
         ],
         workExperiences: [
           {
+            _id: new ObjectId(),
             company: "新创数字科技",
             position: "UI/UX设计师",
             startDate: new Date("2018-07-01"),
@@ -627,20 +646,23 @@ async function insertTestData(db) {
         ],
         skills: [
           {
+            _id: new ObjectId(),
             name: "Figma",
-            level: "专家",
+            level: "expert",
             endorsements: 10,
             category: "设计工具"
           },
           {
+            _id: new ObjectId(),
             name: "Adobe Photoshop",
-            level: "高级",
+            level: "advanced",
             endorsements: 8,
             category: "设计工具"
           },
           {
+            _id: new ObjectId(),
             name: "用户研究",
-            level: "中级",
+            level: "intermediate",
             endorsements: 5,
             category: "软技能"
           }

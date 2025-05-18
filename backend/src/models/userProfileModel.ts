@@ -97,7 +97,7 @@ const socialMediaSchema = new Schema({
   github: String,
   twitter: String,
   other: [{ name: String, url: String }]
-}, { _id: false });
+});
 
 // 联系信息Schema
 const contactInfoSchema = new Schema({
@@ -106,7 +106,7 @@ const contactInfoSchema = new Schema({
   website: String,
   address: String,
   socialMedia: socialMediaSchema
-}, { _id: false });
+});
 
 // 教育经历Schema
 const educationSchema = new Schema({
@@ -117,7 +117,7 @@ const educationSchema = new Schema({
   endDate: Date,
   description: String,
   location: String
-}, { _id: false });
+});
 
 // 工作经历Schema
 const workExperienceSchema = new Schema({
@@ -129,19 +129,19 @@ const workExperienceSchema = new Schema({
   description: String,
   location: String,
   achievements: [String]
-}, { _id: false });
+});
 
 // 技能Schema
 const skillSchema = new Schema({
   name: { type: String, required: true },
   level: {
     type: String,
-    enum: ['初级', '中级', '高级', '专家'],
-    default: '中级'
+    enum: ['beginner', 'intermediate', 'advanced', 'expert'],
+    default: 'beginner'
   },
   endorsements: { type: Number, default: 0 },
   category: String
-}, { _id: false });
+});
 
 // 证书Schema
 const certificationSchema = new Schema({
@@ -151,7 +151,7 @@ const certificationSchema = new Schema({
   expirationDate: Date,
   credentialId: String,
   credentialUrl: String
-}, { _id: false });
+});
 
 // 项目经历Schema
 const projectSchema = new Schema({
@@ -161,17 +161,17 @@ const projectSchema = new Schema({
   endDate: Date,
   url: String,
   technologies: [String]
-}, { _id: false });
+});
 
 // 语言能力Schema
 const languageSchema = new Schema({
   language: { type: String, required: true },
   proficiency: {
     type: String,
-    enum: ['初级', '中级', '高级', '母语'],
-    default: '中级'
+    enum: ['beginner', 'intermediate', 'advanced', 'native'],
+    default: 'beginner'
   }
-}, { _id: false });
+});
 
 // 志愿者经历Schema
 const volunteerExperienceSchema = new Schema({
@@ -180,7 +180,7 @@ const volunteerExperienceSchema = new Schema({
   startDate: Date,
   endDate: Date,
   description: String
-}, { _id: false });
+});
 
 // 荣誉与奖项Schema
 const honorAwardSchema = new Schema({
@@ -188,7 +188,7 @@ const honorAwardSchema = new Schema({
   issuer: String,
   date: Date,
   description: String
-}, { _id: false });
+});
 
 // 推荐信Schema
 const recommendationSchema = new Schema({
@@ -197,7 +197,7 @@ const recommendationSchema = new Schema({
   relationship: String,
   content: { type: String, required: true },
   date: Date
-}, { _id: false });
+});
 
 // 用户档案Schema
 const userProfileSchema = new Schema<IUserProfile>(
