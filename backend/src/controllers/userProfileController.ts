@@ -61,17 +61,12 @@ export const createUserProfile = async (
     
     const { firstName, lastName, ...profileData } = req.body;
     
-    // 创建新用户档案
+    // 创建新用户档案 - 不需要显式设置初始完整度为0，模型默认值已设置
+    // profileCompleteness将在模型的pre-save钩子中自动计算
     const newUserProfile = await UserProfile.create({
       userId: req.user?._id,
-      ...profileData,
-      profileCompleteness: 0  // 初始完整度为0
+      ...profileData
     });
-
-    // 计算更新后的档案完整度
-    const profileCompleteness = calculateProfileCompleteness(newUserProfile);
-    newUserProfile.profileCompleteness = profileCompleteness;
-    await newUserProfile.save();
 
     res.status(201).json(createApiResponse(
       201,
@@ -109,18 +104,14 @@ export const updateUserProfile = async (
     // 不允许更改userId字段
     const { userId, ...updateData } = req.body;
 
+    // 使用模型内置的验证，通过runValidators确保数据符合Schema定义
     const updatedProfile = await UserProfile.findByIdAndUpdate(
       userProfile._id,
       updateData,
       { new: true, runValidators: true }
     );
 
-    // 计算更新后的档案完整度
-    if (updatedProfile) {
-      const profileCompleteness = calculateProfileCompleteness(updatedProfile);
-      updatedProfile.profileCompleteness = profileCompleteness;
-      await updatedProfile.save();
-    }
+    // 不需要手动计算profileCompleteness，模型的pre-save钩子已经处理了
 
     res.status(200).json(createApiResponse(
       200,
@@ -133,14 +124,14 @@ export const updateUserProfile = async (
 };
 
 // 添加档案完整度计算函数
-const calculateProfileCompleteness = (profile: Document) => {
+const calculateProfileCompleteness = (profile: any) => {
   if (!profile) return 0;
   
   let completedSections = 0;
-  let totalSections = 8; // 基本信息、教育、工作、技能、证书、项目、语言、荣誉奖项
+  let totalSections = 8; // 基本信息、联系方式、教育、工作、技能、证书、项目、语言
   
   // 基本信息（标题、简介）
-  if (profile.headline && profile.biography) completedSections++;
+  if (profile.headline || profile.biography) completedSections++;
   
   // 联系信息
   if (profile.contactInfo && (profile.contactInfo.email || profile.contactInfo.phone)) completedSections++;
@@ -152,9 +143,10 @@ const calculateProfileCompleteness = (profile: Document) => {
   if (profile.certifications && profile.certifications.length > 0) completedSections++;
   if (profile.projects && profile.projects.length > 0) completedSections++;
   if (profile.languages && profile.languages.length > 0) completedSections++;
-  if (profile.honorsAwards && profile.honorsAwards.length > 0) completedSections++;
   
-  return Math.round((completedSections / totalSections) * 100);
+  // 确保最终值不超过100
+  const calculatedValue = Math.round((completedSections / totalSections) * 100);
+  return Math.min(calculatedValue, 100);
 };
 
 /**

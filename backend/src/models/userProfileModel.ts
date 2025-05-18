@@ -255,13 +255,13 @@ userProfileSchema.index({ createdAt: 1 });
 userProfileSchema.pre('save', function(next) {
   // 计算档案完整度的逻辑
   let completedSections = 0;
-  let totalSections = 8; // 基本信息、教育、工作、技能、证书、项目、语言、推荐
+  let totalSections = 8; // 基本信息、联系信息、教育、工作、技能、证书、项目、语言
 
   // 基本信息
   if (this.headline || this.biography) completedSections++;
   
   // 联系信息
-  if (this.contactInfo && Object.keys(this.contactInfo).length > 0) completedSections++;
+  if (this.contactInfo && (this.contactInfo.email || this.contactInfo.phone)) completedSections++;
   
   // 教育经历
   if (this.educations && this.educations.length > 0) completedSections++;
@@ -281,7 +281,10 @@ userProfileSchema.pre('save', function(next) {
   // 语言能力
   if (this.languages && this.languages.length > 0) completedSections++;
 
-  this.profileCompleteness = Math.round((completedSections / totalSections) * 100);
+  // 确保最终值不超过100
+  const calculatedValue = Math.round((completedSections / totalSections) * 100);
+  this.profileCompleteness = Math.min(calculatedValue, 100);
+  
   this.lastUpdated = new Date();
   
   next();

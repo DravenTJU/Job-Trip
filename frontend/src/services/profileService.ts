@@ -145,7 +145,7 @@ const calculateProfileCompleteness = (profile: UserProfile): number => {
   if (!profile) return 0;
 
   const sections = [
-    !!profile.headline && !!profile.biography, // 基本信息
+    !!profile.headline || !!profile.biography, // 基本信息
     !!profile.contactInfo?.email || !!profile.contactInfo?.phone, // 联系方式
     profile.educations?.length > 0, // 教育经历
     profile.workExperiences?.length > 0, // 工作经历
@@ -153,13 +153,14 @@ const calculateProfileCompleteness = (profile: UserProfile): number => {
     profile.certifications?.length > 0, // 证书
     profile.projects?.length > 0, // 项目经历
     profile.languages?.length > 0, // 语言能力
-    profile.volunteerExperiences?.length > 0, // 志愿者经历
-    profile.honorsAwards?.length > 0, // 荣誉奖项
-    profile.recommendations?.length > 0, // 推荐信
   ];
 
   const completedSections = sections.filter(Boolean).length;
-  return Math.round((completedSections / sections.length) * 100);
+  const totalSections = sections.length;
+  
+  // 确保最终值不超过100
+  const calculatedValue = Math.round((completedSections / totalSections) * 100);
+  return Math.min(calculatedValue, 100);
 };
 
 export default {
