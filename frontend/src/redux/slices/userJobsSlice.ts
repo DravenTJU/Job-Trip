@@ -139,7 +139,15 @@ const userJobsSlice = createSlice({
       .addCase(fetchUserJobs.fulfilled, (state, action) => {
         state.isLoading = false;
         state.userJobs = action.payload.data;
-        state.pagination = action.payload.pagination;
+        
+        // 从PaginatedResponse中正确提取分页信息
+        state.pagination = {
+          total: action.payload.total,
+          page: action.payload.page, 
+          limit: action.payload.size,
+          pages: action.payload.totalPages
+        };
+        
         state.error = null;
       })
       .addCase(fetchUserJobs.rejected, (state, action) => {
@@ -184,13 +192,20 @@ const userJobsSlice = createSlice({
       })
       .addCase(updateUserJob.fulfilled, (state, action) => {
         state.isLoading = false;
+        
+        // 直接替换整个对象以确保引用变化，触发React重新渲染
         state.userJobs = state.userJobs.map(userJob => 
           userJob._id === action.payload._id ? action.payload : userJob
         );
+        
         if (state.userJob && state.userJob._id === action.payload._id) {
           state.userJob = action.payload;
         }
+        
         state.error = null;
+        
+        // 记录更新状态，便于调试
+        console.log('Redux state updated after userJob update:', action.payload._id);
       })
       .addCase(updateUserJob.rejected, (state, action) => {
         state.isLoading = false;

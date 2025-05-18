@@ -74,6 +74,7 @@ const DashboardPage: React.FC = () => {
   // 将API数据转换为本地格式
   useEffect(() => {
     if (userJobs.length > 0) {
+      console.log('同步 Redux userJobs 到本地状态');
       const newJobs: JobStateMap = {
         [JobStatus.NEW]: [],
         [JobStatus.NOT_INTERESTED]: [],
@@ -117,7 +118,7 @@ const DashboardPage: React.FC = () => {
         } else {
           // 默认放入待申请列表
           console.log('职位状态未匹配，放入待申请列表', userJob.status);
-          newJobs[JobStatus.NEW].push(dashboardJob);
+          newJobs[JobStatus.PENDING].push(dashboardJob);
         }
         
         // 如果状态是面试中，且有面试日期，添加到面试列表
@@ -149,11 +150,31 @@ const DashboardPage: React.FC = () => {
         }
       });
       
-      setJobs(newJobs);
-      setInterviews(newInterviews);
-      setTodos(newTodos);
+      // 使用函数式更新来确保状态更新的原子性
+      setJobs(prevJobs => {
+        // 仅当新旧状态实际不同时才更新
+        if (JSON.stringify(prevJobs) !== JSON.stringify(newJobs)) {
+          console.log('本地状态已更新');
+          return newJobs;
+        }
+        return prevJobs;
+      });
+      
+      setInterviews(prevInterviews => {
+        if (JSON.stringify(prevInterviews) !== JSON.stringify(newInterviews)) {
+          return newInterviews;
+        }
+        return prevInterviews;
+      });
+      
+      setTodos(prevTodos => {
+        if (JSON.stringify(prevTodos) !== JSON.stringify(newTodos)) {
+          return newTodos;
+        }
+        return prevTodos;
+      });
     }
-  }, [userJobs]);
+  }, [userJobs]); // 只依赖userJobs，确保Redux数据变化时能正确同步
 
   // 添加任务处理函数
   const addTodoForJob = async (jobId: string, task: string) => {
@@ -313,6 +334,9 @@ const DashboardPage: React.FC = () => {
       offerDate: status === JobStatus.OFFER ? new Date().toISOString().split('T')[0] : item.offerDate
     };
 
+    // 保存操作前的状态（用于回滚）
+    const prevJobs = { ...jobs };
+
     // 乐观更新本地状态
     const newJobs = {
       ...jobs,
@@ -321,6 +345,42 @@ const DashboardPage: React.FC = () => {
     };
     setJobs(newJobs);
 
+    // 处理面试相关的前端状态更新
+    let prevInterviews = [...interviews];
+    if (status === JobStatus.INTERVIEWING) {
+      // 检查是否已经存在这个职位的面试记录
+      const existingInterviewIndex = interviews.findIndex(interview => interview.jobId === item.id);
+      
+      if (existingInterviewIndex === -1) {
+        // 如果不存在面试记录，创建新的
+        const newInterview: Interview = {
+          id: Date.now().toString(),
+          jobId: item.id,
+          company: item.company,
+          position: item.title,
+          time: '待安排',
+          duration: '待安排',
+          round: '初始面试',
+          status: 'confirmed'
+        };
+        setInterviews(prev => [...prev, newInterview]);
+      } else {
+        // 如果存在面试记录，重新启用它
+        setInterviews(prev => prev.map((interview, index) => 
+          index === existingInterviewIndex
+            ? { ...interview, status: 'confirmed' }
+            : interview
+        ));
+      }
+    } else if (sourceStatus === JobStatus.INTERVIEWING) {
+      // 如果从面试中状态移出，标记面试记录为待确认而不是删除
+      setInterviews(prev => prev.map(interview => 
+        interview.jobId === item.id
+          ? { ...interview, status: 'pending' }
+          : interview
+      ));
+    }
+
     // 调用API更新职位状态
     try {
       await dispatch(updateUserJob({
@@ -328,44 +388,18 @@ const DashboardPage: React.FC = () => {
         data: { status }
       }));
       
-      // 处理面试相关的逻辑
-      if (status === JobStatus.INTERVIEWING) {
-        // 检查是否已经存在这个职位的面试记录
-        const existingInterviewIndex = interviews.findIndex(interview => interview.jobId === item.id);
-        
-        if (existingInterviewIndex === -1) {
-          // 如果不存在面试记录，创建新的
-          const newInterview: Interview = {
-            id: Date.now().toString(),
-            jobId: item.id,
-            company: item.company,
-            position: item.title,
-            time: '待安排',
-            duration: '待安排',
-            round: '初始面试',
-            status: 'confirmed'
-          };
-          setInterviews(prev => [...prev, newInterview]);
-        } else {
-          // 如果存在面试记录，重新启用它
-          setInterviews(prev => prev.map((interview, index) => 
-            index === existingInterviewIndex
-              ? { ...interview, status: 'confirmed' }
-              : interview
-          ));
-        }
-      } else if (sourceStatus === JobStatus.INTERVIEWING) {
-        // 如果从面试中状态移出，标记面试记录为待确认而不是删除
-        setInterviews(prev => prev.map(interview => 
-          interview.jobId === item.id
-            ? { ...interview, status: 'pending' }
-            : interview
-        ));
-      }
+      // 后端更新成功，显示成功通知
+      showToast('success', `${item.title} ${t(`jobs:move_to`, '移动到')} ${t(`jobs:status.${status}`)}`);
+      console.log('职位状态更新成功:', item.title, sourceStatus, '->', status);
     } catch (error) {
       console.error('更新职位状态失败:', error);
-      // 恢复原状态
-      setJobs(jobs);
+      
+      // 后端更新失败，回滚本地状态
+      setJobs(prevJobs);
+      setInterviews(prevInterviews);
+      
+      // 显示错误通知
+      showToast('error', '更新职位状态失败，请重试');
     }
   };
 
