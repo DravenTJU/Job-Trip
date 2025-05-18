@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { fetchUserJobs, updateUserJob, fetchStatusStats } from '@/redux/slices/userJobsSlice';
 import { JobStatus, UserJob } from '@/types';
+import Toast, { ToastType } from '@/components/common/Toast';
 
 // 接口以适配DroppableColumn和DraggableJobCard组件
 interface DashboardJob {
@@ -108,6 +109,13 @@ const DashboardPage: React.FC = () => {
 
   // 添加待处理任务状态
   const [todos, setTodos] = useState<Array<{id: string; jobId: string; task: string; completed: boolean}>>([]);
+
+  // Toast通知状态
+  const [toast, setToast] = useState<{ type: ToastType; message: string; visible: boolean }>({
+    type: 'info',
+    message: '',
+    visible: false
+  });
 
   // 加载用户职位数据
   useEffect(() => {
@@ -326,6 +334,13 @@ const DashboardPage: React.FC = () => {
     return `${rate}%`;
   };
 
+  // 显示Toast通知
+  const showToast = (type: ToastType, message: string) => {
+    setToast({ type, message, visible: true });
+    // 5秒后自动关闭
+    setTimeout(() => setToast(prev => ({ ...prev, visible: false })), 5000);
+  };
+
   // 处理拖拽（更新职位状态）
   const handleDrop = async (status: JobStatus, item: DashboardJob) => {
     // 找到当前拖动的职位所在的状态
@@ -501,6 +516,16 @@ const DashboardPage: React.FC = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <CustomDragLayer />
+      
+      {/* Toast通知 */}
+      {toast.visible && (
+        <Toast
+          type={toast.type}
+          message={toast.message}
+          onClose={() => setToast(prev => ({ ...prev, visible: false }))}
+        />
+      )}
+      
       <div className="container-lg">
         <div className="section">
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">{t('dashboard:job_tracking', '职位追踪')}</h1>
