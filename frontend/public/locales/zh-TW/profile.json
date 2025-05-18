@@ -1,4 +1,6 @@
 {
+  "title": "個人檔案",
+  "subtitle": "查看和管理您的個人檔案",
   "profile_not_created": "檔案未創建",
   "complete_profile_prompt": "請完善您的個人檔案以提高求職匹配度",
   "recommendations_coming_soon": "推薦功能即將上線",

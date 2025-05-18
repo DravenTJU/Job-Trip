@@ -1,4 +1,6 @@
 {
+  "title": "Profile",
+  "subtitle": "View and manage your profile",
   "profile_not_created": "Profile not created",
   "complete_profile_prompt": "Please complete your profile to improve job matching",
   "recommendations_coming_soon": "Recommendations Coming Soon",

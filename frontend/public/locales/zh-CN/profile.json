@@ -1,4 +1,6 @@
 {
+  "title": "个人档案",
+  "subtitle": "查看和管理您的个人档案",
   "profile_not_created": "档案未创建",
   "complete_profile_prompt": "请完善您的个人档案以提高求职匹配度",
   "recommendations_coming_soon": "推荐功能即将上线",
