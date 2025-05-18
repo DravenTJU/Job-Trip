@@ -305,23 +305,24 @@ const DashboardPage: React.FC = () => {
     }
   };
 
+  // 总申请数
+  const totalApplications = [JobStatus.PENDING, JobStatus.APPLIED, JobStatus.INTERVIEWING, JobStatus.OFFER].reduce((sum, status) => sum + jobs[status].length, 0);
+
   // 计算面试转化率
   const calculateInterviewRate = () => {
-    const totalJobs = Object.values(jobs).reduce((sum, jobList) => sum + jobList.length, 0);
-    if (totalJobs === 0) return '0%';
+    if (totalApplications === 0) return '0%';
     
     const interviewingCount = jobs[JobStatus.INTERVIEWING].length + jobs[JobStatus.OFFER].length;
-    const rate = Math.round((interviewingCount / totalJobs) * 100);
+    const rate = Math.round((interviewingCount / totalApplications) * 100);
     return `${rate}%`;
   };
 
   // 计算录用率
   const calculateHireRate = () => {
-    const totalJobs = Object.values(jobs).reduce((sum, jobList) => sum + jobList.length, 0);
-    if (totalJobs === 0) return '0%';
+    if (totalApplications === 0) return '0%';
     
     const hiredCount = jobs[JobStatus.OFFER].length;
-    const rate = Math.round((hiredCount / totalJobs) * 100);
+    const rate = Math.round((hiredCount / totalApplications) * 100);
     return `${rate}%`;
   };
 
@@ -524,7 +525,7 @@ const DashboardPage: React.FC = () => {
               </div>
               <div className="ml-4">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  {[JobStatus.PENDING, JobStatus.APPLIED, JobStatus.INTERVIEWING, JobStatus.OFFER].reduce((sum, status) => sum + jobs[status].length, 0)}
+                  {totalApplications}
                 </h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400">{t('dashboard:total_applications', '总申请数')}</p>
               </div>
@@ -539,7 +540,7 @@ const DashboardPage: React.FC = () => {
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                   {jobs[JobStatus.INTERVIEWING].length}
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{t('dashboard:weekly_interviews', '本周面试')}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{t('dashboard:interviews_count', '进行中的面试')}</p>
               </div>
             </div>
           </div>
@@ -620,7 +621,7 @@ const DashboardPage: React.FC = () => {
         {!isLoading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <DroppableColumn
-              title={t('dashboard:to_apply', '想要申请')}
+              title={t('dashboard:to_apply', '待申请')}
               count={filterJobs(jobs[JobStatus.PENDING]).length}
               jobs={filterJobs(jobs[JobStatus.PENDING])}
               onDrop={(item) => handleDrop(JobStatus.PENDING, item as DashboardJob)}
