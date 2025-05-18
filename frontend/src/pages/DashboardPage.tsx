@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { DndProvider, useDragLayer } from 'react-dnd';
+import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { BriefcaseIcon, Search, BellIcon, CalendarIcon, Plus, X, TrendingUpIcon, AwardIcon } from 'lucide-react';
 import DroppableColumn, { Interview } from '@/components/dashboard/DroppableColumn';
+import JobDragLayer from '@/components/dashboard/JobDragLayer';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,59 +27,6 @@ interface DashboardJob {
 // 类型安全的状态映射
 type JobStateMap = {
   [key in JobStatus]: DashboardJob[];
-};
-
-// 自定义拖拽层组件
-const CustomDragLayer: React.FC = () => {
-  const { isDragging, item, currentOffset } = useDragLayer((monitor) => ({
-    item: monitor.getItem(),
-    currentOffset: monitor.getSourceClientOffset(),
-    isDragging: monitor.isDragging(),
-  }));
-
-  if (!isDragging || !currentOffset) {
-    return null;
-  }
-
-  return (
-    <div
-      style={{
-        position: 'fixed',
-        pointerEvents: 'none',
-        zIndex: 100,
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%'
-      }}
-    >
-      <div
-        style={{
-          position: 'absolute',
-          left: currentOffset.x,
-          top: currentOffset.y,
-          transform: 'rotate(-2deg)',
-          opacity: 0.8
-        }}
-        className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 p-4 w-[300px]"
-      >
-        <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="font-medium text-gray-900 dark:text-white">{item.title}</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{item.company}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 text-sm">
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-              {item.type}
-            </span>
-            <span className="text-gray-700 dark:text-gray-300">{item.salary}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 };
 
 /**
@@ -515,7 +463,7 @@ const DashboardPage: React.FC = () => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <CustomDragLayer />
+      <JobDragLayer />
       
       {/* Toast通知 */}
       {toast.visible && (

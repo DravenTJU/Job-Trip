@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useDrag } from 'react-dnd';
+import React, { useState, useEffect } from 'react';
+import { useDrag, DragPreviewImage } from 'react-dnd';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 import { CalendarIcon, MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import { Interview } from './DroppableColumn';
 
@@ -14,13 +15,18 @@ const DraggableJobCard = <T extends { id: string; title: string; company: string
   const { id, title, company, type, salary, interview, onEdit, onDelete } = props;
   const [showActions, setShowActions] = useState(false);
 
-  const [{ isDragging }, drag] = useDrag<T, void, { isDragging: boolean }>({
+  const [{ isDragging }, drag, preview] = useDrag<T, void, { isDragging: boolean }>({
     type: 'job',
     item: { ...props } as any,
     collect: (monitor) => ({
       isDragging: monitor.isDragging()
     })
   });
+
+  // 使用空图像作为拖拽预览，禁用浏览器默认预览
+  useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true });
+  }, [preview]);
 
   return (
     <div
