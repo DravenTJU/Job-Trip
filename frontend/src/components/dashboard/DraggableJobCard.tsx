@@ -26,7 +26,9 @@ const DraggableJobCard = <T extends { id: string; title: string; company: string
     <div
       ref={drag as any}
       className={`bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:shadow-lg transition-all duration-200 p-4 cursor-move relative ${
-        isDragging ? 'opacity-50' : 'opacity-100'
+        isDragging 
+          ? 'opacity-40 shadow-none transform rotate-2 ring-indigo-500 dark:ring-indigo-400 scale-95' 
+          : 'opacity-100'
       }`}
     >
       <div className="flex flex-col gap-2">

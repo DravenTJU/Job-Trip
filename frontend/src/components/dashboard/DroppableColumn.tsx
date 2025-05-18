@@ -71,13 +71,21 @@ export const DroppableColumn = <T extends { id: string; title: string; company: 
   return (
     <div
       ref={drop as any}
-      className={`flex flex-col gap-4 p-4 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 min-h-[200px] ${
-        isOver ? 'border-2 border-blue-500' : 'border-2 border-transparent'
+      className={`flex flex-col gap-4 p-4 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ${
+        isOver 
+          ? 'ring-indigo-500 dark:ring-indigo-400 border-2 border-indigo-500 dark:border-indigo-400 shadow-lg transform scale-[1.02] transition-all duration-200' 
+          : 'ring-gray-900/5 dark:ring-gray-100/5 border-2 border-transparent transition-all duration-200'
       }`}
     >
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{title}</h3>
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+        <h3 className={`text-lg font-medium ${isOver ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-900 dark:text-gray-100'}`}>
+          {title}
+        </h3>
+        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium ${
+          isOver 
+            ? 'bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400' 
+            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+        }`}>
           {count}
         </span>
       </div>
