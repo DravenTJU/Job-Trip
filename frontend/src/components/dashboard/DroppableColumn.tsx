@@ -44,6 +44,7 @@ export const DroppableColumn = <T extends { id: string; title: string; company: 
   onToggleTodo,
   onDeleteTodo
 }: DroppableColumnProps<T>) => {
+  console.log(`[DroppableColumn "${title}"] Render. Jobs count: ${jobs.length}. Job IDs: ${jobs.map(j => j.id).join(', ')}`);
   const [{ isOver }, drop] = useDrop<T, void, { isOver: boolean }>({
     accept: 'job',
     drop: (item) => {

@@ -56,14 +56,33 @@ export const createUserJob = createAsyncThunk(
   }
 );
 
-export const updateUserJob = createAsyncThunk(
+export const updateUserJob = createAsyncThunk<
+  UserJob,
+  { id: string; data: Partial<CreateUserJobData> },
+  { rejectValue: string }
+>(
   'userJobs/updateUserJob',
-  async ({ id, data }: { id: string, data: Partial<CreateUserJobData> }, { rejectWithValue }) => {
+  async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await userJobService.updateUserJob(id, data);
-      return response;
-    } catch (error) {
-      return rejectWithValue((error as Error).message);
+      // Assert to unknown first, then to the expected runtime structure
+      const response = await userJobService.updateUserJob(id, data) as unknown as 
+        { success: boolean; data: UserJob; message?: string };
+      
+      console.log('[userJobsSlice/updateUserJob thunk] 服务响应 (运行时结构):', JSON.stringify(response, null, 2));
+      
+      if (response && response.success && response.data && response.data._id) {
+        return response.data;
+      } else {
+        const errorMessage = response?.message || '更新用户职位失败：类型断言后，服务器指示失败或响应结构异常。';
+        console.error('[userJobsSlice/updateUserJob thunk] 错误:', errorMessage, '完整响应:', response);
+        return rejectWithValue(errorMessage);
+      }
+    } catch (error: any) {
+      console.error('[userJobsSlice/updateUserJob thunk] 服务调用期间发生异常:', error);
+      if (isApiError(error)) {
+        return rejectWithValue(error.message || '更新过程中发生API错误。');
+      }
+      return rejectWithValue((error as Error).message || '更新过程中发生未知错误。');
     }
   }
 );
@@ -190,22 +209,68 @@ const userJobsSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(updateUserJob.fulfilled, (state, action) => {
+      .addCase(updateUserJob.fulfilled, (state, action: PayloadAction<UserJob>) => {
         state.isLoading = false;
         
-        // 直接替换整个对象以确保引用变化，触发React重新渲染
-        state.userJobs = state.userJobs.map(userJob => 
-          userJob._id === action.payload._id ? action.payload : userJob
-        );
+        const updatedJobFromApi = action.payload;
+        const targetId = updatedJobFromApi?._id;
         
-        if (state.userJob && state.userJob._id === action.payload._id) {
-          state.userJob = action.payload;
+        console.log('[userJobsSlice/updateUserJob.fulfilled] 收到 action.payload (来自API的UserJob):', JSON.stringify(updatedJobFromApi, null, 2));
+        console.log('[userJobsSlice/updateUserJob.fulfilled] 用于匹配的载荷ID:', targetId);
+
+        if (targetId) {
+          const jobIndex = state.userJobs.findIndex(job => job._id === targetId);
+          if (jobIndex !== -1) {
+            const existingUserJob = state.userJobs[jobIndex];
+            
+            const newStoredUserJob = {
+              ...existingUserJob,      // 从现有职位开始，以保留已填充的字段
+              ...updatedJobFromApi,    // 使用API的更改覆盖 (状态, updatedAt等)
+            };
+
+            // 如果API的jobId是字符串且现有的是对象，则保留现有的已填充对象。
+            if (typeof updatedJobFromApi.jobId === 'string' && 
+                typeof existingUserJob.jobId === 'object' && 
+                existingUserJob.jobId !== null) {
+              newStoredUserJob.jobId = existingUserJob.jobId;
+            } else {
+              // 否则，采用API响应中的jobId
+              // (如果API更改，它可能是一个已填充的对象，或者为null，或者已经是字符串)
+              newStoredUserJob.jobId = updatedJobFromApi.jobId;
+            }
+            
+            state.userJobs[jobIndex] = newStoredUserJob;
+            console.log('[userJobsSlice/updateUserJob.fulfilled] 更新了列表中的userJob:', targetId, JSON.stringify(newStoredUserJob, null, 2));
+          } else {
+            console.warn('[userJobsSlice/updateUserJob.fulfilled] 未在 state.userJobs 中找到ID为', targetId, '的职位进行更新。');
+            // 后备: 如果在列表中未找到 (如果列表是全面的，则不应发生)，则添加它或作为错误处理
+            // 目前，如果它不存在，我们可以考虑添加它，尽管通常更新意味着存在。
+            // state.userJobs.push(updatedJobFromApi); // 或其他一些逻辑
+          }
+          
+          // 如果已加载且ID匹配，则同时更新单个 userJob
+          if (state.userJob && state.userJob._id === targetId) {
+            const existingSingleUserJob = state.userJob;
+            const newSingleStoredUserJob = {
+              ...existingSingleUserJob,
+              ...updatedJobFromApi,
+            };
+
+            if (typeof updatedJobFromApi.jobId === 'string' && 
+                typeof existingSingleUserJob.jobId === 'object' && 
+                existingSingleUserJob.jobId !== null) {
+              newSingleStoredUserJob.jobId = existingSingleUserJob.jobId;
+            } else {
+              newSingleStoredUserJob.jobId = updatedJobFromApi.jobId;
+            }
+            state.userJob = newSingleStoredUserJob;
+            console.log('[userJobsSlice/updateUserJob.fulfilled] 更新了 state.userJob:', targetId, JSON.stringify(newSingleStoredUserJob, null, 2));
+          }
+        } else {
+          console.error('[userJobsSlice/updateUserJob.fulfilled] 错误: action.payload 中缺少 _id。状态未更新。', updatedJobFromApi);
         }
         
         state.error = null;
-        
-        // 记录更新状态，便于调试
-        console.log('Redux state updated after userJob update:', action.payload._id);
       })
       .addCase(updateUserJob.rejected, (state, action) => {
         state.isLoading = false;

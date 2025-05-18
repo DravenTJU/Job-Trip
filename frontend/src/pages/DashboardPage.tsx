@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { BriefcaseIcon, Search, BellIcon, CalendarIcon, Plus, X, TrendingUpIcon, AwardIcon } from 'lucide-react';
@@ -41,6 +41,7 @@ const DashboardPage: React.FC = () => {
   
   // Redux状态
   const { userJobs, isLoading, error, stats } = useSelector((state: RootState) => state.userJobs);
+  const prevUserJobsRef = useRef<UserJob[] | undefined>(undefined); // 用于跟踪 userJobs 的先前引用
   
   // 本地状态用于分类的职位列表
   const [jobs, setJobs] = useState<JobStateMap>({
@@ -73,9 +74,12 @@ const DashboardPage: React.FC = () => {
 
   // 将API数据转换为本地格式
   useEffect(() => {
-    if (userJobs.length > 0) {
-      console.log('同步 Redux userJobs 到本地状态');
-      const newJobs: JobStateMap = {
+    console.log('[DashboardPage useEffect userJobs] Hook triggered. Current userJobs from Redux:', JSON.stringify(userJobs, null, 2));
+    console.log('[DashboardPage useEffect userJobs] prevUserJobsRef.current:', JSON.stringify(prevUserJobsRef.current, null, 2));
+
+    if ((userJobs !== prevUserJobsRef.current || !prevUserJobsRef.current) && userJobs.length > 0) {
+      console.log('[DashboardPage useEffect userJobs] Condition MET: Syncing Redux userJobs to local state.');
+      const newJobsMap: JobStateMap = { // 重命名以避免与外部 jobs 状态混淆
         [JobStatus.NEW]: [],
         [JobStatus.NOT_INTERESTED]: [],
         [JobStatus.PENDING]: [],
@@ -113,12 +117,12 @@ const DashboardPage: React.FC = () => {
         };
         
         // 根据状态分配到相应的列表
-        if (userJob.status in newJobs) {
-          newJobs[userJob.status].push(dashboardJob);
+        if (userJob.status in newJobsMap) {
+          newJobsMap[userJob.status].push(dashboardJob);
         } else {
           // 默认放入待申请列表
           console.log('职位状态未匹配，放入待申请列表', userJob.status);
-          newJobs[JobStatus.PENDING].push(dashboardJob);
+          newJobsMap[JobStatus.PENDING].push(dashboardJob);
         }
         
         // 如果状态是面试中，且有面试日期，添加到面试列表
@@ -150,15 +154,9 @@ const DashboardPage: React.FC = () => {
         }
       });
       
-      // 使用函数式更新来确保状态更新的原子性
-      setJobs(prevJobs => {
-        // 仅当新旧状态实际不同时才更新
-        if (JSON.stringify(prevJobs) !== JSON.stringify(newJobs)) {
-          console.log('本地状态已更新');
-          return newJobs;
-        }
-        return prevJobs;
-      });
+      console.log('[DashboardPage useEffect userJobs] Generated newJobsMap from Redux data:', JSON.stringify(newJobsMap, null, 2));
+      setJobs(newJobsMap); 
+      console.log('[DashboardPage useEffect userJobs] setJobs called with newJobsMap.');
       
       setInterviews(prevInterviews => {
         if (JSON.stringify(prevInterviews) !== JSON.stringify(newInterviews)) {
@@ -173,6 +171,29 @@ const DashboardPage: React.FC = () => {
         }
         return prevTodos;
       });
+
+      // 更新 prevUserJobsRef 的值为当前 userJobs 的引用
+      prevUserJobsRef.current = userJobs;
+      console.log('[DashboardPage useEffect userJobs] Updated prevUserJobsRef.current.');
+    } else if (userJobs.length === 0 && prevUserJobsRef.current && prevUserJobsRef.current.length > 0) {
+      console.log('[DashboardPage useEffect userJobs] Condition MET: Redux userJobs is empty, clearing local state.');
+      setJobs({
+        [JobStatus.NEW]: [],
+        [JobStatus.NOT_INTERESTED]: [],
+        [JobStatus.PENDING]: [],
+        [JobStatus.APPLIED]: [],
+        [JobStatus.INTERVIEWING]: [],
+        [JobStatus.OFFER]: [],
+        [JobStatus.REJECTED]: [],
+        [JobStatus.WITHDRAWN]: [],
+        [JobStatus.CLOSED]: []
+      });
+      setInterviews([]);
+      setTodos([]);
+      prevUserJobsRef.current = userJobs; // 更新引用
+      console.log('[DashboardPage useEffect userJobs] Cleared local state and updated prevUserJobsRef.current.');
+    } else {
+      console.log('[DashboardPage useEffect userJobs] Condition NOT MET. No sync action taken.');
     }
   }, [userJobs]); // 只依赖userJobs，确保Redux数据变化时能正确同步
 
@@ -343,7 +364,16 @@ const DashboardPage: React.FC = () => {
       [sourceStatus]: jobs[sourceStatus].filter(job => job.id !== item.id),
       [status]: [...jobs[status], jobToMove]
     };
+
+    console.log('[DashboardPage handleDrop] Optimistic update preparing:');
+    console.log('Item being moved:', JSON.stringify(item, null, 2));
+    console.log('Source status:', sourceStatus);
+    console.log('Target status:', status);
+    console.log('Current jobs state (before optimistic setJobs):', JSON.stringify(jobs, null, 2));
+    console.log('Generated newJobs for optimistic update:', JSON.stringify(newJobs, null, 2));
+    
     setJobs(newJobs);
+    console.log('[DashboardPage handleDrop] Optimistic setJobs called.');
 
     // 处理面试相关的前端状态更新
     let prevInterviews = [...interviews];
@@ -494,6 +524,8 @@ const DashboardPage: React.FC = () => {
       console.error('添加面试日期失败:', error);
     }
   };
+
+  console.log('[DashboardPage Render] Current local jobs state:', JSON.stringify(jobs, null, 2));
 
   return (
     <DndProvider backend={HTML5Backend}>
