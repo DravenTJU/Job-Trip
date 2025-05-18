@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { ApplicationStatus, CreateUserJobData, PaginatedResponse, UserJob } from '@/types';
+import { JobStatus, CreateUserJobData, PaginatedResponse, UserJob } from '@/types';
 import userJobService from '@/services/userJobService';
 import { ApiError, isApiError } from '../../types/api';
 
@@ -9,7 +9,7 @@ export const fetchUserJobs = createAsyncThunk(
   async (params: { 
     page?: number; 
     limit?: number;
-    status?: ApplicationStatus;
+    status?: JobStatus;
     search?: string;
     sort?: string;
   } = {}, { rejectWithValue }) => {
@@ -96,7 +96,7 @@ export const fetchStatusStats = createAsyncThunk(
 interface UserJobsState {
   userJobs: UserJob[];
   userJob: UserJob | null;
-  stats: Record<ApplicationStatus, number> | null;
+  stats: Record<JobStatus, number> | null;
   pagination: {
     total: number;
     page: number;

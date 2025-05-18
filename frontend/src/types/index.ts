@@ -151,31 +151,24 @@ export interface CreateJobData {
   status: string;
 }
 
-// 用户-职位关联接口
-export enum ApplicationStatus {
-  WISHLIST = '想要申请',
-  APPLIED = '已申请',
-  INTERVIEW = '面试中',
-  OFFER = '已录用',
-  REJECTED = '已拒绝',
-  WITHDRAWN = '已撤回'
-}
-
 export interface UserJob {
   _id: string;
-  user: string | User;
-  job: string | Job;
-  status: ApplicationStatus;
+  userId: string;
+  jobId: Job; // 统一使用jobId属性名
+  status: JobStatus;   // 使用JobStatus枚举
+  isFavorite: boolean;
+  customTags?: string[];
   notes?: string;
   nextSteps?: string[];
   interviewDates?: string[];
+  reminderDate?: Date;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CreateUserJobData {
-  job: string;
-  status: ApplicationStatus;
+  jobId: string;         // 更改为jobId
+  status: JobStatus;     // 使用JobStatus枚举
   notes?: string;
   nextSteps?: string[];
   interviewDates?: string[];

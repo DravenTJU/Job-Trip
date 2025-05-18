@@ -1,3 +1,5 @@
+import { JobStatus } from './index';
+
 export interface Job {
   _id: string;
   title: string;
@@ -18,23 +20,6 @@ export interface Job {
   userJobId?: string;
   isFavorite?: boolean;
 }
-
-// 添加UserJob接口定义
-export interface UserJob {
-  _id: string;
-  userId: string;
-  jobId: string | Job;
-  status: JobStatus;
-  isFavorite: boolean;
-  customTags?: string[];
-  notes?: string;
-  reminderDate?: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// 定义申请状态类型
-export type JobStatus = 'new' | 'not_interested' | 'pending' | 'applied' | 'interviewing' | 'offer' | 'rejected' | 'withdrawn' | 'closed';
 
 // 职位筛选接口
 export interface JobFilters {
