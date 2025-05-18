@@ -222,8 +222,6 @@ const JobsPage: React.FC = () => {
                   options={sortOptions}
                   value={sortOptions.find(option => option.value === sortOption) || null}
                   onChange={handleSortChange}
-                  placeholder={t('jobs:sort.placeholder', '排序方式')}
-                  ariaLabel={t('jobs:sort.ariaLabel', '选择排序方式')}
                   className="w-[240px]"
                 />
                 <button
