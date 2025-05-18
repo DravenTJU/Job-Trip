@@ -1,6 +1,6 @@
 import api from './api';
 import { 
-  ApplicationStatus, 
+  JobStatus, 
   CreateUserJobData, 
   PaginatedResponse, 
   UserJob 
@@ -12,7 +12,7 @@ const userJobService = {
   getUserJobs: async (params?: { 
     page?: number; 
     limit?: number;
-    status?: ApplicationStatus;
+    status?: JobStatus;
     search?: string;
     sort?: string;
   }): Promise<PaginatedResponse<UserJob>> => {
@@ -65,9 +65,9 @@ const userJobService = {
   },
   
   // 获取状态统计
-  getStatusStats: async (): Promise<Record<ApplicationStatus, number>> => {
+  getStatusStats: async (): Promise<Record<JobStatus, number>> => {
     try {
-      return await api.get<Record<ApplicationStatus, number>>('/userjobs/stats/status');
+      return await api.get<Record<JobStatus, number>>('/userjobs/stats/status');
     } catch (error) {
       console.error('获取状态统计失败:', error);
       throw error;

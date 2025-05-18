@@ -3,8 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { fetchJob, deleteJob, setJobStatus } from '@/redux/slices/jobsSlice';
-import { ApplicationStatus, JobSource } from '@/types';
-import { getStatusStyle, getStatusIcon, getStatusLabel } from '@/utils/jobStatusUtils';
+import { JobSource } from '@/types';
 import { 
   ChevronLeft, 
   Building2, 
@@ -19,7 +18,6 @@ import {
   Trash2, 
   ExternalLink
 } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
 import StatusBadge from '@/components/common/StatusBadge';
 import { useTranslation } from 'react-i18next';
 
