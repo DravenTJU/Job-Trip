@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { WorkExperience } from '../../../types/profile';
 import { useTranslation } from 'react-i18next';
+import { formatDateForInput } from '@/utils/dateUtils';
 
 interface WorkExperienceFormProps {
   initialData?: WorkExperience;
@@ -24,6 +25,17 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({ initialData, on
   );
   
   const [newAchievement, setNewAchievement] = useState('');
+  
+  // 初始化时处理日期格式
+  useEffect(() => {
+    if (initialData) {
+      setFormData(prev => ({
+        ...prev,
+        startDate: formatDateForInput(initialData.startDate),
+        endDate: initialData.endDate ? formatDateForInput(initialData.endDate) : null
+      }));
+    }
+  }, [initialData]);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;

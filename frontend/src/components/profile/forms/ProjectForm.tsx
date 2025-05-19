@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Project } from '../../../types/profile';
 import { useTranslation } from 'react-i18next';
+import { formatDateForInput } from '@/utils/dateUtils';
 
 interface ProjectFormProps {
   initialData?: Project;
@@ -23,6 +24,17 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSave, onCancel
   
   const [newTechnology, setNewTechnology] = useState('');
   const [isOngoing, setIsOngoing] = useState(!initialData?.endDate);
+  
+  // 初始化时处理日期格式
+  useEffect(() => {
+    if (initialData) {
+      setFormData(prev => ({
+        ...prev,
+        startDate: formatDateForInput(initialData.startDate),
+        endDate: initialData.endDate ? formatDateForInput(initialData.endDate) : null
+      }));
+    }
+  }, [initialData]);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

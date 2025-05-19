@@ -6,6 +6,7 @@ import { CreateResumeData, ResumeType } from '@/types';
 import AlertMessage from '@/components/common/AlertMessage';
 import Loader from '@/components/common/Loader';
 import { Plus, Trash } from 'lucide-react';
+import { formatDateForInput } from '@/utils/dateUtils';
 
 /**
  * 简历表单页面组件
@@ -130,12 +131,24 @@ const ResumeFormPage: React.FC = () => {
         
         // 填充教育背景数据
         if (resumeData.educations && Array.isArray(resumeData.educations) && resumeData.educations.length > 0) {
-          setEducations(resumeData.educations);
+          // 确保日期格式正确
+          const formattedEducations = resumeData.educations.map((edu: any) => ({
+            ...edu,
+            startDate: edu.startDate ? formatDateForInput(edu.startDate) : '',
+            endDate: edu.endDate ? formatDateForInput(edu.endDate) : ''
+          }));
+          setEducations(formattedEducations);
         }
         
         // 填充工作经历数据
         if (resumeData.workExperiences && Array.isArray(resumeData.workExperiences) && resumeData.workExperiences.length > 0) {
-          setWorkExperiences(resumeData.workExperiences);
+          // 确保日期格式正确
+          const formattedWorkExperiences = resumeData.workExperiences.map((work: any) => ({
+            ...work,
+            startDate: work.startDate ? formatDateForInput(work.startDate) : '',
+            endDate: work.endDate ? formatDateForInput(work.endDate) : ''
+          }));
+          setWorkExperiences(formattedWorkExperiences);
         }
         
         // 填充技能数据
@@ -536,7 +549,7 @@ const ResumeFormPage: React.FC = () => {
                           id={`eduStartDate-${index}`}
                           name={`eduStartDate-${index}`}
                           className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                          value={education.startDate}
+                          value={formatDateForInput(education.startDate)}
                           onChange={(e) => handleEducationChange(index, 'startDate', e.target.value)}
                         />
                       </div>
@@ -547,7 +560,7 @@ const ResumeFormPage: React.FC = () => {
                           id={`eduEndDate-${index}`}
                           name={`eduEndDate-${index}`}
                           className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                          value={education.endDate}
+                          value={formatDateForInput(education.endDate)}
                           onChange={(e) => handleEducationChange(index, 'endDate', e.target.value)}
                         />
                       </div>
@@ -617,7 +630,7 @@ const ResumeFormPage: React.FC = () => {
                           id={`workStartDate-${index}`}
                           name={`workStartDate-${index}`}
                           className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                          value={experience.startDate}
+                          value={formatDateForInput(experience.startDate)}
                           onChange={(e) => handleWorkExperienceChange(index, 'startDate', e.target.value)}
                         />
                       </div>
@@ -628,7 +641,7 @@ const ResumeFormPage: React.FC = () => {
                           id={`workEndDate-${index}`}
                           name={`workEndDate-${index}`}
                           className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                          value={experience.endDate}
+                          value={formatDateForInput(experience.endDate)}
                           onChange={(e) => handleWorkExperienceChange(index, 'endDate', e.target.value)}
                         />
                       </div>

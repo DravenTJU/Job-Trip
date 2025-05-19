@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Certification } from '../../../types/profile';
 import { useTranslation } from 'react-i18next';
+import { formatDateForInput } from '@/utils/dateUtils';
 
 interface CertificationFormProps {
   initialData?: Certification;
@@ -22,6 +23,17 @@ const CertificationForm: React.FC<CertificationFormProps> = ({ initialData, onSa
   );
   
   const [neverExpires, setNeverExpires] = useState(!initialData?.expirationDate);
+  
+  // 初始化时处理日期格式
+  useEffect(() => {
+    if (initialData) {
+      setFormData(prev => ({
+        ...prev,
+        issueDate: formatDateForInput(initialData.issueDate),
+        expirationDate: initialData.expirationDate ? formatDateForInput(initialData.expirationDate) : null
+      }));
+    }
+  }, [initialData]);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

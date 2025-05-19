@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HonorAward } from '../../../types/profile';
 import { useTranslation } from 'react-i18next';
+import { formatDateForInput } from '@/utils/dateUtils';
 
 interface AwardFormProps {
   initialData?: HonorAward;
@@ -18,6 +19,16 @@ const AwardForm: React.FC<AwardFormProps> = ({ initialData, onSave, onCancel }) 
       description: ''
     }
   );
+  
+  // 初始化时处理日期格式
+  useEffect(() => {
+    if (initialData?.date) {
+      setFormData(prev => ({
+        ...prev,
+        date: formatDateForInput(initialData.date)
+      }));
+    }
+  }, [initialData]);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
