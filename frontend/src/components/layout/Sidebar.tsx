@@ -18,7 +18,8 @@ import {
   Sun,
   Moon,
   Languages,
-  LogOut
+  LogOut,
+  Github
 } from 'lucide-react';
 import { useAppSelector, useAppDispatch } from '@/hooks/reduxHooks';
 import { useTheme } from '@/context/ThemeContext';
@@ -127,8 +128,8 @@ const Sidebar: React.FC = () => {
         </div>
 
         {/* 用户信息区域 */}
-        <div className="sidebar-user">
-          <div className="flex items-center flex-1 min-w-0">
+        <div className="sidebar-user flex-col">
+          <div className="flex items-center w-full mb-2">
             <div className="icon-container icon-container-primary flex-shrink-0">
               {user?.username?.charAt(0) || 'U'}
             </div>
@@ -140,7 +141,18 @@ const Sidebar: React.FC = () => {
           </div>
 
           {/* 操作按钮区域 */}
-          <div className="flex items-center space-x-1 ml-2">
+          <div className="flex items-center justify-between w-full">
+            {/* GitHub链接按钮 */}
+            <a 
+              href="https://github.com/DravenTJU/Job-Trip" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              title={t('common.github', "GitHub仓库")}
+              className="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
+            >
+              <Github size={18} />
+            </a>
+            
             {/* 主题切换按钮 */}
             <button 
               onClick={toggleTheme} 

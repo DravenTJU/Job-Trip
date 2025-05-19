@@ -58,7 +58,8 @@
     "logout": "退出登錄"
   },
   "common": {
-    "user": "用戶"
+    "user": "用戶",
+    "github": "GitHub倉庫"
   },
   "profile": {
     "sections": {

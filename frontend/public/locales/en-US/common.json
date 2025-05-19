@@ -58,7 +58,8 @@
     "logout": "Log out"
   },
   "common": {
-    "user": "User"
+    "user": "User",
+    "github": "GitHub Repository"
   },
   "profile": {
     "sections": {
