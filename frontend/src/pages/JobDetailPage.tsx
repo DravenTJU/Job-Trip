@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import StatusBadge from '@/components/common/StatusBadge';
 import { useTranslation } from 'react-i18next';
+import { getJobTypeTranslationKey } from '@/utils/jobTypeUtils';
 
 /**
  * 职位详情页面组件
@@ -252,7 +253,7 @@ const JobDetailPage: React.FC = () => {
                   </div>
                   <div className="data-item-content">
                     <div className="data-item-label">{t('job_type', '工作类型')}</div>
-                    <div className="data-item-value">{job.jobType}</div>
+                    <div className="data-item-value">{t(`jobs:${getJobTypeTranslationKey(job.jobType)}`, { defaultValue: job.jobType })}</div>
                   </div>
                 </div>
               )}

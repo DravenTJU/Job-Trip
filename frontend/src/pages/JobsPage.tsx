@@ -25,6 +25,7 @@ import StatusSelect from '@/components/common/StatusSelect';
 import StatusBadge from '@/components/common/StatusBadge';
 import GenericListbox, { SelectOption } from '@/components/common/GenericListbox';
 import { useTranslation } from 'react-i18next';
+import { getJobTypeTranslationKey } from '@/utils/jobTypeUtils';
 
 /**
  * 职位列表页面组件
@@ -389,7 +390,7 @@ const JobsPage: React.FC = () => {
                             {job.jobType && (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                           <Briefcase className="w-3 h-3" />
-                          {job.jobType}
+                          {t(`jobs:${getJobTypeTranslationKey(job.jobType)}`, { defaultValue: job.jobType })}
                         </span>
                             )}
                             {job.salary && (
