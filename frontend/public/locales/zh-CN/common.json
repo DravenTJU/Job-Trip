@@ -54,6 +54,10 @@
   "language": {
     "switchLanguage": "切换语言"
   },
+  "sidebar": {
+    "expand": "展开侧边栏",
+    "collapse": "收起侧边栏"
+  },
   "auth": {
     "logout": "退出登录"
   },

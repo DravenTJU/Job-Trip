@@ -54,6 +54,10 @@
   "language": {
     "switchLanguage": "切換語言"
   },
+  "sidebar": {
+    "expand": "展開側邊欄",
+    "collapse": "收起側邊欄"
+  },
   "auth": {
     "logout": "退出登錄"
   },

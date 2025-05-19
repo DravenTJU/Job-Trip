@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { LanguageProvider } from '@/context/LanguageContext';
+import { SidebarProvider } from '@/context/SidebarContext';
 import AppRoutes from '@/routes';
 import store from '@/redux/store';
 import { getCurrentUser } from '@/redux/slices/authSlice';
@@ -26,7 +27,9 @@ const App: React.FC = () => {
       <BrowserRouter>
         <ThemeProvider>
           <LanguageProvider>
-            <AppRoutes />
+            <SidebarProvider>
+              <AppRoutes />
+            </SidebarProvider>
           </LanguageProvider>
         </ThemeProvider>
       </BrowserRouter>

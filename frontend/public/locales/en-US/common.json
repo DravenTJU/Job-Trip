@@ -54,6 +54,10 @@
   "language": {
     "switchLanguage": "Switch language"
   },
+  "sidebar": {
+    "expand": "Expand sidebar",
+    "collapse": "Collapse sidebar"
+  },
   "auth": {
     "logout": "Log out"
   },

@@ -19,11 +19,14 @@ import {
   Moon,
   Languages,
   LogOut,
-  Github
+  Github,
+  PanelLeftOpen,
+  PanelLeftClose
 } from 'lucide-react';
 import { useAppSelector, useAppDispatch } from '@/hooks/reduxHooks';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useSidebar } from '@/context/SidebarContext';
 import { useTranslation } from 'react-i18next';
 import { logout } from '@/redux/slices/authSlice';
 import LanguageSelector from '@/components/common/LanguageSelector';
@@ -38,6 +41,7 @@ const Sidebar: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
   const { mode, toggleTheme } = useTheme();
   const { currentLanguage } = useLanguage();
+  const { isCollapsed, toggleSidebar } = useSidebar();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
@@ -120,7 +124,7 @@ const Sidebar: React.FC = () => {
   ];
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${isCollapsed ? 'sidebar-collapsed' : ''}`}>
       <div className="flex flex-col h-full">
         {/* 顶部Logo区域 */}
         <div className="sidebar-logo">
@@ -128,7 +132,9 @@ const Sidebar: React.FC = () => {
             <div className="p-1.5 bg-indigo-100 rounded dark:bg-indigo-900">
               <BriefcaseBusiness className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             </div>
-            <span className="ml-2 text-xl font-semibold text-gray-800 dark:text-white">{t('app.name', 'JobTrip')}</span>
+            {!isCollapsed && (
+              <span className="ml-2 text-xl font-semibold text-gray-800 dark:text-white">{t('app.name', 'JobTrip')}</span>
+            )}
           </div>
         </div>
 
@@ -142,108 +148,128 @@ const Sidebar: React.FC = () => {
                 isActive(item.path)
                   ? 'sidebar-menu-item-active'
                   : 'sidebar-menu-item-inactive'
-              }`}
+              } ${isCollapsed ? 'justify-center' : ''}`}
+              title={isCollapsed ? item.name : ''}
             >
               <div className={`${isActive(item.path) ? 'sidebar-menu-icon-active' : 'sidebar-menu-icon-inactive'}`}>
                 {item.icon}
               </div>
-              <span className="ml-3">{item.name}</span>
+              {!isCollapsed && <span className="ml-3">{item.name}</span>}
             </Link>
           ))}
         </div>
 
         {/* 用户信息区域 */}
-        <div className="sidebar-user flex-col">
-          <div className="flex items-center w-full mb-2">
-            <div className="icon-container icon-container-primary flex-shrink-0">
+        <div className={`sidebar-user flex-col ${isCollapsed ? 'items-center' : ''}`}>
+          {isCollapsed ? (
+            <div className="icon-container icon-container-primary flex-shrink-0 mb-2">
               {user?.username?.charAt(0) || 'U'}
             </div>
-            <div className="ml-3 min-w-0">
-              <p className="text-sm font-medium text-gray-800 dark:text-white truncate" title={user?.username}>
-                {greeting}, {user?.username || t('common.user', '用户')}
-              </p>
+          ) : (
+            <div className="flex items-center w-full mb-2">
+              <div className="icon-container icon-container-primary flex-shrink-0">
+                {user?.username?.charAt(0) || 'U'}
+              </div>
+              <div className="ml-3 min-w-0">
+                <p className="text-sm font-medium text-gray-800 dark:text-white truncate" title={user?.username}>
+                  {greeting}, {user?.username || t('common.user', '用户')}
+                </p>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* 操作按钮区域 */}
-          <div className="flex items-center justify-between w-full">
-            {/* GitHub链接按钮 */}
-            <a 
-              href="https://github.com/DravenTJU/Job-Trip" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              title={t('common.github', "GitHub仓库")}
-              className="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
-            >
-              <Github size={18} />
-            </a>
-            
-            {/* 主题切换按钮 */}
+          <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} w-full`}>
+            {/* 收起/展开按钮 */}
             <button 
-              onClick={toggleTheme} 
-              title={mode === 'dark' ? t('theme.switchToLight', "切换到浅色模式") : t('theme.switchToDark', "切换到深色模式")}
+              onClick={toggleSidebar}
+              title={isCollapsed ? t('sidebar.expand', "展开侧边栏") : t('sidebar.collapse', "收起侧边栏")}
               className="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
             >
-              {mode === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+              {isCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
             </button>
-
-            {/* 语言切换按钮 */}
-            <div className="relative">
-              <button 
-                title={t('language.switchLanguage', "切换语言")}
-                onClick={() => setLanguageMenuOpen(!languageMenuOpen)} 
-                className="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
-              >
-                <Languages size={18} />
-              </button>
-              {languageMenuOpen && (
-                <div 
-                  className="absolute right-0 bottom-full mb-2 w-40 bg-white shadow-lg rounded-md ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-800 dark:ring-gray-700 z-20"
-                  onMouseLeave={() => setLanguageMenuOpen(false)}
+            
+            {!isCollapsed && (
+              <>
+                {/* GitHub链接按钮 */}
+                <a 
+                  href="https://github.com/DravenTJU/Job-Trip" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  title={t('common.github', "GitHub仓库")}
+                  className="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
                 >
-                  <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="language-menu">
-                    <LanguageSelector variant="popup" size="md" />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* 设置按钮和弹出菜单 */}
-            <div className="relative">
-              <button 
-                onClick={() => setSettingsMenuOpen(!settingsMenuOpen)}
-                title={t('settings.title', "设置")}
-                className="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
-              >
-                <Settings size={18} />
-              </button>
-              {settingsMenuOpen && (
-                <div 
-                  className="absolute right-0 bottom-full mb-2 w-48 bg-white shadow-lg rounded-md ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-800 dark:ring-gray-700 z-20"
-                  onMouseLeave={() => setSettingsMenuOpen(false)}
+                  <Github size={18} />
+                </a>
+                
+                {/* 主题切换按钮 */}
+                <button 
+                  onClick={toggleTheme} 
+                  title={mode === 'dark' ? t('theme.switchToLight', "切换到浅色模式") : t('theme.switchToDark', "切换到深色模式")}
+                  className="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
                 >
-                  <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                    <Link 
-                      to="/settings"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 w-full text-left" 
-                      role="menuitem"
-                      onClick={() => setSettingsMenuOpen(false)}
+                  {mode === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                </button>
+
+                {/* 语言切换按钮 */}
+                <div className="relative">
+                  <button 
+                    title={t('language.switchLanguage', "切换语言")}
+                    onClick={() => setLanguageMenuOpen(!languageMenuOpen)} 
+                    className="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <Languages size={18} />
+                  </button>
+                  {languageMenuOpen && (
+                    <div 
+                      className="absolute right-0 bottom-full mb-2 w-40 bg-white shadow-lg rounded-md ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-800 dark:ring-gray-700 z-20"
+                      onMouseLeave={() => setLanguageMenuOpen(false)}
                     >
-                      <User size={16} className="mr-2" />
-                      {t('settings.accountSettings', "账号设置")}
-                    </Link>
-                    <button 
-                      onClick={handleLogout}
-                      className="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" 
-                      role="menuitem"
-                    >
-                      <LogOut size={16} className="mr-2" />
-                      {t('auth.logout', "退出登录")}
-                    </button>
-                  </div>
+                      <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="language-menu">
+                        <LanguageSelector variant="popup" size="md" />
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+
+                {/* 设置按钮和弹出菜单 */}
+                <div className="relative">
+                  <button 
+                    onClick={() => setSettingsMenuOpen(!settingsMenuOpen)}
+                    title={t('settings.title', "设置")}
+                    className="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <Settings size={18} />
+                  </button>
+                  {settingsMenuOpen && (
+                    <div 
+                      className="absolute right-0 bottom-full mb-2 w-48 bg-white shadow-lg rounded-md ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-800 dark:ring-gray-700 z-20"
+                      onMouseLeave={() => setSettingsMenuOpen(false)}
+                    >
+                      <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                        <Link 
+                          to="/settings"
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 w-full text-left" 
+                          role="menuitem"
+                          onClick={() => setSettingsMenuOpen(false)}
+                        >
+                          <User size={16} className="mr-2" />
+                          {t('settings.accountSettings', "账号设置")}
+                        </Link>
+                        <button 
+                          onClick={handleLogout}
+                          className="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" 
+                          role="menuitem"
+                        >
+                          <LogOut size={16} className="mr-2" />
+                          {t('auth.logout', "退出登录")}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -10,6 +10,19 @@
 /* 侧边栏样式 */
 .sidebar {
   @apply fixed inset-y-0 left-0 z-10 flex-shrink-0 w-64 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 hidden md:block;
+  transition: width 0.3s ease;
+}
+
+.sidebar-collapsed {
+  @apply w-16;
+}
+
+.sidebar-collapsed .sidebar-menu-item {
+  @apply justify-center px-0;
+}
+
+.sidebar-collapsed .sidebar-logo {
+  @apply justify-center;
 }
 
 .sidebar-logo {
@@ -60,6 +73,11 @@
 /* 头部导航样式 */
 .header {
   @apply fixed top-0 right-0 left-0 md:left-64 z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700;
+  transition: left 0.3s ease;
+}
+
+.header-collapsed {
+  @apply md:left-16;
 }
 
 .header-nav {
@@ -137,7 +155,12 @@
 }
 
 .main-content-sidebar {
-  @apply flex-grow p-6 overflow-y-auto;
+  @apply flex-grow p-6 overflow-y-auto md:ml-64;
+  transition: margin-left 0.3s ease;
+}
+
+.main-content-sidebar-collapsed {
+  @apply md:ml-16;
 }
 
 /* 页脚样式 */

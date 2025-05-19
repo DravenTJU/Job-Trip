@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 // import Footer from './Footer';
 import Sidebar from './Sidebar';
 import { useAppSelector } from '@/hooks/reduxHooks';
+import { useSidebar } from '@/context/SidebarContext';
 
 interface LayoutProps {
   children: ReactNode;
@@ -15,6 +16,7 @@ interface LayoutProps {
  */
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { isCollapsed } = useSidebar();
   
   // 未登录用户显示标准布局（顶部导航）
   if (!isAuthenticated) {
@@ -33,8 +35,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="layout-sidebar">
       <Sidebar />
-      <div className="flex flex-col flex-1 w-full ml-0 md:ml-64">
-        <main className="main-content-sidebar">
+      <div className={`flex flex-col flex-1 w-full ml-0 md:ml-1`}>
+        <main className={`main-content-sidebar ${isCollapsed ? 'main-content-sidebar-collapsed' : ''}`}>
           {children}
         </main>
       </div>
