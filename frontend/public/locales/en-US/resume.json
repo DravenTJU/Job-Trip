@@ -43,6 +43,10 @@
   "generating": "Generating...",
   "generate_tailored_resume": "Generate Tailored Resume with AI",
   "generate_tailored_resume_tip": "Click the button to use AI to generate a tailored resume based on your basic resume and target position",
+  "generation_success": "Tailored resume generated successfully",
+  "resume_update_success": "Resume updated successfully",
+  "resume_create_success": "Resume created successfully",
+  "save_failed": "Save failed, please try again",
   
   "personal_info": "Personal Information",
   "full_name": "Full Name",

@@ -30,6 +30,7 @@ import {
 import * as LucideIcons from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import GenericListbox, { SelectOption } from '@/components/common/GenericListbox';
+import Toast, { ToastType } from '@/components/common/Toast';
 
 /**
  * 职位表单页面
@@ -63,10 +64,16 @@ const JobFormPage: React.FC = () => {
   
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
+  
+  // Toast消息状态
+  const [toast, setToast] = useState<{
+    show: boolean;
+    message: string;
+    type: ToastType;
+  }>({
+    show: false,
     message: '',
-    severity: 'success' as 'success' | 'error'
+    type: 'info'
   });
   
   // 加载数据
@@ -195,10 +202,10 @@ const JobFormPage: React.FC = () => {
     
     if (!validateForm()) {
       console.log(t('form_validation_failed', '表单校验未通过'));
-      setSnackbar({
-        open: true,
+      setToast({
+        show: true,
         message: t('check_form_errors', '请检查表单错误并重试'),
-        severity: 'error'
+        type: 'error'
       });
       return;
     }
@@ -214,18 +221,18 @@ const JobFormPage: React.FC = () => {
       
       if (isEdit && id) {
         await dispatch(updateJob({ id, data: submitData })).unwrap();
-        setSnackbar({
-          open: true,
+        setToast({
+          show: true,
           message: t('job_update_success', '职位更新成功'),
-          severity: 'success'
+          type: 'success'
         });
       } else {
         await dispatch(createJob(submitData)).unwrap();
         console.log(t('submit_success', '提交成功'));
-        setSnackbar({
-          open: true,
+        setToast({
+          show: true,
           message: t('job_create_success', '职位创建成功'),
-          severity: 'success'
+          type: 'success'
         });
       }
       
@@ -235,10 +242,10 @@ const JobFormPage: React.FC = () => {
       }, 1500);
     } catch (error) {
       console.log(t('submit_failed', '提交失败:'), error);
-      setSnackbar({
-        open: true,
+      setToast({
+        show: true,
         message: t('save_failed', '保存失败，请重试'),
-        severity: 'error'
+        type: 'error'
       });
     } finally {
       setIsSubmitting(false);
@@ -315,15 +322,15 @@ const JobFormPage: React.FC = () => {
   const handleBack = () => {
     navigate(-1);
   };
-
-  // 处理Snackbar关闭
-  const handleSnackbarClose = () => {
-    setSnackbar(prev => ({
+  
+  // 处理Toast关闭
+  const handleToastClose = () => {
+    setToast(prev => ({
       ...prev,
-      open: false
+      show: false
     }));
   };
-  
+
   if (isJobLoading) {
     return (
       <div className="flex justify-center my-8">
@@ -546,12 +553,12 @@ const JobFormPage: React.FC = () => {
       </div>
 
       {/* 提示消息 */}
-      {snackbar.open && (
-        <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg text-white ${
-          snackbar.severity === 'success' ? 'bg-green-600' : 'bg-red-600'
-        }`}>
-          {snackbar.message}
-        </div>
+      {toast.show && (
+        <Toast
+          type={toast.type}
+          message={toast.message}
+          onClose={handleToastClose}
+        />
       )}
     </div>
   );

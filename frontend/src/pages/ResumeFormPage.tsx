@@ -11,6 +11,7 @@ import profileService from '@/services/profileService';
 import { mapProfileToResume } from '@/utils/profileToResumeMapper';
 import { UserProfile } from '@/types/profile';
 import { useTranslation } from 'react-i18next';
+import Toast, { ToastType } from '@/components/common/Toast';
 
 /**
  * 简历表单页面组件
@@ -25,6 +26,17 @@ const ResumeFormPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { resume, isLoading, error } = useAppSelector((state) => state.resumes);
   const { t } = useTranslation('resume');
+  
+  // Toast消息状态
+  const [toast, setToast] = useState<{
+    show: boolean;
+    message: string;
+    type: ToastType;
+  }>({
+    show: false,
+    message: '',
+    type: 'info'
+  });
   
   // 用户档案状态
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -128,10 +140,24 @@ const ResumeFormPage: React.FC = () => {
               if (locationElement) locationElement.value = personalInfo.location;
               if (skillsElement) skillsElement.value = skillsText;
             }, 100);
+            
+            // 显示成功提示
+            setToast({
+              show: true,
+              message: t('profile_data_filled', '已自动填充您的个人档案信息，您可以根据需要修改'),
+              type: 'success'
+            });
           }
         } catch (error) {
           console.error('获取用户档案失败:', error);
           setProfileError(t('profile_load_error', '无法加载用户档案数据，请刷新页面重试'));
+          
+          // 显示错误提示
+          setToast({
+            show: true,
+            message: t('profile_load_error', '无法加载用户档案数据，请刷新页面重试'),
+            type: 'error'
+          });
         } finally {
           setIsLoadingProfile(false);
         }
@@ -319,6 +345,13 @@ const ResumeFormPage: React.FC = () => {
   const handleGenerateTailoredResume = async () => {
     if (!formData.targetPosition || !formData.targetJob || !formData.content) {
       setGenerationError(t('fill_target_fields', '请填写目标职位、目标工作和简历内容'));
+      
+      // 显示错误提示
+      setToast({
+        show: true,
+        message: t('fill_target_fields', '请填写目标职位、目标工作和简历内容'),
+        type: 'error'
+      });
       return;
     }
     
@@ -337,11 +370,32 @@ const ResumeFormPage: React.FC = () => {
           ...formData,
           content: resultAction.payload
         });
+        
+        // 显示成功提示
+        setToast({
+          show: true,
+          message: t('generation_success', '定制简历生成成功'),
+          type: 'success'
+        });
       } else if (generateTailoredResume.rejected.match(resultAction)) {
         setGenerationError(resultAction.payload as string || t('generation_failed', '生成失败，请重试'));
+        
+        // 显示错误提示
+        setToast({
+          show: true,
+          message: resultAction.payload as string || t('generation_failed', '生成失败，请重试'),
+          type: 'error'
+        });
       }
     } catch (error) {
       setGenerationError((error as Error).message);
+      
+      // 显示错误提示
+      setToast({
+        show: true,
+        message: (error as Error).message,
+        type: 'error'
+      });
     } finally {
       setIsGenerating(false);
     }
@@ -369,14 +423,47 @@ const ResumeFormPage: React.FC = () => {
       content: resumeContent
     };
     
-    if (isEditMode && id) {
-      await dispatch(updateResume({ id, data: updatedFormData }));
-    } else {
-      await dispatch(createResume(updatedFormData));
+    try {
+      if (isEditMode && id) {
+        await dispatch(updateResume({ id, data: updatedFormData }));
+        
+        // 显示成功提示
+        setToast({
+          show: true,
+          message: t('resume_update_success', '简历更新成功'),
+          type: 'success'
+        });
+      } else {
+        await dispatch(createResume(updatedFormData));
+        
+        // 显示成功提示
+        setToast({
+          show: true,
+          message: t('resume_create_success', '简历创建成功'),
+          type: 'success'
+        });
+      }
+      
+      // 延迟导航，给用户时间看到成功提示
+      setTimeout(() => {
+        navigate('/resume-builder');
+      }, 1500);
+    } catch (error) {
+      // 显示错误提示
+      setToast({
+        show: true,
+        message: t('save_failed', '保存失败，请重试'),
+        type: 'error'
+      });
     }
-    
-    // 提交成功后返回简历列表页面
-    navigate('/resume-builder');
+  };
+
+  // 处理Toast关闭
+  const handleToastClose = () => {
+    setToast(prev => ({
+      ...prev,
+      show: false
+    }));
   };
 
   if (isLoading && isEditMode) {
@@ -396,31 +483,8 @@ const ResumeFormPage: React.FC = () => {
         </p>
       </div>
 
-      {error && 
-        <AlertMessage 
-          open={!!error} 
-          severity="error" 
-          message={error} 
-          onClose={() => {}} 
-        />
-      }
-
-      {/* 用户档案加载状态和错误提示 */}
+      {/* 加载提示 */}
       {isLoadingProfile && <div className="text-center py-4">{t('loading_profile', '正在加载个人档案数据...')}</div>}
-      {profileError && (
-        <AlertMessage 
-          open={!!profileError} 
-          severity="error" 
-          message={profileError} 
-          onClose={() => setProfileError(null)} 
-        />
-      )}
-      {/* 档案数据填充成功提示 */}
-      {userProfile && !isLoadingProfile && !profileError && !isEditMode && !baseId && (
-        <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded-xl">
-          {t('profile_data_filled', '已自动填充您的个人档案信息，您可以根据需要修改')}
-        </div>
-      )}
 
       <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 mb-8">
         <div className="p-6">
@@ -776,6 +840,16 @@ const ResumeFormPage: React.FC = () => {
           </form>
         </div>
       </div>
+      
+      {/* 显示Toast消息 */}
+      {toast.show && (
+        <Toast
+          type={toast.type}
+          message={toast.message}
+          duration={30000}
+          onClose={handleToastClose}
+        />
+      )}
     </div>
   );
 };

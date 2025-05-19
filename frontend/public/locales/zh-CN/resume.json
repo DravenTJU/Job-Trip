@@ -43,6 +43,10 @@
   "generating": "生成中...",
   "generate_tailored_resume": "AI生成定制简历内容",
   "generate_tailored_resume_tip": "点击按钮使用AI根据您的基础简历内容和目标职位生成定制简历",
+  "generation_success": "定制简历生成成功",
+  "resume_update_success": "简历更新成功",
+  "resume_create_success": "简历创建成功",
+  "save_failed": "保存失败，请重试",
   
   "personal_info": "个人信息",
   "full_name": "姓名",
