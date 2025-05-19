@@ -11,6 +11,7 @@ import { AppDispatch, RootState } from '@/redux/store';
 import { fetchUserJobs, updateUserJob, fetchStatusStats } from '@/redux/slices/userJobsSlice';
 import { JobStatus, UserJob } from '@/types';
 import Toast, { ToastType } from '@/components/common/Toast';
+import { renderStatusBadge } from '@/utils/jobStatusUtils';
 
 // 接口以适配DroppableColumn和DraggableJobCard组件
 interface DashboardJob {
@@ -660,7 +661,7 @@ const DashboardPage: React.FC = () => {
         {!isLoading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <DroppableColumn
-              title={t('dashboard:to_apply', '待申请')}
+              title={renderStatusBadge(JobStatus.PENDING, { showLabel: true })}
               count={filterJobs(jobs[JobStatus.PENDING]).length}
               jobs={filterJobs(jobs[JobStatus.PENDING])}
               onDrop={(item) => handleDrop(JobStatus.PENDING, item as DashboardJob)}
@@ -672,7 +673,7 @@ const DashboardPage: React.FC = () => {
               onDeleteTodo={deleteTodo}
             />
             <DroppableColumn
-              title={t('dashboard:applied', '已申请')}
+              title={renderStatusBadge(JobStatus.APPLIED, { showLabel: true })}
               count={filterJobs(jobs[JobStatus.APPLIED]).length}
               jobs={filterJobs(jobs[JobStatus.APPLIED])}
               onDrop={(item) => handleDrop(JobStatus.APPLIED, item as DashboardJob)}
@@ -684,7 +685,7 @@ const DashboardPage: React.FC = () => {
               onDeleteTodo={deleteTodo}
             />
             <DroppableColumn
-              title={t('dashboard:interviewing', '面试中')}
+              title={renderStatusBadge(JobStatus.INTERVIEWING, { showLabel: true })}
               count={filterJobs(jobs[JobStatus.INTERVIEWING]).length}
               jobs={filterJobs(jobs[JobStatus.INTERVIEWING])}
               onDrop={(item) => handleDrop(JobStatus.INTERVIEWING, item as DashboardJob)}
@@ -696,7 +697,7 @@ const DashboardPage: React.FC = () => {
               onDeleteTodo={deleteTodo}
             />
             <DroppableColumn
-              title={t('dashboard:hired', '已录用')}
+              title={renderStatusBadge(JobStatus.OFFER, { showLabel: true })}
               count={filterJobs(jobs[JobStatus.OFFER]).length}
               jobs={filterJobs(jobs[JobStatus.OFFER])}
               onDrop={(item) => handleDrop(JobStatus.OFFER, item as DashboardJob)}

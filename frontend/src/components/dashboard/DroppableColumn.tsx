@@ -18,7 +18,7 @@ export interface Interview {
 
 // 使用泛型定义组件，以便接受DashboardPage中的Job类型
 interface DroppableColumnProps<T extends { id: string; title: string; company: string; type?: string; }> {
-  title: string;
+  title: React.ReactNode;
   count: number;
   jobs: T[];
   interviews?: Interview[];
