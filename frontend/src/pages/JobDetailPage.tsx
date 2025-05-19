@@ -21,6 +21,7 @@ import {
 import StatusBadge from '@/components/common/StatusBadge';
 import { useTranslation } from 'react-i18next';
 import { getJobTypeTranslationKey } from '@/utils/jobTypeUtils';
+import { formatDate } from '@/utils/dateUtils';
 
 /**
  * 职位详情页面组件
@@ -80,30 +81,6 @@ const JobDetailPage: React.FC = () => {
   // 处理外部链接点击
   const handleExternalLinkClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-  };
-  
-  // 格式化日期
-  const formatDate = (dateString: string, useRelative = false) => {
-    const date = new Date(dateString);
-    if (useRelative) {
-      const now = new Date();
-      const diffTime = Math.abs(now.getTime() - date.getTime());
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
-      if (diffDays === 0) return t('today', '今天');
-      if (diffDays === 1) return t('yesterday', '昨天');
-      if (diffDays < 7) return t('days_ago', '{{count}}天前', { count: diffDays });
-      if (diffDays < 30) return t('weeks_ago', '{{count}}周前', { count: Math.floor(diffDays / 7) });
-      if (diffDays < 365) return t('months_ago', '{{count}}个月前', { count: Math.floor(diffDays / 30) });
-      return t('years_ago', '{{count}}年前', { count: Math.floor(diffDays / 365) });
-    }
-    
-    // 使用组件级别获取的i18n.language而不是硬编码'zh-CN'
-    return date.toLocaleDateString(i18n.language, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
   };
   
   // 获取平台显示名称
@@ -266,9 +243,9 @@ const JobDetailPage: React.FC = () => {
                 <div className="data-item-content">
                   <div className="data-item-label">{t('add_time', '添加时间')}</div>
                   <div className="data-item-value">
-                    {formatDate(job.createdAt)}
+                    {formatDate(job.createdAt, t, i18n.language)}
                     <span className="text-gray-400 text-sm ml-2">
-                      ({formatDate(job.createdAt, true)})
+                      ({formatDate(job.createdAt, t, i18n.language, true)})
                     </span>
                   </div>
                 </div>
@@ -319,9 +296,9 @@ const JobDetailPage: React.FC = () => {
                 <div className="data-item-content">
                   <div className="data-item-label">{t('last_update', '最后更新')}</div>
                   <div className="data-item-value">
-                    {formatDate(job.updatedAt)}
+                    {formatDate(job.updatedAt, t, i18n.language)}
                     <span className="text-gray-400 text-sm ml-2">
-                      ({formatDate(job.updatedAt, true)})
+                      ({formatDate(job.updatedAt, t, i18n.language, true)})
                     </span>
                   </div>
                 </div>

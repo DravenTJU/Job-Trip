@@ -26,12 +26,13 @@ import StatusBadge from '@/components/common/StatusBadge';
 import GenericListbox, { SelectOption } from '@/components/common/GenericListbox';
 import { useTranslation } from 'react-i18next';
 import { getJobTypeTranslationKey } from '@/utils/jobTypeUtils';
+import { formatDate, formatShortDate } from '@/utils/dateUtils';
 
 /**
  * 职位列表页面组件
  */
 const JobsPage: React.FC = () => {
-  const { t } = useTranslation(['common', 'jobs']);
+  const { t, i18n } = useTranslation(['common', 'jobs']);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { jobs, isLoading, error, pagination } = useSelector((state: RootState) => state.jobs);
@@ -387,6 +388,10 @@ const JobsPage: React.FC = () => {
                       )}
                     </p>
                     <div className="flex flex-wrap gap-2 mt-3">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-400">
+                          <Calendar className="w-3 h-3" />
+                          {formatDate(job.createdAt, t, i18n.language)}
+                        </span>
                             {job.jobType && (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                           <Briefcase className="w-3 h-3" />
