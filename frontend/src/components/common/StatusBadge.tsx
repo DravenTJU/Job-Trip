@@ -1,10 +1,15 @@
 import React, { useState, useRef, Fragment, useCallback } from 'react';
 import { PencilLine, Check, AlertCircle } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
 import { Transition } from '@headlessui/react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { JOB_STATUS_OPTIONS, getStatusStyle, getStatusIcon, getStatusLabel } from '@/utils/jobStatusUtils';
+import { 
+  JOB_STATUS_OPTIONS, 
+  getStatusStyle, 
+  getStatusIcon, 
+  getStatusLabel,
+  getStatusIconComponent,
+} from '@/utils/jobStatusUtils';
 import jobStatusService from '@/services/jobStatusService';
 
 interface StatusBadgeProps {
@@ -60,12 +65,6 @@ const StatusBadgeComponent: React.FC<StatusBadgeProps> = ({
       setCurrentStatus(initialStatus);
     }
   }, [initialStatus, currentStatus, isUpdating]);
-  
-  // 获取图标组件
-  const getIconComponent = useCallback((iconName: string) => {
-    const Icon = (LucideIcons as any)[iconName] || LucideIcons.HelpCircle;
-    return <Icon className={size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4'} />;
-  }, [size]);
   
   // 处理状态变更 - 完全独立的状态更新，脱离Redux
   const handleStatusChange = useCallback(async (newStatus: string) => {
@@ -145,7 +144,7 @@ const StatusBadgeComponent: React.FC<StatusBadgeProps> = ({
         aria-expanded={isOpen}
       >
         <span className="flex items-center justify-center rounded-full bg-white/20 mr-1.5">
-          {getIconComponent(getStatusIcon(currentStatus))}
+          {getStatusIconComponent(getStatusIcon(currentStatus), size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4')}
           {isUpdating && (
             <span className="absolute inset-0 flex items-center justify-center">
               <span className="w-full h-full rounded-full border-2 border-white/40 border-t-transparent animate-spin"></span>
@@ -191,7 +190,7 @@ const StatusBadgeComponent: React.FC<StatusBadgeProps> = ({
               >
                 <span className={`inline-flex items-center rounded-full pl-1 pr-2 py-0.5 mr-2 ${getStatusStyle(option.value)}`}>
                   <span className="flex items-center justify-center w-4 h-4 rounded-full bg-white/20 mr-1">
-                    {getIconComponent(option.icon)}
+                    {getStatusIconComponent(option.icon, 'w-3.5 h-3.5')}
                   </span>
                   <span className="text-xs">{t(option.label)}</span>
                 </span>

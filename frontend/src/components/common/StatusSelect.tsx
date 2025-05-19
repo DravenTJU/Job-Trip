@@ -1,9 +1,8 @@
 import React, { Fragment } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { Check, ChevronDown } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { JOB_STATUS_OPTIONS, getStatusStyle, getStatusIcon } from '@/utils/jobStatusUtils';
+import { JOB_STATUS_OPTIONS, getStatusIconComponent, getStatusStyle } from '@/utils/jobStatusUtils';
 import { createPortal } from 'react-dom';
 
 interface StatusSelectProps {
@@ -45,21 +44,6 @@ const StatusSelect: React.FC<StatusSelectProps> = ({
   
   // 查找当前选中的选项
   const selectedOption = options.find(option => option.value === value) || options[0];
-  
-  // 获取选项对应的图标组件
-  const getIconComponent = (iconName: string) => {
-    const Icon = (LucideIcons as any)[iconName] || LucideIcons.HelpCircle;
-    return <Icon className="w-4 h-4" />;
-  };
-  
-  // 获取选项的样式类名
-  const getOptionStyleClass = (optionValue: string) => {
-    // 对于"所有状态"选项，使用默认样式
-    if (optionValue === '') {
-      return 'badge-default';
-    }
-    return getStatusStyle(optionValue);
-  };
 
   return (
     <div className={`relative ${className}`}>
@@ -75,9 +59,9 @@ const StatusSelect: React.FC<StatusSelectProps> = ({
               aria-label={t('filters.status', '选择职位状态')}
               aria-haspopup="listbox"
             >
-              <span className={`inline-flex items-center rounded-full pl-1 pr-3 py-1 ${getOptionStyleClass(selectedOption.value)}`}>
+              <span className={`inline-flex items-center rounded-full pl-1 pr-3 py-1 ${getStatusStyle(selectedOption.value)}`}>
                 <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 mr-1.5">
-                  {getIconComponent(selectedOption.icon)}
+                  {getStatusIconComponent(selectedOption.icon, "w-4 h-4")}
                 </span>
                 <span className="truncate font-medium">
                   {t(selectedOption.label)}
@@ -120,9 +104,9 @@ const StatusSelect: React.FC<StatusSelectProps> = ({
                     >
                       {({ selected, active }: OptionRenderPropArg) => (
                         <div>
-                          <span className={`inline-flex items-center rounded-full pl-1 pr-3 py-1 ${getOptionStyleClass(option.value)}`}>
+                          <span className={`inline-flex items-center rounded-full pl-1 pr-3 py-1 ${getStatusStyle(option.value)}`}>
                             <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 mr-1.5">
-                              {getIconComponent(option.icon)}
+                              {getStatusIconComponent(option.icon, "w-4 h-4")}
                             </span>
                             <span className={`truncate ${selected ? 'font-medium' : 'font-normal'}`}>
                               {t(option.label)}
