@@ -61,6 +61,11 @@
     "user": "用戶",
     "github": "GitHub倉庫"
   },
+  "greetings": {
+    "morning": "早上好",
+    "afternoon": "下午好",
+    "evening": "晚上好"
+  },
   "profile": {
     "sections": {
       "basic": "基本資訊",

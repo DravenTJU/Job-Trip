@@ -61,6 +61,11 @@
     "user": "User",
     "github": "GitHub Repository"
   },
+  "greetings": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening"
+  },
   "profile": {
     "sections": {
       "basic": "Basic Information",

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Home, 
@@ -42,6 +42,31 @@ const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
+  const [greeting, setGreeting] = useState('');
+
+  // 获取时间问候语
+  useEffect(() => {
+    const getTimeGreeting = () => {
+      const hour = new Date().getHours();
+      
+      if (hour >= 5 && hour < 12) {
+        return t('greetings.morning', '早上好');
+      } else if (hour >= 12 && hour < 18) {
+        return t('greetings.afternoon', '下午好');
+      } else {
+        return t('greetings.evening', '晚上好');
+      }
+    };
+
+    setGreeting(getTimeGreeting());
+    
+    // 每分钟更新一次问候语（以防跨越时间段）
+    const intervalId = setInterval(() => {
+      setGreeting(getTimeGreeting());
+    }, 60000);
+    
+    return () => clearInterval(intervalId);
+  }, [t, currentLanguage]);
 
   // 检查当前路径是否匹配给定的路径
   const isActive = (path: string) => {
@@ -135,7 +160,7 @@ const Sidebar: React.FC = () => {
             </div>
             <div className="ml-3 min-w-0">
               <p className="text-sm font-medium text-gray-800 dark:text-white truncate" title={user?.username}>
-                {user?.username || t('common.user', '用户')}
+                {greeting}, {user?.username || t('common.user', '用户')}
               </p>
             </div>
           </div>
