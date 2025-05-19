@@ -138,6 +138,9 @@ const Sidebar: React.FC = () => {
           </div>
         </div>
 
+        {/* Logo和主菜单之间的分隔线 */}
+        <div className="sidebar-divider"></div>
+
         {/* 主菜单 */}
         <div className="sidebar-content">
           {mainMenuItems.map((item) => (

@@ -67,7 +67,7 @@
 }
 
 .sidebar-divider {
-  @apply my-4 border-t border-gray-200 dark:border-gray-700;
+  @apply my-2 border-t border-gray-200 dark:border-gray-700;
 }
 
 /* 头部导航样式 */
