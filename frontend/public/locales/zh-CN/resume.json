@@ -20,5 +20,9 @@
   "created_at": "创建于",
   "updated_at": "更新于",
   "target_position": "目标职位",
-  "not_specified": "未指定"
+  "not_specified": "未指定",
+  "loading_profile": "正在加载个人档案数据...",
+  "profile_load_error": "无法加载用户档案数据，请刷新页面重试",
+  "profile_data_filled": "已自动填充您的个人档案信息，您可以根据需要修改",
+  "no_profile_data": "未找到个人档案数据，请手动填写"
 } 

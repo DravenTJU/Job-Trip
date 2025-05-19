@@ -20,5 +20,9 @@
   "created_at": "創建於",
   "updated_at": "更新於",
   "target_position": "目標職位",
-  "not_specified": "未指定"
+  "not_specified": "未指定",
+  "loading_profile": "正在加載個人檔案數據...",
+  "profile_load_error": "無法加載用戶檔案數據，請刷新頁面重試",
+  "profile_data_filled": "已自動填充您的個人檔案信息，您可以根據需要修改",
+  "no_profile_data": "未找到個人檔案數據，請手動填寫"
 } 

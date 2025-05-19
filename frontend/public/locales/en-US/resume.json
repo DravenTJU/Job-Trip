@@ -20,5 +20,9 @@
   "created_at": "Created on ",
   "updated_at": "Updated on ",
   "target_position": "Target position",
-  "not_specified": "Not specified"
+  "not_specified": "Not specified",
+  "loading_profile": "Loading profile data...",
+  "profile_load_error": "Unable to load profile data, please refresh and try again",
+  "profile_data_filled": "Your profile information has been automatically filled, you can modify as needed",
+  "no_profile_data": "No profile data found, please fill in manually"
 } 

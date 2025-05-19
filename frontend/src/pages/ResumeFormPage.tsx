@@ -7,6 +7,10 @@ import AlertMessage from '@/components/common/AlertMessage';
 import Loader from '@/components/common/Loader';
 import { Plus, Trash } from 'lucide-react';
 import { formatDateForInput } from '@/utils/dateUtils';
+import profileService from '@/services/profileService';
+import { mapProfileToResume } from '@/utils/profileToResumeMapper';
+import { UserProfile } from '@/types/profile';
+import { useTranslation } from 'react-i18next';
 
 /**
  * 简历表单页面组件
@@ -20,6 +24,12 @@ const ResumeFormPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { resume, isLoading, error } = useAppSelector((state) => state.resumes);
+  const { t } = useTranslation('resume');
+  
+  // 用户档案状态
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
   
   const [formData, setFormData] = useState<CreateResumeData>({
     name: '',
@@ -84,10 +94,57 @@ const ResumeFormPage: React.FC = () => {
   // 获取当前用户信息
   const { user } = useAppSelector((state) => state.auth);
 
+  // 在创建新简历时获取用户档案数据
+  useEffect(() => {
+    // 仅在新建简历模式下获取用户档案
+    if (!isEditMode && !baseId) {
+      const fetchUserProfile = async () => {
+        try {
+          setIsLoadingProfile(true);
+          setProfileError(null);
+          const profileData = await profileService.getUserProfile();
+          setUserProfile(profileData);
+          
+          // 使用档案数据映射和填充表单
+          if (profileData) {
+            const { personalInfo, educations: mappedEducations, workExperiences: mappedWorkExperiences, skillsText } = mapProfileToResume(profileData);
+            
+            // 设置教育背景和工作经历
+            setEducations(mappedEducations);
+            setWorkExperiences(mappedWorkExperiences);
+            
+            // 使用setTimeout确保DOM元素已经存在
+            setTimeout(() => {
+              // 填充个人信息
+              const fullNameElement = document.getElementById('fullName') as HTMLInputElement;
+              const emailElement = document.getElementById('email') as HTMLInputElement;
+              const phoneElement = document.getElementById('phone') as HTMLInputElement;
+              const locationElement = document.getElementById('location') as HTMLInputElement;
+              const skillsElement = document.getElementById('skills') as HTMLTextAreaElement;
+              
+              if (fullNameElement) fullNameElement.value = personalInfo.fullName;
+              if (emailElement) emailElement.value = personalInfo.email;
+              if (phoneElement) phoneElement.value = personalInfo.phone;
+              if (locationElement) locationElement.value = personalInfo.location;
+              if (skillsElement) skillsElement.value = skillsText;
+            }, 100);
+          }
+        } catch (error) {
+          console.error('获取用户档案失败:', error);
+          setProfileError(t('profile_load_error', '无法加载用户档案数据，请刷新页面重试'));
+        } finally {
+          setIsLoadingProfile(false);
+        }
+      };
+
+      fetchUserProfile();
+    }
+  }, [isEditMode, baseId, t]);
+
   // 当简历数据加载完成后，更新表单数据
   useEffect(() => {    
     // 如果是新建简历模式且有用户数据，预填用户信息
-    if (!isEditMode && !baseId && user) {
+    if (!isEditMode && !baseId && user && !userProfile) {
       setTimeout(() => {
         // 预填个人信息
         const fullNameElement = document.getElementById('fullName') as HTMLInputElement;
@@ -347,6 +404,23 @@ const ResumeFormPage: React.FC = () => {
           onClose={() => {}} 
         />
       }
+
+      {/* 用户档案加载状态和错误提示 */}
+      {isLoadingProfile && <div className="text-center py-4">{t('loading_profile', '正在加载个人档案数据...')}</div>}
+      {profileError && (
+        <AlertMessage 
+          open={!!profileError} 
+          severity="error" 
+          message={profileError} 
+          onClose={() => setProfileError(null)} 
+        />
+      )}
+      {/* 档案数据填充成功提示 */}
+      {userProfile && !isLoadingProfile && !profileError && !isEditMode && !baseId && (
+        <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded-xl">
+          {t('profile_data_filled', '已自动填充您的个人档案信息，您可以根据需要修改')}
+        </div>
+      )}
 
       <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 mb-8">
         <div className="p-6">
