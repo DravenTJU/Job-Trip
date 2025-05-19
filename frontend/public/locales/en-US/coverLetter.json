@@ -1,5 +1,6 @@
 {
   "ai_cover_letter_generator": "AI Cover Letter Generator",
+  "ai_cover_letter_generator_description": "Generate personalized cover letters using AI",
   "enter_job_description": "Please enter job description",
   "login_required": "Please login first",
   "not_provided": "Not provided",

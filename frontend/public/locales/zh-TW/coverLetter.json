@@ -1,5 +1,6 @@
 {
   "ai_cover_letter_generator": "AI求職信生成器",
+  "ai_cover_letter_generator_description": "使用AI創建個性化求職信",
   "enter_job_description": "請輸入職位描述",
   "login_required": "請先登入",
   "not_provided": "未提供",

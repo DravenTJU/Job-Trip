@@ -318,7 +318,7 @@ const ResumeFormPage: React.FC = () => {
   // 处理AI生成定制简历
   const handleGenerateTailoredResume = async () => {
     if (!formData.targetPosition || !formData.targetJob || !formData.content) {
-      setGenerationError('请填写目标职位、目标工作和简历内容');
+      setGenerationError(t('fill_target_fields', '请填写目标职位、目标工作和简历内容'));
       return;
     }
     
@@ -338,7 +338,7 @@ const ResumeFormPage: React.FC = () => {
           content: resultAction.payload
         });
       } else if (generateTailoredResume.rejected.match(resultAction)) {
-        setGenerationError(resultAction.payload as string || '生成失败，请重试');
+        setGenerationError(resultAction.payload as string || t('generation_failed', '生成失败，请重试'));
       }
     } catch (error) {
       setGenerationError((error as Error).message);
@@ -387,12 +387,12 @@ const ResumeFormPage: React.FC = () => {
     <div className="container-lg px-4">
       <div className="section space-y-6 mb-8">
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-          {isEditMode ? '编辑简历' : '创建新简历'}
+          {isEditMode ? t('edit_resume', '编辑简历') : t('create_resume', '创建新简历')}
         </h1>
         <p className="text-gray-500 dark:text-gray-400">
           {isEditMode 
-            ? '更新您的简历信息，使其保持最新状态' 
-            : '创建一份新的简历，展示您的技能和经验'}
+            ? t('update_resume_description', '更新您的简历信息，使其保持最新状态') 
+            : t('create_resume_description', '创建一份新的简历，展示您的技能和经验')}
         </p>
       </div>
 
@@ -426,7 +426,7 @@ const ResumeFormPage: React.FC = () => {
         <div className="p-6">
           <form onSubmit={handleSubmit}>
             <div className="mb-6">
-              <label htmlFor="name"><h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">简历名称</h3></label>
+              <label htmlFor="name"><h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">{t('resume_name', '简历名称')}</h3></label>
               <input
                 type="text"
                 id="name"
@@ -435,7 +435,7 @@ const ResumeFormPage: React.FC = () => {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                placeholder="例如：软件工程师简历"
+                placeholder={t('resume_name_placeholder', '例如：软件工程师简历')}
               />
             </div>
 
@@ -450,7 +450,7 @@ const ResumeFormPage: React.FC = () => {
             {formData.type === ResumeType.TAILORED && (
               <>
                 <div className="mb-6">
-                  <label htmlFor="targetPosition" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">目标职位</label>
+                  <label htmlFor="targetPosition" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('target_position', '目标职位')}</label>
                   <input
                     type="text"
                     id="targetPosition"
@@ -458,13 +458,13 @@ const ResumeFormPage: React.FC = () => {
                     className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     value={formData.targetPosition}
                     onChange={handleChange}
-                    placeholder="例如：前端工程师"
+                    placeholder={t('target_position_placeholder', '例如：前端工程师')}
                     required
                   />
                 </div>
 
                 <div className="mb-6">
-                  <label htmlFor="targetJob" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">目标工作</label>
+                  <label htmlFor="targetJob" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('target_job', '目标工作')}</label>
                   <input
                     type="text"
                     id="targetJob"
@@ -472,7 +472,7 @@ const ResumeFormPage: React.FC = () => {
                     className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     value={formData.targetJob}
                     onChange={handleChange}
-                    placeholder="例如：Google前端工程师"
+                    placeholder={t('target_job_placeholder', '例如：Google前端工程师')}
                     required
                   />
                 </div>
@@ -490,10 +490,10 @@ const ResumeFormPage: React.FC = () => {
                     onClick={handleGenerateTailoredResume}
                     disabled={isGenerating}
                   >
-                    {isGenerating ? '生成中...' : 'AI生成定制简历内容'}
+                    {isGenerating ? t('generating', '生成中...') : t('generate_tailored_resume', 'AI生成定制简历内容')}
                   </button>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                    点击按钮使用AI根据您的基础简历内容和目标职位生成定制简历
+                    {t('generate_tailored_resume_tip', '点击按钮使用AI根据您的基础简历内容和目标职位生成定制简历')}
                   </p>
                 </div>
               </>
@@ -502,48 +502,48 @@ const ResumeFormPage: React.FC = () => {
               {/* 个人信息部分 */}
               <div className="mb-8">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">个人信息</h3>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{t('personal_info', '个人信息')}</h3>
                 </div>
                 <div className="mb-6">
-                  <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">姓名</label>
+                  <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('full_name', '姓名')}</label>
                   <input
                     type="text"
                     id="fullName"
                     name="fullName"
                     className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                    placeholder="请输入您的姓名"
+                    placeholder={t('full_name_placeholder', '请输入您的姓名')}
                   />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="mb-6">
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">邮箱</label>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('email', '邮箱')}</label>
                     <input
                       type="email"
                       id="email"
                       name="email"
                       className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                      placeholder="请输入您的邮箱"
+                      placeholder={t('email_placeholder', '请输入您的邮箱')}
                     />
                   </div>
                   <div className="mb-6">
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">电话</label>
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('phone', '电话')}</label>
                     <input
                       type="tel"
                       id="phone"
                       name="phone"
                       className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                      placeholder="请输入您的电话号码"
+                      placeholder={t('phone_placeholder', '请输入您的电话号码')}
                     />
                   </div>
                 </div>
                 <div className="mb-6">
-                  <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">所在地</label>
+                  <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('location', '所在地')}</label>
                   <input
                     type="text"
                     id="location"
                     name="location"
                     className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                    placeholder="城市，省份"
+                    placeholder={t('location_placeholder', '城市，省份')}
                   />
                 </div>
               </div>
@@ -551,21 +551,21 @@ const ResumeFormPage: React.FC = () => {
               {/* 教育背景部分 */}
               <div className="form-section">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">教育背景</h3>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{t('education_background', '教育背景')}</h3>
                   <button 
                     type="button" 
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                     onClick={addEducation}
                   >
                     <Plus className="w-4 h-4" />
-                    添加教育经历
+                    {t('add_education', '添加教育经历')}
                   </button>
                 </div>
                 
                 {educations.map((education, index) => (
                   <div key={index} className="education-item mb-4 p-3 border rounded">
                     <div className="education-header flex justify-between items-center mb-2">
-                      <h4 className="text-md font-medium">教育经历 #{index + 1}</h4>
+                      <h4 className="text-md font-medium">{t('education_experience', '教育经历')} #{index + 1}</h4>
                       {educations.length > 1 && (
                         <button 
                           type="button" 
@@ -578,7 +578,7 @@ const ResumeFormPage: React.FC = () => {
                     </div>
                     
                     <div className="mb-4">
-                      <label htmlFor={`education-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">学历</label>
+                      <label htmlFor={`education-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('degree', '学历')}</label>
                       <input
                         type="text"
                         id={`education-${index}`}
@@ -586,12 +586,12 @@ const ResumeFormPage: React.FC = () => {
                         className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                         value={education.education}
                         onChange={(e) => handleEducationChange(index, 'education', e.target.value)}
-                        placeholder="最高学历"
+                        placeholder={t('degree_placeholder', '最高学历')}
                       />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div className="mb-2">
-                        <label htmlFor={`school-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">学校</label>
+                        <label htmlFor={`school-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('school', '学校')}</label>
                         <input
                           type="text"
                           id={`school-${index}`}
@@ -599,11 +599,11 @@ const ResumeFormPage: React.FC = () => {
                           className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                           value={education.school}
                           onChange={(e) => handleEducationChange(index, 'school', e.target.value)}
-                          placeholder="毕业院校"
+                          placeholder={t('school_placeholder', '毕业院校')}
                         />
                       </div>
                       <div className="mb-2">
-                        <label htmlFor={`major-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">专业</label>
+                        <label htmlFor={`major-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('major', '专业')}</label>
                         <input
                           type="text"
                           id={`major-${index}`}
@@ -611,13 +611,13 @@ const ResumeFormPage: React.FC = () => {
                           className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                           value={education.major}
                           onChange={(e) => handleEducationChange(index, 'major', e.target.value)}
-                          placeholder="所学专业"
+                          placeholder={t('major_placeholder', '所学专业')}
                         />
                       </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="mb-2">
-                        <label htmlFor={`eduStartDate-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">入学时间</label>
+                        <label htmlFor={`eduStartDate-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('start_date', '入学时间')}</label>
                         <input
                           type="date"
                           id={`eduStartDate-${index}`}
@@ -628,7 +628,7 @@ const ResumeFormPage: React.FC = () => {
                         />
                       </div>
                       <div className="mb-2">
-                        <label htmlFor={`eduEndDate-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">毕业时间</label>
+                        <label htmlFor={`eduEndDate-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('end_date', '毕业时间')}</label>
                         <input
                           type="date"
                           id={`eduEndDate-${index}`}
@@ -646,21 +646,21 @@ const ResumeFormPage: React.FC = () => {
               {/* 工作经历部分 */}
               <div className="form-section mb-8">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">工作经历</h3>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{t('work_experience', '工作经历')}</h3>
                   <button 
                     type="button" 
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                     onClick={addWorkExperience}
                   >
                     <Plus className="w-4 h-4" />
-                    添加工作经历
+                    {t('add_work_experience', '添加工作经历')}
                   </button>
                 </div>
                 
                 {workExperiences.map((experience, index) => (
                   <div key={index} className="work-experience-item mb-4 p-3 border rounded">
                     <div className="work-experience-header flex justify-between items-center mb-2">
-                      <h4 className="text-md font-medium">工作经历 #{index + 1}</h4>
+                      <h4 className="text-md font-medium">{t('work_experience_item', '工作经历')} #{index + 1}</h4>
                       {workExperiences.length > 1 && (
                         <button 
                           type="button" 
@@ -673,7 +673,7 @@ const ResumeFormPage: React.FC = () => {
                     </div>
                     
                     <div className="mb-4">
-                      <label htmlFor={`company-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">公司名称</label>
+                      <label htmlFor={`company-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('company', '公司名称')}</label>
                       <input
                         type="text"
                         id={`company-${index}`}
@@ -681,11 +681,11 @@ const ResumeFormPage: React.FC = () => {
                         className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                         value={experience.company}
                         onChange={(e) => handleWorkExperienceChange(index, 'company', e.target.value)}
-                        placeholder="公司名称"
+                        placeholder={t('company_placeholder', '公司名称')}
                       />
                     </div>
                     <div className="mb-4">
-                      <label htmlFor={`position-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">职位</label>
+                      <label htmlFor={`position-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('position', '职位')}</label>
                       <input
                         type="text"
                         id={`position-${index}`}
@@ -693,12 +693,12 @@ const ResumeFormPage: React.FC = () => {
                         className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                         value={experience.position}
                         onChange={(e) => handleWorkExperienceChange(index, 'position', e.target.value)}
-                        placeholder="担任职位"
+                        placeholder={t('position_placeholder', '担任职位')}
                       />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div className="mb-2">
-                        <label htmlFor={`workStartDate-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">开始时间</label>
+                        <label htmlFor={`workStartDate-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('work_start_date', '开始时间')}</label>
                         <input
                           type="date"
                           id={`workStartDate-${index}`}
@@ -709,7 +709,7 @@ const ResumeFormPage: React.FC = () => {
                         />
                       </div>
                       <div className="mb-2">
-                        <label htmlFor={`workEndDate-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">结束时间</label>
+                        <label htmlFor={`workEndDate-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('work_end_date', '结束时间')}</label>
                         <input
                           type="date"
                           id={`workEndDate-${index}`}
@@ -721,7 +721,7 @@ const ResumeFormPage: React.FC = () => {
                       </div>
                     </div>
                     <div className="form-group">
-                      <label htmlFor={`responsibilities-${index}`} className="form-label">工作职责与成就</label>
+                      <label htmlFor={`responsibilities-${index}`} className="form-label">{t('job_responsibilities', '工作职责与成就')}</label>
                       <textarea
                         id={`responsibilities-${index}`}
                         name={`responsibilities-${index}`}
@@ -729,10 +729,7 @@ const ResumeFormPage: React.FC = () => {
                         rows={4}
                         value={experience.responsibilities}
                         onChange={(e) => handleWorkExperienceChange(index, 'responsibilities', e.target.value)}
-                        placeholder="描述您的主要职责和取得的成就，例如：
-• 负责项目X的前端开发，使用React和TypeScript
-• 优化了页面加载速度，提升了30%的性能
-• 带领3人小组完成了关键功能的开发"
+                        placeholder={t('responsibilities_placeholder', '描述您的主要职责和取得的成就，例如：\n• 负责项目X的前端开发，使用React和TypeScript\n• 优化了页面加载速度，提升了30%的性能\n• 带领3人小组完成了关键功能的开发')}
                       />
                     </div>
                   </div>
@@ -741,18 +738,14 @@ const ResumeFormPage: React.FC = () => {
               
               {/* 技能部分 */}
               <div className="form-section mb-8">
-              <label htmlFor="skills"><h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">专业技能</h3></label>
+              <label htmlFor="skills"><h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">{t('skills', '专业技能')}</h3></label>
               <div className="mb-4">
                   <textarea
                     id="skills"
                     name="skills"
                     className="w-full min-h-[120px] px-3 py-2 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow resize-y"
                     rows={4}
-                    placeholder="列出您的专业技能，例如：
-• 前端开发：React, Vue, TypeScript, HTML5, CSS3
-• 后端开发：Node.js, Express, MongoDB
-• 工具：Git, Docker, Webpack
-• 语言：JavaScript, Python, Java"
+                    placeholder={t('skills_placeholder', '列出您的专业技能，例如：\n• 前端开发：React, Vue, TypeScript, HTML5, CSS3\n• 后端开发：Node.js, Express, MongoDB\n• 工具：Git, Docker, Webpack\n• 语言：JavaScript, Python, Java')}
                   />
                 </div>
               </div>
@@ -771,13 +764,13 @@ const ResumeFormPage: React.FC = () => {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                 onClick={() => navigate('/resume-builder')}
               >
-                取消
+                {t('cancel', '取消')}
               </button>
               <button 
                 type="submit" 
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
               >
-                {isEditMode ? '更新简历' : '创建简历'}
+                {isEditMode ? t('update_resume', '更新简历') : t('create_resume', '创建简历')}
               </button>
             </div>
           </form>
