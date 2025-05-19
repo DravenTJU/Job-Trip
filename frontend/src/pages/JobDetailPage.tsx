@@ -29,7 +29,7 @@ const JobDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { t } = useTranslation('jobs');
+  const { t, i18n } = useTranslation('jobs');
   const { job, isLoading, error } = useSelector((state: RootState) => state.jobs);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   
@@ -98,7 +98,8 @@ const JobDetailPage: React.FC = () => {
       return t('years_ago', '{{count}}年前', { count: Math.floor(diffDays / 365) });
     }
     
-    return date.toLocaleDateString('zh-CN', {
+    // 使用组件级别获取的i18n.language而不是硬编码'zh-CN'
+    return date.toLocaleDateString(i18n.language, {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
