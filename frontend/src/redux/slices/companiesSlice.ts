@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Company, CreateCompanyData, PaginatedResponse } from '@/types';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { Company, CreateCompanyData } from '@/types';
 import companyService from '@/services/companyService';
 
 // 异步Thunk actions
@@ -113,7 +113,12 @@ const companiesSlice = createSlice({
       .addCase(fetchCompanies.fulfilled, (state, action) => {
         state.isLoading = false;
         state.companies = action.payload.data;
-        state.pagination = action.payload.pagination;
+        state.pagination = {
+          total: action.payload.total,
+          page: action.payload.page,
+          limit: action.payload.size,
+          pages: action.payload.totalPages
+        };
         state.error = null;
       })
       .addCase(fetchCompanies.rejected, (state, action) => {
