@@ -195,6 +195,66 @@ async function insertTestData(db) {
         description: '国际金融服务企业，提供全面的金融解决方案。',
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        name: 'TechCloud Solutions',
+        website: 'https://techcloudsolutions.example.com',
+        industry: 'Information Technology',
+        size: 'medium',
+        location: 'Auckland, New Zealand',
+        description: 'Leading cloud computing service provider focused on delivering efficient and secure cloud solutions for enterprises.',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'Digital Innovations Ltd.',
+        website: 'https://digitalinnovations.example.com',
+        industry: 'Software Development',
+        size: 'small',
+        location: 'Wellington, New Zealand',
+        description: 'Innovative software development company specializing in mobile and web application development.',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'Global Finance Group',
+        website: 'https://globalfinancegroup.example.com',
+        industry: 'Financial Services',
+        size: 'large',
+        location: 'Auckland, New Zealand',
+        description: 'International financial services enterprise providing comprehensive financial solutions.',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: '雲端數位科技股份有限公司',
+        website: 'https://cloudtech.example.com',
+        industry: '資訊科技',
+        size: 'medium',
+        location: '奧克蘭, 紐西蘭',
+        description: '領先的雲端運算服務供應商，專注於為企業提供高效、安全的雲端解決方案。',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: '創新數位科技有限公司',
+        website: 'https://innovativetech.example.com',
+        industry: '軟體開發',
+        size: 'small',
+        location: '惠靈頓, 紐西蘭',
+        description: '創新的軟體開發公司，專注於移動應用和網路應用開發。',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: '環球金融集團',
+        website: 'https://globalfinancegroup.example.com',
+        industry: '金融服務',
+        size: 'large',
+        location: '奧克蘭, 紐西蘭',
+        description: '國際金融服務企業，提供全面的金融解決方案。',
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ];
     
@@ -203,6 +263,7 @@ async function insertTestData(db) {
     
     // 3. 添加测试职位
     const testJobs = [
+      // 简体中文职位 (zh-CN)
       {
         platform: 'linkedin',
         title: '资深前端开发工程师',
@@ -224,7 +285,8 @@ async function insertTestData(db) {
         deadline: new Date(new Date().setDate(new Date().getDate() + 30)),
         notes: '需要尽快填补这个职位',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        language: 'zh-CN'
       },
       {
         platform: 'seek',
@@ -247,7 +309,8 @@ async function insertTestData(db) {
         deadline: new Date(new Date().setDate(new Date().getDate() + 15)),
         notes: '',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        language: 'zh-CN'
       },
       {
         platform: 'indeed',
@@ -270,7 +333,8 @@ async function insertTestData(db) {
         deadline: new Date(new Date().setDate(new Date().getDate() + 20)),
         notes: '需要有金融行业背景',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        language: 'zh-CN'
       },
       {
         platform: 'seek',
@@ -293,7 +357,8 @@ async function insertTestData(db) {
         deadline: new Date(new Date().setDate(new Date().getDate() + 25)),
         notes: '',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        language: 'zh-CN'
       },
       {
         platform: 'linkedin',
@@ -316,7 +381,252 @@ async function insertTestData(db) {
         deadline: new Date(new Date().setDate(new Date().getDate() + 30)),
         notes: '高优先级职位',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        language: 'zh-CN'
+      },
+      
+      // 英文职位 (en-US)
+      {
+        platform: 'linkedin',
+        title: 'Senior Frontend Developer',
+        company: 'TechCloud Solutions',
+        location: 'Auckland, New Zealand',
+        description: 'We are looking for a Senior Frontend Developer to join our team. This position requires expertise in React, Vue and other frontend frameworks, with excellent teamwork skills.',
+        requirements: [
+          'More than 5 years of frontend development experience',
+          'Proficiency in React, Vue and other frontend frameworks',
+          'Experience with HTML5, CSS3, JavaScript(ES6+)',
+          'Experience with responsive design and mobile development',
+          'Excellent communication skills'
+        ],
+        salary: '100k-130k NZD',
+        jobType: 'full-time',
+        source: 'linkedin',
+        sourceId: 'linkedin-job-en-123',
+        sourceUrl: 'https://linkedin.com/jobs/view/linkedin-job-en-123',
+        deadline: new Date(new Date().setDate(new Date().getDate() + 30)),
+        notes: 'Need to fill this position quickly',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        language: 'en-US'
+      },
+      {
+        platform: 'seek',
+        title: 'Backend Developer',
+        company: 'Digital Innovations Ltd.',
+        location: 'Wellington, New Zealand',
+        description: 'We need an experienced Backend Developer to develop and maintain our API services. This position requires expertise in Node.js and MongoDB.',
+        requirements: [
+          'More than 3 years of backend development experience',
+          'Proficiency in Node.js and Express.js',
+          'Experience with MongoDB, Redis and other databases',
+          'Understanding of microservice architecture',
+          'Strong code quality awareness'
+        ],
+        salary: '90k-120k NZD',
+        jobType: 'full-time',
+        source: 'seek',
+        sourceId: 'seek-job-en-456',
+        sourceUrl: 'https://seek.com/jobs/seek-job-en-456',
+        deadline: new Date(new Date().setDate(new Date().getDate() + 15)),
+        notes: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        language: 'en-US'
+      },
+      {
+        platform: 'indeed',
+        title: 'Data Analyst',
+        company: 'Global Finance Group',
+        location: 'Auckland, New Zealand',
+        description: 'We are looking for a Data Analyst to join our team, responsible for analyzing financial data and generating reports. Requires strong statistical knowledge and data visualization skills.',
+        requirements: [
+          'Bachelor degree or above in Statistics or related fields',
+          'More than 2 years of data analysis experience',
+          'Familiarity with SQL, Python or R',
+          'Experience with Tableau, Power BI and other data visualization tools',
+          'Financial industry experience preferred'
+        ],
+        salary: '85k-105k NZD',
+        jobType: 'full-time',
+        source: 'indeed',
+        sourceId: 'indeed-job-en-789',
+        sourceUrl: 'https://indeed.com/jobs/indeed-job-en-789',
+        deadline: new Date(new Date().setDate(new Date().getDate() + 20)),
+        notes: 'Financial industry background required',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        language: 'en-US'
+      },
+      {
+        platform: 'seek',
+        title: 'UI/UX Designer',
+        company: 'Digital Innovations Ltd.',
+        location: 'Wellington, New Zealand',
+        description: 'We need a creative UI/UX Designer to join our team, responsible for designing user interfaces and optimizing user experience.',
+        requirements: [
+          'More than 3 years of UI/UX design experience',
+          'Proficiency in Figma, Sketch and other design tools',
+          'Good design sense and creative thinking',
+          'Ability to understand user needs and translate them into designs',
+          'Experience with mobile app design'
+        ],
+        salary: '80k-100k NZD',
+        jobType: 'full-time',
+        source: 'seek',
+        sourceId: 'seek-job-en-101',
+        sourceUrl: 'https://seek.com/jobs/seek-job-en-101',
+        deadline: new Date(new Date().setDate(new Date().getDate() + 25)),
+        notes: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        language: 'en-US'
+      },
+      {
+        platform: 'linkedin',
+        title: 'Project Manager',
+        company: 'TechCloud Solutions',
+        location: 'Auckland, New Zealand',
+        description: 'We need an experienced Project Manager to lead our software development projects, ensuring they are completed on time, on quality and on budget.',
+        requirements: [
+          'More than 5 years of software project management experience',
+          'PMP certification preferred',
+          'Proficiency in agile development methodologies',
+          'Excellent communication and leadership skills',
+          'Strong risk management and problem-solving abilities'
+        ],
+        salary: '120k-150k NZD',
+        jobType: 'full-time',
+        source: 'linkedin',
+        sourceId: 'linkedin-job-en-202',
+        sourceUrl: 'https://linkedin.com/jobs/view/linkedin-job-en-202',
+        deadline: new Date(new Date().setDate(new Date().getDate() + 30)),
+        notes: 'High priority position',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        language: 'en-US'
+      },
+      
+      // 繁体中文职位 (zh-TW)
+      {
+        platform: 'linkedin',
+        title: '資深前端開發工程師',
+        company: '雲端數位科技股份有限公司',
+        location: '奧克蘭, 紐西蘭',
+        description: '我們正在尋找一位資深前端開發工程師加入我們的團隊。該職位需要精通React、Vue等前端框架，具有良好的團隊協作能力。',
+        requirements: [
+          '5年以上前端開發經驗',
+          '精通React、Vue等前端框架',
+          '熟悉HTML5、CSS3、JavaScript(ES6+)',
+          '有響應式設計和移動端開發經驗',
+          '良好的英語溝通能力'
+        ],
+        salary: '100k-130k NZD',
+        jobType: 'full-time',
+        source: 'linkedin',
+        sourceId: 'linkedin-job-tw-123',
+        sourceUrl: 'https://linkedin.com/jobs/view/linkedin-job-tw-123',
+        deadline: new Date(new Date().setDate(new Date().getDate() + 30)),
+        notes: '需要盡快填補這個職位',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        language: 'zh-TW'
+      },
+      {
+        platform: 'seek',
+        title: '後端開發工程師',
+        company: '創新數位科技有限公司',
+        location: '惠靈頓, 紐西蘭',
+        description: '我們需要一位有經驗的後端開發工程師，負責開發和維護我們的API服務。該職位需要精通Node.js和MongoDB。',
+        requirements: [
+          '3年以上後端開發經驗',
+          '精通Node.js和Express.js',
+          '熟悉MongoDB、Redis等數據庫',
+          '了解微服務架構',
+          '有良好的代碼質量意識'
+        ],
+        salary: '90k-120k NZD',
+        jobType: 'full-time',
+        source: 'seek',
+        sourceId: 'seek-job-tw-456',
+        sourceUrl: 'https://seek.com/jobs/seek-job-tw-456',
+        deadline: new Date(new Date().setDate(new Date().getDate() + 15)),
+        notes: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        language: 'zh-TW'
+      },
+      {
+        platform: 'indeed',
+        title: '數據分析師',
+        company: '環球金融集團',
+        location: '奧克蘭, 紐西蘭',
+        description: '我們正在尋找一位數據分析師加入我們的團隊，負責分析金融數據和生成報告。要求具有良好的統計學知識和數據可視化能力。',
+        requirements: [
+          '統計學或相關專業學士以上學位',
+          '2年以上數據分析經驗',
+          '熟悉SQL、Python或R',
+          '熟悉Tableau、Power BI等數據可視化工具',
+          '金融行業經驗優先'
+        ],
+        salary: '85k-105k NZD',
+        jobType: 'full-time',
+        source: 'indeed',
+        sourceId: 'indeed-job-tw-789',
+        sourceUrl: 'https://indeed.com/jobs/indeed-job-tw-789',
+        deadline: new Date(new Date().setDate(new Date().getDate() + 20)),
+        notes: '需要有金融行業背景',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        language: 'zh-TW'
+      },
+      {
+        platform: 'seek',
+        title: 'UI/UX設計師',
+        company: '創新數位科技有限公司',
+        location: '惠靈頓, 紐西蘭',
+        description: '我們需要一位有創意的UI/UX設計師加入我們的團隊，負責設計用戶界面和優化用戶體驗。',
+        requirements: [
+          '3年以上UI/UX設計經驗',
+          '精通Figma、Sketch等設計工具',
+          '有良好的設計感和創意思維',
+          '能夠理解用戶需求並轉化為設計',
+          '有移動應用設計經驗'
+        ],
+        salary: '80k-100k NZD',
+        jobType: 'full-time',
+        source: 'seek',
+        sourceId: 'seek-job-tw-101',
+        sourceUrl: 'https://seek.com/jobs/seek-job-tw-101',
+        deadline: new Date(new Date().setDate(new Date().getDate() + 25)),
+        notes: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        language: 'zh-TW'
+      },
+      {
+        platform: 'linkedin',
+        title: '專案經理',
+        company: '雲端數位科技股份有限公司',
+        location: '奧克蘭, 紐西蘭',
+        description: '我們需要一位經驗豐富的專案經理來領導我們的軟體開發專案，確保專案按時、按質、按預算完成。',
+        requirements: [
+          '5年以上軟體專案管理經驗',
+          'PMP認證優先',
+          '精通敏捷開發方法',
+          '具有出色的溝通和領導能力',
+          '有良好的風險管理和問題解決能力'
+        ],
+        salary: '120k-150k NZD',
+        jobType: 'full-time',
+        source: 'linkedin',
+        sourceId: 'linkedin-job-tw-202',
+        sourceUrl: 'https://linkedin.com/jobs/view/linkedin-job-tw-202',
+        deadline: new Date(new Date().setDate(new Date().getDate() + 30)),
+        notes: '高優先級職位',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        language: 'zh-TW'
       }
     ];
     
@@ -327,10 +637,16 @@ async function insertTestData(db) {
     const users = await db.collection('users').find({}).toArray();
     const jobs = await db.collection('jobs').find({}).toArray();
     
+    // 获取各种语言的职位
+    const enJobs = jobs.filter(job => job.language === 'en-US');
+    const zhCNJobs = jobs.filter(job => job.language === 'zh-CN');
+    const zhTWJobs = jobs.filter(job => job.language === 'zh-TW');
+    
     const userJobs = [
+      // 英语用户 (John Doe) 与英文职位的关联
       {
         userId: users[0]._id,
-        jobId: jobs[0]._id,
+        jobId: enJobs[0]._id,  // Senior Frontend Developer
         status: 'applied',
         isFavorite: true,
         customTags: ['Key Company', 'Tech Match'],
@@ -341,7 +657,7 @@ async function insertTestData(db) {
       },
       {
         userId: users[0]._id,
-        jobId: jobs[1]._id,
+        jobId: enJobs[1]._id,  // Backend Developer
         status: 'interviewing',
         isFavorite: true,
         customTags: ['Good Prospect'],
@@ -352,7 +668,7 @@ async function insertTestData(db) {
       },
       {
         userId: users[0]._id,
-        jobId: jobs[2]._id,
+        jobId: enJobs[2]._id,  // Data Analyst
         status: 'new',
         isFavorite: false,
         customTags: [],
@@ -361,9 +677,11 @@ async function insertTestData(db) {
         createdAt: new Date(new Date().setDate(new Date().getDate() - 2)),
         updatedAt: new Date()
       },
+      
+      // 简体中文用户 (testuser) 与中文职位的关联
       {
         userId: users[1]._id,
-        jobId: jobs[3]._id,
+        jobId: zhCNJobs[3]._id,  // UI/UX设计师
         status: 'applied',
         isFavorite: true,
         customTags: ['梦想公司'],
@@ -374,7 +692,7 @@ async function insertTestData(db) {
       },
       {
         userId: users[1]._id,
-        jobId: jobs[4]._id,
+        jobId: zhCNJobs[4]._id,  // 项目经理
         status: 'rejected',
         isFavorite: false,
         customTags: [],
@@ -384,8 +702,21 @@ async function insertTestData(db) {
         updatedAt: new Date()
       },
       {
+        userId: users[1]._id,
+        jobId: zhCNJobs[0]._id,  // 资深前端开发工程师
+        status: 'new',
+        isFavorite: true,
+        customTags: ['技能匹配'],
+        notes: '需要准备针对性简历',
+        reminderDate: new Date(new Date().setDate(new Date().getDate() + 1)),
+        createdAt: new Date(new Date().setDate(new Date().getDate() - 1)),
+        updatedAt: new Date()
+      },
+      
+      // 繁体中文用户 (wangminghui) 与繁体中文职位的关联
+      {
         userId: users[2]._id,
-        jobId: jobs[0]._id,
+        jobId: zhTWJobs[0]._id,  // 資深前端開發工程師
         status: 'interviewing',
         isFavorite: true,
         customTags: ['理想職位', '技術匹配'],
@@ -396,13 +727,24 @@ async function insertTestData(db) {
       },
       {
         userId: users[2]._id,
-        jobId: jobs[4]._id,
+        jobId: zhTWJobs[4]._id,  // 專案經理
         status: 'applied',
         isFavorite: true,
         customTags: ['管理崗位'],
         notes: '已提交申請，附帶專案經驗說明',
         reminderDate: new Date(new Date().setDate(new Date().getDate() + 6)),
         createdAt: new Date(new Date().setDate(new Date().getDate() - 4)),
+        updatedAt: new Date()
+      },
+      {
+        userId: users[2]._id,
+        jobId: zhTWJobs[2]._id,  // 數據分析師
+        status: 'new',
+        isFavorite: false,
+        customTags: ['次要選擇'],
+        notes: '考慮是否提交申請',
+        reminderDate: new Date(new Date().setDate(new Date().getDate() + 10)),
+        createdAt: new Date(),
         updatedAt: new Date()
       }
     ];
@@ -414,8 +756,9 @@ async function insertTestData(db) {
     const userJobsData = await db.collection('user_jobs').find({}).toArray();
     
     const applicationHistory = [
+      // 英文用户的申请历史
       {
-        userJobId: userJobsData[0]._id,
+        userJobId: userJobsData[0]._id, // John Doe - Senior Frontend Developer
         previousStatus: 'new',
         newStatus: 'applied',
         notes: 'Submitted resume and cover letter',
@@ -423,7 +766,7 @@ async function insertTestData(db) {
         updatedBy: users[0]._id
       },
       {
-        userJobId: userJobsData[1]._id,
+        userJobId: userJobsData[1]._id, // John Doe - Backend Developer
         previousStatus: 'new',
         newStatus: 'applied',
         notes: 'Applied through LinkedIn Easy Apply',
@@ -431,15 +774,17 @@ async function insertTestData(db) {
         updatedBy: users[0]._id
       },
       {
-        userJobId: userJobsData[1]._id,
+        userJobId: userJobsData[1]._id, // John Doe - Backend Developer
         previousStatus: 'applied',
         newStatus: 'interviewing',
         notes: 'Received interview invitation, scheduled for next Monday',
         createdAt: new Date(new Date().setDate(new Date().getDate() - 3)),
         updatedBy: users[0]._id
       },
+      
+      // 简体中文用户的申请历史
       {
-        userJobId: userJobsData[3]._id,
+        userJobId: userJobsData[3]._id, // testuser - UI/UX设计师
         previousStatus: 'new',
         newStatus: 'applied',
         notes: '提交了申请',
@@ -447,7 +792,7 @@ async function insertTestData(db) {
         updatedBy: users[1]._id
       },
       {
-        userJobId: userJobsData[4]._id,
+        userJobId: userJobsData[4]._id, // testuser - 项目经理
         previousStatus: 'new',
         newStatus: 'applied',
         notes: '提交了申请',
@@ -455,15 +800,17 @@ async function insertTestData(db) {
         updatedBy: users[1]._id
       },
       {
-        userJobId: userJobsData[4]._id,
+        userJobId: userJobsData[4]._id, // testuser - 项目经理
         previousStatus: 'applied',
         newStatus: 'rejected',
         notes: '收到拒绝邮件，理由是经验不足',
         createdAt: new Date(new Date().setDate(new Date().getDate() - 10)),
         updatedBy: users[1]._id
       },
+      
+      // 繁体中文用户的申请历史
       {
-        userJobId: userJobsData[5]._id,
+        userJobId: userJobsData[6]._id, // wangminghui - 資深前端開發工程師
         previousStatus: 'new',
         newStatus: 'applied',
         notes: '提交了量身定制的履歷和求職信',
@@ -471,7 +818,7 @@ async function insertTestData(db) {
         updatedBy: users[2]._id
       },
       {
-        userJobId: userJobsData[5]._id,
+        userJobId: userJobsData[6]._id, // wangminghui - 資深前端開發工程師
         previousStatus: 'applied',
         newStatus: 'interviewing',
         notes: '通過初步篩選，獲邀參加第一輪視訊面試',
@@ -479,7 +826,7 @@ async function insertTestData(db) {
         updatedBy: users[2]._id
       },
       {
-        userJobId: userJobsData[6]._id,
+        userJobId: userJobsData[7]._id, // wangminghui - 專案經理
         previousStatus: 'new',
         newStatus: 'applied',
         notes: '提交申請並附上專案管理經驗摘要',
