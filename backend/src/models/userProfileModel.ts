@@ -1,6 +1,90 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { IUser } from './userModel';
 
+// 定义子文档接口
+export interface IEducation extends Document {
+  _id?: mongoose.Types.ObjectId;
+  institution?: string;
+  degree?: string;
+  field?: string;
+  startDate?: Date;
+  endDate?: Date;
+  description?: string;
+  location?: string;
+}
+
+export interface IWorkExperience extends Document {
+  _id?: mongoose.Types.ObjectId;
+  company?: string;
+  position?: string;
+  startDate?: Date;
+  endDate?: Date;
+  current?: boolean;
+  description?: string;
+  location?: string;
+  achievements?: string[];
+}
+
+export interface ISkill extends Document {
+  _id?: mongoose.Types.ObjectId;
+  name: string;
+  level?: string;
+  endorsements?: number;
+  category?: string;
+}
+
+export interface ICertification extends Document {
+  _id?: mongoose.Types.ObjectId;
+  name: string;
+  issuer?: string;
+  issueDate?: Date;
+  expirationDate?: Date;
+  credentialId?: string;
+  credentialUrl?: string;
+}
+
+export interface IProject extends Document {
+  _id?: mongoose.Types.ObjectId;
+  name: string;
+  description?: string;
+  startDate?: Date;
+  endDate?: Date;
+  url?: string;
+  technologies?: string[];
+}
+
+export interface ILanguage extends Document {
+  _id?: mongoose.Types.ObjectId;
+  language: string;
+  proficiency?: string;
+}
+
+export interface IVolunteerExperience extends Document {
+  _id?: mongoose.Types.ObjectId;
+  organization: string;
+  role?: string;
+  startDate?: Date;
+  endDate?: Date;
+  description?: string;
+}
+
+export interface IHonorAward extends Document {
+  _id?: mongoose.Types.ObjectId;
+  title: string;
+  issuer?: string;
+  date?: Date;
+  description?: string;
+}
+
+export interface IRecommendation extends Document {
+  _id?: mongoose.Types.ObjectId;
+  recommenderName: string;
+  recommenderTitle?: string;
+  relationship?: string;
+  content: string;
+  date?: Date;
+}
+
 // 用户档案接口
 export interface IUserProfile extends Document {
   userId: mongoose.Types.ObjectId | IUser;
@@ -20,71 +104,15 @@ export interface IUserProfile extends Document {
       other?: Array<{ name: string; url: string }>;
     };
   };
-  educations?: Array<{
-    institution?: string;
-    degree?: string;
-    field?: string;
-    startDate?: Date;
-    endDate?: Date;
-    description?: string;
-    location?: string;
-  }>;
-  workExperiences?: Array<{
-    company?: string;
-    position?: string;
-    startDate?: Date;
-    endDate?: Date;
-    current?: boolean;
-    description?: string;
-    location?: string;
-    achievements?: string[];
-  }>;
-  skills?: Array<{
-    name: string;
-    level?: string;
-    endorsements?: number;
-    category?: string;
-  }>;
-  certifications?: Array<{
-    name: string;
-    issuer?: string;
-    issueDate?: Date;
-    expirationDate?: Date;
-    credentialId?: string;
-    credentialUrl?: string;
-  }>;
-  projects?: Array<{
-    name: string;
-    description?: string;
-    startDate?: Date;
-    endDate?: Date;
-    url?: string;
-    technologies?: string[];
-  }>;
-  languages?: Array<{
-    language: string;
-    proficiency?: string;
-  }>;
-  volunteerExperiences?: Array<{
-    organization: string;
-    role?: string;
-    startDate?: Date;
-    endDate?: Date;
-    description?: string;
-  }>;
-  honorsAwards?: Array<{
-    title: string;
-    issuer?: string;
-    date?: Date;
-    description?: string;
-  }>;
-  recommendations?: Array<{
-    recommenderName: string;
-    recommenderTitle?: string;
-    relationship?: string;
-    content: string;
-    date?: Date;
-  }>;
+  educations?: IEducation[];
+  workExperiences?: IWorkExperience[];
+  skills?: ISkill[];
+  certifications?: ICertification[];
+  projects?: IProject[];
+  languages?: ILanguage[];
+  volunteerExperiences?: IVolunteerExperience[];
+  honorsAwards?: IHonorAward[];
+  recommendations?: IRecommendation[];
   profileCompleteness?: number;
   lastUpdated?: Date;
   createdAt: Date;

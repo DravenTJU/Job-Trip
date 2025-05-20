@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import UserProfile from '../models/userProfileModel';
+import UserProfile, { IEducation, IWorkExperience, ISkill, ICertification, IProject, ILanguage, IVolunteerExperience, IHonorAward, IRecommendation } from '../models/userProfileModel';
 import User from '../models/userModel';
 import { AppError } from '../utils/AppError';
 import { createApiResponse } from '../middleware/errorHandler';
@@ -227,7 +227,10 @@ export const updateEducation = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const education = userProfile.educations?.id(educationId);
+    // 使用find方法替代id()方法
+    const education = userProfile.educations?.find(
+      edu => edu._id && edu._id.toString() === educationId
+    );
 
     if (!education) {
       return next(new AppError('教育经历不存在', 404));
@@ -266,15 +269,17 @@ export const deleteEducation = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const education = userProfile.educations?.id(educationId);
+    // 使用findIndex方法替代id()方法
+    const educationIndex = userProfile.educations?.findIndex(
+      edu => edu._id && edu._id.toString() === educationId
+    );
 
-    if (!education) {
+    if (educationIndex === undefined || educationIndex === -1) {
       return next(new AppError('教育经历不存在', 404));
     }
 
-    // @ts-ignore TODO: Mongoose 子文档的 remove() 方法类型可能需要更精确的处理或确认
-    education.remove(); // Mongoose < 6 
-    // For Mongoose 5+ alternative: userProfile.educations.pull({ _id: educationId });
+    // 使用splice方法移除元素
+    userProfile.educations?.splice(educationIndex, 1);
 
     await userProfile.save();
 
@@ -337,7 +342,10 @@ export const updateWorkExperience = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const workExperience = userProfile.workExperiences?.id(workExperienceId);
+    // 使用find方法替代id()方法
+    const workExperience = userProfile.workExperiences?.find(
+      exp => exp._id && exp._id.toString() === workExperienceId
+    );
 
     if (!workExperience) {
       return next(new AppError('工作经历不存在', 404));
@@ -375,15 +383,17 @@ export const deleteWorkExperience = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const workExperience = userProfile.workExperiences?.id(workExperienceId);
+    // 使用findIndex方法替代id()方法
+    const workExperienceIndex = userProfile.workExperiences?.findIndex(
+      exp => exp._id && exp._id.toString() === workExperienceId
+    );
 
-    if (!workExperience) {
+    if (workExperienceIndex === undefined || workExperienceIndex === -1) {
       return next(new AppError('工作经历不存在', 404));
     }
 
-    // @ts-ignore
-    workExperience.remove();
-    // Alternative for Mongoose 5+: userProfile.workExperiences.pull({ _id: workExperienceId });
+    // 使用splice方法移除元素
+    userProfile.workExperiences?.splice(workExperienceIndex, 1);
 
     await userProfile.save();
 
@@ -446,7 +456,10 @@ export const updateSkill = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const skill = userProfile.skills?.id(skillId);
+    // 使用find方法替代id()方法
+    const skill = userProfile.skills?.find(
+      s => s._id && s._id.toString() === skillId
+    );
 
     if (!skill) {
       return next(new AppError('技能不存在', 404));
@@ -484,15 +497,17 @@ export const deleteSkill = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const skill = userProfile.skills?.id(skillId);
+    // 使用findIndex方法替代id()方法
+    const skillIndex = userProfile.skills?.findIndex(
+      s => s._id && s._id.toString() === skillId
+    );
 
-    if (!skill) {
+    if (skillIndex === undefined || skillIndex === -1) {
       return next(new AppError('技能不存在', 404));
     }
 
-    // @ts-ignore
-    skill.remove();
-    // Alternative for Mongoose 5+: userProfile.skills.pull({ _id: skillId });
+    // 使用splice方法移除元素
+    userProfile.skills?.splice(skillIndex, 1);
 
     await userProfile.save();
 
@@ -555,7 +570,10 @@ export const updateCertification = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const certification = userProfile.certifications?.id(certificationId);
+    // 使用find方法替代id()方法
+    const certification = userProfile.certifications?.find(
+      cert => cert._id && cert._id.toString() === certificationId
+    );
 
     if (!certification) {
       return next(new AppError('证书不存在', 404));
@@ -593,15 +611,17 @@ export const deleteCertification = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const certification = userProfile.certifications?.id(certificationId);
+    // 使用findIndex方法替代id()方法
+    const certificationIndex = userProfile.certifications?.findIndex(
+      cert => cert._id && cert._id.toString() === certificationId
+    );
 
-    if (!certification) {
+    if (certificationIndex === undefined || certificationIndex === -1) {
       return next(new AppError('证书不存在', 404));
     }
 
-    // @ts-ignore
-    certification.remove();
-    // Alternative for Mongoose 5+: userProfile.certifications.pull({ _id: certificationId });
+    // 使用splice方法移除元素
+    userProfile.certifications?.splice(certificationIndex, 1);
 
     await userProfile.save();
 
@@ -664,7 +684,10 @@ export const updateProject = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const project = userProfile.projects?.id(projectId);
+    // 使用find方法替代id()方法
+    const project = userProfile.projects?.find(
+      p => p._id && p._id.toString() === projectId
+    );
 
     if (!project) {
       return next(new AppError('项目经历不存在', 404));
@@ -702,15 +725,17 @@ export const deleteProject = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const project = userProfile.projects?.id(projectId);
+    // 使用findIndex方法替代id()方法
+    const projectIndex = userProfile.projects?.findIndex(
+      p => p._id && p._id.toString() === projectId
+    );
 
-    if (!project) {
+    if (projectIndex === undefined || projectIndex === -1) {
       return next(new AppError('项目经历不存在', 404));
     }
 
-    // @ts-ignore
-    project.remove();
-    // Alternative for Mongoose 5+: userProfile.projects.pull({ _id: projectId });
+    // 使用splice方法移除元素
+    userProfile.projects?.splice(projectIndex, 1);
 
     await userProfile.save();
 
@@ -773,7 +798,10 @@ export const updateLanguage = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const language = userProfile.languages?.id(languageId);
+    // 使用find方法替代id()方法
+    const language = userProfile.languages?.find(
+      lang => lang._id && lang._id.toString() === languageId
+    );
 
     if (!language) {
       return next(new AppError('语言能力不存在', 404));
@@ -811,15 +839,17 @@ export const deleteLanguage = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const language = userProfile.languages?.id(languageId);
+    // 使用findIndex方法替代id()方法
+    const languageIndex = userProfile.languages?.findIndex(
+      lang => lang._id && lang._id.toString() === languageId
+    );
 
-    if (!language) {
+    if (languageIndex === undefined || languageIndex === -1) {
       return next(new AppError('语言能力不存在', 404));
     }
 
-    // @ts-ignore
-    language.remove();
-    // Alternative for Mongoose 5+: userProfile.languages.pull({ _id: languageId });
+    // 使用splice方法移除元素
+    userProfile.languages?.splice(languageIndex, 1);
 
     await userProfile.save();
 
@@ -882,7 +912,10 @@ export const updateVolunteerExperience = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const volunteerExperience = userProfile.volunteerExperiences?.id(volunteerExperienceId);
+    // 使用find方法替代id()方法
+    const volunteerExperience = userProfile.volunteerExperiences?.find(
+      exp => exp._id && exp._id.toString() === volunteerExperienceId
+    );
 
     if (!volunteerExperience) {
       return next(new AppError('志愿者经历不存在', 404));
@@ -920,15 +953,17 @@ export const deleteVolunteerExperience = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const volunteerExperience = userProfile.volunteerExperiences?.id(volunteerExperienceId);
+    // 使用findIndex方法替代id()方法
+    const volunteerExperienceIndex = userProfile.volunteerExperiences?.findIndex(
+      exp => exp._id && exp._id.toString() === volunteerExperienceId
+    );
 
-    if (!volunteerExperience) {
+    if (volunteerExperienceIndex === undefined || volunteerExperienceIndex === -1) {
       return next(new AppError('志愿者经历不存在', 404));
     }
 
-    // @ts-ignore
-    volunteerExperience.remove();
-    // Alternative for Mongoose 5+: userProfile.volunteerExperiences.pull({ _id: volunteerExperienceId });
+    // 使用splice方法移除元素
+    userProfile.volunteerExperiences?.splice(volunteerExperienceIndex, 1);
 
     await userProfile.save();
 
@@ -991,7 +1026,10 @@ export const updateHonorAward = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const honorAward = userProfile.honorsAwards?.id(honorAwardId);
+    // 使用find方法替代id()方法
+    const honorAward = userProfile.honorsAwards?.find(
+      award => award._id && award._id.toString() === honorAwardId
+    );
 
     if (!honorAward) {
       return next(new AppError('荣誉奖项不存在', 404));
@@ -1029,15 +1067,17 @@ export const deleteHonorAward = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const honorAward = userProfile.honorsAwards?.id(honorAwardId);
+    // 使用findIndex方法替代id()方法
+    const honorAwardIndex = userProfile.honorsAwards?.findIndex(
+      award => award._id && award._id.toString() === honorAwardId
+    );
 
-    if (!honorAward) {
+    if (honorAwardIndex === undefined || honorAwardIndex === -1) {
       return next(new AppError('荣誉奖项不存在', 404));
     }
 
-    // @ts-ignore
-    honorAward.remove();
-    // Alternative for Mongoose 5+: userProfile.honorsAwards.pull({ _id: honorAwardId });
+    // 使用splice方法移除元素
+    userProfile.honorsAwards?.splice(honorAwardIndex, 1);
 
     await userProfile.save();
 
@@ -1100,7 +1140,10 @@ export const updateRecommendation = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const recommendation = userProfile.recommendations?.id(recommendationId);
+    // 使用find方法替代id()方法
+    const recommendation = userProfile.recommendations?.find(
+      rec => rec._id && rec._id.toString() === recommendationId
+    );
 
     if (!recommendation) {
       return next(new AppError('推荐信不存在', 404));
@@ -1138,15 +1181,17 @@ export const deleteRecommendation = async (
       return next(new AppError('用户档案不存在', 404));
     }
 
-    const recommendation = userProfile.recommendations?.id(recommendationId);
+    // 使用findIndex方法替代id()方法
+    const recommendationIndex = userProfile.recommendations?.findIndex(
+      rec => rec._id && rec._id.toString() === recommendationId
+    );
 
-    if (!recommendation) {
+    if (recommendationIndex === undefined || recommendationIndex === -1) {
       return next(new AppError('推荐信不存在', 404));
     }
 
-    // @ts-ignore
-    recommendation.remove();
-    // Alternative for Mongoose 5+: userProfile.recommendations.pull({ _id: recommendationId });
+    // 使用splice方法移除元素
+    userProfile.recommendations?.splice(recommendationIndex, 1);
 
     await userProfile.save();
 
