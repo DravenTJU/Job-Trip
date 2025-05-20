@@ -22,12 +22,12 @@ const LoginPage: React.FC = () => {
   const from = (location.state as { from?: string })?.from || '/dashboard';
   
   const [formData, setFormData] = useState({
-    email: '',
+    identifier: '',
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({
-    email: '',
+    identifier: '',
     password: '',
   });
 
@@ -68,17 +68,14 @@ const LoginPage: React.FC = () => {
   // 表单验证
   const validateForm = (): boolean => {
     const errors = {
-      email: '',
+      identifier: '',
       password: ''
     };
     let isValid = true;
 
-    // 验证邮箱
-    if (!formData.email) {
-      errors.email = t('auth:validation.emailRequired', '请输入邮箱');
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = t('auth:validation.emailInvalid', '请输入有效的邮箱地址');
+    // 验证用户名/邮箱
+    if (!formData.identifier) {
+      errors.identifier = t('auth:validation.identifierRequired', '请输入用户名或邮箱');
       isValid = false;
     }
 
@@ -148,23 +145,22 @@ const LoginPage: React.FC = () => {
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                {t('auth:login.email', '电子邮箱')}
+              <label htmlFor="identifier" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {t('auth:login.identifier', '用户名或邮箱')}
               </label>
               <div className="relative">
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
+                  id="identifier"
+                  name="identifier"
+                  type="text"
+                  autoComplete="username email"
                   required
-                  value={formData.email}
+                  value={formData.identifier}
                   onChange={handleChange}
                   className="w-full h-11 pl-3 pr-10 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
-                  placeholder={t('auth:login.emailPlaceholder', 'name@example.com')}
                 />
-                {fieldErrors.email && (
-                  <p className="mt-1 text-xs text-red-600">{fieldErrors.email}</p>
+                {fieldErrors.identifier && (
+                  <p className="mt-1 text-xs text-red-600">{fieldErrors.identifier}</p>
                 )}
               </div>
             </div>

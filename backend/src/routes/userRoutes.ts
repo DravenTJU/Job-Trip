@@ -119,13 +119,12 @@ router.post('/register', registerUser);
  *           schema:
  *             type: object
  *             required:
- *               - email
+ *               - identifier
  *               - password
  *             properties:
- *               email:
+ *               identifier:
  *                 type: string
- *                 format: email
- *                 description: 用户邮箱
+ *                 description: 用户名或邮箱
  *               password:
  *                 type: string
  *                 format: password

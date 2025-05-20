@@ -69,15 +69,21 @@ export const loginUser = async (
   next: NextFunction
 ) => {
   try {
-    const { email, password } = req.body;
+    const { identifier, password } = req.body;
 
     // 验证输入
-    if (!email || !password) {
-      return next(new AppError('请提供邮箱和密码', 400));
+    if (!identifier || !password) {
+      return next(new AppError('请提供用户名/邮箱和密码', 400));
     }
 
-    // 查找用户并选择密码字段
-    const user = await User.findOne({ email }).select('+password');
+    // 查找用户并选择密码字段（支持用户名或邮箱登录）
+    const user = await User.findOne({ 
+      $or: [
+        { email: identifier },
+        { username: identifier }
+      ] 
+    }).select('+password');
+    
     if (!user) {
       return next(new AppError('无效的凭据', 401));
     }
