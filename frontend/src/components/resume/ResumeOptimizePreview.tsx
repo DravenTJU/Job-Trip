@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@/hooks/reduxHooks';
 import { createResume } from '@/redux/slices/resumesSlice';
 import { CreateResumeData, ResumeType } from '@/types';
-import AlertMessage from '@/components/common/AlertMessage';
 import Loader from '@/components/common/Loader';
 import { Wand2, X } from 'lucide-react';
 

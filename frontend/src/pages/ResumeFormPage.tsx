@@ -3,7 +3,6 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import { fetchResume, createResume, updateResume, clearResume, generateTailoredResume } from '@/redux/slices/resumesSlice';
 import { CreateResumeData, ResumeType } from '@/types';
-import AlertMessage from '@/components/common/AlertMessage';
 import Loader from '@/components/common/Loader';
 import { Plus, Trash } from 'lucide-react';
 import { formatDateForInput } from '@/utils/dateUtils';

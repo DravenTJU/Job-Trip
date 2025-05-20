@@ -4,7 +4,7 @@ import { ChevronDown, ChevronUp, Download, Copy, Edit, Trash, Plus, FileText, Ex
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import { fetchResumes, deleteResume, duplicateResume } from '@/redux/slices/resumesSlice';
 import { Resume, ResumeType } from '@/types';
-import AlertMessage from '@/components/common/AlertMessage';
+import Toast from '@/components/common/Toast';
 import Loader from '@/components/common/Loader';
 import ConfirmDialog from '@/components/common/ConfirmDialog';
 import ResumeOptimizePreview from '@/components/resume/ResumeOptimizePreview';
@@ -179,22 +179,20 @@ const ResumeBuilderPage: React.FC = () => {
         </p>
       </div>
 
-      {/* 传入 open prop 并根据 error 状态控制 */}
+      {/* 使用Toast组件显示错误信息 */}
       {error && 
-        <AlertMessage 
-          open={!!error} 
-          severity="error" 
+        <Toast 
+          type="error" 
           message={error} 
           onClose={() => { /* 处理关闭逻辑, 例如 dispatch(clearError()) */ }} 
         />
       }
       {isLoading && <Loader />}
       
-      {/* AI优化错误提示 - 传入 open prop 并根据 optimizationError 状态控制 */}
+      {/* AI优化错误提示 - 使用Toast组件 */}
       {optimizationError && (
-        <AlertMessage 
-          open={!!optimizationError} 
-          severity="error" 
+        <Toast 
+          type="error" 
           message={optimizationError} 
           onClose={() => setOptimizationError(null)} 
         /> 
