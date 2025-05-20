@@ -118,14 +118,27 @@ async function insertTestData(db) {
     console.log('📝 开始生成测试数据');
     
     // 1. 添加测试用户
-    const hashedPassword = await bcrypt.hash('password123', 10);
+    const hashedPassword = await bcrypt.hash('404notfound', 10);
     const testUsers = [
       {
-        username: 'testuser1',
-        email: 'test1@example.com',
+        username: 'johndoe',
+        email: 'john.doe@example.com',
         password: hashedPassword,
         preferences: {
           theme: 'light',
+          notifications: true,
+          language: 'en-US'
+        },
+        status: 'active',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        username: 'testuser',
+        email: 'testuser@example.com',
+        password: hashedPassword,
+        preferences: {
+          theme: 'dark',
           notifications: true,
           language: 'zh-CN'
         },
@@ -134,13 +147,13 @@ async function insertTestData(db) {
         updatedAt: new Date()
       },
       {
-        username: 'testuser2',
-        email: 'test2@example.com',
+        username: 'wangminghui',
+        email: 'wang.minghui@example.com',
         password: hashedPassword,
         preferences: {
-          theme: 'dark',
+          theme: 'auto',
           notifications: true,
-          language: 'zh-CN'
+          language: 'zh-TW'
         },
         status: 'active',
         createdAt: new Date(),
@@ -320,8 +333,8 @@ async function insertTestData(db) {
         jobId: jobs[0]._id,
         status: 'applied',
         isFavorite: true,
-        customTags: ['重点公司', '技术匹配'],
-        notes: '已于2023年5月15日提交简历，等待回复',
+        customTags: ['Key Company', 'Tech Match'],
+        notes: 'Submitted resume on May 15, 2023, waiting for response',
         reminderDate: new Date(new Date().setDate(new Date().getDate() + 7)),
         createdAt: new Date(new Date().setDate(new Date().getDate() - 5)),
         updatedAt: new Date()
@@ -331,8 +344,8 @@ async function insertTestData(db) {
         jobId: jobs[1]._id,
         status: 'interviewing',
         isFavorite: true,
-        customTags: ['前景好'],
-        notes: '已安排视频面试',
+        customTags: ['Good Prospect'],
+        notes: 'Video interview scheduled',
         reminderDate: new Date(new Date().setDate(new Date().getDate() + 2)),
         createdAt: new Date(new Date().setDate(new Date().getDate() - 10)),
         updatedAt: new Date()
@@ -343,7 +356,7 @@ async function insertTestData(db) {
         status: 'new',
         isFavorite: false,
         customTags: [],
-        notes: '需要准备简历',
+        notes: 'Need to prepare resume',
         reminderDate: null,
         createdAt: new Date(new Date().setDate(new Date().getDate() - 2)),
         updatedAt: new Date()
@@ -369,6 +382,28 @@ async function insertTestData(db) {
         reminderDate: null,
         createdAt: new Date(new Date().setDate(new Date().getDate() - 15)),
         updatedAt: new Date()
+      },
+      {
+        userId: users[2]._id,
+        jobId: jobs[0]._id,
+        status: 'interviewing',
+        isFavorite: true,
+        customTags: ['理想職位', '技術匹配'],
+        notes: '已完成第一輪面試，等待二輪技術面試',
+        reminderDate: new Date(new Date().setDate(new Date().getDate() + 3)),
+        createdAt: new Date(new Date().setDate(new Date().getDate() - 8)),
+        updatedAt: new Date()
+      },
+      {
+        userId: users[2]._id,
+        jobId: jobs[4]._id,
+        status: 'applied',
+        isFavorite: true,
+        customTags: ['管理崗位'],
+        notes: '已提交申請，附帶專案經驗說明',
+        reminderDate: new Date(new Date().setDate(new Date().getDate() + 6)),
+        createdAt: new Date(new Date().setDate(new Date().getDate() - 4)),
+        updatedAt: new Date()
       }
     ];
     
@@ -383,7 +418,7 @@ async function insertTestData(db) {
         userJobId: userJobsData[0]._id,
         previousStatus: 'new',
         newStatus: 'applied',
-        notes: '提交了简历和求职信',
+        notes: 'Submitted resume and cover letter',
         createdAt: new Date(new Date().setDate(new Date().getDate() - 5)),
         updatedBy: users[0]._id
       },
@@ -391,7 +426,7 @@ async function insertTestData(db) {
         userJobId: userJobsData[1]._id,
         previousStatus: 'new',
         newStatus: 'applied',
-        notes: '通过LinkedIn Easy Apply提交了申请',
+        notes: 'Applied through LinkedIn Easy Apply',
         createdAt: new Date(new Date().setDate(new Date().getDate() - 10)),
         updatedBy: users[0]._id
       },
@@ -399,7 +434,7 @@ async function insertTestData(db) {
         userJobId: userJobsData[1]._id,
         previousStatus: 'applied',
         newStatus: 'interviewing',
-        notes: '收到面试邀请，安排在下周一',
+        notes: 'Received interview invitation, scheduled for next Monday',
         createdAt: new Date(new Date().setDate(new Date().getDate() - 3)),
         updatedBy: users[0]._id
       },
@@ -426,6 +461,30 @@ async function insertTestData(db) {
         notes: '收到拒绝邮件，理由是经验不足',
         createdAt: new Date(new Date().setDate(new Date().getDate() - 10)),
         updatedBy: users[1]._id
+      },
+      {
+        userJobId: userJobsData[5]._id,
+        previousStatus: 'new',
+        newStatus: 'applied',
+        notes: '提交了量身定制的履歷和求職信',
+        createdAt: new Date(new Date().setDate(new Date().getDate() - 8)),
+        updatedBy: users[2]._id
+      },
+      {
+        userJobId: userJobsData[5]._id,
+        previousStatus: 'applied',
+        newStatus: 'interviewing',
+        notes: '通過初步篩選，獲邀參加第一輪視訊面試',
+        createdAt: new Date(new Date().setDate(new Date().getDate() - 5)),
+        updatedBy: users[2]._id
+      },
+      {
+        userJobId: userJobsData[6]._id,
+        previousStatus: 'new',
+        newStatus: 'applied',
+        notes: '提交申請並附上專案管理經驗摘要',
+        createdAt: new Date(new Date().setDate(new Date().getDate() - 4)),
+        updatedBy: users[2]._id
       }
     ];
     
@@ -436,15 +495,15 @@ async function insertTestData(db) {
     const userProfiles = [
       {
         userId: users[0]._id,
-        firstName: "三",
-        lastName: "张",
-        headline: "资深前端开发工程师",
-        biography: "拥有5年前端开发经验，专注于构建用户友好的Web应用程序。",
+        firstName: "John",
+        lastName: "Doe",
+        headline: "Senior Frontend Developer",
+        biography: "Experienced frontend developer with 5 years of experience building user-friendly web applications.",
         contactInfo: {
-          email: "test1@example.com",
+          email: "john.doe@example.com",
           phone: "+64 21 123 4567",
           website: "https://johndoe.example.com",
-          address: "奥克兰, 新西兰",
+          address: "Auckland, New Zealand",
           socialMedia: {
             linkedin: "https://linkedin.com/in/johndoe",
             github: "https://github.com/johndoe",
@@ -454,54 +513,54 @@ async function insertTestData(db) {
         educations: [
           {
             _id: new ObjectId(),
-            institution: "奥克兰大学",
-            degree: "硕士",
-            field: "计算机科学",
+            institution: "University of Auckland",
+            degree: "Master's",
+            field: "Computer Science",
             startDate: new Date("2015-09-01"),
             endDate: new Date("2017-06-30"),
-            description: "专注于Web开发和用户界面设计",
-            location: "奥克兰, 新西兰"
+            description: "Focused on Web Development and UI Design",
+            location: "Auckland, New Zealand"
           },
           {
             _id: new ObjectId(),
-            institution: "北京大学",
-            degree: "学士",
-            field: "软件工程",
+            institution: "Stanford University",
+            degree: "Bachelor's",
+            field: "Software Engineering",
             startDate: new Date("2011-09-01"),
             endDate: new Date("2015-06-30"),
-            description: "软件工程专业，GPA 3.8/4.0",
-            location: "北京, 中国"
+            description: "Software Engineering, GPA 3.8/4.0",
+            location: "California, USA"
           }
         ],
         workExperiences: [
           {
             _id: new ObjectId(),
-            company: "科技云创有限公司",
-            position: "高级前端开发工程师",
+            company: "TechCloud Solutions",
+            position: "Senior Frontend Developer",
             startDate: new Date("2020-03-01"),
             endDate: null,
             current: true,
-            description: "负责公司主要产品的前端架构设计和开发，优化用户体验和性能。",
-            location: "奥克兰, 新西兰",
+            description: "Responsible for frontend architecture design and development of company's main products, optimizing user experience and performance.",
+            location: "Auckland, New Zealand",
             achievements: [
-              "将网站加载时间减少50%",
-              "实现了响应式设计，支持所有设备类型",
-              "引入了组件库和自动化测试流程"
+              "Reduced website loading time by 50%",
+              "Implemented responsive design supporting all device types",
+              "Introduced component library and automated testing processes"
             ]
           },
           {
             _id: new ObjectId(),
-            company: "数字科技有限公司",
-            position: "前端开发工程师",
+            company: "Digital Tech Ltd.",
+            position: "Frontend Developer",
             startDate: new Date("2017-07-01"),
             endDate: new Date("2020-02-28"),
             current: false,
-            description: "负责公司电子商务平台的前端开发，使用React和Redux。",
-            location: "奥克兰, 新西兰",
+            description: "Responsible for frontend development of the company's e-commerce platform using React and Redux.",
+            location: "Auckland, New Zealand",
             achievements: [
-              "开发了5个主要功能模块",
-              "参与重构前端代码架构，提高了代码质量",
-              "实现了A/B测试系统，提高转化率15%"
+              "Developed 5 major feature modules",
+              "Participated in refactoring the frontend code architecture, improving code quality",
+              "Implemented A/B testing system, improving conversion rate by 15%"
             ]
           }
         ],
@@ -511,34 +570,34 @@ async function insertTestData(db) {
             name: "React",
             level: "expert",
             endorsements: 12,
-            category: "前端框架"
+            category: "Frontend Framework"
           },
           {
             _id: new ObjectId(),
             name: "Vue.js",
             level: "advanced",
             endorsements: 8,
-            category: "前端框架"
+            category: "Frontend Framework"
           },
           {
             _id: new ObjectId(),
             name: "JavaScript",
             level: "expert",
             endorsements: 15,
-            category: "编程语言"
+            category: "Programming Language"
           },
           {
             _id: new ObjectId(),
             name: "TypeScript",
             level: "advanced",
             endorsements: 10,
-            category: "编程语言"
+            category: "Programming Language"
           }
         ],
         certifications: [
           {
             _id: new ObjectId(),
-            name: "AWS认证开发者 - 助理",
+            name: "AWS Certified Developer - Associate",
             issuer: "Amazon Web Services",
             issueDate: new Date("2019-05-15"),
             expirationDate: new Date("2022-05-15"),
@@ -549,8 +608,8 @@ async function insertTestData(db) {
         projects: [
           {
             _id: new ObjectId(),
-            name: "电子商务平台重构",
-            description: "使用React和Node.js重构公司的电子商务平台，改善用户体验和性能。",
+            name: "E-commerce Platform Refactoring",
+            description: "Refactored the company's e-commerce platform using React and Node.js to improve user experience and performance.",
             startDate: new Date("2019-03-01"),
             endDate: new Date("2019-09-30"),
             url: "https://example-ecommerce.com",
@@ -560,41 +619,41 @@ async function insertTestData(db) {
         languages: [
           {
             _id: new ObjectId(),
-            language: "中文",
+            language: "English",
             proficiency: "native"
           },
           {
             _id: new ObjectId(),
-            language: "英语",
-            proficiency: "advanced"
+            language: "Spanish",
+            proficiency: "intermediate"
           }
         ],
         volunteerExperiences: [
           {
             _id: new ObjectId(),
-            organization: "代码教育协会",
-            role: "志愿讲师",
+            organization: "Code Education Association",
+            role: "Volunteer Instructor",
             startDate: new Date("2018-01-01"),
             endDate: new Date("2019-12-31"),
-            description: "为青少年教授编程基础知识，组织了10次工作坊。"
+            description: "Taught programming basics to youth, organized 10 workshops."
           }
         ],
         honorsAwards: [
           {
             _id: new ObjectId(),
-            title: "优秀员工奖",
-            issuer: "数字科技有限公司",
+            title: "Employee of the Year",
+            issuer: "Digital Tech Ltd.",
             date: new Date("2019-12-15"),
-            description: "因出色的工作表现和团队贡献而获得"
+            description: "Awarded for outstanding performance and team contribution"
           }
         ],
         recommendations: [
           {
             _id: new ObjectId(),
-            recommenderName: "王经理",
-            recommenderTitle: "技术总监",
-            relationship: "直属上级",
-            content: "张三是一位出色的开发者，他的技术能力和解决问题的思路都非常优秀。他在我们团队中发挥了重要作用，我强烈推荐他。",
+            recommenderName: "Michael Smith",
+            recommenderTitle: "Technical Director",
+            relationship: "Direct Manager",
+            content: "John is an exceptional developer with outstanding technical skills and problem-solving approach. He played a crucial role in our team, and I highly recommend him.",
             date: new Date("2020-02-20")
           }
         ],
@@ -671,6 +730,205 @@ async function insertTestData(db) {
         lastUpdated: new Date(),
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        userId: users[2]._id,
+        firstName: "明輝",
+        lastName: "王",
+        headline: "資深全端開發工程師",
+        biography: "擁有8年全端開發經驗，專注於構建高效能、可擴展的企業級應用程式。",
+        contactInfo: {
+          email: "wang.minghui@example.com",
+          phone: "+64 22 567 8901",
+          website: "https://wangminghui.example.com",
+          address: "奧克蘭, 紐西蘭",
+          socialMedia: {
+            linkedin: "https://linkedin.com/in/wangminghui",
+            github: "https://github.com/wangminghui",
+            twitter: "https://twitter.com/wangminghui"
+          }
+        },
+        educations: [
+          {
+            _id: new ObjectId(),
+            institution: "國立臺灣大學",
+            degree: "碩士",
+            field: "資訊工程",
+            startDate: new Date("2012-09-01"),
+            endDate: new Date("2014-06-30"),
+            description: "專注於分佈式系統和雲計算研究",
+            location: "臺北, 臺灣"
+          },
+          {
+            _id: new ObjectId(),
+            institution: "國立清華大學",
+            degree: "學士",
+            field: "資訊工程",
+            startDate: new Date("2008-09-01"),
+            endDate: new Date("2012-06-30"),
+            description: "主修軟體工程，副修人工智能，GPA 3.9/4.0",
+            location: "新竹, 臺灣"
+          }
+        ],
+        workExperiences: [
+          {
+            _id: new ObjectId(),
+            company: "雲端數位科技",
+            position: "技術主管",
+            startDate: new Date("2019-04-01"),
+            endDate: null,
+            current: true,
+            description: "領導開發團隊構建企業級雲平台，制定技術策略和架構決策。",
+            location: "奧克蘭, 紐西蘭",
+            achievements: [
+              "建立了微服務架構，提高了系統可擴展性和彈性",
+              "實施了DevOps流程，將部署時間縮短90%",
+              "優化數據處理管道，提高處理效率60%"
+            ]
+          },
+          {
+            _id: new ObjectId(),
+            company: "創新網路科技公司",
+            position: "高級全端開發工程師",
+            startDate: new Date("2014-07-01"),
+            endDate: new Date("2019-03-31"),
+            current: false,
+            description: "負責企業資源管理系統的全端開發，設計和實現核心功能模塊。",
+            location: "臺北, 臺灣",
+            achievements: [
+              "開發了7個關鍵業務模塊",
+              "設計了高效的數據庫結構，提升查詢速度40%",
+              "構建了可重用的前端元件庫，提高開發效率25%"
+            ]
+          }
+        ],
+        skills: [
+          {
+            _id: new ObjectId(),
+            name: "Java",
+            level: "expert",
+            endorsements: 18,
+            category: "程式語言"
+          },
+          {
+            _id: new ObjectId(),
+            name: "Spring Boot",
+            level: "expert",
+            endorsements: 15,
+            category: "後端框架"
+          },
+          {
+            _id: new ObjectId(),
+            name: "React",
+            level: "advanced",
+            endorsements: 12,
+            category: "前端框架"
+          },
+          {
+            _id: new ObjectId(),
+            name: "AWS",
+            level: "expert",
+            endorsements: 14,
+            category: "雲服務"
+          },
+          {
+            _id: new ObjectId(),
+            name: "Kubernetes",
+            level: "advanced",
+            endorsements: 10,
+            category: "容器調度"
+          }
+        ],
+        certifications: [
+          {
+            _id: new ObjectId(),
+            name: "AWS 解決方案架構師 - 專業級",
+            issuer: "Amazon Web Services",
+            issueDate: new Date("2020-03-15"),
+            expirationDate: new Date("2023-03-15"),
+            credentialId: "AWS-SAP-789012",
+            credentialUrl: "https://aws.amazon.com/verification"
+          },
+          {
+            _id: new ObjectId(),
+            name: "Google 專業數據工程師",
+            issuer: "Google Cloud",
+            issueDate: new Date("2019-08-10"),
+            expirationDate: new Date("2022-08-10"),
+            credentialId: "GCP-DE-345678",
+            credentialUrl: "https://cloud.google.com/certification/data-engineer"
+          }
+        ],
+        projects: [
+          {
+            _id: new ObjectId(),
+            name: "企業級雲平台",
+            description: "設計並實現基於微服務架構的企業雲平台，支持多租戶、彈性擴展和高可用性。",
+            startDate: new Date("2020-01-01"),
+            endDate: new Date("2021-06-30"),
+            url: "https://cloud-platform.example.com",
+            technologies: ["Java", "Spring Cloud", "Kubernetes", "React", "PostgreSQL", "Kafka"]
+          },
+          {
+            _id: new ObjectId(),
+            name: "數據分析平台",
+            description: "構建實時數據處理和分析平台，支持大規模數據集的處理和可視化展示。",
+            startDate: new Date("2018-05-01"),
+            endDate: new Date("2019-02-28"),
+            url: "https://data-analytics.example.com",
+            technologies: ["Python", "Apache Spark", "Hadoop", "Elasticsearch", "Grafana"]
+          }
+        ],
+        languages: [
+          {
+            _id: new ObjectId(),
+            language: "繁體中文",
+            proficiency: "native"
+          },
+          {
+            _id: new ObjectId(),
+            language: "英語",
+            proficiency: "advanced"
+          },
+          {
+            _id: new ObjectId(),
+            language: "日語",
+            proficiency: "intermediate"
+          }
+        ],
+        volunteerExperiences: [
+          {
+            _id: new ObjectId(),
+            organization: "臺灣開源社區",
+            role: "技術顧問",
+            startDate: new Date("2016-03-01"),
+            endDate: new Date("2018-12-31"),
+            description: "為開源專案提供技術指導，組織技術講座和工作坊。"
+          }
+        ],
+        honorsAwards: [
+          {
+            _id: new ObjectId(),
+            title: "最佳技術創新獎",
+            issuer: "亞太技術創新論壇",
+            date: new Date("2018-11-10"),
+            description: "因在企業資源管理系統中應用機器學習技術而獲獎"
+          }
+        ],
+        recommendations: [
+          {
+            _id: new ObjectId(),
+            recommenderName: "陳博士",
+            recommenderTitle: "技術總監",
+            relationship: "前主管",
+            content: "王明輝是一位非常出色的技術領導者，他不僅具備深厚的技術功底，還有很強的團隊協作和項目管理能力。他在我們公司期間，成功帶領團隊完成了多個重要項目，為公司業務增長做出了巨大貢獻。",
+            date: new Date("2019-03-15")
+          }
+        ],
+        profileCompleteness: 90,
+        lastUpdated: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ];
 
@@ -680,47 +938,47 @@ async function insertTestData(db) {
     // 7. 添加简历测试数据
     const resumes = [
       {
-        name: "前端开发工程师简历",
+        name: "Senior Frontend Developer Resume",
         userId: users[0]._id,
-        targetPosition: "高级前端开发工程师",
-        targetJob: "前端开发",
+        targetPosition: "Senior Frontend Developer",
+        targetJob: "Frontend Development",
         content: JSON.stringify({
           personalInfo: {
-            fullName: "张三",
-            email: "test1@example.com",
+            fullName: "John Doe",
+            email: "john.doe@example.com",
             phone: "+64 21 123 4567",
-            location: "奥克兰, 新西兰"
+            location: "Auckland, New Zealand"
           },
           educations: [
             {
-              education: "硕士",
-              school: "奥克兰大学",
-              major: "计算机科学",
+              education: "Master's",
+              school: "University of Auckland",
+              major: "Computer Science",
               startDate: "2015-09",
               endDate: "2017-06"
             },
             {
-              education: "学士",
-              school: "北京大学",
-              major: "软件工程",
+              education: "Bachelor's",
+              school: "Stanford University",
+              major: "Software Engineering",
               startDate: "2011-09",
               endDate: "2015-06"
             }
           ],
           workExperiences: [
             {
-              company: "科技云创有限公司",
-              position: "高级前端开发工程师",
+              company: "TechCloud Solutions",
+              position: "Senior Frontend Developer",
               startDate: "2020-03",
-              endDate: "至今",
-              responsibilities: "负责公司主要产品的前端架构设计和开发，优化用户体验和性能。"
+              endDate: "Present",
+              responsibilities: "Responsible for frontend architecture design and development of company's main products, optimizing user experience and performance."
             },
             {
-              company: "数字科技有限公司",
-              position: "前端开发工程师",
+              company: "Digital Tech Ltd.",
+              position: "Frontend Developer",
               startDate: "2017-07",
               endDate: "2020-02",
-              responsibilities: "负责公司电子商务平台的前端开发，使用React和Redux。"
+              responsibilities: "Responsible for frontend development of the company's e-commerce platform using React and Redux."
             }
           ],
           skills: "React, Vue.js, JavaScript, TypeScript, HTML5, CSS3, Webpack, Git, Jest"
@@ -762,6 +1020,55 @@ async function insertTestData(db) {
         }),
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        name: "資深全端開發工程師履歷",
+        userId: users[2]._id,
+        targetPosition: "技術主管",
+        targetJob: "全端開發",
+        content: JSON.stringify({
+          personalInfo: {
+            fullName: "王明輝",
+            email: "wang.minghui@example.com",
+            phone: "+64 22 567 8901",
+            location: "奧克蘭, 紐西蘭"
+          },
+          educations: [
+            {
+              education: "碩士",
+              school: "國立臺灣大學",
+              major: "資訊工程",
+              startDate: "2012-09",
+              endDate: "2014-06"
+            },
+            {
+              education: "學士",
+              school: "國立清華大學",
+              major: "資訊工程",
+              startDate: "2008-09",
+              endDate: "2012-06"
+            }
+          ],
+          workExperiences: [
+            {
+              company: "雲端數位科技",
+              position: "技術主管",
+              startDate: "2019-04",
+              endDate: "至今",
+              responsibilities: "領導開發團隊構建企業級雲平台，制定技術策略和架構決策。"
+            },
+            {
+              company: "創新網路科技公司",
+              position: "高級全端開發工程師",
+              startDate: "2014-07",
+              endDate: "2019-03",
+              responsibilities: "負責企業資源管理系統的全端開發，設計和實現核心功能模塊。"
+            }
+          ],
+          skills: "Java, Spring Boot, Spring Cloud, React, AWS, Kubernetes, Docker, PostgreSQL, MongoDB, Redis, Kafka"
+        }),
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ];
 
@@ -796,11 +1103,32 @@ async function main() {
       console.log('⚠️ 数据库已存在以下集合:', collectionNames.join(', '));
       console.log('⚠️ 继续操作将删除这些集合并重新创建。');
       
-      // 在这里可以添加交互式确认步骤，但为了自动化脚本，我们默认继续
-      console.log('🗑️ 正在删除现有集合...');
-      for (const name of collectionNames) {
-        await db.collection(name).drop();
-        console.log(`  - 已删除集合: ${name}`);
+      // 添加交互式确认步骤
+      const readline = require('readline').createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
+
+      const confirmation = await new Promise((resolve) => {
+        readline.question('是否继续? (y/n): ', (answer) => {
+          readline.close();
+          resolve(answer.toLowerCase());
+        });
+      });
+
+      if (confirmation === 'y' || confirmation === 'yes') {
+        console.log('🗑️ 正在删除现有集合...');
+        for (const name of collectionNames) {
+          await db.collection(name).drop();
+          console.log(`  - 已删除集合: ${name}`);
+        }
+      } else {
+        console.log('❌ 操作已取消');
+        if (client) {
+          await client.close();
+          console.log('🔌 已关闭数据库连接');
+        }
+        process.exit(0);
       }
     }
 
@@ -812,8 +1140,9 @@ async function main() {
 
     console.log('✨ 数据库初始化完成!');
     console.log('🔑 测试用户:');
-    console.log('  - 用户名: testuser1, 密码: password123');
-    console.log('  - 用户名: testuser2, 密码: password123');
+    console.log('  - 用户名: johndoe, 密码: 404notfound');
+    console.log('  - 用户名: testuser, 密码: 404notfound');
+    console.log('  - 用户名: wangminghui, 密码: 404notfound');
   } catch (error) {
     console.error('❌ 数据库初始化失败:', error);
   } finally {
