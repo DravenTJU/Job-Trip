@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { User } from './userModel';
+import { IUser } from './userModel';
 
 // 简历类型枚举
 export enum ResumeType {
@@ -10,7 +10,7 @@ export enum ResumeType {
 // 简历文档接口
 export interface IResume extends Document {
   name: string;
-  user: mongoose.Types.ObjectId | User;
+  user: mongoose.Types.ObjectId | IUser;
   content: string;
   type: ResumeType;
   targetPosition?: string;
