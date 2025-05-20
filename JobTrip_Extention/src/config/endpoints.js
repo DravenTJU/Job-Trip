@@ -25,9 +25,9 @@ const PROD_CONFIG = {
     TOKEN_KEY: 'token'
   },
   BACKEND: {
-    BASE_URL: 'https://api.jobtrip.draven.best',
-    API_ENDPOINT: 'https://api.jobtrip.draven.best/api/v1/jobs',
-    BATCH_ENDPOINT: 'https://api.jobtrip.draven.best/api/v1/jobs/batch'
+    BASE_URL: 'https://jobtrip.draven.best',
+    API_ENDPOINT: 'https://jobtrip.draven.best/api/v1/jobs',
+    BATCH_ENDPOINT: 'https://jobtrip.draven.best/api/v1/jobs/batch'
   }
 }
 
