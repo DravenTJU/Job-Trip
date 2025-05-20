@@ -4,8 +4,6 @@ English | [中文版](README.zh.md)
 
 JobTrip is an intelligent job application tracking system designed to help job seekers manage their job search process more effectively. The system includes a browser extension and web application that can automatically collect job information from mainstream recruitment platforms, providing a centralized platform for managing applications and helping users organize and track their job search process efficiently.
 
-![title](https://github.com/user-attachments/assets/7a7b45e4-1519-45a4-a483-93d5a163ca8c)
-
 ## Online Demo
 
 🔗 Live Demo: [https://jobtrip.draven.best/](https://jobtrip.draven.best/)
