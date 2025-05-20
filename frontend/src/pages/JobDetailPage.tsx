@@ -18,6 +18,7 @@ import {
   Trash2, 
   ExternalLink
 } from 'lucide-react';
+import CustomConfirmDialog from '@/components/common/CustomConfirmDialog';
 import StatusBadge from '@/components/common/StatusBadge';
 import { useTranslation } from 'react-i18next';
 import { getJobTypeTranslationKey } from '@/utils/jobTypeUtils';
@@ -321,30 +322,15 @@ const JobDetailPage: React.FC = () => {
       )}
       
       {/* 删除确认对话框 */}
-      {deleteDialogOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5 p-6">
-            <h3 className="text-xl font-semibold mb-4">{t('confirm_delete', '确认删除')}</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
-              {t('confirm_delete_job', '您确定要删除此职位 "{{title}}" 吗？此操作无法撤销。', { title: job.title })}
-            </p>
-            <div className="flex justify-end gap-2">
-              <button 
-                onClick={closeDeleteDialog}
-                className="btn btn-outline"
-              >
-                {t('cancel', '取消')}
-              </button>
-              <button 
-                onClick={confirmDelete}
-                className="btn btn-danger"
-              >
-                {t('delete', '删除')}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <CustomConfirmDialog
+        open={deleteDialogOpen}
+        title={t('confirm_delete', '确认删除')}
+        message={t('confirm_delete_job', '您确定要删除此职位 "{{title}}" 吗？此操作无法撤销。', { title: job?.title || '' })}
+        confirmText={t('delete', '删除')}
+        cancelText={t('cancel', '取消')}
+        onConfirm={confirmDelete}
+        onCancel={closeDeleteDialog}
+      />
     </div>
   );
 };

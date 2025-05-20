@@ -6,7 +6,7 @@ import { fetchResumes, deleteResume, duplicateResume } from '@/redux/slices/resu
 import { Resume, ResumeType } from '@/types';
 import Toast from '@/components/common/Toast';
 import Loader from '@/components/common/Loader';
-import ConfirmDialog from '@/components/common/ConfirmDialog';
+import CustomConfirmDialog from '@/components/common/CustomConfirmDialog';
 import ResumeOptimizePreview from '@/components/resume/ResumeOptimizePreview';
 import resumeOptimizeService from '@/services/resumeOptimizeService';
 import { useTranslation } from 'react-i18next';
@@ -316,7 +316,7 @@ const ResumeBuilderPage: React.FC = () => {
       </div>
       
       {/* 删除确认对话框 */}
-      <ConfirmDialog
+      <CustomConfirmDialog
         open={showDeleteConfirm}
         title={t('delete_resume', '删除简历')}
         message={t('delete_resume_confirm', '您确定要删除这份简历吗？此操作无法撤销。')}
