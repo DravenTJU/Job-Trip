@@ -17,7 +17,7 @@ interface EducationSectionProps {
 
 const EducationSection: React.FC<EducationSectionProps> = ({ educations }) => {
   const dispatch = useAppDispatch();
-  const { t, i18n } = useTranslation('profile');
+  const { t } = useTranslation('profile');
   const [editingItem, setEditingItem] = useState<Education | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);

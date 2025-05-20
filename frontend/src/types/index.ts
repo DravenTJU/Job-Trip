@@ -32,7 +32,7 @@ export interface UserRegisterData {
 }
 
 export interface UserLoginData {
-  email: string;
+  identifier: string;
   password: string;
 }
 

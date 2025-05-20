@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useDrag, DragPreviewImage } from 'react-dnd';
+import { useState, useEffect } from 'react';
+import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { CalendarIcon, MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import { Interview } from './DroppableColumn';

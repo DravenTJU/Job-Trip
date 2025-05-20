@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { JobStatus, CreateUserJobData, PaginatedResponse, UserJob } from '@/types';
+import { JobStatus, CreateUserJobData, UserJob } from '@/types';
 import userJobService from '@/services/userJobService';
-import { ApiError, isApiError } from '../../types/api';
+import { isApiError } from '../../types/api';
 
 // 异步Thunk actions
 export const fetchUserJobs = createAsyncThunk(

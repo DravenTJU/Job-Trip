@@ -8,7 +8,7 @@ interface ContactInfoStepProps {
   onPrevious: () => void;
 }
 
-const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNext, onPrevious }) => {
+const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNext }) => {
   const { t } = useTranslation('profile');
   const [formData, setFormData] = useState({
     contactInfo: {

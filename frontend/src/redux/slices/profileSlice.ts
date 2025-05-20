@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { ProfileState, UserProfile, Education, WorkExperience, Skill, Certification, Project, Language, VolunteerExperience, HonorAward, Recommendation } from '../../types/profile';
 import profileService from '../../services/profileService';
-import { ApiError, isApiError } from '../../types/api';
+import { isApiError } from '../../types/api';
 
 const initialState: ProfileState = {
   profile: null,

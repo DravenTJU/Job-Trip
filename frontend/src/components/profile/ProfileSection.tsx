@@ -1,6 +1,4 @@
 import React, { ReactNode } from 'react';
-import { useAppDispatch } from '@/hooks/reduxHooks';
-import { toggleEditMode } from '../../redux/slices/profileSlice';
 import { useTranslation } from 'react-i18next';
 
 interface ProfileSectionProps {
@@ -18,7 +16,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   onAddNew,
   isEmpty = false
 }) => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const { t } = useTranslation(['profile', 'common']);
   
   return (

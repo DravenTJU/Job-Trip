@@ -10,8 +10,6 @@ import {
   ChevronLeft, 
   ChevronRight,
   Filter,
-  SortDesc,
-  SortAsc,
   X,
   Calendar,
   Building2,
@@ -26,7 +24,7 @@ import StatusBadge from '@/components/common/StatusBadge';
 import GenericListbox, { SelectOption } from '@/components/common/GenericListbox';
 import { useTranslation } from 'react-i18next';
 import { getJobTypeTranslationKey } from '@/utils/jobTypeUtils';
-import { formatDate, formatShortDate } from '@/utils/dateUtils';
+import { formatDate } from '@/utils/dateUtils';
 
 /**
  * 职位列表页面组件

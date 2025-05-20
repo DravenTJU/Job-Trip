@@ -1,7 +1,6 @@
 import React, { Fragment, useRef, useEffect, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { Check, ChevronDown } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
 
 // 定义选项类型，至少需要id和label
@@ -69,7 +68,7 @@ function GenericListbox<T extends SelectOption>({
   usePortal = true,
   ariaLabel,
 }: GenericListboxProps<T>) {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [buttonPosition, setButtonPosition] = useState<{width: number; top: number; left: number} | null>(null);
   

@@ -29,7 +29,7 @@ export const getJobTypeTranslationKey = (jobType: string | undefined): string =>
  * 获取JobType的图标
  * 可以在将来扩展此功能，为不同的JobType返回不同的图标
  */
-export const getJobTypeIcon = (jobType: string) => {
-  // 目前所有JobType使用相同的图标
-  return 'Briefcase';
-}; 
+// export const getJobTypeIcon = (jobType: string) => {
+//   // 目前所有JobType使用相同的图标
+//   return 'Briefcase';
+// }; 

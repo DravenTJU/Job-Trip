@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Navbar from '@/components/landing/Navbar';
 import HeroBanner from '@/components/landing/HeroBanner';
-import ClientLogos from '@/components/landing/ClientLogos';
 import FeatureSection from '@/components/landing/FeatureSection';
 import Testimonial from '@/components/landing/Testimonial';
 import CTASection from '@/components/landing/CTASection';

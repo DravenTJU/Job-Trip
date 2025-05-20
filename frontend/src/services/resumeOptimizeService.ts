@@ -1,51 +1,51 @@
 import axios from 'axios';
 
 // AI简历优化服务接口
-interface AIResponse {
-  id: string;
-  object: string;
-  created: number;
-  model: string;
-  choices: {
-    index: number;
-    message: {
-      role: string;
-      content: string;
-    };
-    finish_reason: string;
-  }[];
-  usage: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
-  };
-}
+// interface AIResponse {
+//   id: string;
+//   object: string;
+//   created: number;
+//   model: string;
+//   choices: {
+//     index: number;
+//     message: {
+//       role: string;
+//       content: string;
+//     };
+//     finish_reason: string;
+//   }[];
+//   usage: {
+//     prompt_tokens: number;
+//     completion_tokens: number;
+//     total_tokens: number;
+//   };
+// }
 
 // 简历数据结构接口
-interface ResumeData {
-  personalInfo?: {
-    fullName?: string;
-    email?: string;
-    phone?: string;
-    location?: string;
-  };
-  educations?: Array<{
-    education?: string;
-    school?: string;
-    major?: string;
-    startDate?: string;
-    endDate?: string;
-  }>;
-  workExperiences?: Array<{
-    company?: string;
-    position?: string;
-    startDate?: string;
-    endDate?: string;
-    responsibilities?: string;
-  }>;
-  skills?: string;
-  [key: string]: any; // 允许其他字段
-}
+// interface ResumeData {
+//   personalInfo?: {
+//     fullName?: string;
+//     email?: string;
+//     phone?: string;
+//     location?: string;
+//   };
+//   educations?: Array<{
+//     education?: string;
+//     school?: string;
+//     major?: string;
+//     startDate?: string;
+//     endDate?: string;
+//   }>;
+//   workExperiences?: Array<{
+//     company?: string;
+//     position?: string;
+//     startDate?: string;
+//     endDate?: string;
+//     responsibilities?: string;
+//   }>;
+//   skills?: string;
+//   [key: string]: any; // 允许其他字段
+// }
 
 interface ResumeOptimizationResponse {
   success: boolean;

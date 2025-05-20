@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, Chrome, Zap, Star, Bookmark, FileText, CheckCircle } from 'lucide-react';
+import { Download, Chrome } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useExtensionDownload } from '@/services/extensionService';
 

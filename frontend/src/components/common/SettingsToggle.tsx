@@ -50,19 +50,19 @@ const SettingsToggle: React.FC<SettingsToggleProps> = ({ className = '' }) => {
   };
 
   // 获取当前语言显示名称
-  const getCurrentLanguageName = () => {
-    switch (i18n.language) {
-      case 'zh-CN':
-        return '简体中文';
-      case 'zh-TW':
-        return '繁體中文';
-      case 'en-US':
-      case 'en':
-        return 'English';
-      default:
-        return 'English';
-    }
-  };
+  // const getCurrentLanguageName = () => {
+  //   switch (i18n.language) {
+  //     case 'zh-CN':
+  //       return '简体中文';
+  //     case 'zh-TW':
+  //       return '繁體中文';
+  //     case 'en-US':
+  //     case 'en':
+  //       return 'English';
+  //     default:
+  //       return 'English';
+  //   }
+  // };
 
   return (
     <div className={`flex items-center ${className}`}>

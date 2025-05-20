@@ -19,7 +19,7 @@ interface Education {
   location: string;
 }
 
-const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, onPrevious, onSkip }) => {
+const EducationStep: React.FC<EducationStepProps> = ({ data }) => {
   const { t } = useTranslation('profile');
   const [educations, setEducations] = useState<Education[]>(data.educations || []);
   const [currentEducation, setCurrentEducation] = useState<Education>({
@@ -134,13 +134,13 @@ const EducationStep: React.FC<EducationStepProps> = ({ data, onUpdate, onNext, o
     setErrors({});
   };
 
-  const handleNext = () => {
-    onUpdate({
-      ...data,
-      educations
-    });
-    onNext();
-  };
+  // const handleNext = () => {
+  //   onUpdate({
+  //     ...data,
+  //     educations
+  //   });
+  //   onNext();
+  // };
 
   return (
     <div>

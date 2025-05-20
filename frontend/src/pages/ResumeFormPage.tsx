@@ -23,7 +23,7 @@ const ResumeFormPage: React.FC = () => {
   const baseId = searchParams.get('baseId');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { resume, isLoading, error } = useAppSelector((state) => state.resumes);
+  const { resume, isLoading } = useAppSelector((state) => state.resumes);
   const { t } = useTranslation('resume');
   
   // Toast消息状态
@@ -40,7 +40,7 @@ const ResumeFormPage: React.FC = () => {
   // 用户档案状态
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false);
-  const [profileError, setProfileError] = useState<string | null>(null);
+  // const [setProfileError] = useState<string | null>(null);
   
   const [formData, setFormData] = useState<CreateResumeData>({
     name: '',
@@ -112,7 +112,7 @@ const ResumeFormPage: React.FC = () => {
       const fetchUserProfile = async () => {
         try {
           setIsLoadingProfile(true);
-          setProfileError(null);
+          // setProfileError(null);
           const profileData = await profileService.getUserProfile();
           setUserProfile(profileData);
           
@@ -149,7 +149,7 @@ const ResumeFormPage: React.FC = () => {
           }
         } catch (error) {
           console.error('获取用户档案失败:', error);
-          setProfileError(t('profile_load_error', '无法加载用户档案数据，请刷新页面重试'));
+          // setProfileError(t('profile_load_error', '无法加载用户档案数据，请刷新页面重试'));
           
           // 显示错误提示
           setToast({

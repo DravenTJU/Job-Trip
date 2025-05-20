@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronDown, ChevronUp, Download, Copy, Edit, Trash, Plus, FileText, ExternalLink, Wand2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Download, Copy, Edit, Trash, Plus } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import { fetchResumes, deleteResume, duplicateResume } from '@/redux/slices/resumesSlice';
-import { Resume, ResumeType } from '@/types';
+import { Resume } from '@/types';
 import Toast from '@/components/common/Toast';
 import Loader from '@/components/common/Loader';
 import CustomConfirmDialog from '@/components/common/CustomConfirmDialog';
 import ResumeOptimizePreview from '@/components/resume/ResumeOptimizePreview';
-import resumeOptimizeService from '@/services/resumeOptimizeService';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -26,7 +25,7 @@ const ResumeBuilderPage: React.FC = () => {
   const [resumeToDelete, setResumeToDelete] = useState<string | null>(null);
   
   // AI优化相关状态
-  const [isOptimizing, setIsOptimizing] = useState(false);
+  // const [isOptimizing, setIsOptimizing] = useState(false);
   const [optimizationError, setOptimizationError] = useState<string | null>(null);
   const [showOptimizePreview, setShowOptimizePreview] = useState(false);
   const [optimizedContent, setOptimizedContent] = useState<string>('');
@@ -73,9 +72,9 @@ const ResumeBuilderPage: React.FC = () => {
   };
   
   // 处理创建定制简历
-  const handleCreateTailoredResume = () => {
-    navigate(`/resume-form/new?type=${ResumeType.TAILORED}`);
-  };
+  // const handleCreateTailoredResume = () => {
+  //   navigate(`/resume-form/new?type=${ResumeType.TAILORED}`);
+  // };
   
   // 处理下载简历
   const handleDownloadResume = async (resumeId: string) => {
@@ -131,37 +130,37 @@ const ResumeBuilderPage: React.FC = () => {
   };
   
   // 处理AI优化简历
-  const handleOptimizeResume = async (resume: Resume) => {
-    try {
-      console.log(t('start_optimizing_resume', '开始优化简历:'), resume._id);
-      setIsOptimizing(true);
-      setOptimizationError(null);
-      setResumeToOptimize(resume);
+  // const handleOptimizeResume = async (resume: Resume) => {
+  //   try {
+  //     console.log(t('start_optimizing_resume', '开始优化简历:'), resume._id);
+  //     setIsOptimizing(true);
+  //     setOptimizationError(null);
+  //     setResumeToOptimize(resume);
       
-      // 验证简历内容是否有效
-      if (!resume.content) {
-        throw new Error(t('empty_resume_content', '简历内容为空，无法进行优化'));
-      }
+  //     // 验证简历内容是否有效
+  //     if (!resume.content) {
+  //       throw new Error(t('empty_resume_content', '简历内容为空，无法进行优化'));
+  //     }
       
-      console.log(t('calling_ai_service', '调用AI服务优化简历...'));
-      // 假设 optimizeResume 需要 resumeId 和 targetPosition
-      // (如果需要的参数不同，需要调整)
-      const optimized = await resumeOptimizeService.optimizeResume(resume._id, resume.targetPosition || '', resume.content); 
-      console.log(t('ai_optimization_complete', 'AI优化完成，准备显示预览'));
+  //     console.log(t('calling_ai_service', '调用AI服务优化简历...'));
+  //     // 假设 optimizeResume 需要 resumeId 和 targetPosition
+  //     // (如果需要的参数不同，需要调整)
+  //     const optimized = await resumeOptimizeService.optimizeResume(resume._id, resume.targetPosition || '', resume.content); 
+  //     console.log(t('ai_optimization_complete', 'AI优化完成，准备显示预览'));
       
-      setOptimizedContent(optimized);
-      setShowOptimizePreview(true);
-    } catch (error) {
-      console.error(t('resume_optimization_failed', '简历优化失败:'), error);
-      // 提供更具体的错误信息
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : t('optimization_retry_later', '简历优化失败，请稍后重试');
-      setOptimizationError(errorMessage);
-    } finally {
-      setIsOptimizing(false);
-    }
-  };
+  //     setOptimizedContent(optimized);
+  //     setShowOptimizePreview(true);
+  //   } catch (error) {
+  //     console.error(t('resume_optimization_failed', '简历优化失败:'), error);
+  //     // 提供更具体的错误信息
+  //     const errorMessage = error instanceof Error 
+  //       ? error.message 
+  //       : t('optimization_retry_later', '简历优化失败，请稍后重试');
+  //     setOptimizationError(errorMessage);
+  //   } finally {
+  //     setIsOptimizing(false);
+  //   }
+  // };
   
   // 关闭优化预览
   const handleCloseOptimizePreview = () => {

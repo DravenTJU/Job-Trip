@@ -41,7 +41,7 @@ const DashboardPage: React.FC = () => {
   const [interviews, setInterviews] = useState<Interview[]>([]);
   
   // Redux状态
-  const { userJobs, isLoading, error, stats } = useSelector((state: RootState) => state.userJobs);
+  const { userJobs, isLoading, error } = useSelector((state: RootState) => state.userJobs);
   const prevUserJobsRef = useRef<UserJob[] | undefined>(undefined); // 用于跟踪 userJobs 的先前引用
   
   // 本地状态用于分类的职位列表
@@ -136,7 +136,7 @@ const DashboardPage: React.FC = () => {
               position: job.title,
               time: new Date(date).toLocaleString(),
               duration: t('dashboard:to_be_scheduled'),
-              round: t('dashboard:interview_round', { count: index + 1 }),
+              round: t('dashboard:interview_round', `Round ${index + 1}`),
               status: 'confirmed'
             });
           });
@@ -511,7 +511,7 @@ const DashboardPage: React.FC = () => {
         position: job.title,
         time: new Date(date).toLocaleString(),
         duration: t('dashboard:to_be_scheduled'),
-        round: t('dashboard:interview_round', { count: updatedDates.length }),
+        round: t('dashboard:interview_round', `Round ${updatedDates.length}`),
         status: 'confirmed'
       };
       

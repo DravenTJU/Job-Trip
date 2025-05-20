@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { CreateJobData, Job, PaginatedResponse } from '@/types';
+import { CreateJobData, Job } from '@/types';
 import jobService from '@/services/jobService';
 
 // 异步Thunk actions

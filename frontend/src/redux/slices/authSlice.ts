@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { User, UserLoginData, UserRegisterData, UpdatePasswordData } from '@/types';
 import authService from '@/services/authService';
-import { ApiError, isApiError } from '../../types/api';
+import { isApiError } from '../../types/api';
 
 // 异步Thunk actions
 export const login = createAsyncThunk(

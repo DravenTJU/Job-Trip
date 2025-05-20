@@ -3,31 +3,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { createJob, updateJob, fetchJob } from '@/redux/slices/jobsSlice';
-import { Job, CreateJobData, JobStatus, JobType, JobSource } from '@/types';
-import { JOB_STATUS_OPTIONS, getStatusIcon } from '@/utils/jobStatusUtils';
+import { CreateJobData, JobStatus, JobType, JobSource } from '@/types';
 import StatusSelect from '@/components/common/StatusSelect';
-import { Link } from 'react-router-dom';
 import { 
-  Search, 
-  Plus, 
-  ExternalLink, 
-  ChevronLeft, 
-  ChevronRight,
-  Filter,
-  SortDesc,
-  SortAsc,
-  X,
-  Calendar,
-  Building2,
-  MapPin,
-  DollarSign,
-  Briefcase,
   ArrowLeft,
   Save,
-  Trash,
   HelpCircle
 } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import GenericListbox, { SelectOption } from '@/components/common/GenericListbox';
 import Toast, { ToastType } from '@/components/common/Toast';
@@ -179,21 +161,21 @@ const JobFormPage: React.FC = () => {
   const selectedPlatform = platformOptions.find(option => option.id === formData.platform) || null;
   
   // 处理 select 组件变更
-  const handleSelectChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name!]: value,
-    }));
-    if (formErrors[name!]) {
-      setFormErrors(prev => ({
-        ...prev,
-        [name!]: '',
-      }));
-    }
-  };
+  // const handleSelectChange = (
+  //   e: React.ChangeEvent<HTMLSelectElement>
+  // ) => {
+  //   const { name, value } = e.target;
+  //   setFormData(prev => ({
+  //     ...prev,
+  //     [name!]: value,
+  //   }));
+  //   if (formErrors[name!]) {
+  //     setFormErrors(prev => ({
+  //       ...prev,
+  //       [name!]: '',
+  //     }));
+  //   }
+  // };
   
   // 处理表单提交
   const handleSubmit = async (e: React.FormEvent) => {
@@ -311,7 +293,7 @@ const JobFormPage: React.FC = () => {
   };
   
   // 状态选项
-  const statusOptions = JOB_STATUS_OPTIONS;
+  // const statusOptions = JOB_STATUS_OPTIONS;
 
   // 生成唯一的sourceId
   const generateSourceId = (): string => {

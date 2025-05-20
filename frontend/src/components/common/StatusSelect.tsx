@@ -102,7 +102,7 @@ const StatusSelect: React.FC<StatusSelectProps> = ({
                       }
                       value={option.value}
                     >
-                      {({ selected, active }: OptionRenderPropArg) => (
+                      {({ selected }: OptionRenderPropArg) => (
                         <div>
                           <span className={`inline-flex items-center rounded-full pl-1 pr-3 py-1 ${getStatusStyle(option.value)}`}>
                             <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 mr-1.5">

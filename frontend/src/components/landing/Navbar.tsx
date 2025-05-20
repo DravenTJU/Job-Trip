@@ -8,7 +8,7 @@ import LanguageSelector from '@/components/common/LanguageSelector';
 
 const Navbar: React.FC = () => {
   const { t } = useTranslation('landing');
-  const { currentLanguage, changeLanguage, supportedLanguages } = useLanguage();
+  const { currentLanguage, supportedLanguages } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [desktopLangMenuOpen, setDesktopLangMenuOpen] = useState(false);

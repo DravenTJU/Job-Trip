@@ -7,7 +7,7 @@ interface SummaryStepProps {
   onPrevious: () => void;
 }
 
-const SummaryStep: React.FC<SummaryStepProps> = ({ data, onFinish, onPrevious }) => {
+const SummaryStep: React.FC<SummaryStepProps> = ({ data }) => {
   const { t } = useTranslation('profile');
   
   return (

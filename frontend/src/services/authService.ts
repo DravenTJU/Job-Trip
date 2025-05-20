@@ -4,8 +4,7 @@ import {
   UserLoginData, 
   UserRegisterData, 
   UserLoginResponse, 
-  UpdatePasswordData,
-  ApiResponse
+  UpdatePasswordData
 } from '@/types';
 
 // 用户认证服务

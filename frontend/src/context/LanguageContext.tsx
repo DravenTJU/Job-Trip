@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/redux/store';
 import { updateProfile } from '@/redux/slices/authSlice';
 import { supportedLanguages, defaultLanguage } from '@/i18n';
-import { User } from '@/types';
 
 // 语言上下文类型
 interface LanguageContextType {

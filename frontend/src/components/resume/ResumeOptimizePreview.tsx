@@ -109,7 +109,7 @@ const ResumeOptimizePreview: React.FC<ResumeOptimizePreviewProps> = ({
         if (parsedContent.educations.length > originalParsedContent.educations.length) {
           const newCount = parsedContent.educations.length - originalParsedContent.educations.length;
           const newEducations = parsedContent.educations.slice(originalParsedContent.educations.length);
-          const newSchools = newEducations.map(edu => edu.school).join('、');
+          const newSchools = newEducations.map((edu: any) => edu.school).join('、');
           
           items.push({
             title: '教育背景补充',
@@ -156,7 +156,7 @@ const ResumeOptimizePreview: React.FC<ResumeOptimizePreviewProps> = ({
         if (parsedContent.workExperiences.length > originalParsedContent.workExperiences.length) {
           const newCount = parsedContent.workExperiences.length - originalParsedContent.workExperiences.length;
           const newExperiences = parsedContent.workExperiences.slice(originalParsedContent.workExperiences.length);
-          const newCompanies = newExperiences.map(exp => exp.company).join('、');
+          const newCompanies = newExperiences.map((exp: any) => exp.company).join('、');
           
           items.push({
             title: '工作经历补充',
