@@ -24,6 +24,10 @@ import { getBasicCSP, getDocsCSP } from './utils/cspHelper';
 
 const app: Application = express();
 
+// 启用trust proxy以适用于反向代理环境(如Nginx)
+// 这将允许express-rate-limit正确识别客户端IP
+app.set('trust proxy', '127.0.0.1');
+
 // 安全中间件
 app.use(helmet({
   // 修改CSP策略，允许CDN脚本和内联脚本
