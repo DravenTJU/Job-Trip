@@ -50,36 +50,56 @@ async function updateScrapingState (isActive) {
   return chrome.storage.local.set({ isScrapingActive: isActive })
 }
 
-
-
 // Function to get user token from localStorage (新增抓localstorage功能)////////////
 async function getUserToken() {
   const config = await endpoints.detectEnvironment()
   const getLocalstorageTokenUrl = config.FRONTEND.jobtrip_URL
   const getLocalstorageTokenKey = config.FRONTEND.TOKEN_KEY
 
-  return new Promise((resolve) => {
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-      const currentTab = tabs[0];
-      if (currentTab && currentTab.url.includes(getLocalstorageTokenUrl)) {
-        chrome.scripting.executeScript({
-          target: {tabId: currentTab.id},
-          function: (tokenKey) => {
-            return localStorage.getItem(tokenKey); 
-          },
-          args: [getLocalstorageTokenKey]
-        }, (results) => {
-          if (results && results[0] && results[0].result) {
-            resolve(results[0].result);
-          } else {
-            resolve(null);
-          }
-        });
-      } else {
-        resolve(null);
+  return new Promise(async (resolve) => {
+    try {
+      // 首先查找所有与jobtrip相关的标签页
+      const tabs = await chrome.tabs.query({})
+      const jobtripTabs = tabs.filter(tab => 
+        tab.url && tab.url.includes(getLocalstorageTokenUrl)
+      )
+      
+      if (jobtripTabs.length === 0) {
+        console.log('No jobtrip tabs found')
+        resolve(null)
+        return
       }
-    });
-  });
+      
+      // 尝试从每个标签页获取token，直到成功
+      for (const tab of jobtripTabs) {
+        try {
+          const results = await chrome.scripting.executeScript({
+            target: {tabId: tab.id},
+            function: (tokenKey) => {
+              return localStorage.getItem(tokenKey)
+            },
+            args: [getLocalstorageTokenKey]
+          })
+          
+          if (results && results[0] && results[0].result) {
+            console.log('Token found in tab:', tab.url)
+            resolve(results[0].result)
+            return
+          }
+        } catch (err) {
+          console.warn(`Failed to get token from tab ${tab.id}:`, err)
+          // 继续尝试下一个标签页
+        }
+      }
+      
+      // 如果所有标签页都没有找到token
+      console.log('No token found in any jobtrip tab')
+      resolve(null)
+    } catch (error) {
+      console.error('Error getting user token:', error)
+      resolve(null)
+    }
+  })
 }
 
 export default {

@@ -283,17 +283,39 @@ const apiExporter = {
     try {
       const statusMessage = document.getElementById('statusMessage')
       if (scrapedJobs.length > 0) {
-        const userToken = await storageService.getUserToken();
+        // 尝试获取用户令牌
+        let userToken = await storageService.getUserToken();
+        
+        // 如果没有令牌，尝试打开jobtrip网站并重新获取
         if (!userToken) {
-          uiService.showMessage(statusMessage, 'Please log in to jobtrip first to get userToken, or keep the jobtrip page open', 'error');
+          uiService.showMessage(statusMessage, 'No user token found. Opening jobtrip login page...', 'warning');
           const tab = await tabService.ensurejobtripWebsite(false);
-          return;
+          
+          // 等待用户登录
+          uiService.showMessage(statusMessage, 'Please log in to jobtrip. Waiting for authentication...', 'info');
+          
+          // 等待5秒后再次尝试获取令牌
+          await new Promise(resolve => setTimeout(resolve, 5000));
+          userToken = await storageService.getUserToken();
+          
+          if (!userToken) {
+            uiService.showMessage(statusMessage, 'Please log in to jobtrip first to get userToken, or keep the jobtrip page open', 'error');
+            return;
+          }
         }
 
         // 将 userToken 从请求体中移除，因为它将通过 Authorization header 发送
         const exportData = formatJobData(scrapedJobs); 
         console.log('Exporting jobs (without token in body):', exportData)
-        console.log('API_ENDPOINT:', API_ENDPOINT)
+        
+        // 获取当前环境的API端点
+        const config = await endpoints.detectEnvironment();
+        const API_ENDPOINT = config.BACKEND.API_ENDPOINT;
+        console.log('Using API_ENDPOINT:', API_ENDPOINT);
+        
+        uiService.showMessage(statusMessage, 'Exporting jobs to backend...', 'info');
+        
+        // 发送请求
         const apiResponse = await fetch(API_ENDPOINT, {
           method: 'POST',
           headers: {
@@ -303,25 +325,44 @@ const apiExporter = {
           },
           body: JSON.stringify(exportData)
         });
-        console.log('apiResponse:', apiResponse)
+        
+        console.log('API Response status:', apiResponse.status);
+        
         if (apiResponse.ok) {
           const data = await apiResponse.json();
           console.log('Export successful:', data);
-          // uiService.showMessage(statusMessage, `Successfully exported ${data.data.length} jobs to backend with user token`);
           uiService.showMessage(statusMessage, `Successfully exported ${scrapedJobs.length} jobs to backend with user token`);
-
         } else {
-          const errorData = await apiResponse.json();
-          console.error('API export error:', errorData.message);
-          uiService.showMessage(statusMessage, `Export failed: ${errorData.message || 'Unknown error'}`, 'error');
+          // 处理各种错误状态码
+          let errorMessage = 'Unknown error';
+          
+          try {
+            const errorData = await apiResponse.json();
+            errorMessage = errorData.message || `HTTP Error: ${apiResponse.status}`;
+          } catch (e) {
+            errorMessage = `HTTP Error: ${apiResponse.status} - ${apiResponse.statusText}`;
+          }
+          
+          console.error('API export error:', errorMessage);
+          
+          // 如果是认证错误，尝试重新获取令牌
+          if (apiResponse.status === 401 || apiResponse.status === 403) {
+            uiService.showMessage(statusMessage, 'Authentication failed. Trying to refresh login...', 'warning');
+            await tabService.ensurejobtripWebsite(false);
+            
+            // 等待用户重新登录
+            uiService.showMessage(statusMessage, 'Please log in again to jobtrip', 'info');
+          } else {
+            uiService.showMessage(statusMessage, `Export failed: ${errorMessage}`, 'error');
+          }
         }
       } else {
         uiService.showMessage(statusMessage, 'No jobs found to export', 'error');
       }
     } catch (error) {
-      console.error('API export error:', error.message);
+      console.error('API export error:', error);
       const statusMessage = document.getElementById('statusMessage');
-      uiService.showMessage(statusMessage, `Export failed: ${error.message}`, 'error');
+      uiService.showMessage(statusMessage, `Export failed: ${error.message || 'Unknown error'}`, 'error');
     }
   }
 };
@@ -437,11 +478,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         return
       }
 
-      const userToken = await storageService.getUserToken();
+      // 尝试获取用户令牌
+      let userToken = await storageService.getUserToken();
+      
+      // 如果没有令牌，尝试打开jobtrip网站并重新获取
       if (!userToken) {
-        uiService.showMessage(statusMessage, 'Please log in to jobtrip first to get userToken, or keep the jobtrip page open', 'error');
+        uiService.showMessage(statusMessage, 'No user token found. Opening jobtrip login page...', 'warning');
         const tab = await tabService.ensurejobtripWebsite(false);
-        return;
+        
+        // 等待用户登录
+        uiService.showMessage(statusMessage, 'Please log in to jobtrip. Waiting for authentication...', 'info');
+        
+        // 等待5秒后再次尝试获取令牌
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        userToken = await storageService.getUserToken();
+        
+        if (!userToken) {
+          uiService.showMessage(statusMessage, 'Please log in to jobtrip first to get userToken, or keep the jobtrip page open', 'error');
+          return;
+        }
       }
 
       const jsonData = formatJobData(scrapedJobs);
@@ -777,13 +832,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     usertokenBtn.addEventListener('click', async () => {
       try {
         const statusMessage = document.getElementById('statusMessage');
-        const userToken = await storageService.getUserToken() || '';
+        
+        // 尝试获取用户令牌
+        let userToken = await storageService.getUserToken();
         
         if (userToken) {
-          uiService.showMessage(statusMessage, `Successfully retrieved user token: ${userToken}`, 'success');
-          console.log('User token:', userToken);
+          // 显示令牌的一部分，保护隐私
+          const maskedToken = userToken.substring(0, 10) + '...' + userToken.substring(userToken.length - 10);
+          uiService.showMessage(statusMessage, `Successfully retrieved user token: ${maskedToken}`, 'success');
+          console.log('User token found');
         } else {
-          uiService.showMessage(statusMessage, 'User token not found, please ensure you are logged in to jobtrip', 'error');
+          // 如果没有找到令牌，尝试打开jobtrip网站
+          uiService.showMessage(statusMessage, 'User token not found. Opening jobtrip login page...', 'warning');
+          
+          // 确保jobtrip网站已打开
+          const tab = await tabService.ensurejobtripWebsite(false);
+          
+          // 等待用户登录
+          uiService.showMessage(statusMessage, 'Please log in to jobtrip. Waiting for authentication...', 'info');
+          
+          // 等待5秒后再次尝试获取令牌
+          await new Promise(resolve => setTimeout(resolve, 5000));
+          userToken = await storageService.getUserToken();
+          
+          if (userToken) {
+            // 显示令牌的一部分，保护隐私
+            const maskedToken = userToken.substring(0, 10) + '...' + userToken.substring(userToken.length - 10);
+            uiService.showMessage(statusMessage, `Successfully retrieved user token: ${maskedToken}`, 'success');
+            console.log('User token found after retry');
+          } else {
+            uiService.showMessage(statusMessage, 'User token not found, please ensure you are logged in to jobtrip', 'error');
+          }
         }
       } catch (error) {
         console.error('Error retrieving user token:', error);

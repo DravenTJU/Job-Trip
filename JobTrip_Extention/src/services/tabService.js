@@ -13,23 +13,23 @@ async function findjobtripTab () {
 async function ensurejobtripWebsite (shouldFocusPopup = true) {
   console.group('ensurejobtripWebsite')
   try {
+    const config = await endpoints.detectEnvironment()
     const existingTab = await findjobtripTab()
     console.log('Existing jobtrip tab:', existingTab)
 
     if (!existingTab) {
       console.log('No existing tab found, creating new tab')
       try {
-        // Get base URL and open new tab / 獲取基礎URL並打開新標籤 /////////////////////////
-        const baseUrl = await chrome.runtime.sendMessage({ action: 'getBaseUrl' })
-        console.log('Got base URL:', baseUrl)
+        // 直接使用配置中的URL，不再通过消息获取
+        const baseUrl = config.FRONTEND.BASE_URL
+        console.log('Using base URL from config:', baseUrl)
 
         if (!baseUrl) {
           throw new Error('Failed to get jobtrip URL - base URL is undefined')
         }
 
-        const manifest = chrome.runtime.getManifest()
-        //跳出擴充功能頁面/////////////////////////
-        const url = `${baseUrl}/login`
+        // 确保URL正确格式化
+        const url = baseUrl.endsWith('/') ? `${baseUrl}login` : `${baseUrl}/login`
         console.log('Opening jobtrip URL:', url)
 
         const tab = await chrome.tabs.create({
