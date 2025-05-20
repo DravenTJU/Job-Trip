@@ -6,6 +6,17 @@ JobTrip is an intelligent job application tracking system designed to help job s
 
 ![title](https://github.com/user-attachments/assets/7a7b45e4-1519-45a4-a483-93d5a163ca8c)
 
+## Online Demo
+
+🔗 Live Demo: [https://jobtrip.draven.best/](https://jobtrip.draven.best/)
+
+### Screenshots
+
+![Landing](https://github.com/user-attachments/assets/eb2d179b-bd1f-4360-8c66-9907bd513e89)
+![Login](https://github.com/user-attachments/assets/cdd83bfe-fecc-46de-9ba5-62ac5a48035e)
+![Welcome](https://github.com/user-attachments/assets/b8b53ea8-3f9e-4b8a-9a3e-92c0db6804ec)
+![Job List](https://github.com/user-attachments/assets/7007b4a3-da40-4587-9068-1e8f35154088)
+![Job Tracking](https://github.com/user-attachments/assets/acfd1185-28df-4bcd-b95e-173bd8fef576)
 
 ## Project Overview
 

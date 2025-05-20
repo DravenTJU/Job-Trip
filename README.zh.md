@@ -4,6 +4,18 @@
 
 JobTrip是一个智能求职追踪系统，旨在帮助求职者更有效地管理求职过程。该系统包括浏览器扩展和Web应用程序，可以自动收集主流招聘平台的职位信息，提供集中管理应用的平台，并帮助用户有效地组织和跟踪求职流程。
 
+## 在线演示
+
+🔗 在线体验：[https://jobtrip.draven.best/](https://jobtrip.draven.best/)
+
+### 系统截图
+
+![首页](https://github.com/user-attachments/assets/657722e1-c5fd-4b67-a4ab-430df1a12fc3)
+![登录](https://github.com/user-attachments/assets/8c84d2ac-a503-4fae-8eee-290cc0529e0d)
+![欢迎](https://github.com/user-attachments/assets/4052a2b2-2769-4628-a1dd-cf03bb360b10)
+![职位列表](https://github.com/user-attachments/assets/18942d3f-7ee0-4e54-81a7-4bd383e82315)
+![职位追踪](https://github.com/user-attachments/assets/2d3bd7a9-09f6-4c1e-9eab-825c83f91034)
+
 ## 项目概述
 
 JobTrip为新西兰就业市场的求职者提供了一站式解决方案，具有以下主要功能：
