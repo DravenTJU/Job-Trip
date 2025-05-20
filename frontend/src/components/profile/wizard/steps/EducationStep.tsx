@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { withLanguageUpdates } from '@/context/LanguageContext';
 
 interface EducationStepProps {
   data: any;
@@ -381,4 +382,4 @@ const EducationStep: React.FC<EducationStepProps> = ({ data }) => {
   );
 };
 
-export default EducationStep; 
+export default withLanguageUpdates(EducationStep); 

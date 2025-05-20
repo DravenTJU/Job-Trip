@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { withLanguageUpdates } from '@/context/LanguageContext';
 
 interface BasicInfoStepProps {
   data: any;
@@ -189,4 +190,4 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, onUpdate, onNext })
   );
 };
 
-export default BasicInfoStep; 
+export default withLanguageUpdates(BasicInfoStep); 

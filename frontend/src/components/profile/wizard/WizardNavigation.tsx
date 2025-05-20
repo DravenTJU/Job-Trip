@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { withLanguageUpdates } from '@/context/LanguageContext';
 
 interface WizardNavigationProps {
   currentStep: number;
@@ -78,4 +79,4 @@ const WizardNavigation: React.FC<WizardNavigationProps> = ({
   );
 };
 
-export default WizardNavigation; 
+export default withLanguageUpdates(WizardNavigation); 

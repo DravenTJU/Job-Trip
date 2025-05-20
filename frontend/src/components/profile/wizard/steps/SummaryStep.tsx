@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { withLanguageUpdates } from '@/context/LanguageContext';
 
 interface SummaryStepProps {
   data: any;
@@ -176,4 +177,4 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ data }) => {
   );
 };
 
-export default SummaryStep; 
+export default withLanguageUpdates(SummaryStep); 

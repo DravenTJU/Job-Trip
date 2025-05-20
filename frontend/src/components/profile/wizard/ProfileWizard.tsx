@@ -15,6 +15,7 @@ import EducationStep from './steps/EducationStep';
 // import HonorsAwardsStep from './steps/HonorsAwardsStep';
 import SummaryStep from './steps/SummaryStep';
 import { useTranslation } from 'react-i18next';
+import { withLanguageUpdates } from '@/context/LanguageContext';
 
 const ProfileWizard: React.FC = () => {
   const { t } = useTranslation('profile');
@@ -210,4 +211,4 @@ const ProfileWizard: React.FC = () => {
   );
 };
 
-export default ProfileWizard; 
+export default withLanguageUpdates(ProfileWizard); 

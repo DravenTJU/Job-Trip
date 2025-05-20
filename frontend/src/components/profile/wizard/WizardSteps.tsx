@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { withLanguageUpdates } from '@/context/LanguageContext';
 
 interface Step {
   title: string;
@@ -58,4 +59,4 @@ const WizardSteps: React.FC<WizardStepsProps> = ({ steps, currentStep }) => {
   );
 };
 
-export default WizardSteps; 
+export default withLanguageUpdates(WizardSteps); 

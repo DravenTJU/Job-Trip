@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { withLanguageUpdates } from '@/context/LanguageContext';
 
 interface ContactInfoStepProps {
   data: any;
@@ -228,4 +229,4 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ data, onUpdate, onNex
   );
 };
 
-export default ContactInfoStep; 
+export default withLanguageUpdates(ContactInfoStep); 
