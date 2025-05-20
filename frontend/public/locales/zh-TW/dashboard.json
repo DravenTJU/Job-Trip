@@ -18,5 +18,12 @@
   "to_be_confirmed": "待確認",
   "no_interviews": "暫無面試安排",
   "no_pending_tasks": "暫無待處理任務",
-  "move_to": "移動到"
+  "move_to": "移動到",
+  "add_task": "添加任務",
+  "enter_task": "輸入任務內容...",
+  "add": "添加",
+  "to_be_scheduled": "待安排",
+  "interview_round": "第{{count}}輪面試",
+  "initial_interview": "初始面試",
+  "schedule_interview_time": "待安排面試時間"
 } 

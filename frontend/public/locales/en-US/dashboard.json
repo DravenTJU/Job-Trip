@@ -18,5 +18,12 @@
   "to_be_confirmed": "To Be Confirmed",
   "no_interviews": "No interview arrangements",
   "no_pending_tasks": "No pending tasks",
-  "move_to": "Move to"
+  "move_to": "Move to",
+  "add_task": "Add Task",
+  "enter_task": "Enter task content...",
+  "add": "Add",
+  "to_be_scheduled": "To be scheduled",
+  "interview_round": "Round {{count}}",
+  "initial_interview": "Initial Interview",
+  "schedule_interview_time": "Schedule interview time"
 } 

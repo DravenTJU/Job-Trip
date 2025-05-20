@@ -11,6 +11,7 @@
   "continue_improving": "继续完善",
   "completed_status": "已完成",
   "improve_profile_message": "完善您的档案可以提高职业机会匹配度",
+  "no_data": "暂无数据",
   
   "first_name": "名",
   "last_name": "姓",
@@ -243,5 +244,5 @@
   "awards_count": "已添加 {{count}} 项荣誉奖项",
   "no_awards_added": "未添加荣誉奖项",
   "please_confirm": "请确认信息",
-  "confirm_message": "请确认以上信息准确无误，点击“完成创建”按钮创建您的个人档案。创建后您仍可随时修改和完善档案信息。"
+  "confirm_message": "请确认以上信息准确无误，点击"完成创建"按钮创建您的个人档案。创建后您仍可随时修改和完善档案信息。"
 } 

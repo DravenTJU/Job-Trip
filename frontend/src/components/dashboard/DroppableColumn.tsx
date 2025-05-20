@@ -3,6 +3,7 @@ import { useDrop } from 'react-dnd';
 // 定义本地的Interview接口，而不是从types/job导入
 import DraggableJobCard from './DraggableJobCard';
 import { Plus, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 // 定义Interview接口
 export interface Interview {
@@ -44,6 +45,7 @@ export const DroppableColumn = <T extends { id: string; title: string; company: 
   onToggleTodo,
   onDeleteTodo
 }: DroppableColumnProps<T>) => {
+  const { t } = useTranslation('dashboard');
   console.log(`[DroppableColumn "${title}"] Render. Jobs count: ${jobs.length}. Job IDs: ${jobs.map(j => j.id).join(', ')}`);
   const [{ isOver }, drop] = useDrop<T, void, { isOver: boolean }>({
     accept: 'job',
@@ -136,7 +138,7 @@ export const DroppableColumn = <T extends { id: string; title: string; company: 
                     type="text"
                     value={newTaskText}
                     onChange={(e) => setNewTaskText(e.target.value)}
-                    placeholder="输入任务内容..."
+                    placeholder={t('enter_task')}
                     className="flex-1 text-sm h-9 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
                     onKeyPress={(e) => e.key === 'Enter' && handleAddTask(job.id)}
                   />
@@ -144,7 +146,7 @@ export const DroppableColumn = <T extends { id: string; title: string; company: 
                     onClick={() => handleAddTask(job.id)}
                     className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 text-sm"
                   >
-                    添加
+                    {t('add')}
                   </button>
                   <button
                     onClick={() => {
@@ -162,7 +164,7 @@ export const DroppableColumn = <T extends { id: string; title: string; company: 
                   className="ml-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 text-sm flex items-center"
                 >
                   <Plus className="h-4 w-4 mr-1" />
-                  添加任务
+                  {t('add_task')}
                 </button>
               )}
             </div>

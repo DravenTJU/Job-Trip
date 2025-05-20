@@ -18,5 +18,12 @@
   "to_be_confirmed": "待确认",
   "no_interviews": "暂无面试安排",
   "no_pending_tasks": "暂无待处理任务",
-  "move_to": "移动到"
+  "move_to": "移动到",
+  "add_task": "添加任务",
+  "enter_task": "输入任务内容...",
+  "add": "添加",
+  "to_be_scheduled": "待安排",
+  "interview_round": "第{{count}}轮面试",
+  "initial_interview": "初始面试",
+  "schedule_interview_time": "待安排面试时间"
 } 

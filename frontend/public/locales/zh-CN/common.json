@@ -22,7 +22,7 @@
     "backToHome": "返回首页"
   },
   "languages": {
-    "en-US": "英文",
+    "en-US": "英语",
     "zh-CN": "简体中文",
     "zh-TW": "繁体中文"
   },
@@ -83,5 +83,6 @@
       "awards": "荣誉与奖项",
       "recommendations": "推荐信"
     }
-  }
+  },
+  "add": "添加"
 } 

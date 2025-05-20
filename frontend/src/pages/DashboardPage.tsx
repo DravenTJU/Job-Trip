@@ -135,8 +135,8 @@ const DashboardPage: React.FC = () => {
               company: dashboardJob.company,
               position: job.title,
               time: new Date(date).toLocaleString(),
-              duration: '待安排',
-              round: `第${index + 1}轮面试`,
+              duration: t('dashboard:to_be_scheduled'),
+              round: t('dashboard:interview_round', { count: index + 1 }),
               status: 'confirmed'
             });
           });
@@ -196,7 +196,7 @@ const DashboardPage: React.FC = () => {
     } else {
       console.log('[DashboardPage useEffect userJobs] Condition NOT MET. No sync action taken.');
     }
-  }, [userJobs]); // 只依赖userJobs，确保Redux数据变化时能正确同步
+  }, [userJobs, t]); // 添加t作为依赖项
 
   // 添加任务处理函数
   const addTodoForJob = async (jobId: string, task: string) => {
@@ -352,7 +352,7 @@ const DashboardPage: React.FC = () => {
     const jobToMove = {
       ...item,
       // 更新额外信息
-      nextInterview: status === JobStatus.INTERVIEWING ? '待安排面试时间' : undefined,
+      nextInterview: status === JobStatus.INTERVIEWING ? t('dashboard:schedule_interview_time') : undefined,
       offerDate: status === JobStatus.OFFER ? new Date().toISOString().split('T')[0] : item.offerDate
     };
 
@@ -389,9 +389,9 @@ const DashboardPage: React.FC = () => {
           jobId: item.id,
           company: item.company,
           position: item.title,
-          time: '待安排',
-          duration: '待安排',
-          round: '初始面试',
+          time: t('dashboard:to_be_scheduled'),
+          duration: t('dashboard:to_be_scheduled'),
+          round: t('dashboard:initial_interview'),
           status: 'confirmed'
         };
         setInterviews(prev => [...prev, newInterview]);
@@ -420,7 +420,7 @@ const DashboardPage: React.FC = () => {
       }));
       
       // 后端更新成功，显示成功通知
-      showToast('success', `${item.title} ${t(`jobs:move_to`, '移动到')} ${t(`jobs:status.${status}`)}`);
+      showToast('success', `${item.title} ${t(`dashboard:move_to`, '移动到')} ${t(`jobs:status.${status}`)}`);
       console.log('职位状态更新成功:', item.title, sourceStatus, '->', status);
     } catch (error) {
       console.error('更新职位状态失败:', error);
@@ -510,8 +510,8 @@ const DashboardPage: React.FC = () => {
         company: job.company,
         position: job.title,
         time: new Date(date).toLocaleString(),
-        duration: '待安排',
-        round: `第${updatedDates.length}轮面试`,
+        duration: t('dashboard:to_be_scheduled'),
+        round: t('dashboard:interview_round', { count: updatedDates.length }),
         status: 'confirmed'
       };
       
