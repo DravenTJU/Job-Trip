@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { SignOptions } from 'jsonwebtoken';
 
 // 用户偏好接口
 export interface IUserPreferences {
@@ -120,7 +121,7 @@ userSchema.methods.generateAuthToken = function (): string {
   return jwt.sign(
     { id: this._id, email: this.email, username: this.username },
     jwtSecret,
-    { expiresIn }
+    { expiresIn } as SignOptions
   );
 };
 
