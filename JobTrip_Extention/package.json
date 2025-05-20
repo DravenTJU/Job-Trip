@@ -1,6 +1,6 @@
 {
   "name": "jobtrip-extension",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "JobTrip浏览器扩展 - 自动收集多平台职位信息并集中管理",
   "main": "background.js",
   "scripts": {
