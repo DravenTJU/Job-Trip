@@ -22,7 +22,7 @@ describe('Panel Logic', () => {
     // 你可能需要根据 panel.js 的实际需求调整这里的 HTML
     document.body.innerHTML = `
       <div class="container">
-        <h2>jobtrip Assistant</h2>
+        <h2>JobTrip Assistant</h2>
         <div id="websiteOptions" style="margin: 4px 0 10px 0;"></div>
         <div class="search-section">
           <input type="text" id="searchInput" class="search-input" value="Software Engineer" placeholder="Enter job title or keywords" required>

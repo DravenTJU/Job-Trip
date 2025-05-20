@@ -119,7 +119,7 @@ function createScrapeOverlay () {
   spinner.className = 'spinner'
 
   const message = document.createElement('h3')
-  message.textContent = 'jobtrip Scraping in Progress'
+  message.textContent = 'JobTrip Scraping in Progress'
 
   const subMessage = document.createElement('p')
   subMessage.textContent = 'Please do not close this tab or interact with the page until scraping is complete.'

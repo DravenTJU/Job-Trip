@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "jobtrip Extention",
+  "name": "JobTrip Extention",
   "version": "1.0.5",
   "description": "Help you search and track job applications across multiple platforms",
   "permissions": [
@@ -31,7 +31,7 @@
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     },
-    "default_title": "jobtrip Extention"
+    "default_title": "JobTrip Extention"
   },
   "side_panel": {
     "default_path": "sidepanel.html"
