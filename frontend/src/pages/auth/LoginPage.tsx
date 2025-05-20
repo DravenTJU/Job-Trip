@@ -19,7 +19,7 @@ const LoginPage: React.FC = () => {
   const { isLoading, error, isAuthenticated } = useAppSelector((state) => state.auth);
   
   // 获取重定向路径
-  const from = (location.state as { from?: string })?.from || '/dashboard';
+  const from = (location.state as { from?: string })?.from || '/welcome';
   
   const [formData, setFormData] = useState({
     identifier: '',
