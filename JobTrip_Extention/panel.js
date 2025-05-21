@@ -222,6 +222,12 @@ export const formatJobData = (jobs) => {
         sourceId = match ? match[1] : '';
       }
 
+      // 处理jobType，确保空字符串变为N/A
+      let jobType = job.jobType || '';
+      if (jobType === '') {
+        jobType = 'n-a'; // 将空字符串转为N/A
+      }
+
       return {
         platform: job.platform,
         title: job.title,
@@ -230,7 +236,7 @@ export const formatJobData = (jobs) => {
         description: job.description || '',
         requirements: job.requirements || [],
         salary: job.salary || '',
-        jobType: job.jobType || '',
+        jobType: jobType,
         source: job.platform,
         sourceId: sourceId,
         sourceUrl: sourceUrl,
