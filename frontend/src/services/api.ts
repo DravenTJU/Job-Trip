@@ -4,7 +4,7 @@ import { ApiError } from '../types/api';
 // 创建axios实例
 const apiClient = axios.create({
   baseURL: '/api/v1',
-  timeout: 10000,
+  timeout: 30000, // 增加默认超时时间到30秒
   headers: {
     'Content-Type': 'application/json',
   },
@@ -17,6 +17,12 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
+    
+    // 为AI相关请求设置更长的超时时间
+    if (config.url?.includes('/ai/')) {
+      config.timeout = 60000; // 对AI请求设置60秒超时
+    }
+    
     return config;
   },
   (error) => {
@@ -52,6 +58,12 @@ apiClient.interceptors.response.use(
         url: response.config.url,
         responseData: response.data
       });
+    }
+    
+    // 处理超时错误
+    if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
+      console.error('请求超时，请稍后重试');
+      return Promise.reject(new ApiError('请求超时，请稍后重试', 504));
     }
     
     return Promise.reject(error);
