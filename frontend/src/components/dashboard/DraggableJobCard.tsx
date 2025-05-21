@@ -3,6 +3,7 @@ import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { CalendarIcon, MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import { Interview } from './DroppableColumn';
+import { useTranslation } from 'react-i18next';
 
 // 使用泛型，使组件能够接受不同的Job类型
 type DraggableJobCardProps<T extends { id: string; title: string; company: string; type?: string; salary?: string }> = T & {
@@ -14,6 +15,7 @@ type DraggableJobCardProps<T extends { id: string; title: string; company: strin
 const DraggableJobCard = <T extends { id: string; title: string; company: string; type?: string; salary?: string }>(props: DraggableJobCardProps<T>) => {
   const { id, title, company, type, salary, interview, onEdit, onDelete } = props;
   const [showActions, setShowActions] = useState(false);
+  const { t } = useTranslation(['jobs', 'dashboard']);
 
   const [{ isDragging }, drag, preview] = useDrag<T, void, { isDragging: boolean }>({
     type: 'job',
@@ -65,7 +67,7 @@ const DraggableJobCard = <T extends { id: string; title: string; company: string
                   className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center"
                 >
                   <Pencil className="h-4 w-4 mr-2" />
-                  编辑
+                  {t('edit', '编辑')}
                 </button>
                 <button
                   onClick={(e) => {
@@ -76,7 +78,7 @@ const DraggableJobCard = <T extends { id: string; title: string; company: string
                   className="w-full px-4 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
-                  删除
+                  {t('delete', '删除')}
                 </button>
               </div>
             )}
@@ -103,6 +105,9 @@ const DraggableJobCard = <T extends { id: string; title: string; company: string
                 : 'text-yellow-600 dark:text-yellow-400'
             }`}>
               {interview.round} - {interview.time}
+              {interview.status === 'confirmed' 
+                ? ` (${t('confirmed', { ns: 'dashboard' })})` 
+                : ` (${t('to_be_confirmed', { ns: 'dashboard' })})`}
             </span>
           </div>
         </div>
