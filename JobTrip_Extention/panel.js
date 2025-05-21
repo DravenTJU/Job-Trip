@@ -23,10 +23,10 @@ const handleCheckboxChange = async (e) => {
       }
     })
     await storageService.saveWebsiteSettings(newSettings)
-    const statusMessage = document.getElementById('statusMessage')
-    if (statusMessage) {
-      uiService.showMessage(statusMessage, 'Settings saved')
-    }
+    // const statusMessage = document.getElementById('statusMessage')
+    // if (statusMessage) {
+    //   uiService.showMessage(statusMessage, 'Settings saved')
+    // }
   }
 }
 
@@ -338,6 +338,27 @@ const apiExporter = {
           const data = await apiResponse.json();
           console.log('Export successful:', data);
           uiService.showMessage(statusMessage, `Successfully exported ${scrapedJobs.length} jobs to backend with user token`);
+          
+          // 添加2秒延迟后跳转到joblist页面
+          setTimeout(async () => {
+            try {
+              // 获取当前环境的配置
+              const config = await endpoints.detectEnvironment();
+              const baseUrl = config.FRONTEND.BASE_URL;
+              
+              // 构建joblist页面的URL
+              const joblistUrl = baseUrl.endsWith('/') ? `${baseUrl}jobs` : `${baseUrl}/jobs`;
+              
+              // 直接创建新标签页打开joblist页面
+              chrome.tabs.create({ url: joblistUrl, active: true }, (tab) => {
+                console.log('Created new tab for joblist page:', tab);
+              });
+              
+              console.log('Redirected to joblist page:', joblistUrl);
+            } catch (error) {
+              console.error('Failed to redirect to joblist page:', error);
+            }
+          }, 2000); // 2秒延迟
         } else {
           // 处理各种错误状态码
           let errorMessage = 'Unknown error';
