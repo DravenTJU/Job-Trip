@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronDown, ChevronUp, Download, Copy, Edit, Trash, Plus } from 'lucide-react';
+import { ChevronDown, ChevronUp, Download, Copy, Edit, Trash, Plus, FileText, X } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import { fetchResumes, deleteResume, duplicateResume } from '@/redux/slices/resumesSlice';
 import { Resume } from '@/types';
@@ -8,6 +8,7 @@ import Toast from '@/components/common/Toast';
 import Loader from '@/components/common/Loader';
 import CustomConfirmDialog from '@/components/common/CustomConfirmDialog';
 import ResumeOptimizePreview from '@/components/resume/ResumeOptimizePreview';
+import resumeExportService from '@/services/resumeExportService';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -23,6 +24,13 @@ const ResumeBuilderPage: React.FC = () => {
   const [expandedResume, setExpandedResume] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [resumeToDelete, setResumeToDelete] = useState<string | null>(null);
+  
+  // 预览相关状态
+  const [previewHtml, setPreviewHtml] = useState<string | null>(null);
+  const [previewResumeId, setPreviewResumeId] = useState<string | null>(null);
+  const [previewResumeName, setPreviewResumeName] = useState<string>('');
+  const [isLoadingPreview, setIsLoadingPreview] = useState(false);
+  const [previewError, setPreviewError] = useState<string | null>(null);
   
   // AI优化相关状态
   // const [isOptimizing, setIsOptimizing] = useState(false);
@@ -65,108 +73,102 @@ const ResumeBuilderPage: React.FC = () => {
   const handleEditResume = (id: string) => {
     navigate(`/resume-form/${id}`);
   };
+  
+  // 处理预览简历
+  const handlePreviewResume = async (resume: Resume) => {
+    try {
+      setIsLoadingPreview(true);
+      setPreviewError(null);
+      setPreviewResumeId(resume._id);
+      setPreviewResumeName(resume.name);
+      
+      // 直接使用API服务获取HTML内容
+      const response = await fetch(`/api/v1/resumes/${resume._id}/preview`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`请求失败: ${response.status} ${response.statusText}`);
+      }
+      
+      const html = await response.text();
+      setPreviewHtml(html);
+    } catch (error) {
+      console.error('获取预览失败:', error);
+      setPreviewError(error instanceof Error ? error.message : '获取预览失败');
+    } finally {
+      setIsLoadingPreview(false);
+    }
+  };
+  
+  // 处理下载PDF
+  const handleDownloadPDF = async (resumeId: string) => {
+    try {
+      await resumeExportService.downloadResumePDF(resumeId);
+    } catch (error) {
+      console.error('下载PDF失败:', error);
+      // 这里可以添加错误提示
+    }
+  };
 
   // 处理创建新简历 - 默认创建基础简历
   const handleCreateResume = () => {
     navigate(`/resume-form/new`);
   };
   
-  // 处理创建定制简历
-  // const handleCreateTailoredResume = () => {
-  //   navigate(`/resume-form/new?type=${ResumeType.TAILORED}`);
-  // };
-  
-  // 处理下载简历
-  const handleDownloadResume = async (resumeId: string) => {
-    try {
-      // 获取认证令牌
-      const token = localStorage.getItem('token');
-      
-      // 发送带有认证信息的请求
-      const response = await fetch(
-        `/api/v1/resumes/${resumeId}/download`,
-        {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        }
-      );
-      
-      if (!response.ok) {
-        throw new Error(t('download_resume_failed', '下载简历失败'));
-      }
-      
-      // 将响应转换为blob
-      const blob = await response.blob();
-      
-      // 创建下载链接
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
-      
-      // 从Content-Disposition获取文件名，如果没有则使用默认名称
-      const contentDisposition = response.headers.get('Content-Disposition');
-      let filename = 'resume.docx';
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename=([^;]+)/);
-        if (filenameMatch && filenameMatch[1]) {
-          filename = decodeURIComponent(filenameMatch[1].replace(/"/g, ''));
-        }
-      }
-      
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      
-      // 清理
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error(t('download_resume_error', '下载简历时出错:'), error);
-      // 可以在这里添加错误提示
-    }
+  // 关闭预览
+  const closePreview = () => {
+    setPreviewHtml(null);
+    setPreviewError(null);
+    setPreviewResumeId(null);
   };
-  
-  // 处理AI优化简历
-  // const handleOptimizeResume = async (resume: Resume) => {
-  //   try {
-  //     console.log(t('start_optimizing_resume', '开始优化简历:'), resume._id);
-  //     setIsOptimizing(true);
-  //     setOptimizationError(null);
-  //     setResumeToOptimize(resume);
-      
-  //     // 验证简历内容是否有效
-  //     if (!resume.content) {
-  //       throw new Error(t('empty_resume_content', '简历内容为空，无法进行优化'));
-  //     }
-      
-  //     console.log(t('calling_ai_service', '调用AI服务优化简历...'));
-  //     // 假设 optimizeResume 需要 resumeId 和 targetPosition
-  //     // (如果需要的参数不同，需要调整)
-  //     const optimized = await resumeOptimizeService.optimizeResume(resume._id, resume.targetPosition || '', resume.content); 
-  //     console.log(t('ai_optimization_complete', 'AI优化完成，准备显示预览'));
-      
-  //     setOptimizedContent(optimized);
-  //     setShowOptimizePreview(true);
-  //   } catch (error) {
-  //     console.error(t('resume_optimization_failed', '简历优化失败:'), error);
-  //     // 提供更具体的错误信息
-  //     const errorMessage = error instanceof Error 
-  //       ? error.message 
-  //       : t('optimization_retry_later', '简历优化失败，请稍后重试');
-  //     setOptimizationError(errorMessage);
-  //   } finally {
-  //     setIsOptimizing(false);
-  //   }
-  // };
   
   // 关闭优化预览
   const handleCloseOptimizePreview = () => {
     setShowOptimizePreview(false);
     setOptimizedContent('');
     setResumeToOptimize(null);
+  };
+  
+  // 渲染预览模态框
+  const renderPreviewModal = () => {
+    if (!previewHtml || !previewResumeId) return null;
+    
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 w-11/12 h-5/6 max-w-5xl flex flex-col">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+              {t('resume_preview', '简历预览')} - {previewResumeName}
+            </h3>
+            <button 
+              onClick={closePreview}
+              className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="flex-grow overflow-auto bg-white p-4 rounded border border-gray-300">
+            <iframe
+              srcDoc={previewHtml}
+              title="简历预览"
+              className="w-full h-full"
+              sandbox="allow-same-origin"
+            />
+          </div>
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={closePreview}
+              className="px-4 py-2 rounded-xl text-sm font-medium bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+            >
+              {t('close', '关闭')}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -187,6 +189,15 @@ const ResumeBuilderPage: React.FC = () => {
         />
       }
       {isLoading && <Loader />}
+      
+      {/* 预览错误提示 */}
+      {previewError && (
+        <Toast 
+          type="error" 
+          message={previewError} 
+          onClose={() => setPreviewError(null)} 
+        /> 
+      )}
       
       {/* AI优化错误提示 - 使用Toast组件 */}
       {optimizationError && (
@@ -224,29 +235,9 @@ const ResumeBuilderPage: React.FC = () => {
                 onClick={() => toggleResumeExpand(resume._id)}
               >
                 <div className="flex items-center">
-                  {/* 使用默认图标或根据类型显示不同图标 */}
-                  {/* {resume.thumbnail ? (
-                    <img 
-                      src={resume.thumbnail} 
-                      alt={resume.name}
-                      className="w-10 h-14 object-cover rounded mr-3"
-                    />
-                  ) : (
-                    <div className="w-10 h-14 bg-gray-100 dark:bg-gray-600 rounded flex items-center justify-center mr-3">
-                      <FileText className="w-6 h-6 text-gray-400 dark:text-gray-300" />
-                    </div>
-                  )} */}
                   <div>
                     <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{resume.name}</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {/* 显示简历类型 */} 
-                      {/* <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium mr-2 ${
-                        resume.type === ResumeType.TAILORED 
-                          ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
-                          : 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                      }`}>
-                        {resume.type === ResumeType.TAILORED ? '定制' : '基础'}
-                      </span> */}
                       {t('created_at', '创建于')}{new Date(resume.createdAt).toLocaleDateString()} • {t('updated_at', '更新于')} {new Date(resume.updatedAt).toLocaleDateString()} • {t('target_position', '目标职位')}: {resume.targetPosition || t('not_specified', '未指定')}
                     </p>
                   </div>
@@ -264,21 +255,38 @@ const ResumeBuilderPage: React.FC = () => {
                 <div className="p-4 bg-white/50 dark:bg-gray-800/50"> 
                   <div className="flex flex-wrap gap-2">
                     <button 
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-blue-50/50 dark:bg-blue-900/50 backdrop-blur-lg ring-2 ring-blue-900/5 dark:ring-blue-100/5 hover:bg-blue-100/50 dark:hover:bg-blue-800/50 transition-colors text-blue-600 dark:text-blue-400"
+                      onClick={(e) => {
+                        e.stopPropagation(); 
+                        handlePreviewResume(resume);
+                      }}
+                      disabled={isLoadingPreview && previewResumeId === resume._id}
+                    >
+                      {isLoadingPreview && previewResumeId === resume._id ? (
+                        <span className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></span>
+                      ) : (
+                        <FileText className="w-4 h-4" />
+                      )}
+                      {isLoadingPreview && previewResumeId === resume._id ? 
+                        t('loading', '加载中...') : 
+                        t('preview', '预览')}
+                    </button>
+                    <button 
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-green-50/50 dark:bg-green-900/50 backdrop-blur-lg ring-2 ring-green-900/5 dark:ring-green-100/5 hover:bg-green-100/50 dark:hover:bg-green-800/50 transition-colors text-green-600 dark:text-green-400"
+                      onClick={(e) => {
+                        e.stopPropagation(); 
+                        handleDownloadPDF(resume._id);
+                      }}
+                    >
+                      <Download className="w-4 h-4" />
+                      {t('download_pdf', 'PDF')}
+                    </button>
+                    <button 
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
                       onClick={() => handleEditResume(resume._id)}
                     >
                       <Edit className="w-4 h-4" />
                       {t('edit', '编辑')}
-                    </button>
-                    <button 
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation(); 
-                        handleDownloadResume(resume._id);
-                      }}
-                    >
-                      <Download className="w-4 h-4" />
-                      {t('download', '下载')}
                     </button>
                     <button 
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg ring-2 ring-gray-900/5 dark:ring-gray-100/5 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors"
@@ -324,6 +332,9 @@ const ResumeBuilderPage: React.FC = () => {
         onConfirm={confirmDeleteResume}
         onCancel={() => setShowDeleteConfirm(false)}
       />
+      
+      {/* 预览模态框 */}
+      {renderPreviewModal()}
     </div>
   );
 };

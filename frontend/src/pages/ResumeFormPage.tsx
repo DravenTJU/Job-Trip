@@ -58,12 +58,14 @@ const ResumeFormPage: React.FC = () => {
     major: string;
     startDate: string;
     endDate: string;
+    location: string;
   }>>([{
     education: '',
     school: '',
     major: '',
     startDate: '',
-    endDate: ''
+    endDate: '',
+    location: ''
   }]);
   
   // 工作经历数据
@@ -73,12 +75,14 @@ const ResumeFormPage: React.FC = () => {
     startDate: string;
     endDate: string;
     responsibilities: string;
+    location: string;
   }>>([{
     company: '',
     position: '',
     startDate: '',
     endDate: '',
-    responsibilities: ''
+    responsibilities: '',
+    location: ''
   }]);
   
   const [isGenerating, setIsGenerating] = useState(false);
@@ -131,13 +135,22 @@ const ResumeFormPage: React.FC = () => {
               const emailElement = document.getElementById('email') as HTMLInputElement;
               const phoneElement = document.getElementById('phone') as HTMLInputElement;
               const locationElement = document.getElementById('location') as HTMLInputElement;
-              const skillsElement = document.getElementById('skills') as HTMLTextAreaElement;
+              const programmingLanguagesElement = document.getElementById('programmingLanguages') as HTMLTextAreaElement;
+              const technologiesElement = document.getElementById('technologies') as HTMLTextAreaElement;
               
               if (fullNameElement) fullNameElement.value = personalInfo.fullName;
               if (emailElement) emailElement.value = personalInfo.email;
               if (phoneElement) phoneElement.value = personalInfo.phone;
               if (locationElement) locationElement.value = personalInfo.location;
-              if (skillsElement) skillsElement.value = skillsText;
+              
+              // 将技能平均分配到两个字段中
+              if (programmingLanguagesElement && technologiesElement && skillsText) {
+                const lines = skillsText.split('\n').filter(line => line.trim() !== '');
+                const halfLength = Math.ceil(lines.length / 2);
+                
+                programmingLanguagesElement.value = lines.slice(0, halfLength).join('\n');
+                technologiesElement.value = lines.slice(halfLength).join('\n');
+              }
             }, 100);
             
             // 显示成功提示
@@ -234,10 +247,25 @@ const ResumeFormPage: React.FC = () => {
         }
         
         // 填充技能数据
-        if (resumeData.skills && typeof resumeData.skills === 'string') {
+        if (resumeData.skills) {
           setTimeout(() => {
-            const skillsElement = document.getElementById('skills') as HTMLTextAreaElement;
-            if (skillsElement) skillsElement.value = resumeData.skills;
+            if (typeof resumeData.skills === 'string') {
+              // 处理旧格式：单一字符串
+              const skillsElement = document.getElementById('skills') as HTMLTextAreaElement;
+              if (skillsElement) skillsElement.value = resumeData.skills;
+            } else {
+              // 处理新格式：分成编程语言和技术框架
+              const programmingLanguagesElement = document.getElementById('programmingLanguages') as HTMLTextAreaElement;
+              const technologiesElement = document.getElementById('technologies') as HTMLTextAreaElement;
+              
+              if (programmingLanguagesElement && resumeData.skills.programmingLanguages) {
+                programmingLanguagesElement.value = resumeData.skills.programmingLanguages;
+              }
+              
+              if (technologiesElement && resumeData.skills.technologies) {
+                technologiesElement.value = resumeData.skills.technologies;
+              }
+            }
           }, 0);
         }
         
@@ -311,7 +339,8 @@ const ResumeFormPage: React.FC = () => {
       school: '',
       major: '',
       startDate: '',
-      endDate: ''
+      endDate: '',
+      location: ''
     }]);
   };
   
@@ -329,7 +358,8 @@ const ResumeFormPage: React.FC = () => {
       position: '',
       startDate: '',
       endDate: '',
-      responsibilities: ''
+      responsibilities: '',
+      location: ''
     }]);
   };
   
@@ -404,17 +434,40 @@ const ResumeFormPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // 将教育背景和工作经历数据整合到content中
+    // 从表单收集数据
     const resumeContent = JSON.stringify({
-      educations,
-      workExperiences,
-      skills: (document.getElementById('skills') as HTMLTextAreaElement)?.value || '',
-      personalInfo: {
-        fullName: (document.getElementById('fullName') as HTMLInputElement)?.value || '',
-        email: (document.getElementById('email') as HTMLInputElement)?.value || '',
-        phone: (document.getElementById('phone') as HTMLInputElement)?.value || '',
-        location: (document.getElementById('location') as HTMLInputElement)?.value || ''
-      }
+      name: (document.getElementById('fullName') as HTMLInputElement)?.value || '',
+      email: (document.getElementById('email') as HTMLInputElement)?.value || '',
+      phone: (document.getElementById('phone') as HTMLInputElement)?.value || '',
+      
+      // 转换教育信息
+      education: educations.map(edu => ({
+        institutionName: edu.school,
+        degree: edu.education,
+        major: edu.major,
+        graduationDate: edu.endDate,
+        location: edu.location || '',
+        achievements: []
+      })),
+      
+      // 转换技能信息
+      skills: {
+        programmingLanguages: (document.getElementById('programmingLanguages') as HTMLTextAreaElement)?.value || '',
+        technologies: (document.getElementById('technologies') as HTMLTextAreaElement)?.value || ''
+      },
+      
+      // 转换工作经历
+      experiences: workExperiences.map(exp => ({
+        companyName: exp.company,
+        position: exp.position,
+        startDate: exp.startDate,
+        endDate: exp.endDate,
+        location: exp.location || '',
+        responsibilities: exp.responsibilities.split('\n').filter(item => item.trim() !== '')
+      })),
+      
+      // 项目信息（可选）
+      projects: []
     });
     
     const updatedFormData = {
@@ -678,6 +731,19 @@ const ResumeFormPage: React.FC = () => {
                         />
                       </div>
                     </div>
+                    
+                    <div className="mb-4">
+                      <label htmlFor={`eduLocation-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('location', '所在地')}</label>
+                      <input
+                        type="text"
+                        id={`eduLocation-${index}`}
+                        name={`eduLocation-${index}`}
+                        className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                        value={education.location}
+                        onChange={(e) => handleEducationChange(index, 'location', e.target.value)}
+                      />
+                    </div>
+                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="mb-2">
                         <label htmlFor={`eduStartDate-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('start_date', '入学时间')}</label>
@@ -759,6 +825,19 @@ const ResumeFormPage: React.FC = () => {
                         placeholder={t('position_placeholder', '担任职位')}
                       />
                     </div>
+                    
+                    <div className="mb-4">
+                      <label htmlFor={`workLocation-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('location', '工作地点')}</label>
+                      <input
+                        type="text"
+                        id={`workLocation-${index}`}
+                        name={`workLocation-${index}`}
+                        className="w-full h-11 px-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                        value={experience.location}
+                        onChange={(e) => handleWorkExperienceChange(index, 'location', e.target.value)}
+                      />
+                    </div>
+                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div className="mb-2">
                         <label htmlFor={`workStartDate-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('work_start_date', '开始时间')}</label>
@@ -801,14 +880,26 @@ const ResumeFormPage: React.FC = () => {
               
               {/* 技能部分 */}
               <div className="form-section mb-8">
-              <label htmlFor="skills"><h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">{t('skills', '专业技能')}</h3></label>
-              <div className="mb-4">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">{t('skills', '专业技能')}</h3>
+                <div className="mb-4">
+                  <label htmlFor="programmingLanguages" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('programming_languages', '编程语言')}</label>
                   <textarea
-                    id="skills"
-                    name="skills"
+                    id="programmingLanguages"
+                    name="programmingLanguages"
                     className="w-full min-h-[120px] px-3 py-2 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow resize-y"
-                    rows={4}
-                    placeholder={t('skills_placeholder', '列出您的专业技能，例如：\n• 前端开发：React, Vue, TypeScript, HTML5, CSS3\n• 后端开发：Node.js, Express, MongoDB\n• 工具：Git, Docker, Webpack\n• 语言：JavaScript, Python, Java')}
+                    rows={2}
+                    placeholder={t('programming_languages_placeholder', '例如: JavaScript, TypeScript, Python')}
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label htmlFor="technologies" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('technologies', '技术与框架')}</label>
+                  <textarea
+                    id="technologies"
+                    name="technologies"
+                    className="w-full min-h-[120px] px-3 py-2 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow resize-y"
+                    rows={2}
+                    placeholder={t('technologies_placeholder', '例如: React, Node.js, MongoDB')}
                   />
                 </div>
               </div>

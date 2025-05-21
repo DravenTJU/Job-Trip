@@ -24,7 +24,8 @@ export const mapProfileToResume = (profile: UserProfile) => {
     school: edu.institution || '',
     major: edu.field || '',
     startDate: formatDateForInput(edu.startDate),
-    endDate: formatDateForInput(edu.endDate)
+    endDate: formatDateForInput(edu.endDate),
+    location: edu.location || ''
   })) || [];
 
   // 如果没有教育经历，添加一个空记录
@@ -34,7 +35,8 @@ export const mapProfileToResume = (profile: UserProfile) => {
       school: '',
       major: '',
       startDate: '',
-      endDate: ''
+      endDate: '',
+      location: ''
     });
   }
 
@@ -44,7 +46,8 @@ export const mapProfileToResume = (profile: UserProfile) => {
     position: work.position || '',
     startDate: formatDateForInput(work.startDate),
     endDate: work.current ? '' : formatDateForInput(work.endDate),
-    responsibilities: work.description || (work.achievements ? work.achievements.join('\n') : '')
+    responsibilities: work.description || (work.achievements ? work.achievements.join('\n') : ''),
+    location: work.location || ''
   })) || [];
 
   // 如果没有工作经历，添加一个空记录
@@ -54,7 +57,8 @@ export const mapProfileToResume = (profile: UserProfile) => {
       position: '',
       startDate: '',
       endDate: '',
-      responsibilities: ''
+      responsibilities: '',
+      location: ''
     });
   }
 
