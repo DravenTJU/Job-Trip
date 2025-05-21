@@ -1,5 +1,6 @@
 import { UserProfile } from '@/types/profile';
 import { formatDateForInput } from '@/utils/dateUtils';
+import i18next from 'i18next';
 
 /**
  * 将用户档案数据映射到简历表单数据
@@ -60,10 +61,10 @@ export const mapProfileToResume = (profile: UserProfile) => {
   // 技能映射
   const skillsText = profile.skills?.map(skill => {
     const levelText = {
-      'beginner': '初级',
-      'intermediate': '中级',
-      'advanced': '高级',
-      'expert': '专家'
+      'beginner': i18next.t('profile:skill_level_beginner', '入门'),
+      'intermediate': i18next.t('profile:skill_level_intermediate', '中级'),
+      'advanced': i18next.t('profile:skill_level_advanced', '高级'),
+      'expert': i18next.t('profile:skill_level_expert', '专家')
     }[skill.level] || '';
     
     return `• ${skill.name}${levelText ? ` (${levelText})` : ''}`;
