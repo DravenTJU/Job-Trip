@@ -195,9 +195,11 @@ const ResumeFormPage: React.FC = () => {
           
         if (fullNameElement && fullName) fullNameElement.value = fullName;
         if (emailElement && user.email) emailElement.value = user.email;
-      }, 100);
+      }, 300);
     }
     if (resume && (isEditMode || baseId)) {
+      console.log('Loading resume data for edit mode:', resume);
+      
       // 如果是基于现有简历创建定制简历，修改部分字段
       if (baseId && !isEditMode) {
         setFormData({
@@ -223,31 +225,60 @@ const ResumeFormPage: React.FC = () => {
       // 从resume.content中解析教育背景和工作经历的逻辑
       try {
         const resumeData = JSON.parse(resume.content);
+        console.log('Parsed resume data:', resumeData);
         
         // 填充教育背景数据
-        if (resumeData.educations && Array.isArray(resumeData.educations) && resumeData.educations.length > 0) {
-          // 确保日期格式正确
+        if (resumeData.education && Array.isArray(resumeData.education) && resumeData.education.length > 0) {
+          // 将后端格式转换为表单格式
+          const formattedEducations = resumeData.education.map((edu: any) => ({
+            education: edu.degree || '',
+            school: edu.institutionName || '',
+            major: edu.major || '',
+            startDate: '', // 通常后端数据没有起始日期，只有毕业日期
+            endDate: edu.graduationDate ? formatDateForInput(edu.graduationDate) : '',
+            location: edu.location || ''
+          }));
+          console.log('Setting educations from education field:', formattedEducations);
+          setEducations(formattedEducations);
+        } else if (resumeData.educations && Array.isArray(resumeData.educations) && resumeData.educations.length > 0) {
+          // 兼容旧格式
           const formattedEducations = resumeData.educations.map((edu: any) => ({
             ...edu,
             startDate: edu.startDate ? formatDateForInput(edu.startDate) : '',
             endDate: edu.endDate ? formatDateForInput(edu.endDate) : ''
           }));
+          console.log('Setting educations from educations field:', formattedEducations);
           setEducations(formattedEducations);
         }
         
         // 填充工作经历数据
-        if (resumeData.workExperiences && Array.isArray(resumeData.workExperiences) && resumeData.workExperiences.length > 0) {
-          // 确保日期格式正确
+        if (resumeData.experiences && Array.isArray(resumeData.experiences) && resumeData.experiences.length > 0) {
+          // 将后端格式转换为表单格式
+          const formattedWorkExperiences = resumeData.experiences.map((exp: any) => ({
+            company: exp.companyName || '',
+            position: exp.position || '',
+            startDate: exp.startDate ? formatDateForInput(exp.startDate) : '',
+            endDate: exp.endDate ? formatDateForInput(exp.endDate) : '',
+            responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities.join('\n') : (exp.responsibilities || ''),
+            location: exp.location || ''
+          }));
+          console.log('Setting work experiences from experiences field:', formattedWorkExperiences);
+          setWorkExperiences(formattedWorkExperiences);
+        } else if (resumeData.workExperiences && Array.isArray(resumeData.workExperiences) && resumeData.workExperiences.length > 0) {
+          // 兼容旧格式
           const formattedWorkExperiences = resumeData.workExperiences.map((work: any) => ({
             ...work,
             startDate: work.startDate ? formatDateForInput(work.startDate) : '',
             endDate: work.endDate ? formatDateForInput(work.endDate) : ''
           }));
+          console.log('Setting work experiences from workExperiences field:', formattedWorkExperiences);
           setWorkExperiences(formattedWorkExperiences);
         }
         
         // 填充技能数据
         if (resumeData.skills) {
+          console.log('Setting skills:', resumeData.skills);
+          // 使用更长的延迟确保DOM元素已渲染
           setTimeout(() => {
             if (typeof resumeData.skills === 'string') {
               // 处理旧格式：单一字符串
@@ -266,12 +297,15 @@ const ResumeFormPage: React.FC = () => {
                 technologiesElement.value = resumeData.skills.technologies;
               }
             }
-          }, 0);
+          }, 300);
         }
         
         // 填充个人信息
         if (resumeData.personalInfo) {
           const { fullName, email, phone, location } = resumeData.personalInfo;
+          console.log('Setting personal info:', resumeData.personalInfo);
+          
+          // 使用更长的延迟确保DOM元素已渲染
           setTimeout(() => {
             const fullNameElement = document.getElementById('fullName') as HTMLInputElement;
             const emailElement = document.getElementById('email') as HTMLInputElement;
@@ -282,14 +316,26 @@ const ResumeFormPage: React.FC = () => {
             if (emailElement && email) emailElement.value = email;
             if (phoneElement && phone) phoneElement.value = phone;
             if (locationElement && location) locationElement.value = location;
-          }, 0);
+          }, 300);
+        } else {
+          // 尝试使用顶级的name、email和phone字段
+          console.log('No personalInfo field, using top-level fields');
+          setTimeout(() => {
+            const fullNameElement = document.getElementById('fullName') as HTMLInputElement;
+            const emailElement = document.getElementById('email') as HTMLInputElement;
+            const phoneElement = document.getElementById('phone') as HTMLInputElement;
+            
+            if (fullNameElement && resumeData.name) fullNameElement.value = resumeData.name;
+            if (emailElement && resumeData.email) emailElement.value = resumeData.email;
+            if (phoneElement && resumeData.phone) phoneElement.value = resumeData.phone;
+          }, 300);
         }
       } catch (error) {
         console.error('解析简历内容失败:', error);
         // 解析失败时保留默认值
       }
     }
-  }, [resume, isEditMode]);
+  }, [resume, isEditMode, baseId, user, userProfile]);
 
   // 处理表单输入变化
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -436,6 +482,14 @@ const ResumeFormPage: React.FC = () => {
     
     // 从表单收集数据
     const resumeContent = JSON.stringify({
+      personalInfo: {
+        fullName: (document.getElementById('fullName') as HTMLInputElement)?.value || '',
+        email: (document.getElementById('email') as HTMLInputElement)?.value || '',
+        phone: (document.getElementById('phone') as HTMLInputElement)?.value || '',
+        location: (document.getElementById('location') as HTMLInputElement)?.value || '',
+      },
+      
+      // 生成name、email、phone字段用于简历渲染
       name: (document.getElementById('fullName') as HTMLInputElement)?.value || '',
       email: (document.getElementById('email') as HTMLInputElement)?.value || '',
       phone: (document.getElementById('phone') as HTMLInputElement)?.value || '',
@@ -449,6 +503,9 @@ const ResumeFormPage: React.FC = () => {
         location: edu.location || '',
         achievements: []
       })),
+      
+      // 保留原始educations字段以兼容现有代码
+      educations: educations,
       
       // 转换技能信息
       skills: {
@@ -465,6 +522,9 @@ const ResumeFormPage: React.FC = () => {
         location: exp.location || '',
         responsibilities: exp.responsibilities.split('\n').filter(item => item.trim() !== '')
       })),
+      
+      // 保留原始workExperiences字段以兼容现有代码
+      workExperiences: workExperiences,
       
       // 项目信息（可选）
       projects: []
