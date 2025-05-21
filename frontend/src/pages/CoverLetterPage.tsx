@@ -6,11 +6,15 @@ import { Resume } from '@/types';
 import { useTranslation } from 'react-i18next';
 import GenericListbox, { SelectOption } from '@/components/common/GenericListbox';
 import api from '@/services/api';
+import { useLanguage } from '@/context/LanguageContext';
 
 const CoverLetterPage: React.FC = () => {
+  const { currentLanguage } = useLanguage();
   const [jobDescription, setJobDescription] = useState('');
   const [tone, setTone] = useState('professional');
-  const [language, setLanguage] = useState('chinese');
+  const [language, setLanguage] = useState(() => {
+    return currentLanguage.startsWith('zh') ? 'chinese' : 'english';
+  });
   const [selectedResumeId, setSelectedResumeId] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [coverLetter, setCoverLetter] = useState('');
@@ -20,7 +24,12 @@ const CoverLetterPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation('coverLetter');
 
-  // 加载用户的简历列表
+  useEffect(() => {
+    if (!language) {
+      setLanguage(currentLanguage.startsWith('zh') ? 'chinese' : 'english');
+    }
+  }, [currentLanguage, language]);
+
   useEffect(() => {
     dispatch(fetchResumes({}));
   }, [dispatch]);
