@@ -367,6 +367,14 @@ const apiExporter = {
   }
 };
 
+// Helper function to close tab if auto close is enabled
+function closeTabIfEnabled(tabId) {
+  const autoCloseTab = document.getElementById('autoCloseTab');
+  if (autoCloseTab && autoCloseTab.checked) {
+    chrome.tabs.remove(tabId).catch(err => console.error('Failed to close tab:', err));
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('DOM Content Loaded')
   
@@ -421,6 +429,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 将输入框添加到搜索区域
   const searchSection = document.querySelector('.search-section')
   searchSection.insertBefore(maxJobsContainer, document.querySelector('.search-row:last-child'))
+
+  // 添加自动关闭Tab选项
+  const autoCloseContainer = document.createElement('div')
+  autoCloseContainer.className = 'search-row'
+  autoCloseContainer.style.marginTop = '8px'
+  autoCloseContainer.innerHTML = `
+    <div style="display: flex; align-items: center;">
+      <label for="autoCloseTab" style="white-space: nowrap;">Auto close tab after scraping:</label>
+      <input type="checkbox" id="autoCloseTab" style="margin-left: 8px;">
+    </div>
+  `
+  // 将自动关闭选项添加到搜索区域，放在最大工作数量输入框下方
+  searchSection.insertBefore(autoCloseContainer, document.querySelector('.search-row:last-child'))
 
   console.log('websiteOptions element:', websiteOptions)
   console.log('supportedWebsites:', supportedWebsites)
@@ -624,7 +645,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 检查是否已经达到最大工作数量
         if (scrapedJobs.length >= maxJobs) {
           console.log(`Reached maximum job limit (${maxJobs}), stopping further scraping`)
-          chrome.tabs.remove(tab.id).catch(err => console.error('Failed to close tab:', err))
+          closeTabIfEnabled(tab.id);
           break
         }
 
@@ -703,12 +724,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           scrapedJobs.forEach(job => {
             jobList.appendChild(uiService.createJobCard(job))
           })
-          chrome.tabs.remove(tab.id).catch(err => console.error('Failed to close tab:', err))
+          closeTabIfEnabled(tab.id);
 
           // 检查是否已达到最大工作数量
           if (scrapedJobs.length >= maxJobs) {
             console.log(`Reached maximum job limit (${maxJobs}), stopping further scraping`)
-            chrome.tabs.remove(tab.id).catch(err => console.error('Failed to close tab:', err))
+            closeTabIfEnabled(tab.id);
             break
           }
         } catch (error) {
