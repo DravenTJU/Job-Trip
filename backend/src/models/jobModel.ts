@@ -26,6 +26,7 @@ export enum JobType {
   CONTRACT = 'contract',
   FREELANCE = 'freelance',
   INTERNSHIP = 'internship',
+  N_A = 'n-a',
 }
 
 // 职位模式
@@ -63,7 +64,7 @@ const jobSchema = new Schema<IJob>(
     jobType: {
       type: String,
       enum: Object.values(JobType),
-      default: JobType.FULL_TIME,
+      default: JobType.N_A,
     },
     source: {
       type: String,

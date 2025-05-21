@@ -68,7 +68,8 @@ const JobsPage: React.FC = () => {
     { id: JobType.PART_TIME, label: t('jobs:filters.jobTypes.partTime', '兼职'), value: JobType.PART_TIME },
     { id: JobType.INTERNSHIP, label: t('jobs:filters.jobTypes.internship', '实习'), value: JobType.INTERNSHIP },
     { id: JobType.CONTRACT, label: t('jobs:filters.jobTypes.contract', '合同工'), value: JobType.CONTRACT },
-    { id: JobType.FREELANCE, label: t('jobs:filters.jobTypes.freelance', '自由职业'), value: JobType.FREELANCE }
+    { id: JobType.FREELANCE, label: t('jobs:filters.jobTypes.freelance', '自由职业'), value: JobType.FREELANCE },
+    { id: JobType.N_A, label: t('jobs:filters.jobTypes.n_a', 'N/A'), value: JobType.N_A }
   ];
   
   // 平台来源选项

@@ -103,6 +103,7 @@ export enum JobType {
   CONTRACT = 'contract',
   FREELANCE = 'freelance',
   INTERNSHIP = 'internship',
+  N_A = 'n-a',
 }
 
 // 数据来源枚举

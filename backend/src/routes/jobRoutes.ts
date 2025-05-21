@@ -161,8 +161,8 @@ router.get('/user', getUserRelatedJobs);
  *                     description: 薪资范围，例如："100k-130k NZD"
  *                   jobType:
  *                     type: string
- *                     enum: [full-time, part-time, contract, freelance, internship]
- *                     default: full-time
+ *                     enum: [full-time, part-time, contract, freelance, internship, n-a]
+ *                     default: n/a
  *                   status:
  *                     type: string
  *                     enum: [new, applied, interviewing, offer, rejected, withdrawn, closed]
@@ -451,7 +451,7 @@ router.put('/:id/status', async (req, res, next) => {
  *                 description: 薪资范围，例如："100k-130k NZD"
  *               jobType:
  *                 type: string
- *                 enum: [full-time, part-time, contract, freelance, internship]
+ *                 enum: [full-time, part-time, contract, freelance, internship, n-a]
  *               status:
  *                 type: string
  *                 enum: [new, applied, interviewing, offer, rejected, withdrawn, closed]

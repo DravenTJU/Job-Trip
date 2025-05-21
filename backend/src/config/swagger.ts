@@ -266,8 +266,8 @@ const swaggerDefinition = {
           },
           jobType: {
             type: 'string',
-            enum: ['full-time', 'part-time', 'contract', 'freelance', 'internship'],
-            default: 'full-time',
+            enum: ['full-time', 'part-time', 'contract', 'freelance', 'internship', 'n-a'],
+            default: 'n-a',
             description: '工作类型',
           },
           source: {

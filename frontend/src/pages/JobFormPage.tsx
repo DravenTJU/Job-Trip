@@ -111,7 +111,8 @@ const JobFormPage: React.FC = () => {
     { id: JobType.PART_TIME, label: t('part_time', '兼职') },
     { id: JobType.CONTRACT, label: t('contract', '合同工') },
     { id: JobType.FREELANCE, label: t('freelance', '自由职业') },
-    { id: JobType.INTERNSHIP, label: t('internship', '实习') }
+    { id: JobType.INTERNSHIP, label: t('internship', '实习') },
+    { id: JobType.N_A, label: t('n_a', 'N/A') }
   ];
 
   // 平台选项

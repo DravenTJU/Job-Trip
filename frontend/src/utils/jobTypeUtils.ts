@@ -20,6 +20,8 @@ export const getJobTypeTranslationKey = (jobType: string | undefined): string =>
       return 'freelance';
     case JobType.INTERNSHIP:
       return 'internship';
+    case JobType.N_A:
+      return 'n_a';
     default:
       return jobType;
   }
