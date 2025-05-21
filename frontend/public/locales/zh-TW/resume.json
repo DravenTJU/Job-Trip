@@ -9,6 +9,11 @@
   "ai_optimization_complete": "AI優化完成，準備顯示預覽",
   "resume_optimization_failed": "履歷優化失敗:",
   "optimization_retry_later": "履歷優化失敗，請稍後重試",
+  "resume_preview": "履歷預覽",
+  "close": "關閉",
+  "preview": "預覽",
+  "loading": "加載中...",
+  "download_pdf": "PDF",
   "edit": "編輯",
   "download": "下載",
   "copy": "複製",
@@ -83,5 +88,9 @@
   "responsibilities_placeholder": "描述您的主要職責和取得的成就，例如：\n• 負責項目X的前端開發，使用React和TypeScript\n• 優化了頁面加載速度，提升了30%的性能\n• 帶領3人小組完成了關鍵功能的開發",
 
   "skills": "專業技能",
+  "programming_languages": "程式語言",
+  "programming_languages_placeholder": "例如：JavaScript, TypeScript, Python",
+  "technologies": "技術與框架",
+  "technologies_placeholder": "例如：React, Node.js, MongoDB",
   "skills_placeholder": "列出您的專業技能，例如：\n• 前端開發：React, Vue, TypeScript, HTML5, CSS3\n• 後端開發：Node.js, Express, MongoDB\n• 工具：Git, Docker, Webpack\n• 語言：JavaScript, Python, Java"
 } 

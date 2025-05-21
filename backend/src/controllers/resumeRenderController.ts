@@ -63,9 +63,15 @@ export const downloadResumePDF = async (
     // 设置响应头
     const fileName = `${resume.name.replace(/\s+/g, '_')}.pdf`;
     
+    // 确保正确设置响应头
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileName)}"`);
     res.setHeader('Content-Length', pdfBuffer.length);
+    
+    // 确保缓存控制
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     
     // 发送PDF
     res.send(pdfBuffer);

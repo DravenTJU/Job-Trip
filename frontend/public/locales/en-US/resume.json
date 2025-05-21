@@ -9,6 +9,11 @@
   "ai_optimization_complete": "AI optimization complete, preparing preview",
   "resume_optimization_failed": "Resume optimization failed:",
   "optimization_retry_later": "Resume optimization failed, please try again later",
+  "resume_preview": "Resume Preview",
+  "close": "Close",
+  "preview": "Preview",
+  "loading": "Loading...",
+  "download_pdf": "PDF",
   "edit": "Edit",
   "download": "Download",
   "copy": "Copy",
@@ -83,5 +88,9 @@
   "responsibilities_placeholder": "Describe your main responsibilities and achievements, for example:\n• Led frontend development for Project X using React and TypeScript\n• Optimized page loading speed, improving performance by 30%\n• Led a team of 3 to complete key features",
   
   "skills": "Professional Skills",
+  "programming_languages": "Programming Languages",
+  "programming_languages_placeholder": "e.g., JavaScript, TypeScript, Python",
+  "technologies": "Technologies",
+  "technologies_placeholder": "e.g., React, Node.js, MongoDB",
   "skills_placeholder": "List your professional skills, for example:\n• Frontend: React, Vue, TypeScript, HTML5, CSS3\n• Backend: Node.js, Express, MongoDB\n• Tools: Git, Docker, Webpack\n• Languages: JavaScript, Python, Java"
 } 
