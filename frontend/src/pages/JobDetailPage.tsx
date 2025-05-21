@@ -100,6 +100,16 @@ const JobDetailPage: React.FC = () => {
     }
   };
   
+  // 添加一个函数来处理文本换行
+  const formatTextWithLineBreaks = (text: string) => {
+    return text.split('\n').map((line, i) => (
+      <React.Fragment key={i}>
+        {line}
+        {i < text.split('\n').length - 1 && <br />}
+      </React.Fragment>
+    ));
+  };
+  
   if (isLoading) {
     return (
       <div className="flex justify-center my-8">
@@ -312,8 +322,8 @@ const JobDetailPage: React.FC = () => {
         <div className="section">
           <div className="card p-6 bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-sm ring-2 ring-gray-900/5 dark:ring-gray-100/5">
             <h2 className="title-md">{t('job_description', '职位描述')}</h2>
-            <div className="prose prose-indigo max-w-none">
-              {job.description}
+            <div className="prose prose-indigo max-w-none whitespace-pre-wrap">
+              {formatTextWithLineBreaks(job.description)}
             </div>
           </div>
         </div>
