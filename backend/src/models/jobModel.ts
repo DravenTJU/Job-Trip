@@ -77,7 +77,7 @@ const jobSchema = new Schema<IJob>(
     },
     sourceUrl: {
       type: String,
-      required: true,
+      trim: true,
     },
     deadline: {
       type: Date,

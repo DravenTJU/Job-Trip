@@ -275,12 +275,15 @@ const JobFormPage: React.FC = () => {
     }
 
     // 验证职位链接
-    if (formData.platform !== 'manual') {
+    if (formData.platform !== 'manual' && formData.platform !== JobSource.OTHER) {
       if (!formData.sourceUrl) {
         errors.sourceUrl = t('enter_job_link', '请输入职位链接');
       } else if (!formData.sourceUrl.startsWith('http://') && !formData.sourceUrl.startsWith('https://')) {
         errors.sourceUrl = t('enter_valid_job_link', '请输入有效的职位链接');
       }
+    } else if (formData.sourceUrl && !formData.sourceUrl.startsWith('http://') && !formData.sourceUrl.startsWith('https://')) {
+      // 如果是其他平台且提供了链接，确保链接格式正确
+      errors.sourceUrl = t('enter_valid_job_link', '请输入有效的职位链接');
     }
 
     // 如果是手动添加，生成sourceId
@@ -426,6 +429,18 @@ const JobFormPage: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {t('salary_range', '薪资范围')}
+                  </label>
+                  <input
+                    type="text"
+                    name="salary"
+                    value={formData.salary}
+                    onChange={handleChange}
+                    className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     {t('job_status', '职位状态')}
                   </label>
                   <StatusSelect
@@ -490,15 +505,29 @@ const JobFormPage: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     {t('job_link', '职位链接')}
+                    {formData.platform === JobSource.OTHER && (
+                      <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">
+                        ({t('optional_for_other', '选择"其他"平台时可选填')})
+                      </span>
+                    )}
                   </label>
                   <input
                     type="url"
                     name="sourceUrl"
                     value={formData.sourceUrl}
                     onChange={handleChange}
-                    className="w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                    className={`w-full h-11 px-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-xl border-0 ring-2 ${
+                      formErrors.sourceUrl 
+                        ? 'ring-red-500 focus:ring-red-500' 
+                        : 'ring-gray-900/5 dark:ring-gray-100/5 focus:ring-2 focus:ring-indigo-500'
+                    } transition-shadow`}
                     placeholder="https://"
                   />
+                  {formErrors.sourceUrl && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {formErrors.sourceUrl}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

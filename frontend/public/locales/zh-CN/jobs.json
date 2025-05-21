@@ -124,6 +124,7 @@
   "select_job_type_placeholder": "请选择职位类型",
   "source_platform": "来源平台",
   "source_help_tooltip": "选择职位的来源平台，如果是手动添加则无需填写职位链接",
+  "optional_for_other": "选择\"其他\"平台时可选填",
   "job_link": "职位链接",
   "job_description_placeholder": "请输入职位描述、要求等信息...",
   "saving": "保存中...",

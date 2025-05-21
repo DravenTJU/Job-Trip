@@ -124,6 +124,7 @@
   "select_job_type_placeholder": "Please select job type",
   "source_platform": "Source Platform",
   "source_help_tooltip": "Select the source platform for the job. If manual entry, job link is not required",
+  "optional_for_other": "Optional for other platforms",
   "job_link": "Job Link",
   "job_description_placeholder": "Please enter job description, requirements, etc...",
   "saving": "Saving...",
