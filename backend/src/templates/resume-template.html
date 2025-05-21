@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}} - Resume</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.5;
+            color: #000;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+        }
+        
+        /* Resume Container */
+        .resume {
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.5in;
+            position: relative;
+        }
+        
+        /* Contact Information */
+        .contact-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .contact-info h1 {
+            font-size: 24px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        /* Section Headings */
+        .section-heading {
+            text-transform: uppercase;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            padding-bottom: 3px;
+        }
+        
+        /* Experience and Education Entries */
+        .entry {
+            margin-bottom: 15px;
+        }
+        
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .position, .degree {
+            font-style: italic;
+            margin-top: 2px;
+            font-weight: normal;
+        }
+        
+        .entry-content ul {
+            margin-top: 5px;
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+        
+        .entry-content li {
+            margin-bottom: 5px;
+        }
+        
+        /* Skills Section */
+        .skills-category {
+            margin-bottom: 5px;
+        }
+                
+        @media print {
+            .resume {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>    
+    <div class="resume">
+        <div class="contact-info">
+            <h1>{{name}}</h1>
+            <p>Cell: {{phone}} | Email: {{email}}</p>
+        </div>
+        
+        <div class="section-heading">EDUCATION</div>
+        {{#each education}}
+        <div class="entry">
+            <div class="entry-header">
+                <div>
+                    <div>{{institutionName}}</div>
+                    <div class="degree">{{degree}}, {{major}}</div>
+                </div>
+                <div>
+                    <div>Graduation Date: {{graduationDate}}</div>
+                    <div>{{location}}</div>
+                </div>
+            </div>
+            <div class="entry-content">
+                <ul>
+                    {{#if gpa}}<li>GPA: {{gpa}}</li>{{/if}}
+                    {{#if relevantCourses}}<li>Relevant Courses: {{relevantCourses}}</li>{{/if}}
+                    {{#each achievements}}
+                    <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+        {{/each}}
+        
+        <div class="section-heading">TECHNICAL SKILLS</div>
+        <div class="skills-category">
+            <strong>Programming Languages:</strong> {{skills.programmingLanguages}}
+        </div>
+        <div class="skills-category">
+            <strong>Technologies and Frameworks:</strong> {{skills.technologies}}
+        </div>
+        
+        <div class="section-heading">EXPERIENCES</div>
+        {{#each experiences}}
+        <div class="entry">
+            <div class="entry-header">
+                <div>
+                    <div>{{companyName}} - {{teamName}}</div>
+                    <div class="position">{{position}}</div>
+                </div>
+                <div>
+                    <div>{{startDate}} - {{endDate}}</div>
+                    <div>{{location}}</div>
+                </div>
+            </div>
+            <div class="entry-content">
+                <ul>
+                    {{#each responsibilities}}
+                    <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+        {{/each}}
+        
+        <div class="section-heading">PROJECTS</div>
+        {{#each projects}}
+        <div class="entry">
+            <div class="entry-header">
+                <div>{{name}}</div>
+                <div>{{startDate}} - {{endDate}}</div>
+            </div>
+            <div class="entry-content">
+                <ul>
+                    {{#each description}}
+                    <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    
+    <script>
+        // This script will be replaced by your TypeScript backend
+        document.getElementById('preview-btn').addEventListener('click', function() {
+            window.print();
+        });
+        
+        document.getElementById('pdf-btn').addEventListener('click', function() {
+            // This function will be implemented by your backend
+            // It will trigger PDF generation and download
+            alert('PDF download will be implemented by the backend');
+        });
+    </script>
+</body>
+</html>
