@@ -5,6 +5,7 @@ import { fetchResumes } from '@/redux/slices/resumesSlice';
 import { Resume } from '@/types';
 import { useTranslation } from 'react-i18next';
 import GenericListbox, { SelectOption } from '@/components/common/GenericListbox';
+import api from '@/services/api';
 
 const CoverLetterPage: React.FC = () => {
   const [jobDescription, setJobDescription] = useState('');
@@ -54,29 +55,26 @@ const CoverLetterPage: React.FC = () => {
         resumeId: selectedResumeId || undefined,
       });
 
-      const response = await fetch('http://localhost:3000/api/v1/ai/cover-letter', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({
+      try {
+        // 定义接口来描述预期的响应数据结构
+        interface CoverLetterResponse {
+          coverLetter: string;
+        }
+        
+        const data = await api.post<CoverLetterResponse>('/ai/cover-letter', {
           jobDescription,
           tone,
           language,
           user: userData,
           resumeId: selectedResumeId || undefined,
-        }),
-      });
-
-      console.log(t('response_status', '响应状态:'), response.status);
-      const data = await response.json();
-      console.log(t('response_data', '响应数据:'), data);
-
-      if (data.code === 200) {
-        setCoverLetter(data.data.coverLetter);
-      } else {
-        setError(data.message || t('generate_cover_letter_failed', '生成求职信失败'));
+        });
+        
+        console.log(t('response_data', '响应数据:'), data);
+        
+        // data直接是data字段的内容，api服务已经处理了响应格式
+        setCoverLetter(data.coverLetter);
+      } catch (apiError: any) {
+        setError(apiError.message || t('generate_cover_letter_failed', '生成求职信失败'));
       }
     } catch (error) {
       console.error(t('generate_cover_letter_error', '生成求职信时出错:'), error);
