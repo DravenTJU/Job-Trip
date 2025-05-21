@@ -422,7 +422,7 @@ const JobsPage: React.FC = () => {
                   </button>
                     <button 
                       onClick={() => {
-                        window.location.href = 'http://localhost:3000/dashboard';
+                        navigate('/dashboard');
                       }}
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-indigo-500 text-white hover:bg-indigo-600 shadow-lg shadow-indigo-500/25 transition-colors"
                     >
