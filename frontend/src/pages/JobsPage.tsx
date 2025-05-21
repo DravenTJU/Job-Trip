@@ -397,12 +397,10 @@ const JobsPage: React.FC = () => {
                           {t(`jobs:${getJobTypeTranslationKey(job.jobType)}`, { defaultValue: job.jobType })}
                         </span>
                             )}
-                            {job.salary && (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400">
                           <CircleDollarSign className="w-3 h-3" />
-                          {job.salary}
+                          {job.salary || 'N/A'}
                         </span>
-                      )}
                       <StatusBadge 
                         jobId={job._id} 
                         status={job.status} 

@@ -213,17 +213,15 @@ const JobDetailPage: React.FC = () => {
                 </div>
               )}
               
-              {job.salary && (
-                <div className="data-item">
-                  <div className="data-item-icon">
-                    <DollarSign className="w-5 h-5 text-gray-400" />
-                  </div>
-                  <div className="data-item-content">
-                    <div className="data-item-label">{t('salary_range', '薪资范围')}</div>
-                    <div className="data-item-value">{job.salary}</div>
-                  </div>
+              <div className="data-item">
+                <div className="data-item-icon">
+                  <DollarSign className="w-5 h-5 text-gray-400" />
                 </div>
-              )}
+                <div className="data-item-content">
+                  <div className="data-item-label">{t('salary_range', '薪资范围')}</div>
+                  <div className="data-item-value">{job.salary || 'N/A'}</div>
+                </div>
+              </div>
               
               {job.jobType && (
                 <div className="data-item">
