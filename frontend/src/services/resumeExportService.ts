@@ -1,5 +1,3 @@
-import api from './api';
-
 const resumeExportService = {
   // 下载简历PDF
   downloadResumePDF: async (resumeId: string): Promise<void> => {

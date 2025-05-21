@@ -18,12 +18,10 @@ const router = express.Router();
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - jobDescription
  *             properties:
  *               jobDescription:
  *                 type: string
- *                 description: 职位描述
+ *                 description: 职位描述（当不提供jobId时必需）
  *               tone:
  *                 type: string
  *                 enum: [professional, friendly, confident, creative]
@@ -37,6 +35,9 @@ const router = express.Router();
  *               resumeId:
  *                 type: string
  *                 description: 简历ID（可选）
+ *               jobId:
+ *                 type: string
+ *                 description: 职位ID（可选，提供则自动获取职位信息）
  *               user:
  *                 type: object
  *                 properties:

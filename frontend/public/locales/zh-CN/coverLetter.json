@@ -10,6 +10,7 @@
   "generate_cover_letter_failed": "生成求职信失败",
   "generate_cover_letter_error": "生成求职信时出错:",
   "generate_cover_letter_error_retry": "生成求职信时发生错误，请稍后重试",
+  "timeout_error": "生成求职信超时，请稍后重试。AI生成可能需要较长时间，特别是在高峰期。",
   "cover_letter_filename": "求职信.txt",
   "job_description": "职位描述",
   "paste_job_description": "请粘贴职位描述...",
@@ -25,5 +26,8 @@
   "resume_helps_ai": "选择简历可以帮助AI生成更符合您背景的求职信",
   "generating": "正在生成...",
   "generate_cover_letter": "生成求职信",
-  "generated_cover_letter": "生成的求职信"
+  "generated_cover_letter": "生成的求职信",
+  "select_job_optional": "选择已保存职位（可选）",
+  "dont_use_saved_job": "不使用已保存职位",
+  "job_helps_ai": "选择已保存的职位可以帮助AI生成更匹配的求职信"
 } 

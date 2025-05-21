@@ -10,6 +10,7 @@
   "generate_cover_letter_failed": "Failed to generate cover letter",
   "generate_cover_letter_error": "Error when generating cover letter:",
   "generate_cover_letter_error_retry": "An error occurred when generating cover letter, please try again later",
+  "timeout_error": "Cover letter generation timed out. Please try again later. AI generation may take longer, especially during peak hours.",
   "cover_letter_filename": "CoverLetter.txt",
   "job_description": "Job Description",
   "paste_job_description": "Please paste job description...",
@@ -25,5 +26,8 @@
   "resume_helps_ai": "Selecting a resume helps AI generate a cover letter that better matches your background",
   "generating": "Generating...",
   "generate_cover_letter": "Generate Cover Letter",
-  "generated_cover_letter": "Generated Cover Letter"
+  "generated_cover_letter": "Generated Cover Letter",
+  "select_job_optional": "Select Saved Job (Optional)",
+  "dont_use_saved_job": "Don't use saved job",
+  "job_helps_ai": "Selecting a saved job helps AI generate a more tailored cover letter"
 } 

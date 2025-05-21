@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, Copy, Download, RefreshCw } from 'lucide-react';
 import { useAppSelector, useAppDispatch } from '@/hooks/reduxHooks';
 import { fetchResumes } from '@/redux/slices/resumesSlice';
-import { Resume } from '@/types';
+import { fetchUserRelatedJobs } from '@/redux/slices/jobsSlice';
+import { Resume, Job } from '@/types';
 import { useTranslation } from 'react-i18next';
 import GenericListbox, { SelectOption } from '@/components/common/GenericListbox';
 import api from '@/services/api';
@@ -16,11 +17,13 @@ const CoverLetterPage: React.FC = () => {
     return currentLanguage.startsWith('zh') ? 'chinese' : 'english';
   });
   const [selectedResumeId, setSelectedResumeId] = useState<string>('');
+  const [selectedJobId, setSelectedJobId] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [coverLetter, setCoverLetter] = useState('');
   const [error, setError] = useState('');
   const { user } = useAppSelector((state) => state.auth);
   const { resumes } = useAppSelector((state) => state.resumes);
+  const { jobs } = useAppSelector((state) => state.jobs);
   const dispatch = useAppDispatch();
   const { t } = useTranslation('coverLetter');
 
@@ -32,10 +35,28 @@ const CoverLetterPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchResumes({}));
+    dispatch(fetchUserRelatedJobs({}));
   }, [dispatch]);
 
+  // 处理职位选择变更
+  const handleJobChange = (option: SelectOption | null) => {
+    if (option) {
+      const jobId = option.id.toString();
+      setSelectedJobId(jobId);
+      
+      // 查找完整的职位信息以自动填充描述
+      const job = jobs.find(job => job._id === jobId);
+      if (job) {
+        // 自动填充职位描述
+        setJobDescription(job.description || '');
+      }
+    } else {
+      setSelectedJobId('');
+    }
+  };
+
   const handleGenerate = async () => {
-    if (!jobDescription.trim()) {
+    if (!selectedJobId && !jobDescription.trim()) {
       setError(t('enter_job_description', '请输入职位描述'));
       return;
     }
@@ -56,13 +77,25 @@ const CoverLetterPage: React.FC = () => {
         skills: [],
       };
 
-      console.log(t('sending_request_data', '发送请求数据:'), {
-        jobDescription,
+      // 准备请求数据
+      const requestData: any = {
+        user: userData,
         tone,
         language,
-        user: userData,
         resumeId: selectedResumeId || undefined,
-      });
+      };
+
+      // 如果选择了职位，只发送jobId
+      if (selectedJobId) {
+        requestData.jobId = selectedJobId;
+      }
+      
+      // 如果没有选择职位但有描述，发送描述
+      if (!selectedJobId && jobDescription) {
+        requestData.jobDescription = jobDescription;
+      }
+
+      console.log(t('sending_request_data', '发送请求数据:'), requestData);
 
       try {
         // 定义接口来描述预期的响应数据结构
@@ -70,20 +103,21 @@ const CoverLetterPage: React.FC = () => {
           coverLetter: string;
         }
         
-        const data = await api.post<CoverLetterResponse>('/ai/cover-letter', {
-          jobDescription,
-          tone,
-          language,
-          user: userData,
-          resumeId: selectedResumeId || undefined,
-        });
+        const data = await api.post<CoverLetterResponse>('/ai/cover-letter', requestData);
         
         console.log(t('response_data', '响应数据:'), data);
         
         // data直接是data字段的内容，api服务已经处理了响应格式
         setCoverLetter(data.coverLetter);
       } catch (apiError: any) {
-        setError(apiError.message || t('generate_cover_letter_failed', '生成求职信失败'));
+        console.error('API错误:', apiError);
+        
+        // 处理超时错误
+        if (apiError.status === 504 || (apiError.message && apiError.message.includes('timeout'))) {
+          setError(t('timeout_error', '生成求职信超时，请稍后重试。AI生成可能需要较长时间，特别是在高峰期。'));
+        } else {
+          setError(apiError.message || t('generate_cover_letter_failed', '生成求职信失败'));
+        }
       }
     } catch (error) {
       console.error(t('generate_cover_letter_error', '生成求职信时出错:'), error);
@@ -130,6 +164,15 @@ const CoverLetterPage: React.FC = () => {
     }))
   ];
 
+  // 构建职位选项
+  const jobOptions: SelectOption[] = [
+    { id: '', label: t('dont_use_saved_job', '不使用已保存职位') },
+    ...jobs.map((job: Job) => ({
+      id: job._id,
+      label: `${job.title} - ${typeof job.company === 'string' ? job.company : job.company.name}`
+    }))
+  ];
+
   // 处理语气风格变更
   const handleToneChange = (option: SelectOption | null) => {
     if (option) {
@@ -158,6 +201,9 @@ const CoverLetterPage: React.FC = () => {
   // 获取当前选中的简历选项
   const selectedResume = resumeOptions.find(option => option.id === selectedResumeId) || null;
 
+  // 获取当前选中的职位选项
+  const selectedJobOption = jobOptions.find(option => option.id === selectedJobId) || null;
+
   return (
     <div className="container-lg">
       <div className="section">
@@ -172,6 +218,19 @@ const CoverLetterPage: React.FC = () => {
         )}
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-6">
+          <div className="mb-6">
+            <GenericListbox
+              options={jobOptions}
+              value={selectedJobOption}
+              onChange={handleJobChange}
+              label={t('select_job_optional', '选择已保存职位（可选）')}
+              name="job"
+            />
+            <p className="text-sm text-gray-500 mt-2">
+              {t('job_helps_ai', '选择已保存的职位可以帮助AI生成更匹配的求职信')}
+            </p>
+          </div>
+
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               {t('job_description', '职位描述')}
@@ -182,6 +241,19 @@ const CoverLetterPage: React.FC = () => {
               onChange={(e) => setJobDescription(e.target.value)}
               placeholder={t('paste_job_description', '请粘贴职位描述...')}
             />
+          </div>
+
+          <div className="mb-6">
+            <GenericListbox
+              options={resumeOptions}
+              value={selectedResume}
+              onChange={handleResumeChange}
+              label={t('select_resume_optional', '选择简历（可选）')}
+              name="resume"
+            />
+            <p className="text-sm text-gray-500 mt-2">
+              {t('resume_helps_ai', '选择简历可以帮助AI生成更符合您背景的求职信')}
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -206,23 +278,10 @@ const CoverLetterPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="mb-6">
-            <GenericListbox
-              options={resumeOptions}
-              value={selectedResume}
-              onChange={handleResumeChange}
-              label={t('select_resume_optional', '选择简历（可选）')}
-              name="resume"
-            />
-            <p className="text-sm text-gray-500 mt-2">
-              {t('resume_helps_ai', '选择简历可以帮助AI生成更符合您背景的求职信')}
-            </p>
-          </div>
-
           <button
             className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 flex items-center justify-center"
             onClick={handleGenerate}
-            disabled={isGenerating || !jobDescription.trim()}
+            disabled={isGenerating || (!selectedJobId && !jobDescription.trim())}
           >
             {isGenerating ? (
               <>
