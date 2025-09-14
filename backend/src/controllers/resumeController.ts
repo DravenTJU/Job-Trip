@@ -18,7 +18,7 @@ export const getResumes = async (
     // 构建查询条件 - 只返回当前用户的简历
     const queryObj = { ...req.query, user: req.user?._id };
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
-    excludedFields.forEach(el => delete queryObj[el]);
+    excludedFields.forEach(el => delete (queryObj as any)[el]);
 
     // 高级筛选
     let queryStr = JSON.stringify(queryObj);
@@ -300,7 +300,7 @@ export const downloadResume = async (
         parsedContent = JSON.parse(cleanedContent);
         console.log('简历内容JSON直接解析成功');
       } catch (jsonError) {
-        console.log('直接JSON解析失败，尝试修复格式:', jsonError.message);
+        console.log('直接JSON解析失败，尝试修复格式:', (jsonError as Error).message);
         
         // 尝试修复常见的JSON格式问题
         let fixedContent = cleanedContent;
@@ -343,7 +343,7 @@ export const downloadResume = async (
           parsedContent = JSON.parse(fixedContent);
           console.log('修复后JSON解析成功');
         } catch (fixError) {
-          console.error('修复后仍然无法解析JSON:', fixError.message);
+          console.error('修复后仍然无法解析JSON:', (fixError as Error).message);
           
           // 6. 最后尝试，如果内容看起来像对象但不是有效JSON
           if (fixedContent.includes(':') && (fixedContent.includes('{') || fixedContent.includes('['))) {
@@ -353,7 +353,7 @@ export const downloadResume = async (
               parsedContent = Function('return ' + fixedContent)();
               console.log('使用Function解析成功');
             } catch (funcError) {
-              console.error('所有解析方法都失败:', funcError.message);
+              console.error('所有解析方法都失败:', (funcError as Error).message);
               throw new Error('无法解析简历内容，格式不正确');
             }
           } else {
@@ -484,7 +484,7 @@ export const downloadResume = async (
         // 尝试使用正则表达式提取可能的键值对
         try {
           console.log('尝试从原始内容中提取信息');
-          const extractedInfo = {};
+          const extractedInfo: any = {};
           let hasExtractedInfo = false;
           
           // 提取可能的姓名
@@ -555,13 +555,8 @@ export const downloadResume = async (
     console.log(`格式化后的内容长度: ${formattedContent.length} 字符`);
     console.log(`格式化后的内容示例: ${formattedContent.substring(0, 200)}...`);
     
-    // 创建Word文档
-    const doc = new Document({
-      title: resume.name,
-      description: '由JobTrip生成的简历',
-      creator: req.user?.firstName || 'JobTrip用户',
-      sections: [], // 确保sections被初始化为空数组，避免'options.sections is not iterable'错误
-    });
+    // 先声明doc变量，稍后创建
+    let doc: Document;
     
     // 创建段落数组
     const paragraphs = [];
@@ -694,19 +689,24 @@ export const downloadResume = async (
       console.log('没有有效的段落可以检查');
     }
     
-    // 添加段落到文档 - 确保每个段落都是有效的Paragraph对象
+    // 创建包含所有段落的文档
     try {
       // 确保有有效的段落可以添加
       if (filteredParagraphs && filteredParagraphs.length > 0) {
-        doc.addSection({
-          children: filteredParagraphs,
+        doc = new Document({
+          title: resume.name,
+          description: '由JobTrip生成的简历',
+          creator: req.user?.firstName || 'JobTrip用户',
+          sections: [{
+            children: filteredParagraphs,
+          }],
         });
-        console.log('成功添加段落到文档');
+        console.log('成功创建包含段落的文档');
       } else {
         throw new Error('没有有效的段落可以添加');
       }
     } catch (error) {
-      console.error('添加段落到文档时出错:', error);
+      console.error('创建文档时出错:', error);
       
       // 尝试逐个添加段落，跳过有问题的段落
       console.log('尝试逐个添加段落...');
@@ -728,40 +728,42 @@ export const downloadResume = async (
       }
       
       console.log(`有效段落数: ${validParagraphs.length}`);
-      
-    }
-    
-    // 确保文档有内容
-    if (!doc.sections || doc.sections.length === 0 || 
-        (doc.sections[0] && (!doc.sections[0].children || doc.sections[0].children.length === 0))) {
-      console.log('警告: 文档没有内容，添加默认内容');
-      
+
+      // 如果有有效段落，创建文档
+      if (validParagraphs.length > 0) {
+        doc = new Document({
+          title: resume.name,
+          description: '由JobTrip生成的简历',
+          creator: req.user?.firstName || 'JobTrip用户',
+          sections: [{
+            children: validParagraphs,
+          }],
+        });
+      } else {
+        // 如果没有有效段落，创建默认文档
+        doc = new Document({
+          title: resume.name,
+          description: '由JobTrip生成的简历',
+          creator: req.user?.firstName || 'JobTrip用户',
+          sections: [{
+            children: [new Paragraph({ text: '简历内容解析失败，请检查格式。' })],
+          }],
+        });
+      }
     }
     
     console.log('文档段落添加完成');
     
     console.log(`Word文档创建完成，段落数: ${paragraphs.length}`);
     
-    // 确保文档至少有一个基本内容段落
-    if (!doc.sections || doc.sections.length === 0) {
-      console.log('文档没有任何段落，添加基本错误信息段落');
-    }
-    
     // 生成Word文档
     let buffer;
     try {
-      // 确保文档有至少一个段落
-      if (!doc.sections || doc.sections.length === 0 || 
-          (doc.sections[0] && (!doc.sections[0].children || doc.sections[0].children.length === 0))) {
-        console.log('警告: 文档没有有效内容，添加默认错误信息');
-        
-      }
-      
       buffer = await Packer.toBuffer(doc);
       console.log(`Word文档打包完成，大小: ${buffer.length} 字节`);
     } catch (packError) {
       console.error('生成Word文档缓冲区时出错:', packError);
-      return next(new AppError(`生成Word文档失败: ${packError.message}`, 500));
+      return next(new AppError(`生成Word文档失败: ${(packError as Error).message}`, 500));
     }
     
     // 确保buffer有效
@@ -782,7 +784,7 @@ export const downloadResume = async (
       console.log(`设置文件名: ${safeFileName}.docx`);
     } catch (headerError) {
       console.error('设置响应头时出错:', headerError);
-      return next(new AppError(`设置下载头信息失败: ${headerError.message}`, 500));
+      return next(new AppError(`设置下载头信息失败: ${(headerError as Error).message}`, 500));
     }
     
     console.log('响应头设置完成，准备发送Word文档');
@@ -794,10 +796,10 @@ export const downloadResume = async (
       console.log('Word文档发送成功');
     } catch (sendError) {
       console.error('发送Word文档时出错:', sendError);
-      return next(new AppError(`发送Word文档失败: ${sendError.message}`, 500));
+      return next(new AppError(`发送Word文档失败: ${(sendError as Error).message}`, 500));
     }
   } catch (error) {
     console.error('Word文档生成错误:', error);
-    next(new AppError(`简历下载失败: ${error.message}`, 500));
+    next(new AppError(`简历下载失败: ${(error as Error).message}`, 500));
   }
 };
