@@ -1,0 +1,200 @@
+# JobTrip Nginx Configuration
+# Domain: jobtrip.draven.best
+# SSL with Cloudflare certificates
+
+# HTTP - Redirect all HTTP traffic to HTTPS
+server {
+    listen 80;
+    server_name jobtrip.draven.best;
+
+    # Redirect all HTTP requests to HTTPS
+    return 301 https://$server_name$request_uri;
+}
+
+# HTTPS - Main configuration
+server {
+    listen 443 ssl http2;
+    server_name jobtrip.draven.best;
+
+    # SSL Configuration - Using Cloudflare certificates
+    ssl_certificate /etc/nginx/ssl/cloudflare.pem;
+    ssl_certificate_key /etc/nginx/ssl/cloudflare.key;
+
+    # SSL Security Settings
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384;
+    ssl_prefer_server_ciphers on;
+    ssl_session_cache shared:jobtrip_ssl:50m;
+    ssl_session_timeout 10m;
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
+    # Security Headers
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    add_header X-Frame-Options DENY always;
+    add_header X-Content-Type-Options nosniff always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    # Gzip Compression
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_types
+        application/atom+xml
+        application/geo+json
+        application/javascript
+        application/x-javascript
+        application/json
+        application/ld+json
+        application/manifest+json
+        application/rdf+xml
+        application/rss+xml
+        application/xhtml+xml
+        application/xml
+        font/eot
+        font/otf
+        font/ttf
+        image/svg+xml
+        text/css
+        text/javascript
+        text/plain
+        text/xml;
+
+    # i18n locales files
+    location /locales/ {
+        root /var/www/Job-Trip/frontend/dist;
+        expires 1h;
+        add_header Cache-Control "public";
+        add_header Access-Control-Allow-Origin "*";
+        add_header Access-Control-Allow-Methods "GET";
+        add_header Access-Control-Allow-Headers "Content-Type";
+        try_files $uri =404;
+    }
+
+    # Frontend (React Application)
+    location / {
+        root /var/www/Job-Trip/frontend/dist;
+        index index.html index.htm;
+        try_files $uri $uri/ /index.html;
+
+        # Cache static assets
+        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+            expires 1y;
+            add_header Cache-Control "public, immutable";
+        }
+
+        # Cache HTML files for shorter duration
+        location ~* \.(html)$ {
+            expires 1h;
+            add_header Cache-Control "public";
+        }
+    }
+
+    # Backend API
+    location /api/ {
+        proxy_pass http://localhost:5001/api/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 300s;
+        proxy_connect_timeout 75s;
+
+        # CORS Headers (if needed)
+        add_header Access-Control-Allow-Origin "https://jobtrip.draven.best" always;
+        add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+        add_header Access-Control-Allow-Headers "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization" always;
+        add_header Access-Control-Expose-Headers "Content-Length,Content-Range" always;
+
+        # Handle preflight requests
+        if ($request_method = 'OPTIONS') {
+            add_header Access-Control-Allow-Origin "https://jobtrip.draven.best";
+            add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS";
+            add_header Access-Control-Allow-Headers "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization";
+            add_header Access-Control-Max-Age 1728000;
+            add_header Content-Type 'text/plain; charset=utf-8';
+            add_header Content-Length 0;
+            return 204;
+        }
+    }
+
+    # API Documentation
+    location /docs/ {
+        proxy_pass http://localhost:5001/docs/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Health check endpoint
+    location /health {
+        proxy_pass http://localhost:5001/health;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Favicon
+    location = /favicon.ico {
+        root /var/www/Job-Trip/frontend/dist;
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        log_not_found off;
+    }
+
+    # Robots.txt
+    location = /robots.txt {
+        root /var/www/Job-Trip/frontend/dist;
+        expires 1y;
+        add_header Cache-Control "public";
+        log_not_found off;
+    }
+
+    # Security: Block access to sensitive files
+    location ~ /\. {
+        deny all;
+        access_log off;
+        log_not_found off;
+    }
+
+    # Block .env files
+    location ~ \.env$ {
+        deny all;
+        access_log off;
+        log_not_found off;
+    }
+
+    # Block non-locale JSON files (allow locales/*.json)
+    location ~ ^/(?!locales/).*\.json$ {
+        deny all;
+        access_log off;
+        log_not_found off;
+    }
+
+    # Error pages
+    error_page 404 /index.html;
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /var/www/Job-Trip/frontend/dist;
+    }
+
+    # Logging
+    access_log /var/log/nginx/jobtrip.access.log;
+    error_log /var/log/nginx/jobtrip.error.log;
+}
+
+# Rate limiting (global configuration)
+# Add these to the http block in nginx.conf:
+# limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
+# limit_req_zone $binary_remote_addr zone=login:10m rate=5r/m;
